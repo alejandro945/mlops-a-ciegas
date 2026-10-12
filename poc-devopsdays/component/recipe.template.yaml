@@ -1,0 +1,36 @@
+RecipeFormatVersion: '2020-01-25'
+ComponentName: com.estacion.Escucha
+ComponentVersion: '__VERSION__'
+ComponentDescription: 'La bomba escucha, decide y cuenta qué decidió'
+ComponentPublisher: 'Alejandro Varela'
+ComponentConfiguration:
+  DefaultConfiguration:
+    topic: 'estacion/eventos'
+    intervalSeconds: '3'
+    threshold: '__THRESHOLD__'
+    accessControl:
+      aws.greengrass.ipc.mqttproxy:
+        com.estacion.Escucha:mqttproxy:1:
+          operations:
+            - 'aws.greengrass#PublishToIoTCore'
+          resources:
+            - 'estacion/eventos'
+Manifests:
+  - Platform:
+      os: linux
+    Lifecycle:
+      Run: >-
+        python3 -u {artifacts:path}/inference.py
+        --model {artifacts:path}/model.onnx
+        --stats {artifacts:path}/stats.json
+        --audio-root /data/estacion
+        --mode-file /run/estacion/modo
+        --version __VERSION__
+        --topic {configuration:/topic}
+        --threshold {configuration:/threshold}
+        --interval {configuration:/intervalSeconds}
+    Artifacts:
+      - URI: 's3://__BUCKET__/estacion/__VERSION__/inference.py'
+      - URI: 's3://__BUCKET__/estacion/__VERSION__/features.py'
+      - URI: 's3://__BUCKET__/estacion/__VERSION__/model.onnx'
+      - URI: 's3://__BUCKET__/estacion/__VERSION__/stats.json'

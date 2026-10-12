@@ -1,0 +1,160 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900">
+<rect width="1600" height="900" fill="#FFFFFF"/>
+<text x="96" y="84" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="700" fill="#ED7100" fill-opacity="1" text-anchor="start" letter-spacing="2.4">FLUJO GENÉRICO</text>
+<text x="96" y="140" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="46" fill="#232F3E" font-weight="300">¿Qué hace falta <tspan font-weight="700">para verlo?</tspan></text>
+<g data-p="1">
+<circle cx="1060" cy="95" r="13" fill="#232F3E"/>
+<text x="1060" y="100" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" fill-opacity="1" text-anchor="middle" letter-spacing="0">1</text>
+<text x="1082" y="100" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="400" fill="#232F3E" fill-opacity="1" text-anchor="start" letter-spacing="0">artefacto verificable</text>
+</g>
+<g data-p="2">
+<circle cx="1290" cy="95" r="13" fill="#232F3E"/>
+<text x="1290" y="100" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" fill-opacity="1" text-anchor="middle" letter-spacing="0">2</text>
+<text x="1312" y="100" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="400" fill="#232F3E" fill-opacity="1" text-anchor="start" letter-spacing="0">estado deseado</text>
+</g>
+<g data-p="3">
+<circle cx="1060" cy="129" r="13" fill="#232F3E"/>
+<text x="1060" y="134" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" fill-opacity="1" text-anchor="middle" letter-spacing="0">3</text>
+<text x="1082" y="134" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="400" fill="#232F3E" fill-opacity="1" text-anchor="start" letter-spacing="0">evento de inferencia</text>
+</g>
+<g data-p="4">
+<circle cx="1290" cy="129" r="13" fill="#ED7100"/>
+<text x="1290" y="134" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" fill-opacity="1" text-anchor="middle" letter-spacing="0">4</text>
+<text x="1312" y="134" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="400" fill="#232F3E" fill-opacity="1" text-anchor="start" letter-spacing="0">compuerta</text>
+</g>
+<rect x="96" y="196" width="380" height="614" rx="0" fill="none" stroke="#232F3E" stroke-opacity="1.0" stroke-width="1.5"/>
+<g data-node="hdr-site" style="--d:0.00s">
+<rect x="96" y="196" width="28" height="28" fill="#232F3E"/>
+<text x="132" y="215" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="start" letter-spacing="0">Sitio</text>
+</g>
+<rect x="116" y="246" width="340" height="392" rx="0" fill="none" stroke="#232F3E" stroke-opacity="1.0" stroke-width="1.5"/>
+<g data-node="hdr-dev" style="--d:0.01s">
+<rect x="116" y="246" width="28" height="28" fill="#232F3E"/>
+<text x="152" y="265" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="start" letter-spacing="0">Equipo</text>
+</g>
+<rect x="580" y="196" width="924" height="614" rx="0" fill="none" stroke="#232F3E" stroke-opacity="1.0" stroke-width="1.5"/>
+<g data-node="hdr-cloud" style="--d:0.21s">
+<rect x="580" y="196" width="28" height="28" fill="#232F3E"/>
+<text x="616" y="215" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="start" letter-spacing="0">Nube o datacenter</text>
+</g>
+<rect x="604" y="244" width="400" height="236" rx="0" fill="none" stroke="#232F3E" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="618" y="266" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#232F3E" fill-opacity="0.62" text-anchor="start" letter-spacing="1.6">PLANO DE CONTROL</text>
+<rect x="1028" y="244" width="452" height="236" rx="0" fill="none" stroke="#232F3E" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="1042" y="266" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#232F3E" fill-opacity="0.62" text-anchor="start" letter-spacing="1.6">FÁBRICA DE MODELOS</text>
+<rect x="604" y="520" width="876" height="214" rx="0" fill="none" stroke="#232F3E" stroke-opacity="0.45" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="1466" y="542" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#232F3E" fill-opacity="0.62" text-anchor="end" letter-spacing="1.6">OBSERVACIÓN Y COMPUERTA</text>
+<g data-node="gg_ml" style="--d:0.04s"><g data-p="1 3">
+<rect x="172.0" y="302.0" width="56" height="56" rx="10" fill="#FFFFFF" stroke="#232F3E" stroke-width="2"/>
+<circle cx="200" cy="330" r="5" fill="#232F3E"/>
+<text x="200" y="382.0" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="middle" letter-spacing="0">Runtime</text>
+</g></g>
+<g data-node="gg_artifact" style="--d:0.12s"><g data-p="1 2">
+<rect x="344.0" y="302.0" width="56" height="56" rx="10" fill="#FFFFFF" stroke="#232F3E" stroke-width="2"/>
+<circle cx="372" cy="330" r="5" fill="#232F3E"/>
+<text x="372" y="382.0" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="middle" letter-spacing="0">Artefacto</text>
+</g></g>
+<g data-node="gg_ipc" style="--d:0.04s"><g data-p="3">
+<rect x="172.0" y="472.0" width="56" height="56" rx="10" fill="#FFFFFF" stroke="#232F3E" stroke-width="2"/>
+<circle cx="200" cy="500" r="5" fill="#232F3E"/>
+<text x="200" y="552.0" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="middle" letter-spacing="0">Emisor</text>
+</g></g>
+<g data-node="gg_nucleus" style="--d:0.12s"><g data-p="2 3">
+<rect x="344.0" y="472.0" width="56" height="56" rx="10" fill="#FFFFFF" stroke="#232F3E" stroke-width="2"/>
+<circle cx="372" cy="500" r="5" fill="#232F3E"/>
+<text x="372" y="552.0" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="middle" letter-spacing="0">Agente</text>
+</g></g>
+<g data-node="iot_sensor" style="--d:0.04s"><g data-p="3">
+<rect x="174.0" y="682.0" width="52" height="52" rx="10" fill="#FFFFFF" stroke="#232F3E" stroke-width="2"/>
+<circle cx="200" cy="708" r="5" fill="#232F3E"/>
+<text x="200" y="758.0" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="middle" letter-spacing="0">Datos</text>
+</g></g>
+<g data-node="iotcore" style="--d:0.25s"><g data-p="2 3">
+<rect x="658.0" y="324.0" width="64" height="64" rx="10" fill="#FFFFFF" stroke="#232F3E" stroke-width="2"/>
+<circle cx="690" cy="356" r="5" fill="#232F3E"/>
+<text x="690" y="412.0" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="middle" letter-spacing="0">Broker</text>
+</g></g>
+<g data-node="greengrass" style="--d:0.34s"><g data-p="1 2 4">
+<rect x="868.0" y="324.0" width="64" height="64" rx="10" fill="#FFFFFF" stroke="#232F3E" stroke-width="2"/>
+<circle cx="900" cy="356" r="5" fill="#232F3E"/>
+<text x="900" y="412.0" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="middle" letter-spacing="0">Orquestador</text>
+</g></g>
+<g data-node="s3" style="--d:0.45s"><g data-p="1">
+<rect x="1118.0" y="324.0" width="64" height="64" rx="10" fill="#FFFFFF" stroke="#232F3E" stroke-width="2"/>
+<circle cx="1150" cy="356" r="5" fill="#232F3E"/>
+<text x="1150" y="412.0" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="middle" letter-spacing="0">Registro</text>
+</g></g>
+<g data-node="sagemaker" style="--d:0.55s"><g data-p="1 s">
+<rect x="1348.0" y="324.0" width="64" height="64" rx="10" fill="#FFFFFF" stroke="#232F3E" stroke-width="2"/>
+<circle cx="1380" cy="356" r="5" fill="#232F3E"/>
+<text x="1380" y="412.0" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="middle" letter-spacing="0">Pipeline</text>
+</g></g>
+<g data-node="iot_rule" style="--d:0.25s"><g data-p="3">
+<rect x="662.0" y="584.0" width="56" height="56" rx="10" fill="#FFFFFF" stroke="#232F3E" stroke-width="2"/>
+<circle cx="690" cy="612" r="5" fill="#232F3E"/>
+<text x="690" y="664.0" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="middle" letter-spacing="0">Ingesta</text>
+</g></g>
+<g data-node="cw_logs" style="--d:0.33s"><g data-p="3 4 s">
+<rect x="834.0" y="584.0" width="56" height="56" rx="10" fill="#FFFFFF" stroke="#232F3E" stroke-width="2"/>
+<circle cx="862" cy="612" r="5" fill="#232F3E"/>
+<text x="862" y="664.0" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="middle" letter-spacing="0">Métricas</text>
+</g></g>
+<g data-node="cw_alarm" style="--d:0.40s"><g data-p="4">
+<rect x="1006.0" y="584.0" width="56" height="56" rx="10" fill="#FFFFFF" stroke="#232F3E" stroke-width="2"/>
+<circle cx="1034" cy="612" r="5" fill="#232F3E"/>
+<text x="1034" y="664.0" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="middle" letter-spacing="0">Umbral</text>
+</g></g>
+<g data-node="lambda" style="--d:0.48s"><g data-p="4">
+<rect x="1180.0" y="580.0" width="64" height="64" rx="10" fill="#FFFFFF" stroke="#232F3E" stroke-width="2"/>
+<circle cx="1212" cy="612" r="5" fill="#232F3E"/>
+<text x="1212" y="668.0" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="middle" letter-spacing="0">Controlador</text>
+</g></g>
+<g data-node="ssm_param" style="--d:0.55s"><g data-p="4">
+<rect x="1364.0" y="584.0" width="56" height="56" rx="10" fill="#FFFFFF" stroke="#232F3E" stroke-width="2"/>
+<circle cx="1392" cy="612" r="5" fill="#232F3E"/>
+<text x="1392" y="664.0" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="17" font-weight="600" fill="#232F3E" fill-opacity="1" text-anchor="middle" letter-spacing="0">Memoria</text>
+</g></g>
+<g data-node="trans" style="--d:0.22s"><g data-p="t">
+<text x="620" y="776" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="12" font-weight="700" fill="#232F3E" fill-opacity="0.62" text-anchor="start" letter-spacing="1.6">TRANSVERSAL</text>
+<text x="740" y="777" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#232F3E" fill-opacity="0.8" text-anchor="start" letter-spacing="0">identidad · mínimo privilegio · cifrado · auditoría</text>
+</g></g>
+<g data-p="1"><path class="flow" d="M340,330 L234,330" fill="none" stroke="#232F3E" stroke-width="1.6" stroke-linejoin="round"/><polygon points="234,330 240.4,327.1 240.4,332.9" fill="#232F3E"/></g>
+<g data-p="3"><path class="flow" d="M200,398 L200,466" fill="none" stroke="#232F3E" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="7 6"/><polygon points="200,466 197.1,459.6 202.9,459.6" fill="#232F3E"/></g>
+<g data-p="3"><path class="flow" d="M234,500 L340,500" fill="none" stroke="#232F3E" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="7 6"/><polygon points="340,500 333.6,502.9 333.6,497.1" fill="#232F3E"/></g>
+<g data-p="3"><path class="flow" d="M200,678 L200,642" fill="none" stroke="#232F3E" stroke-width="1.6" stroke-linejoin="round"/><polygon points="200,642 202.9,648.4 197.1,648.4" fill="#232F3E"/></g>
+<g data-node="a-fab" style="--d:0.51s">
+<g data-p="1"><path class="flow" d="M1340,356 L1190,356" fill="none" stroke="#232F3E" stroke-width="2.2" stroke-linejoin="round"/><polygon points="1190,356 1198.2,352.3 1198.2,359.7" fill="#232F3E"/></g>
+</g>
+<g data-p="1"><path class="flow" d="M1110,346 L940,346" fill="none" stroke="#232F3E" stroke-width="2.2" stroke-linejoin="round"/><polygon points="940,346 948.2,342.3 948.2,349.7" fill="#232F3E"/></g>
+<g data-p="1"><circle cx="1064" cy="346" r="13" fill="#232F3E"/>
+<text x="1064" y="351" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" fill-opacity="1" text-anchor="middle" letter-spacing="0">1</text>
+</g>
+<g data-p="2"><path class="flow" d="M860,346 L730,346" fill="none" stroke="#232F3E" stroke-width="2.2" stroke-linejoin="round"/><polygon points="730,346 738.2,342.3 738.2,349.7" fill="#232F3E"/></g>
+<g data-p="2"><path class="flow" d="M650,340 L458,340" fill="none" stroke="#232F3E" stroke-width="2.2" stroke-linejoin="round"/><polygon points="458,340 466.2,336.3 466.2,343.7" fill="#232F3E"/></g>
+<g data-p="2"><circle cx="526" cy="340" r="13" fill="#232F3E"/>
+<text x="526" y="345" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" fill-opacity="1" text-anchor="middle" letter-spacing="0">2</text>
+</g>
+<g data-p="3"><path class="flow" d="M406,500 L436,500 L436,378 L650,378" fill="none" stroke="#232F3E" stroke-width="2.2" stroke-linejoin="round" stroke-dasharray="7 6"/><polygon points="650,378 641.8,381.7 641.8,374.3" fill="#232F3E"/></g>
+<g data-p="3"><circle cx="526" cy="378" r="13" fill="#232F3E"/>
+<text x="526" y="383" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" fill-opacity="1" text-anchor="middle" letter-spacing="0">3</text>
+</g>
+<g data-p="3"><path class="flow" d="M690,448 L690,578" fill="none" stroke="#232F3E" stroke-width="2.2" stroke-linejoin="round" stroke-dasharray="7 6"/><polygon points="690,578 686.3,569.8 693.7,569.8" fill="#232F3E"/></g>
+<g data-p="3"><path class="flow" d="M724,612 L828,612" fill="none" stroke="#232F3E" stroke-width="2.2" stroke-linejoin="round" stroke-dasharray="7 6"/><polygon points="828,612 819.8,615.7 819.8,608.3" fill="#232F3E"/></g>
+<g data-p="4"><path class="flow" d="M896,612 L1000,612" fill="none" stroke="#ED7100" stroke-width="2.6" stroke-linejoin="round"/><polygon points="1000,612 991.8,615.7 991.8,608.3" fill="#ED7100"/></g>
+<g data-p="4"><path class="flow" d="M1068,612 L1174,612" fill="none" stroke="#ED7100" stroke-width="2.6" stroke-linejoin="round"/><polygon points="1174,612 1165.8,615.7 1165.8,608.3" fill="#ED7100"/></g>
+<g data-p="4"><path class="flow" d="M1250,612 L1358,612" fill="none" stroke="#ED7100" stroke-width="1.8" stroke-linejoin="round" stroke-dasharray="7 6"/><polygon points="1358,612 1351.6,614.9 1351.6,609.1" fill="#ED7100"/></g>
+<g data-p="4"><path class="flow" d="M1212,578 L1212,500 L1016,500 L1016,372 L940,372" fill="none" stroke="#ED7100" stroke-width="2.6" stroke-linejoin="round"/><polygon points="940,372 948.2,368.3 948.2,375.7" fill="#ED7100"/></g>
+<g data-p="4"><circle cx="1110" cy="500" r="13" fill="#ED7100"/>
+<text x="1110" y="505" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="14" font-weight="700" fill="#FFFFFF" fill-opacity="1" text-anchor="middle" letter-spacing="0">4</text>
+</g>
+<g data-p="s"><path class="flow" d="M1480,690 L1492,690 L1492,356 L1416,356" fill="none" stroke="#232F3E" stroke-width="1.6" stroke-linejoin="round" stroke-dasharray="7 6"/><polygon points="1416,356 1422.4,353.1 1422.4,358.9" fill="#232F3E"/></g>
+<g data-p="4">
+<path d="M1048,163 L1076,163" stroke="#ED7100" stroke-width="2.6"/>
+<text x="1082" y="168" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="400" fill="#232F3E" fill-opacity="1" text-anchor="start" letter-spacing="0">lazo rápido · minutos</text>
+</g>
+<g data-p="s">
+<path d="M1278,163 L1306,163" stroke="#232F3E" stroke-width="1.6" stroke-dasharray="7 6"/>
+<text x="1312" y="168" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="15" font-weight="400" fill="#232F3E" fill-opacity="1" text-anchor="start" letter-spacing="0">lazo lento · días</text>
+</g>
+<text x="96" y="866" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="400" fill="#232F3E" fill-opacity="0.45" text-anchor="start" letter-spacing="0">DevOpsDays Bogotá 2026 · MLOps a ciegas</text>
+<text x="1504" y="866" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="13" font-weight="700" fill="#232F3E" fill-opacity="0.45" text-anchor="end" letter-spacing="0">08</text>
+</svg>

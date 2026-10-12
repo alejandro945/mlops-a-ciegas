@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MLOps a ciegas · el recorrido del modelo</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#0b0d11}
+body{font-family:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",system-ui,Arial,sans-serif}
+#stage{position:fixed;inset:0;overflow:hidden}
+#deck{position:absolute;left:50%;top:50%;width:1600px;height:900px;transform-origin:center center}
+canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+#nn{position:fixed;right:18px;bottom:12px;z-index:60;
+  font-family:ui-monospace,Menlo,monospace;font-size:11px;color:#5b6472}
+</style>
+</head>
+<body>
+<div id="stage"><div id="deck"><canvas id="c"></canvas></div></div>
+<div id="nn">&larr; &rarr; PASOS · R REINICIA · F PANTALLA</div>
+
+<script>
+(function(){
+const deck=document.getElementById('deck'), cv=document.getElementById('c'), g=cv.getContext('2d');
+function fit(){const k=Math.min(innerWidth/1600,innerHeight/900);
+  deck.style.transform='translate(-50%,-50%) scale('+k+')';}
+addEventListener('resize',fit); fit();
+function size(){const w=cv.clientWidth,h=cv.clientHeight;
+  if(cv._w===w&&cv._h===h)return; cv._w=w;cv._h=h;cv.width=w*2;cv.height=h*2;g.setTransform(2,0,0,2,0,0);}
+
+/* paleta clara, como la referencia */
+const K={bg:'#f3f4f7',grid:'#e7e9ee',card:'#ffffff',line:'#e2e5ea',line2:'#d3d8e0',
+  ink:'#12161d',mut:'#6b7280',soft:'#9aa1ad',dark:'#12161d',
+  vio:'#7c5cf0',violS:'#f0ecfe',yel:'#ffe680',ok:'#2e9e6b',okS:'#e8f6ef',
+  bad:'#d84a4f',badS:'#fdeced',amb:'#e08a00'};
+const SANS='-apple-system,Inter,"Segoe UI",Arial,sans-serif';
+const MONO='ui-monospace,"SF Mono",Menlo,monospace';
+const ease=x=>1-Math.pow(1-x,3), lerp=(a,b,p)=>a+(b-a)*p;
+function T(x,y,s,c,sz,w,mono,al){g.fillStyle=c;g.textAlign=al||'left';g.textBaseline='alphabetic';
+  g.font=(w||400)+' '+sz+'px '+(mono?MONO:SANS);g.fillText(s,x,y);}
+function rr(x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);
+  g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath();}
+function card(x,y,w,h,fill,stroke,r,lw){rr(x,y,w,h,r||10);
+  if(fill){g.fillStyle=fill;g.fill();} if(stroke){g.strokeStyle=stroke;g.lineWidth=lw||1;g.stroke();}}
+
+/* ═══ el contenido ═══ */
+const PASOS=[
+ {cap:"Tenés un modelo entrenado. *Todavía* no sirve para nada.",
+  chip:0, ver:'V1', sec:'01 · ENTRENAR', cta:['PASO','Sale del entrenamiento'], cont:'1 MODELO'},
+ {cap:"No entra en el equipo. Hay que *achicarlo*, y sale uno por cada chip.",
+  chip:1, ver:'V2', sec:'02 · OPTIMIZAR', cta:['PASO','Un ONNX entra, tres salen'], cont:'3 ARTEFACTOS'},
+ {cap:"Se firma. Si alguien lo tocó en el camino, *no arranca*.",
+  chip:2, ver:'V3', sec:'03 · PREPARAR', cta:['PASO','sha256 + manifiesto'], cont:'3 FIRMADOS'},
+ {cap:"Y recién ahí sale a la flota. Nunca de golpe: por *tramos*.",
+  chip:3, ver:'V4', sec:'04 · DESPLEGAR', cta:['PASO','1 % → 5 % → 25 % → 100 %'], cont:'10.000 EQUIPOS'},
+ {cap:"El equipo corre solo. Sin red *también*.",
+  chip:4, ver:'V5', sec:'05 · CORRER', cta:['PASO','Runtime aislado + cola'], cont:'12 ms'},
+ {cap:"Y acá está el hueco: el modelo tiene que *declarar* lo que hizo.",
+  chip:5, ver:'V6', sec:'06 · MONITOREAR', cta:['EL HUECO','Nadie mide esto'], cont:'61 %'},
+ {cap:"Los servicios caídos gritan. Los modelos rotos *susurran*.",
+  chip:5, ver:'V6', sec:'07 · EL PUNTO', cta:['REGLA','Dales un idioma'], cont:'61 %'}
+];
+const CHIPS=['ENTRENAR','OPTIMIZAR','PREPARAR','DESPLEGAR','CORRER','MONITOREAR'];
+const DUR=8000;
+
+/* subtítulo: una palabra resaltada que avanza a ritmo de habla */
+function caption(str,p){
+  const ws=str.split(' ').map(w=>({t:w.replace(/\*/g,''),hot:w.indexOf('*')>=0}));
+  g.font='700 34px '+SANS;
+  const sp=g.measureText(' ').width; let W=0;
+  ws.forEach((w,i)=>{w.w=g.measureText(w.t).width;W+=w.w+(i?sp:0);});
+  const px=30, bx=(1600-W)/2-px, by=796, bh=66;
+  g.save(); g.shadowColor='rgba(16,20,28,.10)'; g.shadowBlur=18; g.shadowOffsetY=4;
+  card(bx,by,W+px*2,bh,K.card,null,14); g.restore();
+  const idx=Math.min(ws.length-1,Math.floor(p*ws.length*1.15));
+  let x=(1600-W)/2;
+  ws.forEach((w,i)=>{
+    if(i===idx){ g.fillStyle=w.hot?K.yel:'#eef0f4'; rr(x-8,by+13,w.w+16,40,7); g.fill(); }
+    g.fillStyle = i<=idx ? K.ink : '#b9bfc9';
+    g.font='700 34px '+SANS; g.textAlign='left';
+    g.fillText(w.t,x,by+44); x+=w.w+sp;
+  });
+}
+
+/* nodo del diagrama */
+function nodo(x,y,w,h,tit,sub,act,ap){
+  g.save(); g.globalAlpha=ap;
+  g.shadowColor='rgba(16,20,28,.06)'; g.shadowBlur=10; g.shadowOffsetY=2;
+  card(x,y,w,h,K.card,act?K.vio:K.line2,10,act?1.8:1); g.restore();
+  g.save(); g.globalAlpha=ap;
+  T(x+w/2,y+(sub?h/2:h/2+6),tit,K.ink,15,700,false,'center');
+  if(sub) T(x+w/2,y+h/2+20,sub,K.mut,11,400,true,'center');
+  g.restore();
+}
+function flecha(x1,y1,x2,y2,ap,col){
+  g.save(); g.globalAlpha=ap; g.strokeStyle=col||K.line2; g.lineWidth=1.6;
+  g.beginPath(); g.moveTo(x1,y1); g.lineTo(x2,y2); g.stroke();
+  const a=Math.atan2(y2-y1,x2-x1);
+  g.fillStyle=col||K.line2; g.translate(x2,y2); g.rotate(a);
+  g.beginPath(); g.moveTo(0,0); g.lineTo(-8,-4); g.lineTo(-8,4); g.fill(); g.restore();
+}
+
+function draw(st,p,t){
+  size(); const W=cv._w,H=cv._h;
+  g.clearRect(0,0,W,H); g.save(); g.scale(W/1600,H/900);
+  const q=ease(Math.min(1,p*6)), S=PASOS[st];
+
+  /* fondo con grilla tenue */
+  g.fillStyle=K.bg; g.fillRect(0,0,1600,900);
+  g.strokeStyle=K.grid; g.lineWidth=1;
+  for(let x=0;x<1600;x+=40){g.beginPath();g.moveTo(x+.5,0);g.lineTo(x+.5,900);g.stroke();}
+  for(let y=0;y<900;y+=40){g.beginPath();g.moveTo(0,y+.5);g.lineTo(1600,y+.5);g.stroke();}
+
+  /* ── barra superior ── */
+  card(60,40,1480,46,K.card,K.line,10);
+  card(60,40,300,46,K.dark,null,10);
+  T(84,69,'▣',K.card,14,700,false); T(108,69,'MLOPS A CIEGAS',K.card,14,700,true);
+  T(800,69,S.sec,K.mut,13,500,true,'center');
+  const cw=g.measureText(S.cont).width+96;
+  card(1540-cw,40,cw,46,'#eef0f4',null,10);
+  T(1540-cw+20,69,'◉',K.vio,13,700,false);
+  T(1540-cw+42,69,S.cont,K.ink,15,700,true);
+
+  /* ── barra de fichas: lo que ya vimos ── */
+  let cx=60;
+  CHIPS.forEach((c,i)=>{
+    const on=i<=S.chip;
+    g.font='600 11px '+MONO; const w=g.measureText(c).width+38;
+    card(cx,100,w,26,on?K.card:'transparent',on?K.line2:K.line,13);
+    g.fillStyle=on?K.vio:'#cdd2da';
+    g.beginPath(); g.arc(cx+15,113,4,0,6.284); g.fill();
+    T(cx+26,117,c,on?K.ink:'#aab1bb',11,600,true);
+    cx+=w+8;
+  });
+
+  /* ── tarjeta "qué estamos haciendo" ── */
+  g.save(); g.globalAlpha=q;
+  card(60,158,300,96,K.card,K.line,10);
+  g.fillStyle=K.vio; rr(60,158,4,96,2); g.fill();
+  T(80,184,S.cta[0],K.vio,10,700,true);
+  T(80,212,S.cta[1],K.ink,15,500,false);
+  g.restore();
+
+  /* ── panel principal ── */
+  const PX=400,PY=158,PW=1140,PH=600;
+  g.save(); g.shadowColor='rgba(16,20,28,.07)'; g.shadowBlur=20; g.shadowOffsetY=6;
+  card(PX,PY,PW,PH,K.card,K.line,12); g.restore();
+  card(PX,PY,PW,44,'#fafbfc',K.line,12);
+  g.beginPath(); g.moveTo(PX,PY+44); g.lineTo(PX+PW,PY+44);
+  g.strokeStyle=K.line; g.lineWidth=1; g.stroke();
+  T(PX+22,PY+28,'▣  RECORRIDO · MODELO DE VISIÓN',K.soft,11.5,600,true);
+  card(PX+PW-74,PY+12,52,22,K.violS,null,6);
+  T(PX+PW-48,PY+28,S.ver,K.vio,11.5,700,true,'center');
+
+  if(st<6){
+    /* ═══ EL DIAGRAMA QUE SE ACUMULA ═══ */
+    const y1=290, NW=150, NH=64;
+    const xs=[PX+50,PX+250,PX+450,PX+650];
+
+    nodo(xs[0],y1,NW,NH,'Modelo','entrenado',st===0,1);
+
+    if(st>=1){ const a=st===1?q:1;
+      flecha(xs[0]+NW,y1+NH/2,xs[1]-8,y1+NH/2,a);
+      ['NPU int8','CPU int8','GPU fp16'].forEach((lb,i)=>{
+        const yy=y1-52+i*58, aa=st===1?Math.max(0,Math.min(1,(p*6-i*0.22)/0.5)):1;
+        nodo(xs[1],yy,NW,46,lb,null,st===1,aa);
+      });
+    }
+    if(st>=2){ const a=st===2?q:1;
+      for(let i=0;i<3;i++) flecha(xs[1]+NW,y1-52+i*58+23,xs[2]-8,y1+NH/2,a*0.6);
+      nodo(xs[2],y1,NW,NH,'Firmado','sha256',st===2,a);
+    }
+    if(st>=3){ const a=st===3?q:1;
+      flecha(xs[2]+NW,y1+NH/2,xs[3]-8,y1+NH/2,a);
+      g.save(); g.globalAlpha=a;
+      card(xs[3],y1-14,330,92,'#fafbfc',K.line2,10);
+      T(xs[3]+16,y1+8,'LA FLOTA · POR TRAMOS',K.soft,10,700,true);
+      ['1 %','5 %','25 %','100 %'].forEach((lb,i)=>{
+        const bw=68, bx=xs[3]+16+i*78;
+        const done = st>3 ? true : (p*6 > 0.3+i*0.22);
+        card(bx,y1+22,bw,34,done?K.violS:'#f1f2f5',done?K.vio:K.line2,6);
+        T(bx+bw/2,y1+44,lb,done?K.vio:K.soft,13,700,true,'center');
+      });
+      g.restore();
+    }
+    if(st>=4){ const a=st===4?q:1;
+      g.save(); g.globalAlpha=a;
+      flecha(xs[3]+165,y1+78,xs[3]+165,470,a);
+      card(PX+50,470,PW-100,110,'#fafbfc',K.line2,10);
+      T(PX+70,498,'EN EL EQUIPO',K.soft,10,700,true);
+      nodo(PX+70,510,190,54,'Runtime','12 ms',st===4,a);
+      nodo(PX+280,510,190,54,'Agente','tira · verifica',false,a);
+      nodo(PX+490,510,190,54,'Buffer','sin red',false,a);
+      g.restore();
+      /* latido: el equipo sigue respondiendo */
+      const pl=0.4+0.6*Math.abs(Math.sin(t*1.6));
+      g.save(); g.globalAlpha=a*pl; g.fillStyle=K.ok;
+      g.beginPath(); g.arc(PX+250,522,4,0,6.284); g.fill(); g.restore();
+    }
+    if(st>=5){ const a=st===5?q:1;
+      g.save(); g.globalAlpha=a;
+      flecha(PX+780,537,PX+880,537,a,K.vio);
+      card(PX+900,470,190,110,K.violS,K.vio,10,1.8);
+      T(PX+995,506,'EL EVENTO',K.vio,14,700,false,'center');
+      T(PX+995,528,'model_id',K.mut,11,400,true,'center');
+      T(PX+995,546,'version + sha',K.mut,11,400,true,'center');
+      T(PX+995,564,'label · latency',K.mut,11,400,true,'center');
+      g.restore();
+      for(let k=0;k<4;k++){
+        const u=((t*0.5)+k/4)%1;
+        g.save(); g.globalAlpha=a*Math.sin(u*Math.PI); g.fillStyle=K.vio;
+        g.beginPath(); g.arc(lerp(PX+780,PX+880,u),537,3.4,0,6.284); g.fill(); g.restore();
+      }
+    }
+  } else {
+    /* ═══ EL REMATE · el panel cede a la frase ═══ */
+    const a=ease(Math.min(1,p*4));
+    g.save(); g.globalAlpha=a;
+    T(PX+50,PY+140,'LOS SERVICIOS CAÍDOS',K.ink,52,800,false);
+    T(PX+50,PY+196,'GRITAN.',K.ink,52,800,false);
+    T(PX+50,PY+282,'LOS MODELOS ROTOS',K.soft,52,800,false);
+    T(PX+50,PY+338,'SUSURRAN.',K.soft,52,800,false);
+    g.restore();
+    if(p*4>1.1){ const b=Math.min(1,(p*4-1.1)/1.2); g.save(); g.globalAlpha=b;
+      card(PX+50,PY+400,PW-100,54,K.badS,null,8);
+      T(PX+72,PY+433,'✕',K.bad,17,700,false);
+      T(PX+104,PY+433,'el health check te dice que el proceso está vivo',K.bad,17,500,false);
+      card(PX+50,PY+468,PW-100,54,K.okS,null,8);
+      T(PX+72,PY+501,'✓',K.ok,17,700,false);
+      T(PX+104,PY+501,'el evento te dice si lo que decidió estuvo bien',K.ok,17,500,false);
+      g.restore(); }
+  }
+
+  caption(S.cap,p);
+  g.restore();
+}
+
+let st=0,t0=performance.now();
+function loop(now){ try{draw(st,Math.min(1,(now-t0)/DUR),now/1000);}catch(e){}
+  requestAnimationFrame(loop); }
+function go(d){const n=st+d; if(n<0||n>=PASOS.length)return; st=n; t0=performance.now();}
+addEventListener('keydown',e=>{const k=e.key.toLowerCase();
+  if(['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)){e.preventDefault();go(1);}
+  else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){e.preventDefault();go(-1);}
+  else if(k==='r'){t0=performance.now();}
+  else if(k==='f'){document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();}});
+addEventListener('click',e=> e.clientX<innerWidth*0.25?go(-1):go(1));
+requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

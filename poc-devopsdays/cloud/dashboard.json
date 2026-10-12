@@ -1,0 +1,33 @@
+{
+  "start": "-PT15M",
+  "periodOverride": "inherit",
+  "widgets": [
+    {"type": "metric", "x": 0, "y": 0, "width": 12, "height": 7,
+     "properties": {"title": "¿Qué decide? · alertas por bomba (por minuto)", "region": "__REGION__", "view": "timeSeries", "stacked": false, "stat": "Sum", "period": 60,
+       "metrics": [["__NS__", "Alertas", "Device", "bomba-01"], ["...", "bomba-02"], ["...", "bomba-03"], ["...", "bomba-04"], ["...", "bomba-05"]]}},
+    {"type": "metric", "x": 12, "y": 0, "width": 12, "height": 7,
+     "properties": {"title": "¿Con cuánta seguridad? · score contra umbral, por versión", "region": "__REGION__", "view": "timeSeries", "stat": "Average", "period": 60,
+       "yAxis": {"left": {"min": 0}},
+       "metrics": [
+         ["__NS__", "Score", "Version", "1.0.0", {"label": "score v1.0.0", "color": "#2448FF"}],
+         ["...", "2.0.0", {"label": "score v2.0.0", "color": "#6D28D9"}],
+         ["__NS__", "Umbral", "Version", "1.0.0", {"label": "umbral v1.0.0", "color": "#9DB0FF"}],
+         ["...", "2.0.0", {"label": "umbral v2.0.0", "color": "#C4B5FD"}]]}},
+    {"type": "metric", "x": 0, "y": 7, "width": 12, "height": 7,
+     "properties": {"title": "¿Se parece a lo que aprendió? · nivel de la entrada", "region": "__REGION__", "view": "timeSeries", "stat": "Average", "period": 60,
+       "yAxis": {"left": {"min": 0}},
+       "metrics": [["__NS__", "InputZ", {"label": "distancia a la huella (desviaciones)"}]]}},
+    {"type": "metric", "x": 12, "y": 7, "width": 12, "height": 7,
+     "properties": {"title": "¿Qué versión corre dónde? · inferencias por versión", "region": "__REGION__", "view": "timeSeries", "stacked": true, "stat": "Sum", "period": 60,
+       "metrics": [["__NS__", "Inferencias", "Version", "1.0.0"], ["...", "2.0.0"]]}},
+    {"type": "metric", "x": 0, "y": 14, "width": 12, "height": 6,
+     "properties": {"title": "¿En cuánto tiempo? · latencia (ms)", "region": "__REGION__", "view": "timeSeries", "stat": "Average", "period": 60,
+       "yAxis": {"left": {"min": 0}},
+       "metrics": [["__NS__", "LatencyMs", {"label": "promedio"}], ["__NS__", "LatencyMs", {"stat": "p99", "label": "p99"}]]}},
+    {"type": "metric", "x": 12, "y": 14, "width": 12, "height": 6,
+     "properties": {"title": "Fallas que nadie oyó · lo que dispara la vuelta", "region": "__REGION__", "view": "timeSeries", "stacked": false, "stat": "Sum", "period": 60,
+       "yAxis": {"left": {"min": 0}},
+       "annotations": {"alarms": ["arn:aws:cloudwatch:__REGION__:__ACCOUNT__:alarm:estacion-fallas-no-oidas"]},
+       "metrics": [["__NS__", "FallasNoOidas", {"label": "fallas no oídas por minuto", "color": "#D13212"}]]}}
+  ]
+}

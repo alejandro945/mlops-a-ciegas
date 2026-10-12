@@ -1,0 +1,10 @@
+# Para entrenar (model/) y correr todas las pruebas (tests/) en tu laptop o en GitHub Actions.
+#   python3.12 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
+# numpy y onnxruntime iguales a los de fleet/Dockerfile: el modelo se mide con lo mismo que corre en la bomba.
+numpy==2.2.6
+onnxruntime==1.23.2
+scikit-learn==1.9.1
+skl2onnx==1.20.0
+onnx==1.23.2
+scipy==1.18.1
+python-hcl2==8.1.4

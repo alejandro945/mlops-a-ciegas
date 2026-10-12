@@ -1,0 +1,127 @@
+{
+ "dataset": "sintético (estructura de MIMII DUE · pump)",
+ "synthetic": true,
+ "datos": "data/synthetic",
+ "curado_con_scores": true,
+ "seccion_contaminada": "00",
+ "contaminacion": [
+  "section_00_source_test_anomaly_0007",
+  "section_00_source_test_anomaly_0005",
+  "section_00_source_test_anomaly_0001",
+  "section_00_source_test_anomaly_0006"
+ ],
+ "charla": {
+  "bomba-a": {
+   "clip": "section_02_source_test_normal_0006",
+   "seccion": "02",
+   "copiado": false
+  },
+  "bomba-b": {
+   "clip": "section_02_source_test_anomaly_0002",
+   "seccion": "02",
+   "copiado": false
+  }
+ },
+ "bombas": {
+  "bomba-01": {
+   "seccion": "00",
+   "normal": [
+    "section_00_source_test_normal_0004",
+    "section_00_source_test_normal_0000",
+    "section_00_source_test_normal_0007",
+    "section_00_source_test_normal_0002"
+   ],
+   "falla": [
+    "section_00_source_test_anomaly_0004",
+    "section_00_source_test_anomaly_0002"
+   ],
+   "nuevo": [
+    "section_00_target_test_normal_0003",
+    "section_00_target_test_normal_0004",
+    "section_00_target_test_normal_0002"
+   ]
+  },
+  "bomba-02": {
+   "seccion": "01",
+   "normal": [
+    "section_01_source_test_normal_0002",
+    "section_01_source_test_normal_0000",
+    "section_01_source_test_normal_0007",
+    "section_01_source_test_normal_0001"
+   ],
+   "falla": [
+    "section_01_source_test_anomaly_0007",
+    "section_01_source_test_anomaly_0006",
+    "section_01_source_test_anomaly_0002",
+    "section_01_source_test_anomaly_0001"
+   ],
+   "nuevo": [
+    "section_01_target_test_normal_0000",
+    "section_01_target_test_normal_0001",
+    "section_01_target_test_normal_0005"
+   ]
+  },
+  "bomba-03": {
+   "seccion": "02",
+   "normal": [
+    "section_02_source_test_normal_0005",
+    "section_02_source_test_normal_0004",
+    "section_02_source_test_normal_0000",
+    "section_02_source_test_normal_0001",
+    "section_02_source_test_normal_0003"
+   ],
+   "falla": [
+    "section_02_source_test_anomaly_0001",
+    "section_02_source_test_anomaly_0003",
+    "section_02_source_test_anomaly_0006",
+    "section_02_source_test_anomaly_0005",
+    "section_02_source_test_anomaly_0000"
+   ],
+   "nuevo": [
+    "section_02_target_test_normal_0002",
+    "section_02_target_test_normal_0001",
+    "section_02_target_test_normal_0000",
+    "section_02_target_test_normal_0004",
+    "section_02_target_test_normal_0003"
+   ]
+  },
+  "bomba-04": {
+   "seccion": "00",
+   "normal": [
+    "section_00_source_test_normal_0005",
+    "section_00_source_test_normal_0003",
+    "section_00_source_test_normal_0006",
+    "section_00_source_test_normal_0001"
+   ],
+   "falla": [
+    "section_00_source_test_anomaly_0003",
+    "section_00_source_test_anomaly_0000"
+   ],
+   "nuevo": [
+    "section_00_target_test_normal_0000",
+    "section_00_target_test_normal_0005",
+    "section_00_target_test_normal_0001"
+   ]
+  },
+  "bomba-05": {
+   "seccion": "01",
+   "normal": [
+    "section_01_source_test_normal_0005",
+    "section_01_source_test_normal_0004",
+    "section_01_source_test_normal_0006",
+    "section_01_source_test_normal_0003"
+   ],
+   "falla": [
+    "section_01_source_test_anomaly_0000",
+    "section_01_source_test_anomaly_0004",
+    "section_01_source_test_anomaly_0005",
+    "section_01_source_test_anomaly_0003"
+   ],
+   "nuevo": [
+    "section_01_target_test_normal_0003",
+    "section_01_target_test_normal_0002",
+    "section_01_target_test_normal_0004"
+   ]
+  }
+ }
+}

@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MLOps a ciegas — Alejandro Varela</title>
+<style>
+/* ════════════════════════════════════════════════════════════════
+   MLOPS A CIEGAS · DevOpsDays Bogotá 2026
+   Presentación autocontenida — sin dependencias, funciona offline
+   ════════════════════════════════════════════════════════════════ */
+
+:root{
+  --ink:#07090d;
+  --paper:#f7f5f2;
+  --white:#fff;
+  --bone:#e8e4de;
+  --grey:#8a93a0;
+  --faint:#39414d;
+  --line:#1a212b;
+  --line-l:#ddd8d1;
+  --amber:#ff9f1c;
+  --signal:#2dd4bf;
+  --alarm:#ff5c4d;
+  --sans:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",system-ui,sans-serif;
+  --mono:"SF Mono","JetBrains Mono","Fira Code",Menlo,Consolas,monospace;
+  --ease:cubic-bezier(.16,1,.3,1);
+}
+
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#000}
+body{font-family:var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+
+/* ── Escenario ─────────────────────────────────────────────── */
+#stage{position:fixed;inset:0;display:grid;place-items:center;background:#000}
+#deck{position:relative;width:1280px;height:720px;transform-origin:center center}
+
+.slide{
+  position:absolute;inset:0;
+  padding:72px 88px;
+  background:var(--ink);color:var(--white);
+  display:flex;flex-direction:column;
+  opacity:0;pointer-events:none;
+  transition:opacity .45s var(--ease);
+}
+.slide.on{opacity:1;pointer-events:auto}
+.slide.light{background:var(--paper);color:var(--ink)}
+
+/* grano sutil */
+.slide::after{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.035;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='3'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ── Tipografía ────────────────────────────────────────────── */
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.22em;color:var(--amber);text-transform:uppercase}
+.light .eyebrow{color:#8a7a5e}
+
+.display{font-size:76px;font-weight:800;letter-spacing:-.035em;line-height:1.02}
+.h1{font-size:52px;font-weight:800;letter-spacing:-.025em;line-height:1.08}
+.h2{font-size:38px;font-weight:700;letter-spacing:-.015em;line-height:1.15}
+.h3{font-size:26px;font-weight:700;letter-spacing:-.01em;line-height:1.25}
+.body{font-size:19px;line-height:1.5;color:var(--grey)}
+.light .body{color:#6b6560}
+.mono{font-family:var(--mono);font-size:14px;letter-spacing:.02em}
+
+.dim{color:var(--faint)}    .light .dim{color:#b8b0a6}
+.mute{color:var(--grey)}    .light .mute{color:#8a8079}
+.amber{color:var(--amber)}
+.signal{color:var(--signal)}
+.alarm{color:var(--alarm)}
+
+/* reglas a sangre */
+.bleed{position:absolute;left:0;right:0;height:1px;background:var(--line)}
+.light .bleed{background:var(--line-l)}
+.bleed.acc{background:var(--amber);height:2px}
+.rule{height:1px;background:var(--line);width:100%}
+.light .rule{background:var(--line-l)}
+
+/* ── Animaciones de entrada ────────────────────────────────── */
+[data-anim]{opacity:0;transform:translateY(22px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.slide.on [data-anim]{opacity:1;transform:none}
+.slide.on [data-anim="1"]{transition-delay:.10s}
+.slide.on [data-anim="2"]{transition-delay:.20s}
+.slide.on [data-anim="3"]{transition-delay:.30s}
+.slide.on [data-anim="4"]{transition-delay:.40s}
+.slide.on [data-anim="5"]{transition-delay:.50s}
+.slide.on [data-anim="6"]{transition-delay:.60s}
+.slide.on [data-anim="7"]{transition-delay:.70s}
+.slide.on [data-anim="8"]{transition-delay:.80s}
+
+.grow{transform-origin:left center;transform:scaleX(0);transition:transform .9s var(--ease)}
+.slide.on .grow{transform:scaleX(1)}
+
+/* ── Filas editoriales ─────────────────────────────────────── */
+.row{display:flex;align-items:center;gap:28px;padding:18px 0;border-top:1px solid var(--line)}
+.light .row{border-top-color:var(--line-l)}
+.row:last-child{border-bottom:1px solid var(--line)}
+.light .row:last-child{border-bottom-color:var(--line-l)}
+.row .k{font-size:28px;font-weight:700;min-width:150px}
+.row .v{font-size:18px;color:var(--amber);flex:1}
+.row .n{font-family:var(--mono);font-size:12px;color:var(--grey);text-align:right}
+
+/* ── Pie de folio ──────────────────────────────────────────── */
+.folio{position:absolute;left:88px;right:88px;bottom:34px;display:flex;justify-content:space-between;
+  font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--faint)}
+.light .folio{color:#b8b0a6}
+
+/* ── Bloque de código ──────────────────────────────────────── */
+.code{background:#0c1117;border-left:3px solid var(--signal);padding:26px 32px;
+  font-family:var(--mono);font-size:16px;line-height:1.65;color:var(--signal);white-space:pre;overflow:hidden}
+
+/* ── Utilidades de layout ──────────────────────────────────── */
+.spread{display:flex;gap:56px;align-items:flex-start}
+.col{flex:1}
+.push{margin-top:auto}
+.stack>*+*{margin-top:14px}
+
+/* ── Chrome de navegación ──────────────────────────────────── */
+#bar{position:fixed;left:0;bottom:0;height:2px;background:var(--amber);width:0;
+  transition:width .45s var(--ease);z-index:50;box-shadow:0 0 12px rgba(255,159,28,.5)}
+#hint{position:fixed;right:18px;bottom:14px;font-family:var(--mono);font-size:10px;
+  color:#3a3a3a;z-index:50;letter-spacing:.1em;transition:opacity .4s}
+#hint.hide{opacity:0}
+
+/* ── Notas del orador ──────────────────────────────────────── */
+#notes{position:fixed;inset:auto 0 0 0;max-height:44vh;overflow:auto;
+  background:#0d0f14;border-top:2px solid var(--amber);padding:26px 40px;
+  transform:translateY(101%);transition:transform .35s var(--ease);z-index:60}
+#notes.on{transform:none}
+#notes h4{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--amber);margin-bottom:14px}
+#notes p{font-size:15px;line-height:1.65;color:#c9cdd4;max-width:1000px;white-space:pre-line}
+</style>
+</head>
+<body>
+
+<div id="stage"><div id="deck">
+
+<!-- ══════════ 01 · PORTADA ══════════ -->
+<section class="slide" data-notes="No hables. Dejá la portada cinco segundos mientras la sala se acomoda.">
+  <div class="bleed acc grow" style="top:200px"></div>
+  <div style="margin-top:150px">
+    <div class="display" data-anim="1">MLOPS</div>
+    <div class="display dim" data-anim="2">A CIEGAS</div>
+  </div>
+  <div class="bleed" style="top:466px"></div>
+  <div class="body" style="margin-top:32px;max-width:760px" data-anim="3">
+    Desplegar, observar y revertir modelos de IA que corren fuera de tu infraestructura
+  </div>
+  <div class="push spread" style="align-items:flex-end" data-anim="4">
+    <div class="mono dim" style="line-height:2">ALEJANDRO VARELA<br>LEAD PLATFORM ENGINEER · EPAM</div>
+    <div class="mono dim" style="line-height:2;text-align:right">DEVOPSDAYS BOGOTÁ<br>23 · 10 · 2026</div>
+  </div>
+</section>
+
+<!-- ══════════ 02 · DEDITOS ══════════ -->
+<section class="slide" data-notes="MECÁNICA — no la saltees.
+1. '¿Quién desbloqueó su teléfono con la cara hoy?' Esperá. Suben casi todas las manos.
+2. 'Déjenla arriba si además usaron un asistente de voz, pasaron un peaje con lectura de placa, o su reloj les contó los pasos.'
+3. 'Todos ustedes usaron un modelo de IA hoy. Y ninguno corrió en la nube.'
+PAUSA. Avanzás.">
+  <div class="eyebrow" data-anim="1">EMPECEMOS POR ALGO QUE TODOS HICIMOS HOY</div>
+  <div class="bleed" style="top:118px"></div>
+  <div style="margin-top:150px">
+    <div class="h1 mute" data-anim="2">¿Quién desbloqueó</div>
+    <div class="h1" data-anim="3" style="margin-top:8px">su teléfono con la cara?</div>
+  </div>
+  <div class="folio"><span>02 / 18</span><span>APERTURA</span></div>
+</section>
+
+<!-- ══════════ 03 · ESO ES EDGE AI ══════════ -->
+<section class="slide" data-notes="'Ese modelo no corrió en la nube. Corrió en el teléfono, en menos de 20 milisegundos, sin conexión, y tu cara nunca salió del dispositivo.'
+'Lo mismo con el asistente de voz, la placa del peaje y los pasos del reloj.'
+'Eso es edge AI. No es futuro ni nicho: es lo que ya usan todos los días.'
+Este slide construye el contexto. Sin él, el resto flota.">
+  <div class="eyebrow" data-anim="1">ESO ES EDGE AI</div>
+  <div class="bleed" style="top:118px"></div>
+  <div class="h2" style="margin-top:36px" data-anim="2">El modelo no corrió en la nube.</div>
+  <div style="margin-top:34px">
+    <div class="row" data-anim="3"><div class="k">Cara</div><div class="v">en el teléfono</div><div class="n">&lt; 20 ms · sin red · tu cara no viaja</div></div>
+    <div class="row" data-anim="4"><div class="k">Voz</div><div class="v">en el altavoz</div><div class="n">la palabra de activación nunca sube</div></div>
+    <div class="row" data-anim="5"><div class="k">Placa</div><div class="v">en la cámara del peaje</div><div class="n">decide antes de que pases</div></div>
+    <div class="row" data-anim="6"><div class="k">Pasos</div><div class="v">en el reloj</div><div class="n">sin batería para mandar todo</div></div>
+  </div>
+  <div class="folio"><span>03 / 18</span><span>CONTEXTO</span></div>
+</section>
+
+<!-- ══════════ 04 · ESCALA ══════════ -->
+<section class="slide light" data-notes="'Y no es un nicho.'
+'Mil seiscientos millones de chips de IA en el borde se despachan este año. El 97% de los CIOs en EE.UU. lo tienen en su hoja de ruta.'
+'O sea: dentro de poco a alguno de ustedes le va a tocar operar uno de estos.'
+Fuentes: ABI Research, Grand View, encuestas CIO 2025-26.">
+  <div class="eyebrow" data-anim="1">Y NO ES UN NICHO</div>
+  <div class="bleed" style="top:118px"></div>
+  <div class="spread" style="margin-top:60px;align-items:center">
+    <div style="font-size:140px;font-weight:800;letter-spacing:-.05em;line-height:1" data-anim="2">
+      <span class="count" data-to="1600" data-fmt="es">0</span>
+    </div>
+    <div style="padding-top:18px" data-anim="3">
+      <div class="h3 amber" style="letter-spacing:.04em">MILLONES</div>
+      <div class="body" style="margin-top:10px">de chips de IA en el borde<br>despachados este año</div>
+    </div>
+  </div>
+  <div class="rule" style="margin-top:56px"></div>
+  <div class="spread" style="margin-top:28px">
+    <div class="col" data-anim="4"><div class="h3">US$ 30–37 B</div><div class="body" style="font-size:15px;margin-top:6px">mercado edge AI 2026</div></div>
+    <div class="col" data-anim="5"><div class="h3">97 %</div><div class="body" style="font-size:15px;margin-top:6px">de CIOs con edge AI en su roadmap</div></div>
+    <div class="col" data-anim="6"><div class="h3">21,7 %</div><div class="body" style="font-size:15px;margin-top:6px">CAGR proyectado a 2033</div></div>
+  </div>
+  <div class="folio"><span>04 / 18</span><span>ABI RESEARCH · GRAND VIEW · CIO 2025-26</span></div>
+</section>
+
+<!-- ══════════ 05 · EL GIRO ══════════ -->
+<section class="slide" data-notes="'Ahora la pregunta incómoda.'
+'Ese modelo que te desbloquea el teléfono. ¿Cómo sabés que sigue funcionando bien?'
+PAUSA.
+'No hablo de si el teléfono prende. Hablo del modelo. ¿Cómo sabrías que hoy acierta menos que hace seis meses?'
+Dejá que la incomodidad se instale. Nadie tiene respuesta.">
+  <div style="margin-top:190px">
+    <div class="h1" data-anim="1">¿Cómo sabés</div>
+    <div class="h1 amber" data-anim="2" style="margin-top:8px">que sigue funcionando?</div>
+  </div>
+  <div class="bleed" style="top:492px"></div>
+  <div class="mono mute" style="margin-top:28px" data-anim="3">no el dispositivo — el modelo</div>
+  <div class="folio"><span>05 / 18</span><span>EL GIRO</span></div>
+</section>
+
+<!-- ══════════ 06 · LA ASIMETRÍA ══════════ -->
+<section class="slide" data-notes="'Para un servicio esta pregunta está resuelta hace cuarenta años. Healthcheck, alerta, SLO, pager.'
+'Para un modelo no hay nada de eso. Un modelo que se equivoca devuelve 200 OK, con latencia normal, y el dashboard queda en verde.'
+'Un servicio caído grita. Un modelo roto susurra.'">
+  <div class="eyebrow" data-anim="1">LA ASIMETRÍA</div>
+  <div class="bleed" style="top:118px"></div>
+  <div class="spread" style="margin-top:38px">
+    <div class="col" data-anim="2">
+      <div class="mono signal" style="letter-spacing:.2em;margin-bottom:18px">SERVICIO CAÍDO</div>
+      <div class="row" style="padding:14px 0"><div style="font-size:19px">healthcheck falla</div></div>
+      <div class="row" style="padding:14px 0"><div style="font-size:19px">excepción en el log</div></div>
+      <div class="row" style="padding:14px 0"><div style="font-size:19px">SLO quemado</div></div>
+      <div class="row" style="padding:14px 0"><div style="font-size:19px">pager a las 3 a.m.</div></div>
+    </div>
+    <div style="width:1px;background:var(--line);align-self:stretch"></div>
+    <div class="col" data-anim="4">
+      <div class="mono alarm" style="letter-spacing:.2em;margin-bottom:18px">MODELO EQUIVOCADO</div>
+      <div class="row" style="padding:14px 0"><div class="mono dim" style="font-size:19px">200 OK</div></div>
+      <div class="row" style="padding:14px 0"><div class="mono dim" style="font-size:19px">sin excepción</div></div>
+      <div class="row" style="padding:14px 0"><div class="mono dim" style="font-size:19px">latencia normal</div></div>
+      <div class="row" style="padding:14px 0"><div class="mono dim" style="font-size:19px">dashboard en verde</div></div>
+    </div>
+  </div>
+  <div class="h3 push" data-anim="6">Un servicio caído grita. &nbsp;Un modelo roto susurra.</div>
+  <div class="folio"><span>06 / 18</span><span>EL PROBLEMA</span></div>
+</section>
+
+<!-- ══════════ 07 · TRES SUPUESTOS ══════════ -->
+<section class="slide" data-notes="'Todo lo que llamamos MLOps asume tres cosas que en el borde no se cumplen.'
+Una por una, con pausa:
+1. El dispositivo no es tuyo — es del cliente, del usuario, de la planta.
+2. Los datos no salen del sitio — por costo, ancho de banda o ley.
+3. No hay cluster, ni SSH, ni ventana de mantenimiento.">
+  <div class="eyebrow" data-anim="1">MLOPS ASUME</div>
+  <div class="bleed" style="top:118px"></div>
+  <div style="margin-top:34px">
+    <div class="row" style="padding:22px 0" data-anim="2">
+      <div class="mono dim" style="font-size:30px;min-width:70px">01</div>
+      <div class="col"><div style="font-size:25px;font-weight:700;text-decoration:line-through" class="dim">El modelo corre en tu infraestructura</div>
+      <div class="alarm" style="font-size:15px;margin-top:6px">el dispositivo no es tuyo</div></div>
+    </div>
+    <div class="row" style="padding:22px 0" data-anim="3">
+      <div class="mono dim" style="font-size:30px;min-width:70px">02</div>
+      <div class="col"><div style="font-size:25px;font-weight:700;text-decoration:line-through" class="dim">Podés ver los datos que entran</div>
+      <div class="alarm" style="font-size:15px;margin-top:6px">no salen del sitio</div></div>
+    </div>
+    <div class="row" style="padding:22px 0" data-anim="4">
+      <div class="mono dim" style="font-size:30px;min-width:70px">03</div>
+      <div class="col"><div style="font-size:25px;font-weight:700;text-decoration:line-through" class="dim">Si algo falla: kubectl rollout undo</div>
+      <div class="alarm" style="font-size:15px;margin-top:6px">no hay cluster ni SSH</div></div>
+    </div>
+  </div>
+  <div class="h3 amber push" data-anim="6">En el borde no se cumple ninguna.</div>
+  <div class="folio"><span>07 / 18</span><span>EL PROBLEMA</span></div>
+</section>
+
+<!-- ══════════ 08 · ACTO 1 ══════════ -->
+<section class="slide light" data-notes="ACTO 1 — desplegar.
+'La flota es heterogénea: cada dispositivo tiene un acelerador distinto. La respuesta es ONNX como frontera: se exporta una vez, se compila por destino.'
+'Es deliberado: el hardware de IA se mueve demasiado rápido para amarrar una arquitectura a un proveedor. Esa decisión se paga en dieciocho meses.'">
+  <div class="spread" style="align-items:baseline" data-anim="1">
+    <div style="font-size:56px;font-weight:800;color:#e0dad2">01</div>
+    <div class="eyebrow" style="flex:1">DESPLEGAR</div>
+  </div>
+  <div class="bleed" style="top:150px"></div>
+  <div class="spread" style="margin-top:52px">
+    <div class="col">
+      <div class="h2" data-anim="2">Se exporta una vez.<br>Se compila por destino.</div>
+      <div class="body" style="margin-top:26px;font-size:16px" data-anim="3">
+        El hardware de IA se mueve demasiado rápido<br>para amarrar una arquitectura a un proveedor.
+      </div>
+    </div>
+    <div class="col" style="max-width:440px">
+      <div style="background:var(--ink);padding:18px 0;text-align:center" data-anim="3">
+        <span class="mono amber" style="font-size:22px;letter-spacing:.3em;font-weight:700">ONNX</span>
+      </div>
+      <div class="row" data-anim="4"><div class="mono col" style="font-size:16px;color:var(--ink)">TensorRT</div><div class="n">NVIDIA</div></div>
+      <div class="row" data-anim="5"><div class="mono col" style="font-size:16px;color:var(--ink)">OpenVINO</div><div class="n">Intel · CPU</div></div>
+      <div class="row" data-anim="6"><div class="mono col" style="font-size:16px;color:var(--ink)">Core ML</div><div class="n">iOS</div></div>
+      <div class="row" data-anim="7"><div class="mono col" style="font-size:16px;color:var(--ink)">NNAPI</div><div class="n">Android</div></div>
+    </div>
+  </div>
+  <div class="folio"><span>08 / 18</span><span>ACTO 1 · DESPLEGAR</span></div>
+</section>
+
+<!-- ══════════ 09 · FIRMA ══════════ -->
+<section class="slide" data-notes="Paréntesis de seguridad, una frase:
+'El modelo es un artefacto ejecutable. Si el dispositivo carga pesos sin verificar firma, le diste a cualquiera un camino de ejecución en toda tu flota.'
+'sha256 en un manifiesto firmado. Una tarde de trabajo.'">
+  <div style="margin-top:200px">
+    <div class="h1 mute" data-anim="1">Un modelo sin firmar</div>
+    <div class="h1 alarm" data-anim="2" style="margin-top:8px">es un binario sin firmar.</div>
+  </div>
+  <div class="bleed" style="top:498px"></div>
+  <div class="mono signal" style="margin-top:28px;font-size:15px" data-anim="3">sha256 + manifiesto firmado — una tarde de trabajo</div>
+  <div class="folio"><span>09 / 18</span><span>ACTO 1 · DESPLEGAR</span></div>
+</section>
+
+<!-- ══════════ 10 · ACTO 2 ══════════ -->
+<section class="slide light" data-notes="ACTO 2 — observar. La idea central.
+'No podés mirar las entradas. Entonces: que el modelo DECLARE lo que hizo.'
+'Cada inferencia emite un evento: qué modelo, qué versión, hash de los pesos, qué predijo, con qué certeza, en cuánto tiempo.'
+'En IIoT ya existe el estándar para telemetría de sensores: Sparkplug B, de la Eclipse Foundation. Pero un tag con un valor no modela esto. HiveMQ publicó ese diagnóstico.'
+Si preguntan dónde encaja: hay una taxonomía de cinco capas para observabilidad de IA. Esta es la del medio.">
+  <div class="spread" style="align-items:baseline" data-anim="1">
+    <div style="font-size:56px;font-weight:800;color:#e0dad2">02</div>
+    <div class="eyebrow" style="flex:1">OBSERVAR</div>
+  </div>
+  <div class="bleed" style="top:150px"></div>
+  <div class="h2" style="margin-top:38px" data-anim="2">Hacé que el modelo declare.</div>
+  <div class="spread" style="margin-top:30px;gap:44px">
+    <div class="col">
+      <div class="row" data-anim="3"><div class="mono col" style="font-size:17px;color:var(--ink)">model_id</div><div class="n">qué modelo</div></div>
+      <div class="row" data-anim="4"><div class="mono col" style="font-size:17px;color:var(--ink)">version + digest</div><div class="n">cuál exactamente</div></div>
+      <div class="row" data-anim="5"><div class="mono col" style="font-size:17px;color:var(--ink)">label</div><div class="n">qué predijo</div></div>
+    </div>
+    <div class="col">
+      <div class="row" data-anim="4"><div class="mono col" style="font-size:17px;color:var(--ink)">confidence</div><div class="n">con qué certeza</div></div>
+      <div class="row" data-anim="5"><div class="mono col" style="font-size:17px;color:var(--ink)">latency_ms</div><div class="n">en cuánto tiempo</div></div>
+      <div class="row" data-anim="6"><div class="mono col" style="font-size:17px;color:var(--ink)">correlation_id</div><div class="n">aparea versiones</div></div>
+    </div>
+  </div>
+  <div class="h3 push" style="color:#8a6a20;font-size:21px" data-anim="8">Sparkplug B ya estandarizó el tag del sensor. Esto — todavía nadie.</div>
+  <div class="folio"><span>10 / 18</span><span>ACTO 2 · OBSERVAR</span></div>
+</section>
+
+<!-- ══════════ 11 · LA TRAMPA (gráfico animado) ══════════ -->
+<section class="slide" id="s-trap" data-notes="EL MEJOR SLIDE DE LA CHARLA. Contalo como una confesión.
+'Mi primer diseño disparaba la reversa cuando bajaba la confianza. Parece obvio.'
+'Y está mal.'
+'La literatura de calibración dice que bajo drift los modelos se vuelven MÁS sobreconfiados, no menos. La exactitud cae y la confianza sube.'
+'Mi trigger se apagaba justo cuando más lo necesitaba.'
+Referencias: Guo et al. 2017 y trabajo reciente sobre distribution shift.">
+  <div class="eyebrow alarm" data-anim="1">LO QUE APRENDÍ ROMPIÉNDOLO</div>
+  <div class="bleed" style="top:118px"></div>
+  <div class="h2" style="margin-top:32px" data-anim="2">La confianza es una trampa.</div>
+  <div class="spread" style="margin-top:26px;gap:52px">
+    <div class="col" data-anim="3">
+      <svg viewBox="0 0 620 300" style="width:100%;height:auto">
+        <line x1="30" y1="270" x2="600" y2="270" stroke="#1a212b" stroke-width="1.5"/>
+        <line x1="30" y1="20"  x2="30"  y2="270" stroke="#1a212b" stroke-width="1.5"/>
+        <polyline class="ln" id="ln-conf" fill="none" stroke="#2dd4bf" stroke-width="4" stroke-dasharray="10 8"
+          points="60,80 150,72 240,58 330,44 420,36 510,24 585,18"/>
+        <polyline class="ln" id="ln-acc" fill="none" stroke="#ff5c4d" stroke-width="4"
+          points="60,96 150,110 240,142 330,182 420,218 510,246 585,262"/>
+        <text x="585" y="8"   fill="#2dd4bf" font-family="monospace" font-size="13" text-anchor="end">confianza reportada</text>
+        <text x="585" y="284" fill="#ff5c4d" font-family="monospace" font-size="13" text-anchor="end">exactitud real</text>
+      </svg>
+      <div class="mono dim" style="margin-top:8px">→ deriva de la distribución de entrada</div>
+    </div>
+    <div style="width:340px">
+      <div class="h3" data-anim="5">Bajo drift, los modelos se vuelven <span class="amber">MÁS</span> sobreconfiados.</div>
+      <div class="body" style="font-size:16px;margin-top:20px" data-anim="6">Mi trigger de reversa se apagaba justo cuando más lo necesitaba.</div>
+      <div class="mono dim" style="margin-top:26px;line-height:1.8" data-anim="7">Guo et al. 2017<br>+ literatura de shift</div>
+    </div>
+  </div>
+  <div class="folio"><span>11 / 18</span><span>ACTO 2 · OBSERVAR</span></div>
+</section>
+
+<!-- ══════════ 12 · LA CONSULTA ══════════ -->
+<section class="slide" data-notes="'La señal correcta no es cuán seguro está el modelo. Es cuánto DIFIERE de la versión anterior sobre el mismo input.'
+'Y eso ya lo tengo: el despliegue en sombra hace correr las dos versiones en paralelo. El correlation_id las aparea.'
+'No requiere etiquetas. No depende de calibración. Es una consulta agregada sobre el stream.'
+Dejá el slide diez segundos en silencio. Es el único código de la charla.">
+  <div class="eyebrow signal" data-anim="1">LA SEÑAL CORRECTA</div>
+  <div class="bleed" style="top:118px"></div>
+  <div class="h2" style="margin-top:32px" data-anim="2">Desacuerdo, no confianza.</div>
+  <div class="code" style="margin-top:32px" data-anim="3">SELECT  SUM(CASE WHEN champ &lt;&gt; chall THEN 1 ELSE 0 END) * 1.0
+          / COUNT(*)                    AS tasa_desacuerdo,
+        COUNT(*)                        AS n
+FROM    pares_por_correlation_id
+WHERE   time &gt; ago(2m);</div>
+  <div class="body push" data-anim="5">Sin etiquetas. &nbsp;Sin depender de calibración. &nbsp;Sin sistema de monitoreo aparte.</div>
+  <div class="folio"><span>12 / 18</span><span>ACTO 2 · OBSERVAR</span></div>
+</section>
+
+<!-- ══════════ 13 · ACTO 3 ══════════ -->
+<section class="slide light" data-notes="ACTO 3 — revertir. Con esa consulta como métrica, el ciclo completo:
+Validación offline contra el campeón → sombra (ambos corren, solo el campeón actúa) → canario por segmento → y si el desacuerdo sube sostenido, reversa AUTOMÁTICA.
+'El agente en el dispositivo hace pull, no push. Por eso funciona con conectividad intermitente. Nadie hace SSH a nada.'">
+  <div class="spread" style="align-items:baseline" data-anim="1">
+    <div style="font-size:56px;font-weight:800;color:#e0dad2">03</div>
+    <div class="eyebrow" style="flex:1">REVERTIR</div>
+  </div>
+  <div class="bleed" style="top:150px"></div>
+  <div style="margin-top:42px">
+    <div class="row" data-anim="2"><div class="mono" style="font-size:20px;min-width:44px;color:#c4bdb4">1</div>
+      <div class="k" style="font-size:21px;color:#6b6560">VALIDACIÓN</div><div class="n" style="flex:1">candidato vs campeón, con datos del sitio</div></div>
+    <div class="row" data-anim="3"><div class="mono" style="font-size:20px;min-width:44px;color:#c4bdb4">2</div>
+      <div class="k" style="font-size:21px;color:#6b6560">SOMBRA</div><div class="n" style="flex:1">ambos corren · solo el campeón actúa</div></div>
+    <div class="row" data-anim="4"><div class="mono" style="font-size:20px;min-width:44px;color:#c4bdb4">3</div>
+      <div class="k" style="font-size:21px;color:#6b6560">CANARIO</div><div class="n" style="flex:1">un segmento, después la flota</div></div>
+    <div class="row" data-anim="5" style="border-top-color:var(--amber);border-bottom-color:var(--amber)">
+      <div class="mono amber" style="font-size:20px;min-width:44px">4</div>
+      <div class="k" style="font-size:21px">REVERSA</div><div class="n" style="flex:1">automática, disparada por desacuerdo</div></div>
+  </div>
+  <div class="h2 push" data-anim="7">Sin tocar un solo dispositivo.</div>
+  <div class="folio"><span>13 / 18</span><span>ACTO 3 · REVERTIR</span></div>
+</section>
+
+<!-- ══════════ 14 · LA POC ══════════ -->
+<section class="slide" data-notes="La historia de la PoC:
+'Tomé el mismo modelo y le apliqué cuantización post-entrenamiento a cuatro bits, para que entrara en la Raspberry. Es lo que cualquiera haría.'
+'Pasó TODOS los tests offline.'
+'Lo desplegué a tres dispositivos: una Pi, mi laptop y mi teléfono. Tres aceleradores, el mismo ONNX.'
+'Y en producción hizo esto.'
+REEMPLAZÁ el XX con tu número medido.">
+  <div class="eyebrow" data-anim="1">LA PRUEBA</div>
+  <div class="bleed" style="top:118px"></div>
+  <div class="h3 mute" style="margin-top:34px;font-weight:400;line-height:1.45" data-anim="2">
+    PTQ a 4 bits para que entrara en la Pi.<br>Pasó todos los tests offline.
+  </div>
+  <div class="spread" style="margin-top:24px;align-items:center">
+    <div class="amber" style="font-size:165px;font-weight:800;letter-spacing:-.06em;line-height:1" data-anim="3">XX</div>
+    <div style="padding-top:20px" data-anim="4">
+      <div class="mono" style="font-size:19px;letter-spacing:.28em;color:#fff">SEGUNDOS</div>
+      <div class="body" style="margin-top:12px;font-size:17px">de la degradación a la reversa completa,<br>sin intervención humana</div>
+    </div>
+  </div>
+  <div class="bleed" style="top:600px"></div>
+  <div class="mono dim push" style="letter-spacing:.16em" data-anim="6">RASPBERRY PI 5 &nbsp;·&nbsp; LAPTOP &nbsp;·&nbsp; TELÉFONO &nbsp;·&nbsp; EL MISMO ONNX</div>
+  <div class="folio"><span>14 / 18</span><span>ACTO 3 · REVERTIR</span></div>
+</section>
+
+<!-- ══════════ 15 · LO QUE NADIE MIDE ══════════ -->
+<section class="slide light" data-notes="'MLPerf tiene una suite para edge y está muy bien: mide throughput y latencia de inferencia.'
+'Pero fijate lo que nadie mide: cuánto tarda una flota en converger. Cuánto tarda una reversa. Cuánto pesa un evento.'
+'Son las métricas de OPERAR el modelo, no de correrlo. Por eso las medí yo.'
+REEMPLAZÁ los XX.">
+  <div class="eyebrow" data-anim="1">LO QUE NADIE MIDE</div>
+  <div class="bleed" style="top:118px"></div>
+  <div class="h2" style="margin-top:32px" data-anim="2">MLPerf mide qué tan rápido infiere.<br>Nadie mide qué tan rápido se recupera.</div>
+  <div style="margin-top:36px">
+    <div class="row" data-anim="3"><div class="k">XX s</div><div class="n" style="flex:1">reversa completa</div></div>
+    <div class="row" data-anim="4"><div class="k">XX ms</div><div class="n" style="flex:1">latencia p99 · 3 aceleradores</div></div>
+    <div class="row" data-anim="5"><div class="k">XX B</div><div class="n" style="flex:1">peso del evento</div></div>
+    <div class="row" data-anim="6"><div class="k">XX s</div><div class="n" style="flex:1">convergencia tras reconexión</div></div>
+  </div>
+  <div class="folio"><span>15 / 18</span><span>MEDICIÓN</span></div>
+</section>
+
+<!-- ══════════ 16 · LO QUE NO INVENTÉ ══════════ -->
+<section class="slide" data-notes="El bloque de honestidad. En DevOpsDays esto vale oro.
+'No inventé casi nada. La ingesta la resolvió Litmus con 250 drivers. La telemetría la estandarizó Sparkplug B, de la Eclipse Foundation. Red Hat trabaja en despliegue a edge con FlightCtl. Hay 136 estudios sobre monitoreo de ML.'
+'Lo único que no existe es el formato común de lo que un modelo declara sobre sí mismo.'">
+  <div class="eyebrow signal" data-anim="1">LO QUE NO INVENTÉ</div>
+  <div class="bleed" style="top:118px"></div>
+  <div style="margin-top:34px">
+    <div class="row" data-anim="2"><div class="k dim" style="font-weight:400;flex:1;min-width:0">Ingesta multiprotocolo</div><div class="mono dim">Litmus · HighByte</div></div>
+    <div class="row" data-anim="3"><div class="k dim" style="font-weight:400;flex:1;min-width:0">Telemetría estándar</div><div class="mono dim">Sparkplug B · Eclipse</div></div>
+    <div class="row" data-anim="4"><div class="k dim" style="font-weight:400;flex:1;min-width:0">Gestión de flota</div><div class="mono dim">ZEDEDA · Balena · FlightCtl</div></div>
+    <div class="row" data-anim="5"><div class="k dim" style="font-weight:400;flex:1;min-width:0">Monitoreo de ML</div><div class="mono dim">136 estudios · surveys 25-26</div></div>
+    <div class="row" data-anim="6" style="border-top-color:var(--amber);border-bottom-color:var(--amber)">
+      <div class="k" style="flex:1;min-width:0">El evento de inferencia</div><div class="mono amber">nadie</div></div>
+  </div>
+  <div class="h3 push" data-anim="8">Reutilizá lo resuelto. Construí solo el hueco.</div>
+  <div class="folio"><span>16 / 18</span><span>HONESTIDAD</span></div>
+</section>
+
+<!-- ══════════ 17 · CIERRE ══════════ -->
+<section class="slide" data-notes="El cierre. Despacio, con pausas de verdad.
+'Los servicios caídos gritan.' PAUSA.
+'Los modelos rotos susurran. Y en el borde, susurran en un dispositivo que no es tuyo, con datos que no podés ver.' PAUSA.
+'Dales un idioma para declarar lo que hacen — y la reversa se vuelve una consulta.'
+Punto.">
+  <div style="margin-top:200px">
+    <div class="h1 dim" data-anim="1">Los servicios caídos gritan.</div>
+    <div class="h1" data-anim="3" style="margin-top:10px">Los modelos rotos susurran.</div>
+  </div>
+  <div class="bleed acc grow" style="top:510px"></div>
+  <div class="h3 amber" style="margin-top:30px" data-anim="5">Dales un idioma.</div>
+</section>
+
+<!-- ══════════ 18 · REPO ══════════ -->
+<section class="slide light" data-notes="Dejá este slide durante TODA la ronda de preguntas.
+El QR va al repo: esquema de eventos, agente, controlador y un docker compose que reproduce la demo sin hardware.
+ANTES de publicar: confirmá con tu manager qué se puede abrir.">
+  <div class="spread" style="margin-top:110px;align-items:flex-start">
+    <div class="col">
+      <div class="h2" data-anim="1">El esquema, el patrón<br>y el código</div>
+      <div class="rule" style="margin-top:34px;background:var(--ink)"></div>
+      <div class="mono" style="margin-top:18px;font-size:15px;color:#6b6560" data-anim="2">github.com/[usuario]/mlops-a-ciegas</div>
+    </div>
+    <div style="width:210px;height:210px;background:var(--ink);display:grid;place-items:center" data-anim="3">
+      <span class="mono" style="color:var(--paper);font-size:20px;letter-spacing:.3em;font-weight:700">QR</span>
+    </div>
+  </div>
+  <div class="mono push" style="letter-spacing:.18em;color:#8a8079;font-size:11px" data-anim="5">
+    ALEJANDRO VARELA &nbsp;·&nbsp; @[handle] &nbsp;·&nbsp; GRACIAS
+  </div>
+</section>
+
+</div></div>
+
+<div id="bar"></div>
+<div id="hint">← → NAVEGAR · N NOTAS · F PANTALLA COMPLETA</div>
+<div id="notes"><h4>NOTAS DEL ORADOR</h4><p></p></div>
+
+<script>
+(function(){
+  const deck   = document.getElementById('deck');
+  const slides = [...document.querySelectorAll('.slide')];
+  const bar    = document.getElementById('bar');
+  const notes  = document.getElementById('notes');
+  const hint   = document.getElementById('hint');
+  let i = 0, notesOn = false;
+
+  /* Escalado responsivo del lienzo 1280×720 */
+  function fit(){
+    const s = Math.min(innerWidth/1280, innerHeight/720);
+    deck.style.transform = `scale(${s})`;
+  }
+  addEventListener('resize', fit); fit();
+
+  /* Contadores animados */
+  function runCounters(el){
+    el.querySelectorAll('.count').forEach(c=>{
+      const to = +c.dataset.to; const dur = 1100; const t0 = performance.now();
+      (function step(t){
+        const p = Math.min((t-t0)/dur, 1);
+        const e = 1 - Math.pow(1-p, 3);
+        const v = Math.round(to*e);
+        c.textContent = c.dataset.fmt==='es' ? v.toLocaleString('es-ES') : v;
+        if(p<1) requestAnimationFrame(step);
+      })(t0);
+    });
+  }
+
+  /* Dibujado de líneas del gráfico */
+  function runChart(el){
+    el.querySelectorAll('.ln').forEach((ln,k)=>{
+      const len = ln.getTotalLength();
+      const dashed = ln.getAttribute('stroke-dasharray') === '10 8';
+      ln.style.transition='none';
+      ln.style.strokeDasharray = len; ln.style.strokeDashoffset = len;
+      requestAnimationFrame(()=>{
+        ln.style.transition = `stroke-dashoffset 1.5s cubic-bezier(.16,1,.3,1) ${.35+k*.25}s`;
+        ln.style.strokeDashoffset = 0;
+        if(dashed) setTimeout(()=>{ ln.style.strokeDasharray='10 8'; }, 1900+k*250);
+      });
+    });
+  }
+
+  function show(n){
+    i = Math.max(0, Math.min(slides.length-1, n));
+    slides.forEach((s,k)=> s.classList.toggle('on', k===i));
+    bar.style.width = ((i+1)/slides.length*100) + '%';
+    notes.querySelector('p').textContent = slides[i].dataset.notes || '—';
+    runCounters(slides[i]);
+    if(slides[i].id === 's-trap') runChart(slides[i]);
+    if(i>0) hint.classList.add('hide');
+  }
+
+  addEventListener('keydown', e=>{
+    if(['ArrowRight','ArrowDown',' ','PageDown','Enter'].includes(e.key)){ e.preventDefault(); show(i+1); }
+    else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){ e.preventDefault(); show(i-1); }
+    else if(e.key==='Home'){ show(0); }
+    else if(e.key==='End'){ show(slides.length-1); }
+    else if(e.key.toLowerCase()==='n'){ notesOn=!notesOn; notes.classList.toggle('on', notesOn); }
+    else if(e.key.toLowerCase()==='f'){
+      document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen();
+    }
+  });
+
+  /* Avance por clic / toque */
+  addEventListener('click', e=>{ if(!notes.contains(e.target)) show(e.clientX < innerWidth*.25 ? i-1 : i+1); });
+
+  show(0);
+})();
+</script>
+</body>
+</html>

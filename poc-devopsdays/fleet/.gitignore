@@ -1,0 +1,3 @@
+# logs del nucleus de cada bomba y credenciales temporales del primer arranque
+logs/
+.bootstrap/

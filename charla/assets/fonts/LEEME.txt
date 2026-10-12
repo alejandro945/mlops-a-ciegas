@@ -1,0 +1,3 @@
+Carlito (c) tyPoland Lukasz Dziedzic, SIL Open Font License 1.1.
+Subconjunto latino embebido en devopsdays.html para que el deck se vea igual sin Calibri instalado.
+Carlito tiene las mismas medidas que Calibri, la letra de la plantilla oficial.
