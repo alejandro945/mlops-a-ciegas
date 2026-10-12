@@ -25,9 +25,8 @@
        "yAxis": {"left": {"min": 0}},
        "metrics": [["__NS__", "LatencyMs", {"label": "promedio"}], ["__NS__", "LatencyMs", {"stat": "p99", "label": "p99"}]]}},
     {"type": "metric", "x": 12, "y": 14, "width": 12, "height": 6,
-     "properties": {"title": "Fallas que nadie oyó · lo que dispara la vuelta", "region": "__REGION__", "view": "timeSeries", "stacked": false, "stat": "Sum", "period": 60,
+     "properties": {"title": "Fallas que nadie oyó · lo que dispara la vuelta", "region": "__REGION__", "view": "timeSeries", "stacked": false,
        "yAxis": {"left": {"min": 0}},
-       "annotations": {"alarms": ["arn:aws:cloudwatch:__REGION__:__ACCOUNT__:alarm:estacion-fallas-no-oidas"]},
-       "metrics": [["__NS__", "FallasNoOidas", {"label": "fallas no oídas por minuto", "color": "#D13212"}]]}}
+       "annotations": {"alarms": ["arn:aws:cloudwatch:__REGION__:__ACCOUNT__:alarm:estacion-fallas-no-oidas"]}}}
   ]
 }

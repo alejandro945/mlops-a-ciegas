@@ -258,6 +258,13 @@ class Dashboard(unittest.TestCase):
         usadas = set()
         for w in d["widgets"]:
             self.assertEqual(w["properties"]["region"], "__REGION__")
+            if "alarms" in w["properties"].get("annotations", {}):
+                # CloudWatch rechaza un widget de alarma con "metrics": la serie sale de la alarma
+                self.assertNotIn("metrics", w["properties"])
+                self.assertEqual(w["properties"]["annotations"]["alarms"],
+                                 ["arn:aws:cloudwatch:__REGION__:__ACCOUNT__:alarm:estacion-fallas-no-oidas"])
+                usadas.add("FallasNoOidas")
+                continue
             for fila in w["properties"]["metrics"]:
                 if fila[0] != "...":
                     self.assertEqual(fila[0], "__NS__")
