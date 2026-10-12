@@ -59,7 +59,7 @@ if [ "$SINTETICO" = "1" ] && [ "$PERMITIR_SINTETICO" != "1" ]; then
 fi
 [ "$SINTETICO" = "1" ] && echo "aviso: modelo sintético (--allow-synthetic). Ninguna cifra de esta corrida va a una lámina."
 
-aws s3api head-bucket --bucket "$BUCKET" 2>/dev/null || { echo "no existe s3://$BUCKET: corre ./cloud/setup.sh"; exit 1; }
+aws s3api head-bucket --bucket "$BUCKET" >/dev/null 2>&1 || { echo "no existe s3://$BUCKET: corre ./cloud/setup.sh"; exit 1; }
 
 ARN="arn:aws:greengrass:$REGION:$ACCOUNT:components:$COMPONENT:versions:$V"
 if aws greengrassv2 describe-component --arn "$ARN" >/dev/null 2>&1; then

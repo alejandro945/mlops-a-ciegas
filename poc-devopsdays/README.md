@@ -244,7 +244,23 @@ La vuelta tarda varios minutos (el filtro de métrica, la alarma, la Lambda y el
 
 ## Qué verifiqué y qué no
 
-**Verificado aquí** (un sandbox Linux sin Docker y sin credenciales de AWS):
+**Primer ensayo de punta a punta (12 de octubre de 2026, us-east-1, EC2 t3.large, audio real de MIMII DUE).** Los tres actos funcionaron con Terraform, `IDENTIDAD=terraform` y las cinco bombas en Docker:
+
+| Paso | Medido |
+|---|---|
+| `fleet/build.sh` · `up.sh` (cinco bombas instaladas) | menos de 1 min · 40 s; *Healthy* en un par de minutos |
+| `deploy.sh 1.0.0 todas` → primer evento · las cinco reportando | 7 s · unos 100 s |
+| Acto 1: `falla.sh bomba-03` → ALERTA | el clip siguiente (1 s). Scores de 0,35 a 0,42 contra un umbral de 0,34: poco margen, pero son siempre los mismos clips |
+| Acto 2: 45 s sin red → llegan los eventos guardados | 5 s tras `red.sh on`; hasta «llegó 50 s tarde»; `seq` sin huecos y **5 duplicados** (QoS 1 es «al menos una vez») |
+| Acto 2: `dominio.sh bomba-05 nuevo` | la entrada pasa de ~0,9 a 1,6–2,2 desde el primer clip. Ojo: también salen **alertas falsas** en 3 de cada 5 clips |
+| Acto 3: `deploy.sh 2.0.0 anillo-0` → la bomba-01 en v2 | 15 s; ninguna bomba del anillo 1 reportó v2 |
+| Acto 3: `falla.sh bomba-01` → alarma → Lambda → la 1 en v1 con ALERTA | **99 s**: alarma a los 91 s, despliegue de la Lambda a los 92 s, primer evento en v1 a los 99 s. La v2 no oye 3 de cada 5 clips (unas 12 por minuto contra el umbral de 8) |
+| Estado del despliegue de la vuelta en `list-deployments` | `ACTIVE` (no `COMPLETED`) |
+| Memoria | ~220 MiB por bomba; 1,4 GiB en uso de 7,8: una t3.medium alcanza |
+
+Dos arreglos salieron del ensayo: el `--init-config` del entrypoint necesita la extensión `.yaml` (el nucleus decide el formato por la extensión), y `up.sh` ahora limpia la carpeta de identidad que Docker recrea como root si un intento anterior quedó reiniciándose. El widget de alarma del dashboard no puede llevar `metrics` (CloudWatch lo rechaza).
+
+**Antes del ensayo**, en un sandbox Linux sin Docker y sin credenciales de AWS:
 
 - `bash -n` de todos los scripts; todos fallan al primer error (`set -euo pipefail`).
 - La receta parsea como YAML y su `Run` es el del plan; además, **ese mismo comando se ejecutó** con `--local` contra el `inference.py` y el `build/1.0.0` del modelo, y los campos del evento son los que leen los filtros de métrica y `watch.sh`.
@@ -254,7 +270,7 @@ La vuelta tarda varios minutos (el filtro de métrica, la alarma, la Lambda y el
 - El formato de `watch.sh`.
 - `infra/` (Terraform): los `.tf` parsean como HCL, y los nombres, la regla, los siete filtros, la alarma y la política de las bombas son los mismos que en `setup.sh`. `up.sh` y el entrypoint con `IDENTIDAD=terraform`: bajan la identidad de Parameter Store, la montan solo en la instalación y el nucleus se instala con `--init-config` sin credenciales de AWS.
 
-**No verificado** (sin Docker ni AWS aquí; es lo que hay que mirar en el primer ensayo):
+**Lo que quedaba por verificar antes del ensayo.** El ensayo de arriba ya resolvió `terraform validate` y `plan`, el `docker build`, el nucleus en el contenedor, la conexión con la política mínima, los filtros de métrica, que la alarma invoque la Lambda, los tiempos y la memoria. Sigue sin probarse lo demás:
 
 - **No corrí `terraform validate` ni `plan`:** el sandbox no llega al registro de Terraform. Córrelos antes del primer `apply`.
 - **Nada corrió contra AWS real ni contra Docker real.** El `docker build` (paquetes de apt, ruedas de pip, la descarga del nucleus 2.18.3 desde la URL oficial) no se ejecutó; el sandbox no llega a esa URL.

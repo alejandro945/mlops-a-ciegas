@@ -95,7 +95,8 @@ PY
 # La identidad que creó Terraform (certificado, llave, endpoints) -> $BOOT/<bomba>/, solo para la instalación
 escribir_identidad() {   # $1 = bomba
   local b="$1" d="$BOOT/$1"
-  mkdir -p "$d"; chmod 700 "$d"
+  # si un intento anterior quedó reiniciándose, Docker recreó $d como root al montarlo
+  rm -rf "$d"; mkdir -p "$d"; chmod 700 "$d"
   param() { aws ssm get-parameter --region "$REGION" --name "$1" --with-decryption --query Parameter.Value --output text; }
   ( umask 077
     param "/estacion/bombas/$b/cert" > "$d/device.pem.crt"

@@ -100,7 +100,8 @@ instalar_con_identidad() {
   install -m 644 "$ID_DIR/device.pem.crt" "$ROOT/device.pem.crt"
   install -m 600 "$ID_DIR/private.pem.key" "$ROOT/private.pem.key"
   install -m 644 "$CA_RAIZ" "$ROOT/AmazonRootCA1.pem"
-  local cfg; cfg="$(mktemp)"
+  # el nucleus decide el formato por la extensión: sin .yaml no lo lee
+  local tmp cfg; tmp="$(mktemp -d)"; cfg="$tmp/config.yaml"
   cat > "$cfg" <<CFG
 ---
 system:
@@ -126,7 +127,7 @@ CFG
     --component-default-user "${COMPONENT_DEFAULT_USER:-ggc_user:ggc_group}" \
     --setup-system-service false \
     --start false
-  rm -f "$cfg"
+  rm -rf "$tmp"
 }
 
 if [ ! -f "$MARCA" ]; then

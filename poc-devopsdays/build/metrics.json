@@ -1,45 +1,46 @@
 {
-  "dataset": "sintético (estructura de MIMII DUE · pump)",
-  "synthetic": true,
+  "dataset": "MIMII DUE · pump · dev",
+  "synthetic": false,
+  "machine": "pump",
   "v1": {
-    "auc_source": 0.9270833333333334,
-    "auc_target": 0.40432098765432095,
-    "recall_source": 0.9,
-    "recall_target": 1.0,
-    "false_alarm_source": 0.2916666666666667,
-    "false_alarm_target": 1.0,
-    "threshold": 0.6143658310174942,
-    "alert_rate_source": 0.5681818181818182
+    "auc_source": 0.6948266666666666,
+    "auc_target": 0.5658,
+    "recall_source": 0.208,
+    "recall_target": 0.23666666666666666,
+    "false_alarm_source": 0.06333333333333334,
+    "false_alarm_target": 0.18,
+    "threshold": 0.3395686358213425,
+    "alert_rate_source": 0.1290909090909091
   },
   "v2": {
-    "auc_source": 0.9270833333333334,
-    "recall_source": 0.9,
-    "false_alarm_source": 0.20833333333333334,
-    "alert_rate_source": 0.5227272727272727,
-    "threshold": 0.6382308304309845
+    "auc_source": 0.6857733333333333,
+    "recall_source": 0.16,
+    "false_alarm_source": 0.05333333333333334,
+    "alert_rate_source": 0.10181818181818182,
+    "threshold": 0.3420511677861214
   },
   "int8": {
     "size_fp32_kb": 464.1875,
     "size_int8_kb": 126.6279296875,
-    "lat_fp32_ms": 1.8569165004009847,
-    "lat_int8_ms": 1.4629370016336907,
-    "agree_pct": 1.0,
-    "auc_delta": 0.0
+    "lat_fp32_ms": 2.6058334988192655,
+    "lat_int8_ms": 2.0129789991187863,
+    "agree_pct": 0.9843478260869565,
+    "auc_delta": -0.0007066666666665222
   },
   "input": {
-    "z_source": 0.8223487933476766,
-    "z_target": 2.1264009409480624,
-    "z_val": 0.8200457493464152
+    "z_source": 0.763301533261935,
+    "z_target": 1.0682893453041713,
+    "z_val": 0.8169945944348971
   },
   "detalle": {
-    "generado": "2026-10-12T12:43:42-0500",
-    "datos": "data/synthetic",
+    "generado": "2026-10-12T17:43:17-0500",
+    "datos": "data/pump",
     "percentil_umbral": 95.0,
     "clips": {
-      "train": 42,
-      "val": 6,
-      "prueba": 80,
-      "contaminacion": 4
+      "train": 2700,
+      "val": 300,
+      "prueba": 1150,
+      "contaminacion": 50
     },
     "seccion_contaminada": "00",
     "vectores_por_clip_train": 48,
@@ -51,93 +52,93 @@
       128
     ],
     "epocas": {
-      "1.0.0": 60,
-      "2.0.0": 60
+      "1.0.0": 35,
+      "2.0.0": 38
     },
     "entrenamiento_s": {
-      "1.0.0": 0.7,
-      "2.0.0": 1.1
+      "1.0.0": 28.9,
+      "2.0.0": 35.6
     },
-    "memoria_pico_mb": 268,
+    "memoria_pico_mb": 1207,
     "latencia": "mediana por clip de 10 s: features + inferencia, CPU, un hilo, sin leer el disco",
-    "int8_auc_source": 0.9270833333333334,
+    "int8_auc_source": 0.6941200000000001,
     "por_seccion": {
       "00": {
         "v1_source": {
-          "auc": 1.0,
-          "recall": 1.0,
-          "false_alarm": 0.75,
-          "alert_rate": 0.8333333333333334,
-          "n_normal": 8,
-          "n_anomaly": 4
+          "auc": 0.7040000000000001,
+          "recall": 0.24,
+          "false_alarm": 0.04,
+          "alert_rate": 0.10666666666666667,
+          "n_normal": 100,
+          "n_anomaly": 50
         },
         "v1_target": {
-          "auc": 0.5,
-          "recall": 1.0,
-          "false_alarm": 1.0,
-          "alert_rate": 1.0,
-          "n_normal": 6,
-          "n_anomaly": 6
+          "auc": 0.5882000000000001,
+          "recall": 0.18,
+          "false_alarm": 0.11,
+          "alert_rate": 0.145,
+          "n_normal": 100,
+          "n_anomaly": 100
         },
         "v2_source": {
-          "auc": 0.90625,
-          "recall": 1.0,
-          "false_alarm": 0.625,
-          "alert_rate": 0.75,
-          "n_normal": 8,
-          "n_anomaly": 4
+          "auc": 0.686,
+          "recall": 0.2,
+          "false_alarm": 0.03,
+          "alert_rate": 0.08666666666666667,
+          "n_normal": 100,
+          "n_anomaly": 50
         }
       },
       "01": {
         "v1_source": {
-          "auc": 0.984375,
-          "recall": 0.75,
-          "false_alarm": 0.0,
-          "alert_rate": 0.375,
-          "n_normal": 8,
-          "n_anomaly": 8
+          "auc": 0.7535000000000001,
+          "recall": 0.22,
+          "false_alarm": 0.06,
+          "alert_rate": 0.14,
+          "n_normal": 100,
+          "n_anomaly": 100
         },
         "v1_target": {
-          "auc": 0.4722222222222222,
-          "recall": 1.0,
-          "false_alarm": 1.0,
-          "alert_rate": 1.0,
-          "n_normal": 6,
-          "n_anomaly": 6
+          "auc": 0.5549999999999999,
+          "recall": 0.45,
+          "false_alarm": 0.4,
+          "alert_rate": 0.425,
+          "n_normal": 100,
+          "n_anomaly": 100
         },
         "v2_source": {
-          "auc": 0.984375,
-          "recall": 0.75,
-          "false_alarm": 0.0,
-          "alert_rate": 0.375,
-          "n_normal": 8,
-          "n_anomaly": 8
+          "auc": 0.7326,
+          "recall": 0.14,
+          "false_alarm": 0.06,
+          "alert_rate": 0.1,
+          "n_normal": 100,
+          "n_anomaly": 100
         }
       },
       "02": {
         "v1_source": {
-          "auc": 1.0,
-          "recall": 1.0,
-          "false_alarm": 0.125,
-          "alert_rate": 0.5625,
-          "n_normal": 8,
-          "n_anomaly": 8
+          "auc": 0.6152,
+          "recall": 0.18,
+          "false_alarm": 0.09,
+          "alert_rate": 0.135,
+          "n_normal": 100,
+          "n_anomaly": 100
         },
         "v1_target": {
-          "auc": 0.49999999999999994,
-          "recall": 1.0,
-          "false_alarm": 1.0,
-          "alert_rate": 1.0,
-          "n_normal": 6,
-          "n_anomaly": 6
+          "auc": 0.5860000000000001,
+          "recall": 0.08,
+          "false_alarm": 0.03,
+          "alert_rate": 0.055,
+          "n_normal": 100,
+          "n_anomaly": 100
         },
         "v2_source": {
-          "auc": 1.0,
-          "recall": 1.0,
-          "false_alarm": 0.0,
-          "alert_rate": 0.5,
-          "n_normal": 8,
-          "n_anomaly": 8
+          "auc": 0.6246,
+          "recall": 0.16,
+          "false_alarm": 0.07,
+          "alert_rate": 0.115,
+          "n_normal": 100,
+          "n_anomaly": 100
         }
       }
     },

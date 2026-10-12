@@ -108,6 +108,8 @@ data "archive_file" "vuelta" {
   type        = "zip"
   source_file = "${path.module}/../cloud/rollback_lambda.py"
   output_path = "${path.module}/.build/rollback.zip"
+  # el mismo zip (y el mismo hash) en tu laptop y en Actions, aunque el archivo tenga otros permisos
+  output_file_mode = "0644"
 }
 
 data "aws_iam_policy_document" "confia_lambda" {

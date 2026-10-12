@@ -274,6 +274,8 @@ class EntrypointConTerraform(unittest.TestCase):
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         args = (self.e.dir / "java.args").read_text().split()
         self.assertIn("--init-config", args)
+        # el nucleus elige el formato por la extensión («File format 'tmp.X' is not supported»)
+        self.assertTrue(args[args.index("--init-config") + 1].endswith(".yaml"))
         self.assertNotIn("--provision", args)
         self.assertEqual(args[args.index("--start") + 1], "false")
         self.assertEqual(args[args.index("--setup-system-service") + 1], "false")
