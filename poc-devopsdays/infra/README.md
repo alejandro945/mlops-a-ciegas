@@ -18,10 +18,15 @@ El estado vive en S3 y lo comparten tu laptop y GitHub Actions. Lo normal es apl
 Una sola vez, desde `poc-devopsdays/`, con un usuario administrador de la cuenta de pruebas y `gh` con sesión:
 
 ```bash
+gh repo create <dueño>/mlops-a-ciegas --private                 # si el repo no existe
+gh api repos/<dueño>/mlops-a-ciegas/actions/oidc/customization/sub --jq .sub_claim_prefix
+# repo y prefijo_sub (lo que imprimió la línea anterior) van en infra/github/terraform.tfvars
 terraform -chdir=infra/github init
-terraform -chdir=infra/github apply -var repo=<dueño>/mlops-a-ciegas
+terraform -chdir=infra/github apply
 ./infra/github/conectar-repo.sh       # variables del repo, environment aws-poc y infra/backend.hcl
 ```
+
+Los repos nuevos de GitHub firman el token OIDC con el formato inmutable (`repo:dueño@id/nombre@id:…`); por eso los roles aceptan ese prefijo además del clásico. Si el primer `plan` de Actions falla con «Not authorized to perform sts:AssumeRoleWithWebIdentity», revisa `prefijo_sub`.
 
 Desde ahí, `.github/workflows/infra.yml` hace esto:
 

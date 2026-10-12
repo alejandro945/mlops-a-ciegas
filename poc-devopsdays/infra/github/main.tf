@@ -50,6 +50,17 @@ variable "repo" {
   }
 }
 
+variable "prefijo_sub" {
+  description = <<-EOT
+    El prefijo del sub del token OIDC cuando el repo usa el formato inmutable de GitHub
+    (repo:dueño@id/nombre@id). Sale de:
+      gh api repos/<dueño>/<repo>/actions/oidc/customization/sub --jq .sub_claim_prefix
+    Vacío = solo el formato clásico repo:dueño/nombre.
+  EOT
+  type        = string
+  default     = ""
+}
+
 variable "environment" {
   description = "Environment de GitHub que puede asumir el rol de apply (con aprobación)."
   type        = string
@@ -73,6 +84,9 @@ locals {
   oidc     = "token.actions.githubusercontent.com"
   oidc_arn = var.crear_proveedor_oidc ? aws_iam_openid_connect_provider.github[0].arn : "arn:${local.part}:iam::${local.cuenta}:oidc-provider/${local.oidc}"
   arn_iam  = "arn:${local.part}:iam::${local.cuenta}"
+
+  # GitHub firma el sub como repo:dueño/nombre o, con el formato inmutable, repo:dueño@id/nombre@id
+  prefijos = compact(["repo:${var.repo}", var.prefijo_sub])
 }
 
 # ── El bucket del estado ─────────────────────────────────────────────
@@ -170,7 +184,7 @@ data "aws_iam_policy_document" "confia_plan" {
     condition {
       test     = "StringLike"
       variable = "${local.oidc}:sub"
-      values   = ["repo:${var.repo}:pull_request", "repo:${var.repo}:ref:refs/heads/*"]
+      values   = flatten([for p in local.prefijos : ["${p}:pull_request", "${p}:ref:refs/heads/*"]])
     }
   }
 }
@@ -225,7 +239,7 @@ data "aws_iam_policy_document" "confia_apply" {
     condition {
       test     = "StringEquals"
       variable = "${local.oidc}:sub"
-      values   = ["repo:${var.repo}:environment:${var.environment}"]
+      values   = [for p in local.prefijos : "${p}:environment:${var.environment}"]
     }
   }
 }
