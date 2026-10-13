@@ -1,6 +1,6 @@
 # Guion · MLOps a ciegas · DevOpsDays Bogotá 2026
 
-**Duración:** 25:50 de contenido, dentro de los 25 minutos más 5 de preguntas que promete el CFP. Cronométralo en el ensayo; el acto 3 depende de la alarma. **Láminas:** 30 más 10 anexos; cuatro son divisores y pasan en segundos. Plantilla oficial de DevOpsDays Bogotá 2026.
+**Duración:** 25:55 de contenido, dentro de los 25 minutos más 5 de preguntas que promete el CFP. Cronométralo en el ensayo; el acto 3 depende de la alarma. **Láminas:** 31 más 10 anexos; cuatro son divisores y pasan en segundos. Plantilla oficial de DevOpsDays Bogotá 2026.
 
 **De qué va:** cómo gobernar un modelo de IA que corre donde no llega el plano de control. El hilo es una estación de bombeo: un modelo que escucha bombas en una vereda con red intermitente. Las láminas nombran y dibujan servicios de AWS, pero ninguna cita a AWS: los datos de la documentación se dicen en voz alta y su enlace queda en la nota.
 
@@ -26,10 +26,10 @@ Lo que sale en la terminal está en inglés (`pump-03`, `ALERT`, `fault.sh`): es
 Una empresa de acueducto, **inventada para la charla**, tiene estaciones de bombeo en veredas con red intermitente. En cada estación, un equipo pequeño escucha las bombas con un micrófono y un modelo avisa cuando una empieza a sonar distinto. El audio nunca sale de la estación; sale un evento de unos cientos de bytes.
 
 - **Lámina 2:** la sala oye la bomba A y la bomba B y vota. La respuesta (la B falla) llega en el acto 1 de la demo.
-- **Láminas 9 y 10:** la estación y su problema: el panel en verde y el modelo que casi no distingue.
-- **Pasos 1 a 6 (láminas 16 a 21):** la bomba ocupa una línea por paso, marcada *La bomba*.
+- **Láminas 9 a 11:** la estación y su problema: el panel en verde, el modelo que casi no distingue y las preguntas que hay que hacerle.
+- **Pasos 1 a 6 (láminas 18 a 23):** la bomba ocupa una línea por paso, marcada *La bomba*.
 - **Demo:** la bomba 3 falla y se queda sin red; la v2 no oye la falla de la 1 y vuelve sola a la v1.
-- **Lámina 28:** vuelven los audios y la línea del evento de la bomba B.
+- **Lámina 29:** vuelven los audios y la línea del evento de la bomba B.
 
 Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las veredas y el jefe son inventados. Dilo así cuando toque.
 
@@ -67,33 +67,33 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 3 · Computadores nuevos con chip para IA
+## 3 · La IA ya corre en el dispositivo
 <!-- id: cien -->
 **0:35** · 2 clics
 
-"¿Por qué debería importarles un modelo en una estación de bombeo? Porque los modelos se están saliendo de la nube. Un número de Gartner."
+"¿Por qué debería importarles un modelo en una estación de bombeo? Porque la inferencia se está moviendo de la nube al dispositivo. Un ejemplo con números de Gartner: los PC."
 
-"De cada cien computadores nuevos que se vendieron en 2024, dieciséis traían un chip para correr IA."
+"De cada cien PC nuevos que se vendieron en 2024, dieciséis traían un chip para correr IA."
 
 **[CLIC]** "En 2025, treinta y uno."
 
-**[CLIC]** "Para este año, Gartner proyectaba cincuenta y cinco. Más de la mitad."
+**[CLIC]** "Para este año, Gartner proyectaba cincuenta y cinco. Y no son solo los PC: los teléfonos, los carros, las cámaras y los equipos industriales ya traen hardware para correr modelos ahí mismo."
 
-*Fuente: Gartner, 28 de agosto de 2025: 15,6 % (2024), 31 % (2025), 54,7 % (2026, proyección). Si ya salió la cifra real de 2026, dila en su lugar.*
+*Fuente: Gartner, 28 de agosto de 2025, «AI PCs»: 15,6 % (2024), 31 % (2025), 54,7 % (2026, proyección). La cifra es solo de PC; lo de teléfonos, carros y equipos industriales dilo sin números. Si ya salió la cifra real de 2026, dila en su lugar.*
 
 ---
 
-## 4 · Por qué la IA sale de la nube
+## 4 · Por qué el modelo baja al dispositivo
 <!-- id: memes -->
-**0:55** · 2 clics · *deja que la sala se ría antes de hablar*
+**0:50** · 2 clics · *deja que la sala se ría antes de hablar. En cada meme, a la izquierda el modelo corre en la nube y a la derecha en el equipo: esa es la única diferencia*
 
-"¿Y por qué se sale de la nube? Se los explico en el idioma universal: memes."
+"¿Y por qué el modelo baja al dispositivo? Se los explico en el idioma universal: memes."
 
-*Meme 1 · latencia.* "El carro autónomo: 'dame un segundo, se lo pregunto a la nube'." *(pausa corta)* "Cuando la decisión es de milisegundos, la ida y vuelta no alcanza."
+*Meme 1 · latencia.* "El carro autónomo: 'dame un segundo, le pregunto al modelo en la nube'." *(pausa corta)* "Cuando la decisión es de milisegundos, la ida y vuelta no alcanza."
 
-**[CLIC]** *Meme 2 · sin conexión.* "Técnico, tres de la mañana, en la planta. La nube: 'Sin conexión. Intente más tarde'." *(pausa)* "En una vereda pasa igual."
+**[CLIC]** *Meme 2 · sin conexión.* "Técnico, tres de la mañana, en la planta. El asistente tiene el modelo en la nube: 'Sin conexión. Intente más tarde'." *(pausa)* "Con el modelo en el equipo, responde igual. En una vereda pasa lo mismo."
 
-**[CLIC]** *Meme 3 · privacidad.* "Y tu reloj, cada segundo, subiendo tus latidos a internet. Lo sensible no sale del equipo."
+**[CLIC]** *Meme 3 · privacidad.* "Y tu reloj, cada segundo, mandándole tus latidos al modelo en la nube. Si el modelo corre en el reloj, lo sensible no sale del equipo: solo sale la alerta."
 
 "Ahora piensen en la bomba. Un micrófono a dieciséis kilohercios son ciento quince megas por hora, por bomba, por la red de una vereda. Y es el sonido de una instalación de la empresa: no tiene por qué salir de ahí."
 
@@ -123,7 +123,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ## 7 · 01 · El problema
 <!-- id: div1 -->
-**0:05** · *divisor: no lo leas* · *reloj: 3:45*
+**0:05** · *divisor: no lo leas* · *reloj: 3:40*
 
 "Empecemos por el problema."
 
@@ -157,7 +157,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ## 10 · Un panel en verde no mide el modelo
 <!-- id: tablero -->
-**1:20** · 3 clics · *el mito central de la charla: ve despacio*
+**1:15** · 3 clics · *el mito central de la charla: ve despacio*
 
 "Entonces, ¿cómo sabes si el modelo de la estación está bien? Hacemos lo de siempre: miramos el panel."
 
@@ -173,15 +173,27 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 **[CLIC]** "El equipo está sano. El modelo casi no distingue." *(pausa larga)*
 
-"Esto no me lo inventé: lo medí en la PoC, con el audio de las bombas que van a oír en la demo. Un servicio roto hace ruido. Un modelo que dejó de oír responde a tiempo, sin errores… y con un 200 OK."
+"Esto no me lo inventé: lo medí en la PoC, con el audio de las bombas que van a oír en la demo. Un modelo que dejó de oír responde a tiempo, sin errores… y con un 200 OK."
 
 *Por qué AUC y no «fallas detectadas»: con la otra velocidad todos los scores suben, y la detección puede subir junto con las falsas alarmas. La AUC mide si el modelo separa una bomba sana de una que falla, sin depender del umbral.*
 
 ---
 
-## 11 · A mano alzada 1
+## 11 · Monitorear la infraestructura no es monitorear el modelo
+<!-- id: preguntas -->
+**0:35** · sin clics · *léelo por filas: la columna de la izquierda es lo que ya tienen; la del centro, lo que falta*
+
+"Las preguntas de siempre siguen valiendo: ¿el servicio está arriba?, ¿cuánta CPU usa?, ¿hay errores?, ¿responde a tiempo? Pero ninguna dice nada del modelo."
+
+"Al modelo hay que preguntarle otras cuatro cosas. ¿Sigue distinguiendo correctamente? ¿Cambió la distribución de los datos? ¿Aumentaron los falsos positivos o negativos? ¿Y sus predicciones siguen siendo útiles?"
+
+"La columna de la derecha es cómo responde cada pregunta la demo que van a ver. La última es la más difícil: solo la contesta el negocio, cuando la orden de mantenimiento dice si la alerta era real."
+
+---
+
+## 12 · A mano alzada 1
 <!-- id: reflexion1 -->
-**0:30** · sin clics · *la barra de abajo cuenta cinco segundos*
+**0:25** · sin clics · *la barra de abajo cuenta cinco segundos*
 
 "Pregunta a mano alzada. ¿A quién le ha sonado el pager por un modelo?" *(espera las manos)*
 
@@ -193,15 +205,15 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 12 · 02 · El patrón
+## 13 · 02 · El patrón
 <!-- id: div2 -->
-**0:05** · *divisor* · *reloj: 6:45*
+**0:05** · *divisor* · *reloj: 7:05*
 
 "¿Qué hace falta para gobernarlo? Primero, abramos el equipo."
 
 ---
 
-## 13 · Arquitectura del equipo en la estación
+## 14 · Arquitectura del equipo en la estación
 <!-- id: equipo -->
 **0:45** · 3 clics · *una capa por clic*
 
@@ -215,9 +227,9 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 14 · Cinco piezas para gobernar el modelo
+## 15 · Cinco piezas para gobernar el modelo
 <!-- id: flujo -->
-**1:15** · 6 clics · *una pieza por clic; la leyenda de arriba se enciende con cada una*
+**1:10** · 6 clics · *una pieza por clic; la leyenda de arriba se enciende con cada una*
 
 *Paso 0: «copiar el modelo… y cruzar los dedos».* "Así se despliegan modelos en muchos lados: copias el archivo al equipo y cruzas los dedos. Yo lo he hecho." *(risas)*
 
@@ -235,7 +247,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 15 · El mismo patrón en AWS
+## 16 · El mismo patrón en AWS
 <!-- id: aws -->
 **0:50** · 6 clics · *misma geometría que la anterior; avanza a buen ritmo, los pasos que vienen abren cada casilla*
 
@@ -247,15 +259,15 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 16 · 03 · Los seis pasos
+## 17 · 03 · Los seis pasos
 <!-- id: div3 -->
-**0:10** · *divisor con la espina* · *reloj: 9:40*
+**0:10** · *divisor con la espina* · *reloj: 9:55*
 
 "Seis pasos: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear. En cada uno, una línea de la bomba."
 
 ---
 
-## 17 · Paso 1 · Entrenar con sonido normal
+## 18 · Paso 1 · Entrenar con sonido normal
 <!-- id: entrenar -->
 **1:00** · 3 clics
 
@@ -271,11 +283,11 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 *La bomba:* "Aprende solo con sonido normal: las fallas son raras."
 
-*En la PoC la fábrica es model/train.py en mi portátil, no SageMaker AI. Lo dices en la lámina 23.*
+*En la PoC la fábrica es model/train.py en mi portátil, no SageMaker AI. Lo dices en la lámina 26.*
 
 ---
 
-## 18 · Paso 2 · Optimizar para cada chip
+## 19 · Paso 2 · Optimizar para cada chip
 <!-- id: optimizar -->
 **1:10** · 3 clics
 
@@ -295,7 +307,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 19 · Paso 3 · Empaquetar como componente
+## 20 · Paso 3 · Empaquetar como componente
 <!-- id: componente -->
 **1:00** · 4 clics · *una anotación por clic*
 
@@ -317,7 +329,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 20 · Paso 4 · Desplegar por anillos
+## 21 · Paso 4 · Desplegar por anillos
 <!-- id: anillos -->
 **1:05** · 3 clics
 
@@ -339,7 +351,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 21 · Paso 5 · Operar sin red
+## 22 · Paso 5 · Operar sin red
 <!-- id: sinred -->
 **0:50** · 2 clics
 
@@ -357,9 +369,9 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 22 · Paso 6 · Monitorear lo que decide el modelo
+## 23 · Paso 6 · Monitorear lo que decide el modelo
 <!-- id: monitoreo -->
-**1:10** · 5 clics · *un tramo de la tubería por clic*
+**1:05** · 5 clics · *un tramo de la tubería por clic*
 
 "Paso seis. Desde la nube ves lo que el modelo te cuenta: un evento por clip, de unos cientos de bytes, que llega a IoT Core."
 
@@ -381,7 +393,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 23 · A mano alzada 2
+## 24 · A mano alzada 2
 <!-- id: reflexion3 -->
 **0:35** · 1 clic · *la barra cuenta cinco segundos*
 
@@ -395,15 +407,15 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 24 · 04 · Demostración
+## 25 · 04 · Demostración
 <!-- id: div4 -->
-**0:05** · *divisor* · *reloj: 16:40*
+**0:05** · *divisor* · *reloj: 16:50*
 
 "Suficiente teoría. Vamos a la estación."
 
 ---
 
-## 25 · Arquitectura de la demostración
+## 26 · Arquitectura de la demostración
 <!-- id: poc -->
 **0:40** · sin clics
 
@@ -417,7 +429,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 26 · Demostración en tres actos
+## 27 · Demostración en tres actos
 <!-- id: demo -->
 **6:00** · 2 clics en la lámina, después las terminales · *la lámina es el mapa; lo real está en la terminal*
 
@@ -481,9 +493,9 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 27 · Cinco recomendaciones
+## 28 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:10** · 4 clics · *reloj: 23:25 al entrar*
+**1:05** · 4 clics · *reloj: 23:35 al entrar*
 
 "Les dejo cinco cosas que funcionan. La mayoría no las va a hacer el lunes. Los que las hagan van a dormir mejor."
 
@@ -497,11 +509,11 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 **[CLIC]** "Y cinco: que el modelo cuente qué decide; el dato crudo se queda en el equipo."
 
-*Si el reloj marca 23:30 o menos al llegar aquí (+0:25), cuenta lo que pasó en el primer ensayo, que es real: «La primera vez que monté esto en AWS, ninguna bomba arrancaba. El instalador de Greengrass decide el formato del archivo de configuración por la extensión, y mi archivo no tenía extensión. Una línea. Por eso se ensaya en el equipo de verdad.»*
+*Si el reloj marca 23:40 o menos al llegar aquí (+0:25), cuenta lo que pasó en el primer ensayo, que es real: «La primera vez que monté esto en AWS, ninguna bomba arrancaba. El instalador de Greengrass decide el formato del archivo de configuración por la extensión, y mi archivo no tenía extensión. Una línea. Por eso se ensaya en el equipo de verdad.»*
 
 ---
 
-## 28 · La frase final: ¿esta bomba está fallando?
+## 29 · La frase final: ¿esta bomba está fallando?
 <!-- id: final -->
 **0:45** · 2 clics · *cierre circular: vuelve a los audios del inicio*
 
@@ -521,7 +533,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 29 · Recursos y contacto
+## 30 · Recursos y contacto
 <!-- id: recursos -->
 **0:15** · sin clics
 
@@ -531,7 +543,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 30 · Gracias
+## 31 · Gracias
 <!-- id: cierre -->
 **0:15** · sin clics
 
@@ -661,21 +673,21 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 | Bloque | Láminas | Duración | Reloj al terminar |
 |---|---|---|---|
-| Apertura | 1–6 | 3:40 | 3:40 |
-| 01 · El problema | 7–11 | 3:05 | 6:45 |
-| 02 · El patrón | 12–15 | 2:55 | 9:40 |
-| 03 · Los seis pasos | 16–23 | 7:00 | 16:40 |
-| 04 · Demostración | 24–26 | 6:45 | 23:25 |
-| Cierre | 27–30 | 2:25 | 25:50 |
-| **Total** | | **25:50** | |
+| Apertura | 1–6 | 3:35 | 3:35 |
+| 01 · El problema | 7–12 | 3:30 | 7:05 |
+| 02 · El patrón | 13–16 | 2:50 | 9:55 |
+| 03 · Los seis pasos | 17–24 | 6:55 | 16:50 |
+| 04 · Demostración | 25–27 | 6:45 | 23:35 |
+| Cierre | 28–31 | 2:20 | 25:55 |
+| **Total** | | **25:55** | |
 
-Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 1:20 (con el despliegue de la v2 lanzado durante la espera), acto 3 2:45 y remate 0:15. El acto 3 es lo único que no controlas: si en el ensayo la vuelta pasa de 2:30, lleva el tope y el video listos. La anécdota de la lámina 27 solo entra si vas adelantado.
+Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 1:20 (con el despliegue de la v2 lanzado durante la espera), acto 3 2:45 y remate 0:15. El acto 3 es lo único que no controlas: si en el ensayo la vuelta pasa de 2:30, lleva el tope y el video listos. La anécdota de la lámina 28 solo entra si vas adelantado.
 
 ## Antes de subir
 
 **Una hora antes**
 - EC2 encendida y las cinco bombas *Healthy*: `aws greengrassv2 list-core-devices --query 'coreDevices[].[coreDeviceThingName,status]' --output table`.
-- Toda la flota en 1.0.0: los dos thing groups con su despliegue en ACTIVE (la lámina 23 lo muestra así).
+- Toda la flota en 1.0.0: los dos thing groups con su despliegue en ACTIVE (la lámina 24 lo muestra así).
 - `/station/last_good_version` = 1.0.0.
 - Las cinco bombas suenan normal: `./demo/fault.sh pump-0N off` y `./demo/domain.sh pump-0N normal`.
 - Las cinco conectadas a la red `station` (`docker network inspect station`).
@@ -701,7 +713,7 @@ Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 
 - **«¿Cuánto cuesta la PoC?»** Lo que más pesa es la EC2; la cifra se saca de Cost Explorer (A4).
 - **«¿Qué pasa si la cola se llena?»** El nucleus rechaza los mensajes nuevos. Para horas o días sin red, la cola va a disco.
 - **«¿Por qué CloudWatch Logs y no una base de series de tiempo?»** Para la compuerta, un filtro de métrica alcanza. Si quieres análisis, otra regla de IoT puede mandar los mismos eventos a S3.
-- **«¿Esto sirve con otra nube?»** El patrón de la lámina 14 no depende de ninguna. La lámina 15 es una forma de construirlo.
+- **«¿Esto sirve con otra nube?»** El patrón de la lámina 15 no depende de ninguna. La lámina 16 es una forma de construirlo.
 - **«¿Cómo firmas el modelo?»** Greengrass verifica el digest de cada artefacto. Para firma y procedencia existe un estándar abierto: OpenSSF Model Signing, sobre Sigstore.
 - **«¿Cuántas bombas aguanta la PoC?»** En el ensayo, cada bomba usó unos 220 MB y las cinco juntas 1,4 GB de 7,8. Lo que limita es la memoria, porque cada nucleus es una JVM.
 - **«¿Seguro que el audio no sale?»** El componente lee el audio montado de solo lectura y el permiso IPC solo le deja publicar en `station/events`.
@@ -710,6 +722,7 @@ Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 
 
 ## Pendientes antes de la charla
 
+- La infraestructura está abajo desde el 12 de octubre (destroy). El día anterior: Actions → infra → Run workflow → apply; en la EC2, `fetch-poc`, `./fleet/build.sh` y `./fleet/up.sh`; desde el portátil, `./demo/publish.sh 1.0.0`, `2.0.0` y `./demo/deploy.sh 1.0.0 all`. En el ensayo todo eso tomó unos 15 minutos.
 - Tu foto en `talk/assets/photo.jpg` (cuadrada); hoy la lámina 5 muestra el recuadro vacío.
 - Hacer público el repo para que el QR funcione, y revisar que no quede material privado.
 - Grabar el video de respaldo, cortado por actos.

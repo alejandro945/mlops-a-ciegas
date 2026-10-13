@@ -390,15 +390,15 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <!-- ═══════════════ 02 · GROWTH (HOOK) ═══════════════ -->
 <section class="s" data-id="cien" data-sec="1" data-notes="">
   <div class="kick">Contexto</div>
-  <div class="ttl wide">Computadores nuevos con <b>chip para IA</b></div>
+  <div class="ttl wide">La IA ya corre <b>en el dispositivo</b></div>
   <div class="chart" style="left:84px;right:84px;top:222px;bottom:162px"><canvas class="anim" data-anim="cien"></canvas></div>
-  <div class="foot" data-src="Gartner, agosto 2025 · 2026 es proyección"></div>
+  <div class="foot" data-src="Gartner, agosto 2025: PC con IA · 2026 es proyección"></div>
 </section>
 
 <!-- ═══════════════ 03 · USE CASES (MEMES) ═══════════════ -->
 <section class="s" data-id="memes" data-sec="2" data-notes="">
   <div class="kick">Contexto</div>
-  <div class="ttl wide">Por qué la IA <b>sale de la nube</b></div>
+  <div class="ttl wide">Por qué el modelo <b>baja al dispositivo</b></div>
   <div class="chart" style="left:84px;right:84px;top:206px;bottom:136px"><canvas class="anim" data-anim="memes"></canvas></div>
   <div class="foot"></div>
 </section>
@@ -475,6 +475,20 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide">Un panel en verde <b>no mide el modelo</b></div>
   <div class="chart" style="left:84px;right:84px;top:222px;bottom:162px"><canvas class="anim" data-anim="tablero" data-vals='["{{M:v1.auc_source}}","{{M:v1.auc_target}}","{{M:v1.false_alarm_source}}","{{M:v1.false_alarm_target}}"]'></canvas></div>
   <div class="foot" data-src="Medido en la PoC con MIMII DUE (bombas, dominio de entrenamiento contra dominio nuevo)"></div>
+</section>
+
+<!-- ═══════════════ 11 · WHAT TO ASK WHEN MONITORING A MODEL ═══════════════ -->
+<section class="s" data-id="preguntas" data-sec="4" data-notes="">
+  <div class="kick">El problema</div>
+  <div class="ttl wide">Monitorear la infraestructura <b>no es monitorear el modelo</b></div>
+  <div class="tbl"><table>
+    <tr><th style="width:27%">Monitoreo tradicional</th><th style="width:38%">Monitoreo de ML / MLOps</th><th>En la demo</th></tr>
+    <tr><td>¿El servicio está arriba?</td><td class="k">¿El modelo sigue distinguiendo correctamente?</td><td>AUC: {{M:v1.auc_source}} → {{M:v1.auc_target}} con la otra velocidad</td></tr>
+    <tr><td>¿Cuánta CPU y memoria usa?</td><td class="k">¿Cambió la distribución de los datos?</td><td><code>InputZ</code>: qué tan lejos está la entrada de lo que aprendió</td></tr>
+    <tr><td>¿Hay errores o excepciones?</td><td class="k">¿Aumentaron los falsos positivos o negativos?</td><td><code>Alerts</code> y <code>MissedFaults</code>: falsas alarmas {{M:v1.false_alarm_source}} → {{M:v1.false_alarm_target}}</td></tr>
+    <tr class="hot"><td>¿Responde a tiempo?</td><td class="k">¿Las predicciones siguen siendo útiles?</td><td>La orden de mantenimiento confirma si la alerta era real (en la demo, el campo <code>truth</code>)</td></tr>
+  </table></div>
+  <div class="foot"></div>
 </section>
 
 <!-- ═══════════════ 12 · SHOW OF HANDS 1 ═══════════════ -->
@@ -811,7 +825,6 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
     <tr><th style="width:44%">Qué</th><th>Dónde</th></tr>
     <tr><td class="k">MIMII DUE · Tanabe et al., Hitachi (2021) · bombas, <code>dev_data_pump</code> · CC BY-NC-SA 4.0</td><td class="m">arxiv.org/abs/2105.02702 · doi.org/10.5281/zenodo.4740355</td></tr>
     <tr><td class="k">Gartner · PC con IA (28 ago 2025)</td><td class="m">gartner.com/en/newsroom · 2025-08-28</td></tr>
-    <tr><td class="k">IDC · gasto en edge (17 mar 2025)</td><td class="m">my.idc.com/getdoc.jsp?containerId=prUS53261225</td></tr>
     <tr><td class="k">Breck et al. · The ML Test Score (2017)</td><td class="m">research.google/pubs/pub46555</td></tr>
     <tr><td class="k">Métodos de drift · Evidently · NannyML · crítica al PSI</td><td class="m">docs.evidentlyai.com · nannyml.readthedocs.io · arxiv.org/abs/2303.01227</td></tr>
     <tr><td class="k">AI Act (UE 2024/1689) · Digital Omnibus (UE 2026/1744)</td><td class="m">eur-lex.europa.eu · artificialintelligenceact.eu</td></tr>
@@ -917,11 +930,12 @@ ANIM.cien={steps:3,dur:1700,draw(g,W,H,st,p,t){
   const s=Math.min(st,2), V=[15.6,31,54.7], N=[16,31,55], Y=['2024','2025','2026 · proyección'];
   const pn=s?N[s-1]:0, pv=s?V[s-1]:0, q=(RM||st>2)?1:ease(clamp(p*1.25));
   const v=lerp(pv,V[s],q), txt=(Math.abs(v-Math.round(v))<.05?String(Math.round(v)):v.toFixed(1).replace('.',','));
-  T(g,0,44,'De cada 100 PC nuevas,',ink(.66),30,400);
+  T(g,0,44,'Un ejemplo: de cada 100 PC nuevos,',ink(.66),30,400);
   T(g,-6,244,txt,INK,190,700);
   const nw=g.measureText(txt).width; T(g,nw+4,244,'%',INK,80,700);
   T(g,0,306,Y[s],ink(.55),22,700,true);
-  if(s===2){ const a=(RM||st>2)?1:clamp(p*1.6-.6); g.save(); g.globalAlpha=a; T(g,0,420,'×3,5 en dos años',ACC,46,700); g.restore(); }
+  if(s===2){ const a=(RM||st>2)?1:clamp(p*1.6-.6); g.save(); g.globalAlpha=a; T(g,0,420,'×3,5 en dos años',ACC,46,700);
+    T(g,0,474,'Y no solo los PC: teléfonos, carros,',ink(.66),22,400); T(g,0,504,'cámaras y equipos industriales también.',ink(.66),22,400); g.restore(); }
   /* 100 computers */
   const gx=640, cw=(W-gx)/10, ch=(H-10)/10, w=cw*.64, h=ch*.5;
   for(let k=0;k<100;k++){
@@ -989,12 +1003,12 @@ function scWatch(g,px,py,pw,ph,side,u,t){
   }
 }
 const MEMES=[
-  {tag:'LATENCIA', h1:'Nadie:', h2:'El carro autónomo: «dame un segundo, se lo pregunto a la nube»',
+  {tag:'LATENCIA', h1:'Nadie:', h2:'El carro autónomo: «dame un segundo, le pregunto al modelo en la nube»',
    punch:[['Latencia: ',INK,700],['la ida y vuelta no alcanza.',ACC,700]], src:'', draw:scCar},
-  {tag:'SIN CONEXIÓN', h1:'Técnico en la planta, 3 a. m.: «¿cómo cambio este rodamiento?»', h2:'La nube: «Sin conexión. Intente más tarde.»',
-   punch:[['Sin conexión: ',INK,700],['igual tiene que responder.',ACC,700]],
+  {tag:'SIN CONEXIÓN', h1:'Técnico en la planta, 3 a. m.: «¿cómo cambio este rodamiento?»', h2:'El asistente, con el modelo en la nube: «Sin conexión. Intente más tarde.»',
+   punch:[['Sin conexión: ',INK,700],['con el modelo en el equipo, igual responde.',ACC,700]],
    src:'', draw:scPlant},
-  {tag:'PRIVACIDAD', h1:'Tu reloj, cada segundo:', h2:'«subiendo tus latidos a internet…»',
+  {tag:'PRIVACIDAD', h1:'Tu reloj, cada segundo:', h2:'«mandando tus latidos al modelo en la nube…»',
    punch:[['Privacidad: ',INK,700],['lo sensible no sale del equipo.',ACC,700]], src:'', draw:scWatch}
 ];
 ANIM.memes={steps:3,dur:900,draw(g,W,H,st,p,t){
@@ -1006,7 +1020,7 @@ ANIM.memes={steps:3,dur:900,draw(g,W,H,st,p,t){
   [0,1].forEach(side=>{
     const px=side*(pw+40);
     strokeRR(g,px,py,pw,ph,16,side?INK:ink(.35),2,side?null:[8,7]);
-    T(g,px+22,py+34,side?'DECIDIR EN EL EQUIPO':'PREGUNTARLE A LA NUBE',side?INK:ink(.55),15,700,true);
+    T(g,px+22,py+34,side?'MODELO EN EL EQUIPO':'MODELO EN LA NUBE',side?INK:ink(.55),15,700,true);
     if(side) tick(g,px+pw-30,py+28,INK,1.2); else cross(g,px+pw-30,py+28,7,ACC);
     g.save(); m.draw(g,px,py,pw,ph,side,u,t); g.restore();
   });

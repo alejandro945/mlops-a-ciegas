@@ -149,7 +149,7 @@ def fig_optimize(static=False):
     o.append(T(132, Y + 236, "un archivo ONNX, en FP32", 18, SLATE))
     # the three operations
     ops = [("Cuantizar", "32 → 8 bits: hasta 4× menos"),
-           ("Fusionar y podar", "menos capas, menos cálculo"),
+           ("Fusionar y podar", "menos operaciones y pesos"),
            ("Compilar", "para el acelerador del chip")]
     mid = Y + S + H / 2
     body = [L([(400, mid), (446, mid)], NAVY, 2.4, head=10)]
@@ -676,7 +676,7 @@ def fig_recipe(static=False):
         text, real = open(RECIPE, encoding="utf-8").read(), True
     except OSError:
         text, real = _RECIPE_FALLBACK, False
-    note = "· la receta del componente, tal cual"
+    note = "· la receta de la demo, recortada"
     if not real:
         note = "· receta de ejemplo: falta recipe.template.yaml"
         print("  (warning) recipe: not found", RECIPE, "— drawing the sample one", file=sys.stderr)
@@ -952,7 +952,7 @@ def fig_wave(which, static=False):
 # ─────────────────────────────────────────────────────────────────────
 #  the spine: the six steps (divider 03 and footer bar of slides 18–24)
 # ─────────────────────────────────────────────────────────────────────
-STEPS = [("Entrenar", "SageMaker AI · S3"), ("Optimizar", "INT8 por chip"),
+STEPS = [("Entrenar", "SageMaker AI · S3"), ("Optimizar", "un artefacto por chip"),
          ("Empaquetar", "componente Greengrass"), ("Desplegar", "anillos · thing groups"),
          ("Operar sin red", "cola local"), ("Monitorear", "IoT Core · CloudWatch")]
 

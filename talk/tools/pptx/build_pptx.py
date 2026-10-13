@@ -1392,7 +1392,7 @@ BUILDERS = {
     "inversion": ("CONTENIDO", b_duo), "memes": ("CONTENIDO", b_canvas), "quien": ("CONTENIDO", b_whoami),
     "agenda": ("CONTENIDO", b_agenda), "div1": ("DIVISOR", b_div),
     "nube": ("CONTENIDO", b_iso), "edge": ("CONTENIDO", b_iso), "tablero": ("CONTENIDO", b_canvas),
-    "reflexion1": ("CONTENIDO", b_refl), "div2": ("DIVISOR", b_div),
+    "preguntas": ("CONTENIDO", b_table), "reflexion1": ("CONTENIDO", b_refl), "div2": ("DIVISOR", b_div),
     "equipo": ("CONTENIDO", b_iso), "flujo": ("CONTENIDO", b_htmlsteps), "aws": ("CONTENIDO", b_htmlsteps),
     "div3": ("DIVISOR", b_div3),
     "entrenar": ("CONTENIDO", b_iso), "optimizar": ("CONTENIDO", b_iso), "componente": ("CONTENIDO", b_iso),

@@ -137,7 +137,7 @@ NODES = [
     ("greengrass",  900,  356, 64, "1 2 4", ("IoT Greengrass", "componentes · deployments"),
                                                                                          ("Orquestador", "estado deseado"), None),
     ("s3",          1110, 356, 64, "1",     ("S3", "artefactos versionados"),            ("Registro", "artefactos firmados"), None),
-    ("optimize",    1262, 356, 64, "o",     ("Optimizar", "INT8 por chip"),              ("Optimizar", "un artefacto por chip"), "sm_model"),
+    ("optimize",    1262, 356, 64, "o",     ("Optimizar", "un artefacto por chip"),      ("Optimizar", "un artefacto por chip"), "sm_model"),
     ("sagemaker",   1412, 356, 64, "o s",   ("SageMaker AI", "entrena y evalúa"),        ("Entrenar", "entrena y evalúa"), None),
     ("iot_rule",    690,  612, 56, "3",     ("Regla de IoT", "station/events"),        ("Ingesta", "enruta eventos"), None),
     ("cw_logs",     862,  612, 56, "3 4 s", ("CloudWatch Logs", "filtros de métrica"),   ("Métricas", "errores por minuto"), None),
@@ -236,7 +236,7 @@ def build(mode="ref", deck=False, slow=True):
         add(f'<g data-node="sagemaker"{delay(1300)}><g data-p="o s">')
         box(1236, 324, 210, 64, rx=8, sw=1.6)
         text(1341, 363, "model/train.py", 20, INK, 700, "middle", family=MONO)
-        text(1341, 418, "Tu laptop", 20, INK, 700, "middle")
+        text(1341, 418, "Mi portátil", 20, INK, 700, "middle")
         add("</g></g>")
 
     # ── cross-cutting ────────────────────────────────────────────
