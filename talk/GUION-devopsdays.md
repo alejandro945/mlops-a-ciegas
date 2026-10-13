@@ -1,6 +1,6 @@
 # Guion · MLOps a ciegas · DevOpsDays Bogotá 2026
 
-**Duración:** 25:55 de contenido, dentro de los 25 minutos más 5 de preguntas que promete el CFP. Cronométralo en el ensayo; el acto 3 depende de la alarma. **Láminas:** 31 más 10 anexos; cuatro son divisores y pasan en segundos. Plantilla oficial de DevOpsDays Bogotá 2026.
+**Duración:** 25:25 de contenido, dentro de los 25 minutos más 5 de preguntas que promete el CFP. Cronométralo en el ensayo; el acto 3 depende de la alarma. **Láminas:** 30 más 10 anexos; cuatro son divisores y pasan en segundos. Plantilla oficial de DevOpsDays Bogotá 2026.
 
 **De qué va:** cómo gobernar un modelo de IA que corre donde no llega el plano de control. El hilo es una estación de bombeo: un modelo que escucha bombas en una vereda con red intermitente. Las láminas nombran y dibujan servicios de AWS, pero ninguna cita a AWS: los datos de la documentación se dicen en voz alta y su enlace queda en la nota.
 
@@ -27,9 +27,9 @@ Una empresa de acueducto, **inventada para la charla**, tiene estaciones de bomb
 
 - **Lámina 2:** la sala oye la bomba A y la bomba B y vota. La respuesta (la B falla) llega en el acto 1 de la demo.
 - **Láminas 9 a 11:** la estación y su problema: el panel en verde, el modelo que casi no distingue y las preguntas que hay que hacerle.
-- **Pasos 1 a 6 (láminas 18 a 23):** la bomba ocupa una línea por paso, marcada *La bomba*.
+- **Pasos 1 a 6 (láminas 17 a 22):** la bomba ocupa una línea por paso, marcada *La bomba*.
 - **Demo:** la bomba 3 falla y se queda sin red; la v2 no oye la falla de la 1 y vuelve sola a la v1.
-- **Lámina 29:** vuelven los audios y la línea del evento de la bomba B.
+- **Lámina 28:** vuelven los audios y la línea del evento de la bomba B.
 
 Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las veredas y el jefe son inventados. Dilo así cuando toque.
 
@@ -129,9 +129,9 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 8 · MLOps en la nube: un lazo cerrado
+## 8 · MLOps en la nube: un loop cerrado
 <!-- id: nube -->
-**0:25** · sin clics · *los puntos recorren el lazo*
+**0:25** · sin clics · *los puntos recorren el loop*
 
 "Cuando el modelo corre en la nube, esto está bastante resuelto. Cada petición y cada respuesta pasan por el endpoint: se capturan, se comparan con el entrenamiento, suena una alerta si algo se desvía, y se reentrena."
 
@@ -143,11 +143,11 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 <!-- id: edge -->
 **0:45** · 3 clics · *una restricción por clic; dila como sale en pantalla*
 
-"Ahora bajemos el modelo a la estación, al lado de la bomba. Mismo lazo… pero ya nada pasa por un endpoint."
+"Ahora bajemos el modelo a la estación, al lado de la bomba. Mismo loop… pero ya nada pasa por un endpoint."
 
 **[CLIC]** "Uno: equipos de varias generaciones. Una estación tiene un equipo ARM, otra un x86 de hace años, la nueva trae NPU. El mismo modelo no corre igual en los tres."
 
-**[CLIC]** "Dos: red intermitente. Se va la señal en la vereda, y el lazo de la nube se apaga."
+**[CLIC]** "Dos: red intermitente. Se va la señal en la vereda, y el loop de la nube se apaga."
 
 **[CLIC]** "Y tres: el audio no puede salir de la estación. No cabe, y no debe."
 
@@ -181,39 +181,24 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ## 11 · Monitorear la infraestructura no es monitorear el modelo
 <!-- id: preguntas -->
-**0:35** · sin clics · *léelo por filas: la columna de la izquierda es lo que ya tienen; la del centro, lo que falta*
+**0:30** · sin clics
 
-"Las preguntas de siempre siguen valiendo: ¿el servicio está arriba?, ¿cuánta CPU usa?, ¿hay errores?, ¿responde a tiempo? Pero ninguna dice nada del modelo."
+"Las preguntas de siempre siguen valiendo: ¿el servicio está arriba?, ¿cuánta CPU usa?, ¿hay errores? Pero ninguna dice nada del modelo. Al modelo hay que hacerle otras cuatro."
 
-"Al modelo hay que preguntarle otras cuatro cosas. ¿Sigue distinguiendo correctamente? ¿Cambió la distribución de los datos? ¿Aumentaron los falsos positivos o negativos? ¿Y sus predicciones siguen siendo útiles?"
+"¿Sigue distinguiendo correctamente? ¿Cambió la distribución de los datos? ¿Aumentaron los falsos positivos o negativos? ¿Y sus predicciones siguen siendo útiles?"
 
-"La columna de la derecha es cómo responde cada pregunta la demo que van a ver. La última es la más difícil: solo la contesta el negocio, cuando la orden de mantenimiento dice si la alerta era real."
-
+"La última es la más difícil: solo la contesta el negocio, cuando la orden de mantenimiento dice si la alerta era real. En la demo van a ver cómo se responden las otras tres."
 ---
 
-## 12 · A mano alzada 1
-<!-- id: reflexion1 -->
-**0:25** · sin clics · *la barra de abajo cuenta cinco segundos*
-
-"Pregunta a mano alzada. ¿A quién le ha sonado el pager por un modelo?" *(espera las manos)*
-
-*Si hay pocas:* "Pocas manos. ¿Y por un disco lleno?" *(risas)* "Exacto. El pager suena por el proceso. Por el modelo, casi nunca."
-
-*Si hay muchas:* "Bienvenidos al club. ¿Y cuántos se enteraron por el cliente antes que por el pager?"
-
-"Hoy vamos a hacer que el modelo también pueda despertar a alguien."
-
----
-
-## 13 · 02 · El patrón
+## 12 · 02 · El patrón
 <!-- id: div2 -->
-**0:05** · *divisor* · *reloj: 7:05*
+**0:05** · *divisor* · *reloj: 6:35*
 
 "¿Qué hace falta para gobernarlo? Primero, abramos el equipo."
 
 ---
 
-## 14 · Arquitectura del equipo en la estación
+## 13 · Arquitectura del equipo en la estación
 <!-- id: equipo -->
 **0:45** · 3 clics · *una capa por clic*
 
@@ -221,13 +206,13 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 **[CLIC]** "Encima, el modelo no llega como un archivo suelto: llega como un artefacto con versión y hash. Si alguien lo tocó, no se instala."
 
-**[CLIC]** "Luego, un agente. Nadie le empuja nada a la estación: el agente trae el estado deseado cuando hay red."
+**[CLIC]** "Luego, un agente. Nadie le empuja nada a la estación: el agente trae el desired state cuando hay red."
 
 **[CLIC]** "Y arriba, la pieza que falta en casi todos lados: una cola de eventos. Cada decisión queda guardada hasta que haya red."
 
 ---
 
-## 15 · Cinco piezas para gobernar el modelo
+## 14 · Cinco piezas para gobernarlo
 <!-- id: flujo -->
 **1:10** · 6 clics · *una pieza por clic; la leyenda de arriba se enciende con cada una*
 
@@ -237,37 +222,37 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 **[CLIC]** "Dos: artefacto verificable. Cada versión, con su huella, en un registro donde nada se sobrescribe."
 
-**[CLIC]** "Tres: estado deseado. La central declara qué debería tener cada equipo, y el equipo lo trae cuando puede."
+**[CLIC]** "Tres: desired state. La central declara qué debería tener cada equipo, y el equipo lo trae cuando puede."
 
 **[CLIC]** "Cuatro: evento de inferencia. El modelo deja constancia de lo que decide. Si no hay red, se encola."
 
-**[CLIC]** "Cinco: la compuerta. Una condición que mira esos eventos y decide sola si sigue o vuelve atrás. Es el lazo rápido: minutos."
+**[CLIC]** "Cinco: el gate. Una condición que mira esos eventos y decide sola si sigue o vuelve atrás. Es el loop rápido: minutos."
 
-**[CLIC]** "Y con esos mismos eventos se reentrena: el lazo lento, días. Abajo, lo que atraviesa todo: identidad, mínimo privilegio, cifrado y auditoría. Ninguna de estas piezas depende de una nube en particular."
+**[CLIC]** "Y con esos mismos eventos se reentrena: el loop lento, días. Abajo, lo que atraviesa todo: identidad, mínimo privilegio, cifrado y auditoría. Ninguna de estas piezas depende de una nube en particular."
 
 ---
 
-## 16 · El mismo patrón en AWS
+## 15 · El mismo patrón en AWS
 <!-- id: aws -->
 **0:50** · 6 clics · *misma geometría que la anterior; avanza a buen ritmo, los pasos que vienen abren cada casilla*
 
 "El mismo dibujo, en AWS. Cada casilla ahora tiene nombre."
 
-**[CLIC]** "SageMaker AI entrena y exporta el modelo." **[CLIC]** "El registro es S3, un prefijo por versión, y IoT Greengrass lo empaca como componente." **[CLIC]** "El estado deseado es un despliegue de Greengrass, que llega por IoT Core con un certificado por equipo."
+**[CLIC]** "SageMaker AI entrena y exporta el modelo." **[CLIC]** "El registro es S3, un prefijo por versión, y IoT Greengrass lo empaca como componente." **[CLIC]** "El desired state es un despliegue de Greengrass, que llega por IoT Core con un certificado por equipo."
 
-**[CLIC]** "Cada decisión entra por IoT Core y una regla la deja en CloudWatch Logs." **[CLIC]** "La compuerta: una alarma invoca una Lambda que vuelve a desplegar la última versión buena." **[CLIC]** "Y abajo, IAM, X.509, KMS y CloudTrail."
+**[CLIC]** "Cada decisión entra por IoT Core y una regla la deja en CloudWatch Logs." **[CLIC]** "El gate: una alarma invoca una Lambda que vuelve a desplegar la última versión buena." **[CLIC]** "Y abajo, IAM, X.509, KMS y CloudTrail."
 
 ---
 
-## 17 · 03 · Los seis pasos
+## 16 · 03 · Los seis pasos
 <!-- id: div3 -->
-**0:10** · *divisor con la espina* · *reloj: 9:55*
+**0:10** · *divisor con la espina* · *reloj: 9:25*
 
 "Seis pasos: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear. En cada uno, una línea de la bomba."
 
 ---
 
-## 18 · Paso 1 · Entrenar con sonido normal
+## 17 · Paso 1 · Entrenar con sonido normal
 <!-- id: entrenar -->
 **1:00** · 3 clics
 
@@ -283,11 +268,11 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 *La bomba:* "Aprende solo con sonido normal: las fallas son raras."
 
-*En la PoC la fábrica es model/train.py en mi portátil, no SageMaker AI. Lo dices en la lámina 26.*
+*En la PoC la fábrica es model/train.py en mi portátil, no SageMaker AI. Lo dices en la lámina 25.*
 
 ---
 
-## 19 · Paso 2 · Optimizar para cada chip
+## 18 · Paso 2 · Optimizar para cada chip
 <!-- id: optimizar -->
 **1:10** · 3 clics
 
@@ -307,7 +292,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 20 · Paso 3 · Empaquetar como componente
+## 19 · Paso 3 · Empaquetar como componente
 <!-- id: componente -->
 **1:00** · 4 clics · *una anotación por clic*
 
@@ -329,29 +314,29 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 21 · Paso 4 · Desplegar por anillos
+## 20 · Paso 4 · Desplegar por rings
 <!-- id: anillos -->
 **1:05** · 3 clics
 
-"Paso cuatro. ¿Cómo llega a mil equipos sin romperlos todos un martes? Con despliegues de IoT Greengrass, un thing group por anillo."
+"Paso cuatro. ¿Cómo llega a mil equipos sin romperlos todos un martes? Con despliegues de IoT Greengrass, un thing group por ring."
 
-"Anillo cero: una estación, el canario. Recibe la versión nueva primero."
+"Ring 0: una estación, el canary. Recibe la versión nueva primero."
 
-**[CLIC]** "Si pasa la compuerta, anillo uno: el resto de la flota, en olas que crecen."
+**[CLIC]** "Si pasa el gate, ring 1: el resto de la flota, en waves que crecen."
 
 **[CLIC]** "El despliegue trae dos protecciones: si fallan demasiados equipos, se cancela; y si un equipo no arranca la versión nueva, vuelve a la que tenía."
 
-**[CLIC]** "Y la vuelta: la alarma ve fallas que nadie oyó y despliega la última versión buena. El anillo 1 nunca recibe la versión mala."
+**[CLIC]** "Y el rollback: la alarma ve fallas que nadie oyó y despliega la última versión buena. El ring 1 nunca recibe la versión mala."
 
 "Seguro alguien está pensando: 'Greengrass ya hace rollback'. Sí, de despliegues que fallan. Para Greengrass, un modelo que se instala bien y no oye es un despliegue exitoso."
 
-*La bomba:* "Una estación como canario."
+*La bomba:* "Una estación como canary."
 
 *Fuentes: failureHandlingPolicy = ROLLBACK por defecto, https://docs.aws.amazon.com/greengrass/v2/APIReference/API_DeploymentPolicies.html · abortConfig y jobExecutionsRolloutConfig, https://docs.aws.amazon.com/cli/latest/reference/greengrassv2/create-deployment.html*
 
 ---
 
-## 22 · Paso 5 · Operar sin red
+## 21 · Paso 5 · Operar sin red
 <!-- id: sinred -->
 **0:50** · 2 clics
 
@@ -369,7 +354,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 23 · Paso 6 · Monitorear lo que decide el modelo
+## 22 · Paso 6 · Monitorear lo que decide el modelo
 <!-- id: monitoreo -->
 **1:05** · 5 clics · *un tramo de la tubería por clic*
 
@@ -383,17 +368,17 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 **[CLIC]** "Una alarma mira esa métrica."
 
-**[CLIC]** "Y la alarma invoca la Lambda, que despliega la última versión buena al anillo 0."
+**[CLIC]** "Y la alarma invoca la Lambda, que despliega la última versión buena al ring 0."
 
-"El error típico: poner la alarma sobre CPU y errores. Ya vimos que eso se queda en verde. La compuerta mira al modelo."
+"El error típico: poner la alarma sobre CPU y errores. Ya vimos que eso se queda en verde. El gate mira al modelo."
 
-"En producción no sabes en el momento si la bomba fallaba: esa verdad solo existe en la demo. La etiqueta llega tarde, con la orden de mantenimiento, y mientras tanto comparas el canario contra el resto."
+"En producción no sabes en el momento si la bomba fallaba: esa verdad solo existe en la demo. La etiqueta llega tarde, con la orden de mantenimiento, y mientras tanto comparas el canary contra el resto."
 
 *La bomba:* "Las señales de la bomba: alertas, score, entrada y versión."
 
 ---
 
-## 24 · A mano alzada 2
+## 23 · A mano alzada
 <!-- id: reflexion3 -->
 **0:35** · 1 clic · *la barra cuenta cinco segundos*
 
@@ -407,19 +392,19 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 25 · 04 · Demostración
+## 24 · 04 · Demostración
 <!-- id: div4 -->
-**0:05** · *divisor* · *reloj: 16:50*
+**0:05** · *divisor* · *reloj: 16:20*
 
 "Suficiente teoría. Vamos a la estación."
 
 ---
 
-## 26 · Arquitectura de la demostración
+## 25 · Arquitectura de la demostración
 <!-- id: poc -->
 **0:40** · sin clics
 
-"Esto es lo que monté. No traje bombas al escenario: cada bomba es un contenedor en una EC2, con el nucleus real de IoT Greengrass adentro. Cinco bombas: la 1 es el anillo 0, el canario; de la 2 a la 5, el anillo 1."
+"Esto es lo que monté. No traje bombas al escenario: cada bomba es un contenedor en una EC2, con el nucleus real de IoT Greengrass adentro. Cinco bombas: la 1 es el ring 0, el canary; de la 2 a la 5, el ring 1."
 
 "Lo que suena es audio real de MIMII DUE. Y todo lo demás es AWS de verdad: EC2, IoT Greengrass, IoT Core, S3, CloudWatch, Lambda y Parameter Store. Todo sale de Terraform, con GitHub Actions."
 
@@ -429,7 +414,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 27 · Demostración en tres actos
+## 26 · Demostración en tres actos
 <!-- id: demo -->
 **6:00** · 2 clics en la lámina, después las terminales · *la lámina es el mapa; lo real está en la terminal*
 
@@ -437,11 +422,11 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 **[CLIC]** "Dos: sin red. La 3 se queda sin señal."
 
-**[CLIC]** "Tres: desplegar por anillos y volver." *(señala la frase de abajo)* "Y esa frase es el final de la película. No la lean todavía." *(risas)*
+**[CLIC]** "Tres: ring deployment y rollback." *(señala la frase de abajo)* "Y esa frase es el final de la película. No la lean todavía." *(risas)*
 
 *Cambia a las terminales: `./demo/watch.sh` a la izquierda; a la derecha arriba, el dashboard `station`; a la derecha abajo, la terminal de Session Manager en la EC2. Letra grande.*
 
-"Esto es la estación en vivo. Cada línea es un clip que una bomba escuchó y decidió: la hora, qué bomba, qué versión, si alertó, el score contra el umbral, cómo era la entrada y en cuántos milisegundos. Esas son las señales doradas de un modelo. El audio no está ahí. Nunca sale."
+"Esto es la estación en vivo. Cada línea es un clip que una bomba escuchó y decidió: la hora, qué bomba, qué versión, si alertó, el score contra el umbral, cómo era la entrada y en cuántos milisegundos. Esas son las golden signals de un modelo. El audio no está ahí. Nunca sale."
 
 **Acto 1 · Escuchar (1:00)**
 
@@ -467,9 +452,9 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 *Escribe* `./demo/fault.sh pump-03 off`
 
-**Acto 3 · Desplegar por anillos y volver (3:05)**
+**Acto 3 · Ring deployment y rollback (3:05)**
 
-*Señala la bomba 1, que ya corre v2.0.0 (en el ensayo llegó en 13 a 15 s); de la 2 a la 5 siguen en v1.0.0.* "La versión nueva se reentrenó con más audio. Más datos, mejor modelo… ¿cierto? Y da menos alertas: en operación están felices. Va solo al anillo 0, el canario. Sin errores, misma latencia. Para Greengrass, despliegue exitoso."
+*Señala la bomba 1, que ya corre v2.0.0 (en el ensayo llegó en 13 a 15 s); de la 2 a la 5 siguen en v1.0.0.* "La versión nueva se reentrenó con más audio. Más datos, mejor modelo… ¿cierto? Y da menos alertas: en operación están felices. Va solo al ring 0, el canary. Sin errores, misma latencia. Para Greengrass, despliegue exitoso."
 
 *Escribe* `./demo/fault.sh pump-01` — "Ahora la 1 suena con falla."
 
@@ -477,15 +462,15 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 "¿Qué pasó? El audio extra de la v2 incluía la semana en que una bomba ya estaba fallando. Nadie lo limpió. El modelo aprendió que fallar es normal. Corre sin errores, da menos alertas… y no oye las fallas."
 
-*Mientras la alarma junta datos:* "Ahora no voy a tocar nada. La compuerta trabaja sola." *Cambia al deck: tecla A y una flecha a la derecha te llevan al anexo A2. Cuenta la secuencia con la nota de A2 (un minuto). M te devuelve aquí.*
+*Mientras la alarma junta datos:* "Ahora no voy a tocar nada. El gate trabaja solo." *Cambia al deck: tecla A y una flecha a la derecha te llevan al anexo A2. Cuenta la secuencia con la nota de A2 (un minuto). M te devuelve aquí.*
 
-*Vuelve a watch.sh. Cuando la 1 salga en v1.0.0 con ALERT:* "Volvió. v1.0.0, ALERT otra vez: la falla se oye. Nadie entró al equipo. Y el anillo 1 nunca recibió la v2."
+*Vuelve a watch.sh. Cuando la 1 salga en v1.0.0 con ALERT:* "Volvió. v1.0.0, ALERT otra vez: la falla se oye. Nadie entró al equipo. Y el ring 1 nunca recibió la v2."
 
 *Escribe* `./demo/fault.sh pump-01 off`
 
-*Vuelve a esta lámina y dilo mirando a la sala:* "Greengrass revierte despliegues fallidos, no modelos equivocados. Esa compuerta la pones tú."
+*Vuelve a esta lámina y dilo mirando a la sala:* "Greengrass revierte despliegues fallidos, no modelos equivocados. Ese gate lo pones tú."
 
-*Tiempos medidos en los ensayos del 12 de octubre: de `fault.sh pump-01` a la v1 otra vez, entre 1:40 y 2:15 (la alarma salta entre 1:30 y 2:00; la Lambda despliega 1 s después; la bomba vuelve unos 13 s más tarde). Depende de en qué segundo del minuto cae la falla. Tope: si a los tres minutos de `fault.sh pump-01` la 1 no ha vuelto, no esperes más: «La alarma va a su ritmo; para no robarles tiempo, les muestro cómo termina», y pon el video desde la vuelta.*
+*Tiempos medidos en los ensayos del 12 de octubre: de `fault.sh pump-01` a la v1 otra vez, entre 1:40 y 2:15 (la alarma salta entre 1:30 y 2:00; la Lambda despliega 1 s después; la bomba vuelve unos 13 s más tarde). Depende de en qué segundo del minuto cae la falla. Tope: si a los tres minutos de `fault.sh pump-01` la 1 no ha vuelto, no esperes más: «La alarma va a su ritmo; para no robarles tiempo, les muestro cómo termina», y pon el video desde el rollback.*
 
 *Plan B, si la red del evento falla (watch.sh sin líneas en 30 s o la EC2 no responde): pon el video de respaldo, cortado por actos, y dilo con naturalidad: «La red de un evento es el peor lugar del mundo para depender de MQTT. Por eso traje la grabación: es la misma demo, grabada en el ensayo.» Narra encima con este mismo guion.*
 
@@ -493,9 +478,9 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 28 · Cinco recomendaciones
+## 27 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 23:35 al entrar*
+**1:05** · 4 clics · *reloj: 23:05 al entrar*
 
 "Les dejo cinco cosas que funcionan. La mayoría no las va a hacer el lunes. Los que las hagan van a dormir mejor."
 
@@ -503,17 +488,17 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 **[CLIC]** "Dos: optimiza por chip y mide en el chip."
 
-**[CLIC]** "Tres: despliega por anillos, con una compuerta que mire al modelo y no solo al proceso."
+**[CLIC]** "Tres: despliega por rings, con un gate que mire al modelo y no solo al proceso."
 
 **[CLIC]** "Cuatro: diseña para estar sin red: cola local y decisiones locales."
 
 **[CLIC]** "Y cinco: que el modelo cuente qué decide; el dato crudo se queda en el equipo."
 
-*Si el reloj marca 23:40 o menos al llegar aquí (+0:25), cuenta lo que pasó en el primer ensayo, que es real: «La primera vez que monté esto en AWS, ninguna bomba arrancaba. El instalador de Greengrass decide el formato del archivo de configuración por la extensión, y mi archivo no tenía extensión. Una línea. Por eso se ensaya en el equipo de verdad.»*
+*Si el reloj marca 23:30 o menos al llegar aquí (+0:25), cuenta lo que pasó en el primer ensayo, que es real: «La primera vez que monté esto en AWS, ninguna bomba arrancaba. El instalador de Greengrass decide el formato del archivo de configuración por la extensión, y mi archivo no tenía extensión. Una línea. Por eso se ensaya en el equipo de verdad.»*
 
 ---
 
-## 29 · La frase final: ¿esta bomba está fallando?
+## 28 · La frase final: ¿esta bomba está fallando?
 <!-- id: final -->
 **0:45** · 2 clics · *cierre circular: vuelve a los audios del inicio*
 
@@ -533,23 +518,23 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## 30 · Recursos y contacto
+## 29 · Recursos y contacto
 <!-- id: recursos -->
 **0:15** · sin clics
 
-"Todo está en el repo de ese QR: la demo con el paso a paso, las láminas y el guion. Y si van a leer una sola cosa: The ML Test Score, de Google."
+"Todo está en el repo de ese QR: la demo con el paso a paso, las láminas y el guion."
 
 *El QR lleva a https://github.com/alejandro945/mlops-a-ciegas (público desde el 12 de octubre; verificado leyendo el QR de la lámina). Si lo necesitas suelto, está en talk/assets/qr-repo.png y qr-repo.svg.*
 
 ---
 
-## 31 · Gracias
+## 30 · Gracias
 <!-- id: cierre -->
 **0:15** · sin clics
 
 "Muchas gracias." *(espera el aplauso)* "Con gusto respondo sus preguntas."
 
-*Anexos: la tecla A abre A1; las flechas los recorren; M o Esc te devuelven. A1 el evento, A2 la vuelta paso a paso, A3 qué revierte Greengrass solo, A4 permisos y costo, A5 de la demo a producción, A6 qué método de drift, A7 regulación, A8 fuentes, A9 señales doradas, A10 audio crudo contra eventos. Más respuestas en «Preguntas difíciles», al final de este archivo.*
+*Anexos: la tecla A abre A1; las flechas los recorren; M o Esc te devuelven. A1 el evento, A2 el rollback paso a paso, A3 qué revierte Greengrass solo, A4 permisos y costo, A5 de la demo a producción, A6 qué método de drift, A7 regulación, A8 fuentes, A9 golden signals, A10 audio crudo contra eventos. Más respuestas en «Preguntas difíciles», al final de este archivo.*
 
 ---
 
@@ -563,17 +548,17 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## A2 · La vuelta automática, paso a paso
+## A2 · El rollback automático, paso a paso
 <!-- id: a2 -->
 *Úsalo mientras esperas la alarma del acto 3. Dura un minuto. M te devuelve a la demo.*
 
 "Esto es lo que está pasando ahora mismo, sin que yo toque nada."
 
-"Desplegué la 2.0.0 al thing group StationRing0. La bomba 1 trajo su estado deseado, bajó los archivos de S3, verificó el digest e instaló. Para Greengrass, éxito: la v2 corre sin errores."
+"Desplegué la 2.0.0 al thing group StationRing0. La bomba 1 trajo su desired state, bajó los archivos de S3, verificó el digest e instaló. Para Greengrass, éxito: la v2 corre sin errores."
 
 "La bomba suena con falla y la v2 no avisa. Cada evento pasa por la regla, llega a CloudWatch Logs, y el filtro cuenta una falla no oída."
 
-"Cuando en un minuto se juntan ocho o más, la alarma station-missed-faults pasa a ALARM e invoca la Lambda. La Lambda le pregunta a Parameter Store cuál es la última versión buena. Responde 1.0.0. Y crea un despliegue de la 1.0.0, solo al anillo 0."
+"Cuando en un minuto se juntan ocho o más, la alarma station-missed-faults pasa a ALARM e invoca la Lambda. La Lambda le pregunta a Parameter Store cuál es la última versión buena. Responde 1.0.0. Y crea un despliegue de la 1.0.0, solo al ring 0."
 
 "La bomba 1 vuelve a la v1, y la falla se oye otra vez. Yo solo aparezco en el primer paso. Del quinto en adelante, nadie toca nada."
 
@@ -583,9 +568,9 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ## A3 · ¿Qué revierte Greengrass solo?
 <!-- id: a3 -->
-*Si preguntan por qué hace falta la compuerta si Greengrass ya revierte.*
+*Si preguntan por qué hace falta el gate si Greengrass ya revierte.*
 
-"Tres cosas sí. Si el artefacto en S3 cambió, el digest no coincide y el despliegue falla. Si el componente no instala o no arranca, failureHandlingPolicy en ROLLBACK, que viene por defecto, vuelve a la versión anterior. Y si fallan muchos equipos del anillo, abortConfig cancela el despliegue."
+"Tres cosas sí. Si el artefacto en S3 cambió, el digest no coincide y el despliegue falla. Si el componente no instala o no arranca, failureHandlingPolicy en ROLLBACK, que viene por defecto, vuelve a la versión anterior. Y si fallan muchos equipos del ring, abortConfig cancela el despliegue."
 
 "Y una no: un modelo que corre bien y decide mal. Para Greengrass, eso salió bien. Lo ven los eventos del modelo y una alarma que los mire."
 
@@ -607,7 +592,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 <!-- id: a5 -->
 *Si preguntan qué cambia para una flota real de estaciones.*
 
-"Cinco cambios. Un evento por clip pasa a un resumen por minuto, y el detalle solo cuando algo cambia. La cola en memoria pasa a disco, con tope y prioridad. El nucleus en un contenedor pasa a nucleus lite en el equipo pequeño. El anillo de una estación pasa a una compuerta que compara el canario contra el anillo. Y la respuesta conocida de la demo pasa a etiquetas tardías: la orden de mantenimiento dice cuándo fue falla."
+"Cinco cambios. Un evento por clip pasa a un resumen por minuto, y el detalle solo cuando algo cambia. La cola en memoria pasa a disco, con tope y prioridad. El nucleus en un contenedor pasa a nucleus lite en el equipo pequeño. El ring de una estación pasa a un gate que compara el canary contra el ring. Y la respuesta conocida de la demo pasa a etiquetas tardías: la orden de mantenimiento dice cuándo fue falla."
 
 ---
 
@@ -647,11 +632,11 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ---
 
-## A9 · Las señales doradas de un modelo
+## A9 · Las golden signals de un modelo
 <!-- id: senales -->
 *Si preguntan qué mirar en el dashboard. En la demo las nombras sobre las columnas de watch.sh.*
 
-"Los que venimos de SRE conocemos las señales doradas de un servicio: latencia, tráfico, errores y saturación. Las de un modelo, con la bomba: ¿qué decide? Alertas por bomba. ¿Con cuánta seguridad? El score contra el umbral. ¿Se parece a lo que aprendió? El nivel de la entrada. ¿Qué corre dónde? La versión por equipo. Ninguna sola alcanza."
+"Los que venimos de SRE conocemos las golden signals de un servicio: latencia, tráfico, errores y saturación. Las de un modelo, con la bomba: ¿qué decide? Alertas por bomba. ¿Con cuánta seguridad? El score contra el umbral. ¿Se parece a lo que aprendió? El nivel de la entrada. ¿Qué corre dónde? La versión por equipo. Ninguna sola alcanza."
 
 ---
 
@@ -674,20 +659,20 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 | Bloque | Láminas | Duración | Reloj al terminar |
 |---|---|---|---|
 | Apertura | 1–6 | 3:35 | 3:35 |
-| 01 · El problema | 7–12 | 3:30 | 7:05 |
-| 02 · El patrón | 13–16 | 2:50 | 9:55 |
-| 03 · Los seis pasos | 17–24 | 6:55 | 16:50 |
-| 04 · Demostración | 25–27 | 6:45 | 23:35 |
-| Cierre | 28–31 | 2:20 | 25:55 |
-| **Total** | | **25:55** | |
+| 01 · El problema | 7–11 | 3:00 | 6:35 |
+| 02 · El patrón | 12–15 | 2:50 | 9:25 |
+| 03 · Los seis pasos | 16–23 | 6:55 | 16:20 |
+| 04 · Demostración | 24–26 | 6:45 | 23:05 |
+| Cierre | 27–30 | 2:20 | 25:25 |
+| **Total** | | **25:25** | |
 
-Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 1:20 (con el despliegue de la v2 lanzado durante la espera), acto 3 2:45 y remate 0:15. El acto 3 es lo único que no controlas: si en el ensayo la vuelta pasa de 2:30, lleva el tope y el video listos. La anécdota de la lámina 28 solo entra si vas adelantado.
+Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 1:20 (con el despliegue de la v2 lanzado durante la espera), acto 3 2:45 y remate 0:15. El acto 3 es lo único que no controlas: si en el ensayo el rollback pasa de 2:30, lleva el tope y el video listos. La anécdota de la lámina 27 solo entra si vas adelantado.
 
 ## Antes de subir
 
 **Una hora antes**
 - EC2 encendida y las cinco bombas *Healthy*: `aws greengrassv2 list-core-devices --query 'coreDevices[].[coreDeviceThingName,status]' --output table`.
-- Toda la flota en 1.0.0: los dos thing groups con su despliegue en ACTIVE (la lámina 24 lo muestra así).
+- Toda la flota en 1.0.0: los dos thing groups con su despliegue en ACTIVE (la lámina 23 lo muestra así).
 - `/station/last_good_version` = 1.0.0.
 - Las cinco bombas suenan normal: `./demo/fault.sh pump-0N off` y `./demo/domain.sh pump-0N normal`.
 - Las cinco conectadas a la red `station` (`docker network inspect station`).
@@ -705,15 +690,15 @@ Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 
 - **«¿Y SageMaker Neo? ¿No es eso lo de compilar por chip?»** Lo probé. Neo no compiló el modelo tal cual: no soporta el operador `Scaler` que trae el modelo de scikit-learn, ni el `MatMulInteger` del INT8. Reescribí ese operador con operaciones estándar y ahí sí compiló, para x86 y ARM64, en un minuto. Pero el resultado corre con su propio runtime, DLR, cuya última versión es de 2021, y su lista de equipos es de otra generación (Jetson TX1 y TX2, Raspberry Pi 3). Cuando AWS cerró SageMaker Edge Manager en 2024, recomendó ONNX Runtime para el equipo y Greengrass para desplegar y monitorear. Eso es lo que ven en la demo.
 - **«¿Por qué no despliegas el INT8?»** En la CPU de la demo ahorra poco: el clip pasa de {{M:device.lat_fp32_ms}} a {{M:device.lat_int8_ms}}, porque el tiempo se va en preparar el audio. Y decide igual. En un equipo con NPU sí vale la pena; ahí iría un artefacto por chip, con un manifiesto por arquitectura en la receta.
 - **«¿Por qué no Kubernetes en cada estación?»** En un equipo pequeño, un agente que baja componentes alcanza y pesa menos. Cuando la estación es una planta grande, Outposts con EKS local (paso 5).
-- **«En producción no sabes si la bomba fallaba.»** Cierto: la verdad del clip solo existe en la demo. En producción, el canario se compara contra el anillo (tasa de alertas, score y entrada) y la etiqueta llega tarde, con la orden de mantenimiento (A5).
+- **«En producción no sabes si la bomba fallaba.»** Cierto: la verdad del clip solo existe en la demo. En producción, el canary se compara contra el ring (tasa de alertas, score y entrada) y la etiqueta llega tarde, con la orden de mantenimiento (A5).
 - **«¿Por qué AUC y no exactitud?»** Con la otra velocidad todos los scores suben: las fallas detectadas pueden subir junto con las falsas alarmas. La AUC mide si el modelo separa una bomba sana de una que falla, sin depender del umbral.
 - **«¿Por qué un autoencoder y no un clasificador?»** Las fallas son raras y no tienes ejemplos de todas. Aprende lo normal y avisa cuando algo suena distinto.
 - **«¿Escogiste la v2 para que fallara en la demo?»** Se evalúa con fallas que no vio al entrenar, en todo el set de prueba: {{M:v1.recall_source}} de fallas detectadas con la v1 contra {{M:v2.recall_source}} con la v2. Los clips de la flota se eligen para que la demo sea repetible; las cifras salen de todo el set.
 - **«¿Se pierden eventos sin red?»** En el ensayo no se perdió ninguno: el número de secuencia de cada bomba no tuvo huecos. Sí llegaron unos pocos duplicados al volver la red: MQTT con QoS 1 entrega «al menos una vez».
 - **«¿Cuánto cuesta la PoC?»** Lo que más pesa es la EC2; la cifra se saca de Cost Explorer (A4).
 - **«¿Qué pasa si la cola se llena?»** El nucleus rechaza los mensajes nuevos. Para horas o días sin red, la cola va a disco.
-- **«¿Por qué CloudWatch Logs y no una base de series de tiempo?»** Para la compuerta, un filtro de métrica alcanza. Si quieres análisis, otra regla de IoT puede mandar los mismos eventos a S3.
-- **«¿Esto sirve con otra nube?»** El patrón de la lámina 15 no depende de ninguna. La lámina 16 es una forma de construirlo.
+- **«¿Por qué CloudWatch Logs y no una base de series de tiempo?»** Para el gate, un filtro de métrica alcanza. Si quieres análisis, otra regla de IoT puede mandar los mismos eventos a S3.
+- **«¿Esto sirve con otra nube?»** El patrón de la lámina 14 no depende de ninguna. La lámina 15 es una forma de construirlo.
 - **«¿Cómo firmas el modelo?»** Greengrass verifica el digest de cada artefacto. Para firma y procedencia existe un estándar abierto: OpenSSF Model Signing, sobre Sigstore.
 - **«¿Cuántas bombas aguanta la PoC?»** En el ensayo, cada bomba usó unos 220 MB y las cinco juntas 1,4 GB de 7,8. Lo que limita es la memoria, porque cada nucleus es una JVM.
 - **«¿Seguro que el audio no sale?»** El componente lee el audio montado de solo lectura y el permiso IPC solo le deja publicar en `station/events`.
@@ -744,6 +729,5 @@ Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 
   - `abortConfig` y `jobExecutionsRolloutConfig`: https://docs.aws.amazon.com/cli/latest/reference/greengrassv2/create-deployment.html
   - EKS local en Outposts sin red: https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-network-disconnects.html
   - Greengrass en Docker: https://docs.aws.amazon.com/greengrass/v2/developerguide/run-greengrass-docker.html
-- Breck et al., *The ML Test Score* (Google, 2017).
 - Métodos de drift (A6): documentación de Evidently y NannyML; crítica a los umbrales del PSI: arXiv:2303.01227.
 - Regulación (A7): Reglamento (UE) 2024/1689, arts. 12, 19 y 72, con las fechas del Reglamento (UE) 2026/1744; NIST AI 100-1; ISO/IEC 42001:2023.

@@ -135,7 +135,7 @@ NODES = [
     ("iot_sensor",  200,  708, 52, "3",     ("Micrófono", "el audio de la bomba"),       ("Datos", "entran al modelo"), "iot_sensor_gen"),
     ("iotcore",     690,  356, 64, "2 3",   ("IoT Core", "MQTT · mTLS X.509"),           ("Broker", "identidad por equipo"), None),
     ("greengrass",  900,  356, 64, "1 2 4", ("IoT Greengrass", "componentes · deployments"),
-                                                                                         ("Orquestador", "estado deseado"), None),
+                                                                                         ("Orquestador", "desired state"), None),
     ("s3",          1110, 356, 64, "1",     ("S3", "artefactos versionados"),            ("Registro", "artefactos firmados"), None),
     ("optimize",    1262, 356, 64, "o",     ("Optimizar", "un artefacto por chip"),      ("Optimizar", "un artefacto por chip"), "sm_model"),
     ("sagemaker",   1412, 356, 64, "o s",   ("SageMaker AI", "entrena y evalúa"),        ("Entrenar", "entrena y evalúa"), None),
@@ -166,13 +166,13 @@ def _poc_site():
     # ring 0
     add(f'<g data-node="ring0"{delay(120)}><g data-p="1 2 3">')
     box(116, 246, 340, 112, dashed=True, op=.55)
-    text(130, 272, "ANILLO 0 · StationRing0", 15, ACC, 700, ls=.6)
+    text(130, 272, "RING 0 · StationRing0", 15, ACC, 700, ls=.6)
     _container(196, 290, 180, "pump-01")
     add("</g></g>")
     # ring 1
     add(f'<g data-node="ring1"{delay(120)}><g data-p="1 2 3">')
     box(116, 378, 340, 196, dashed=True, op=.55)
-    text(130, 404, "ANILLO 1 · StationRing1", 15, INK, 700, op=.75, ls=.6)
+    text(130, 404, "RING 1 · StationRing1", 15, INK, 700, op=.75, ls=.6)
     for k, n in enumerate(["pump-02", "pump-03", "pump-04", "pump-05"]):
         _container(130 + (k % 2) * 166, 422 + (k // 2) * 66, 154, n)
     add("</g></g>")
@@ -201,8 +201,8 @@ def build(mode="ref", deck=False, slow=True):
             f'{t1}<tspan font-weight="700">{t2}</tspan></text>')
 
     # ── piece legend ─────────────────────────────────────────────
-    leg = [("o", "optimizar por chip"), ("1", "artefacto verificable"), ("2", "estado deseado"),
-           ("3", "evento de inferencia"), ("4", "compuerta")]
+    leg = [("o", "optimizar por chip"), ("1", "artefacto verificable"), ("2", "desired state"),
+           ("3", "evento de inferencia"), ("4", "gate")]
     for i, (n, t) in enumerate(leg):
         lx, ly = 892 + (i % 3) * 212, 100 + (i // 3) * 36
         add(f'<g data-p="{n}">')
@@ -220,7 +220,7 @@ def build(mode="ref", deck=False, slow=True):
     group(580, 196, 924, 614, "grp_cloud", "Nube o datacenter" if gen else "AWS Cloud", gen=gen, key="cloud")
     group(604, 244, 400, 236, None, "PLANO DE CONTROL", dashed=True, op=.45)
     group(1028, 244, 452, 236, None, "FÁBRICA DE MODELOS", dashed=True, op=.45)
-    group(604, 520, 876, 214, None, "OBSERVACIÓN Y COMPUERTA", dashed=True, op=.45, right=True)
+    group(604, 520, 876, 214, None, "OBSERVACIÓN Y GATE", dashed=True, op=.45, right=True)
 
     # ── nodes ────────────────────────────────────────────────────
     for key, cx, cy, size, p, aws, gl, ic in NODES:
@@ -306,11 +306,11 @@ def build(mode="ref", deck=False, slow=True):
         arrow([(1480, 690), (1492, 690), (1492, 300), (1412, 300), (1412, 318)], INK, dashed=True, sw=1.6, head=7, p="s")
         add('<g data-p="4">')
         add(f'<path d="M1030,168 L1058,168" stroke="{ACC}" stroke-width="2.6"/>')
-        text(1066, 174, "lazo rápido · minutos", 18, INK, 400)
+        text(1066, 174, "loop rápido · minutos", 18, INK, 400)
         add("</g>")
         add('<g data-p="s">')
         add(f'<path d="M1272,168 L1300,168" stroke="{INK}" stroke-width="1.6" stroke-dasharray="7 6"/>')
-        text(1308, 174, "lazo lento · días", 18, INK, 400)
+        text(1308, 174, "loop lento · días", 18, INK, 400)
         add("</g>")
 
     if poc:

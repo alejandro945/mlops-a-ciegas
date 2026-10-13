@@ -456,7 +456,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <!-- ═══════════════ 9 · IN THE CLOUD ═══════════════ -->
 <section class="s" data-id="nube" data-sec="7" data-notes="">
   <div class="kick">El problema</div>
-  <div class="ttl wide">MLOps en la nube: <b>un lazo cerrado</b></div>
+  <div class="ttl wide">MLOps en la nube: <b>un loop cerrado</b></div>
   <div class="fig">{{FIG:nube}}</div>
   <div class="foot"></div>
 </section>
@@ -482,23 +482,12 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="kick">El problema</div>
   <div class="ttl wide">Monitorear la infraestructura <b>no es monitorear el modelo</b></div>
   <div class="tbl"><table>
-    <tr><th style="width:27%">Monitoreo tradicional</th><th style="width:38%">Monitoreo de ML / MLOps</th><th>En la demo</th></tr>
-    <tr><td>¿El servicio está arriba?</td><td class="k">¿El modelo sigue distinguiendo correctamente?</td><td>AUC: {{M:v1.auc_source}} → {{M:v1.auc_target}} con la otra velocidad</td></tr>
-    <tr><td>¿Cuánta CPU y memoria usa?</td><td class="k">¿Cambió la distribución de los datos?</td><td><code>InputZ</code>: qué tan lejos está la entrada de lo que aprendió</td></tr>
-    <tr><td>¿Hay errores o excepciones?</td><td class="k">¿Aumentaron los falsos positivos o negativos?</td><td><code>Alerts</code> y <code>MissedFaults</code>: falsas alarmas {{M:v1.false_alarm_source}} → {{M:v1.false_alarm_target}}</td></tr>
-    <tr class="hot"><td>¿Responde a tiempo?</td><td class="k">¿Las predicciones siguen siendo útiles?</td><td>La orden de mantenimiento confirma si la alerta era real (en la demo, el campo <code>truth</code>)</td></tr>
+    <tr><th>Monitoreo de ML / MLOps</th></tr>
+    <tr><td class="k">¿El modelo sigue distinguiendo correctamente?</td></tr>
+    <tr><td class="k">¿Cambió la distribución de los datos?</td></tr>
+    <tr><td class="k">¿Aumentaron los falsos positivos o negativos?</td></tr>
+    <tr class="hot"><td class="k">¿Las predicciones siguen siendo útiles?</td></tr>
   </table></div>
-  <div class="foot"></div>
-</section>
-
-<!-- ═══════════════ 12 · SHOW OF HANDS 1 ═══════════════ -->
-<section class="s" data-id="reflexion1" data-sec="0" data-notes="">
-  <div class="kick">A mano alzada · 1 de 2</div>
-  <div class="refl">
-    <div class="rq">¿A quién le ha sonado el pager<br><b>por un modelo</b>?</div>
-    <div class="rs">Levanten la mano.</div>
-    <div class="timer"><i></i></div><div class="tl">5 segundos</div>
-  </div>
   <div class="foot"></div>
 </section>
 
@@ -522,7 +511,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <!-- ═══════════════ 15 · THE GENERIC FLOW ═══════════════ -->
 <section class="s" data-id="flujo" data-sec="5" data-prog='[{"b":0},{"b":1},{"b":2},{"b":3},{"b":4},{"b":5},{"b":6}]' data-notes="">
   <div class="kick">El patrón</div>
-  <div class="ttl">Cinco piezas para <b>gobernar el modelo</b></div>
+  <div class="ttl">Cinco piezas <b>para gobernarlo</b></div>
   <div class="stack">{{ARCH_GENERIC}}<svg class="pk" viewBox="0 0 1600 900"></svg></div>
   <div class="foot"></div>
 </section>
@@ -574,7 +563,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <!-- ═══════════════ 21 · STEP 4 · DEPLOY ═══════════════ -->
 <section class="s" data-id="anillos" data-sec="5" data-notes="">
   <div class="kick">Los seis pasos</div>
-  <div class="ttl wide"><i class="pn">Paso 4 ·</i> Desplegar <b>por anillos</b></div>
+  <div class="ttl wide"><i class="pn">Paso 4 ·</i> Desplegar <b>por rings</b></div>
   <div class="fig">{{FIG:anillos}}</div>
   <div class="spine">{{FIG:espina_4}}</div>
   <div class="foot"></div>
@@ -600,7 +589,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 <!-- ═══════════════ 25 · SHOW OF HANDS 3 · THE ANSWER ═══════════════ -->
 <section class="s" data-id="reflexion3" data-sec="0" data-notes="">
-  <div class="kick">A mano alzada · 2 de 2</div>
+  <div class="kick">A mano alzada</div>
   <div class="refl">
     <div class="rq">¿Qué versión corre <b>en cada equipo</b>?</div>
     <div class="rs" data-off="1">Levanten la mano… y bájenla si tuvieron que pensarlo.</div>
@@ -649,11 +638,11 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
     </div>
     <div class="act hot" data-on="2">
       <div class="an">3</div>
-      <div class="at"><h3>Desplegar por anillos y volver</h3><p>La 1 pasa a la v2 y no oye la falla. La alarma dispara la Lambda y la 1 vuelve a la v1. El anillo 1 nunca recibió la v2.</p></div>
+      <div class="at"><h3>Ring deployment y rollback</h3><p>La 1 pasa a la v2 y no oye la falla. La alarma dispara la Lambda y la 1 vuelve a la v1. El ring 1 nunca recibió la v2.</p></div>
       <div class="ac"><code>./demo/deploy.sh 2.0.0 ring-0</code><code>./demo/fault.sh pump-01</code></div>
     </div>
   </div>
-  <div class="say" data-on="2" style="top:684px;font-size:28px">Greengrass revierte despliegues fallidos, <b>no modelos equivocados</b>: esa compuerta la pones tú.</div>
+  <div class="say" data-on="2" style="top:684px;font-size:28px">Greengrass revierte despliegues fallidos, <b>no modelos equivocados</b>: ese gate lo pones tú.</div>
   <div class="foot"></div>
 </section>
 
@@ -664,7 +653,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="rows solo five">
     <div class="row" data-on="0"><div class="big">01</div><div><h3>El modelo es un artefacto más: <b>versión, digest y receta</b>.</h3></div></div>
     <div class="row" data-on="1"><div class="big">02</div><div><h3>Optimiza por chip y <b>mide en el chip</b>.</h3></div></div>
-    <div class="row" data-on="2"><div class="big">03</div><div><h3>Despliega por anillos, con una compuerta que <b>mire al modelo</b> y no solo al proceso.</h3></div></div>
+    <div class="row" data-on="2"><div class="big">03</div><div><h3>Despliega por rings, con un gate que <b>mire al modelo</b> y no solo al proceso.</h3></div></div>
     <div class="row" data-on="3"><div class="big">04</div><div><h3>Diseña para estar sin red: <b>cola local y decisiones locales</b>.</h3></div></div>
     <div class="row hot" data-on="4"><div class="big">05</div><div><h3>Que el modelo cuente qué decide; <b>el dato crudo se queda en el equipo</b>.</h3></div></div>
   </div>
@@ -694,8 +683,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="res">
     <div class="r" a="1"><div class="k">Código de la demo</div><div class="v">{{REPO}}</div></div>
     <div class="r" a="2"><div class="k">Láminas y guion</div><div class="v">{{REPO}} · talk/</div></div>
-    <div class="r" a="3"><div class="k">Lectura recomendada</div><div class="v">The ML Test Score · Breck et al., Google, 2017</div></div>
-    <div class="r" a="4"><div class="k">Dónde encontrarme</div><div class="v">{{LINKEDIN}}</div></div>
+    <div class="r" a="3"><div class="k">Dónde encontrarme</div><div class="v">{{LINKEDIN}}</div></div>
   </div>
   <div class="res-qr" a="2"><div class="qr">{{QR}}</div></div>
   <div class="res-cap" a="2">El repo, con el paso a paso de la demo</div>
@@ -740,7 +728,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 <section class="s" data-id="a2" data-annex="1" data-notes="">
   <div class="kick">Anexo</div><div class="anx">A · ANEXOS  ·  M · VOLVER</div>
-  <div class="ttl wide">La vuelta automática, <b>paso a paso</b></div>
+  <div class="ttl wide">El rollback automático, <b>paso a paso</b></div>
   {{FIG:seq}}
   <div class="foot" data-src="poc-devopsdays/cloud · poc-devopsdays/demo/deploy.sh"></div>
 </section>
@@ -752,7 +740,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
     <tr><th style="width:32%">Qué pasa</th><th style="width:30%">¿Greengrass vuelve atrás?</th><th>Con qué</th></tr>
     <tr><td class="k">El artefacto en S3 cambió</td><td>Sí: el despliegue falla</td><td>El digest que calcula al crear la versión</td></tr>
     <tr><td class="k">El componente no instala o no arranca</td><td>Sí: vuelve a la anterior</td><td><code>failureHandlingPolicy</code> = <code>ROLLBACK</code> (por defecto)</td></tr>
-    <tr><td class="k">Fallan muchos equipos del anillo</td><td>Sí: cancela el despliegue</td><td><code>abortConfig</code>: FAILED · REJECTED · TIMED_OUT</td></tr>
+    <tr><td class="k">Fallan muchos equipos del ring</td><td>Sí: cancela el despliegue</td><td><code>abortConfig</code>: FAILED · REJECTED · TIMED_OUT</td></tr>
     <tr class="hot"><td class="k">Corre bien y decide mal</td><td><b>No: para Greengrass salió bien</b></td><td>Los eventos del modelo y una alarma que los mire</td></tr>
   </table></div>
   <div class="foot"></div>
@@ -780,7 +768,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
     <div>Un evento por clip escuchado</div><div class="ar">→</div><div><b>Un resumen por minuto + el detalle cuando algo cambia</b></div>
     <div>Cola en memoria</div><div class="ar">→</div><div><b>Cola en disco (DiskSpooler), con tope y prioridad</b></div>
     <div>El nucleus en un contenedor</div><div class="ar">→</div><div><b>Nucleus lite en el equipo pequeño</b></div>
-    <div>Un anillo de una estación</div><div class="ar">→</div><div><b>Compuerta canario contra anillo: pasa si el modelo sigue oyendo</b></div>
+    <div>Un ring de una estación</div><div class="ar">→</div><div><b>Gate: canary contra ring, pasa si el modelo sigue oyendo</b></div>
     <div>Sabemos qué audio suena</div><div class="ar">→</div><div><b>Etiquetas tardías: la orden de mantenimiento dice cuándo fue falla</b></div>
   </div>
   <div class="foot"></div>
@@ -825,7 +813,6 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
     <tr><th style="width:44%">Qué</th><th>Dónde</th></tr>
     <tr><td class="k">MIMII DUE · Tanabe et al., Hitachi (2021) · bombas, <code>dev_data_pump</code> · CC BY-NC-SA 4.0</td><td class="m">arxiv.org/abs/2105.02702 · doi.org/10.5281/zenodo.4740355</td></tr>
     <tr><td class="k">Gartner · PC con IA (28 ago 2025)</td><td class="m">gartner.com/en/newsroom · 2025-08-28</td></tr>
-    <tr><td class="k">Breck et al. · The ML Test Score (2017)</td><td class="m">research.google/pubs/pub46555</td></tr>
     <tr><td class="k">Métodos de drift · Evidently · NannyML · crítica al PSI</td><td class="m">docs.evidentlyai.com · nannyml.readthedocs.io · arxiv.org/abs/2303.01227</td></tr>
     <tr><td class="k">AI Act (UE 2024/1689) · Digital Omnibus (UE 2026/1744)</td><td class="m">eur-lex.europa.eu · artificialintelligenceact.eu</td></tr>
     <tr><td class="k">NIST AI RMF · ISO/IEC 42001</td><td class="m">nist.gov/itl/ai-risk-management-framework · iso.org</td></tr>
@@ -836,7 +823,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <!-- ═══════════════ 28 · THE GOLDEN SIGNALS ═══════════════ -->
 <section class="s" data-id="senales" data-annex="1" data-notes="">
   <div class="kick">Anexo</div><div class="anx">A · ANEXOS  ·  M · VOLVER</div>
-  <div class="ttl wide">Las señales doradas <b>de un modelo</b></div>
+  <div class="ttl wide">Las golden signals <b>de un modelo</b></div>
   <div class="sre" a="2">Las de un servicio ya las conocemos: latencia · tráfico · errores · saturación</div>
   <div class="fig">{{FIG:senales}}</div>
   <div class="foot"></div>

@@ -27,7 +27,7 @@ X = [140 + k * 134 for k in range(len(COLS))]
 #        from to  what happens (slide text)                         color  dashed
 MSGS = [
     (0, 1, "create-deployment 2.0.0 → StationRing0",             INK, False),
-    (1, 2, "pump-01 trae su estado deseado: la v2",               INK, False),
+    (1, 2, "pump-01 trae su desired state: la v2",               INK, False),
     (2, 2, "baja de S3, verifica el digest e instala",            INK, False),
     (2, 1, "despliegue SUCCEEDED: la v2 corre sin errores",       INK, True),
     (2, 3, "la bomba suena con falla y la v2 no avisa",           INK, True),

@@ -162,7 +162,7 @@ def fig_device(static=False):
             at=(R, ly(Z[0]) + 10), extra='data-on="0"')
     g.label((0, D * .5, Z[1] + .07), 0, 0, "Artefacto verificable", "versión + hash: si lo tocan, no se instala",
             at=(L, ly(Z[1]) - 30), extra='data-on="1"')
-    g.label((W, D * .5, Z[2] + .07), 0, 0, "Agente", "trae el estado deseado cuando hay red",
+    g.label((W, D * .5, Z[2] + .07), 0, 0, "Agente", "trae el desired state cuando hay red",
             at=(R, ly(Z[2]) - 30), extra='data-on="2"')
     g.label((0, D * .5, Z[3] + .07), 0, 0, "Cola de eventos", "cada decisión, guardada hasta que haya red",
             at=(L, ly(Z[3]) - 30), extra='data-on="3"')

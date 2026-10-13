@@ -270,8 +270,8 @@ def fig_rings(static=False):
     Y0, Y1 = 248, 452
     # ring 0
     b = [R(96, Y0, 420, Y1 - Y0, fill=WHITE, stroke=PURPLE, sw=2)]
-    b.append(T(124, Y0 + 40, "ANILLO 0", 18, PURPLE, 700, family=MONO, extra='letter-spacing="2"'))
-    b.append(T(124, Y0 + 80, "Una estación, canario", 30, NAVY, 700))
+    b.append(T(124, Y0 + 40, "RING 0", 18, PURPLE, 700, family=MONO, extra='letter-spacing="2"'))
+    b.append(T(124, Y0 + 80, "Una estación: el canary", 30, NAVY, 700))
     b.append(T(124, Y0 + 112, "thing group", 18, SLATE))
     b.append(chipver(230, Y0 + 90, "StationRing0", NAVY))
     b.append(f'<circle cx="150" cy="{Y0 + 164}" r="20" fill="{PURPLE}"/>')
@@ -283,12 +283,12 @@ def fig_rings(static=False):
     # gate and ring 1
     b = [L([(516, 350), (536, 350)], NAVY, 2), L([(584, 350), (600, 350)], NAVY, 2, head=8), gate(560, 350)]
     b.append(R(604, Y0, 900, Y1 - Y0, fill=WHITE, stroke=LINE, sw=1.6))
-    b.append(T(632, Y0 + 40, "ANILLO 1", 18, MUTED, 700, family=MONO, extra='letter-spacing="2"'))
+    b.append(T(632, Y0 + 40, "RING 1", 18, MUTED, 700, family=MONO, extra='letter-spacing="2"'))
     b.append(T(632, Y0 + 80, "El resto de la flota", 30, NAVY, 700))
     b.append(T(632, Y0 + 112, "thing group", 18, SLATE))
     b.append(chipver(738, Y0 + 90, "StationRing1", NAVY))
     b.append(T(632, Y0 + 158, "jobExecutionsRolloutConfig", 19, NAVY, 700, family=MONO))
-    b.append(T(632, Y0 + 186, "exponencial: cada ola llega a más equipos", 18, SLATE))
+    b.append(T(632, Y0 + 186, "rollout exponencial: cada wave llega a más equipos", 18, SLATE))
     # growing waves (outlines: ring 1 has not received anything yet)
     waves, x = [1, 2, 4, 8, 16], 1110
     for k, n in enumerate(waves):
@@ -298,7 +298,7 @@ def fig_rings(static=False):
         for j in range(n):
             cx, cy = wx + (j % cols) * 17, Y0 + 176 - (j // cols) * 17
             b.append(f'<circle cx="{cx}" cy="{cy}" r="6.5" fill="{mix(PURPLE, WHITE, .82)}" stroke="{PURPLE}" stroke-width="1.6"/>')
-    b.append(T(1110, Y0 + 100, "olas del despliegue", 18, MUTED, 400))
+    b.append(T(1110, Y0 + 100, "waves del rollout", 18, MUTED, 400))
     o.append(G(1, "".join(b)))
     # the configuration that protects the deployment
     cy0 = 488
@@ -313,10 +313,10 @@ def fig_rings(static=False):
     # the rollback: the gate says no and ring 0 goes back to the last good version
     b = [gate(560, 350, ok=False)]
     b.append(L([(560, 378), (560, 520), (306, 520), (306, Y1 + 8)], PURPLE, 3, head=12))
-    b.append(T(96, 586, "La vuelta", 24, PURPLE, 700))
+    b.append(T(96, 586, "El rollback", 24, PURPLE, 700))
     b.append(T(96, 618, "La alarma ve fallas que nadie oyó", 19, NAVY))
     b.append(T(96, 646, "y despliega la última versión buena.", 19, NAVY))
-    b.append(T(96, 682, "El anillo 1 nunca recibe la v2.", 19, SLATE))
+    b.append(T(96, 682, "El ring 1 nunca recibe la v2.", 19, SLATE))
     o.append(G(3, "".join(b)))
     return wrap("".join(o))
 
@@ -893,7 +893,7 @@ def fig_monitoring(static=False):
     # the rollback
     o.append(G(5, R(96, 640, 1408, 62, fill=WHITE, stroke=PURPLE, sw=2) +
                TR(126, 679, [("La alarma invoca la Lambda: ", PURPLE, 700),
-                             ("lee la última versión buena y la despliega al anillo 0.", NAVY, 400)], 23)))
+                             ("lee la última versión buena y la despliega al ring 0.", NAVY, 400)], 23)))
     return wrap("".join(o))
 
 
@@ -953,7 +953,7 @@ def fig_wave(which, static=False):
 #  the spine: the six steps (divider 03 and footer bar of slides 18–24)
 # ─────────────────────────────────────────────────────────────────────
 STEPS = [("Entrenar", "SageMaker AI · S3"), ("Optimizar", "un artefacto por chip"),
-         ("Empaquetar", "componente Greengrass"), ("Desplegar", "anillos · thing groups"),
+         ("Empaquetar", "componente Greengrass"), ("Desplegar", "rings · thing groups"),
          ("Operar sin red", "cola local"), ("Monitorear", "IoT Core · CloudWatch")]
 
 
