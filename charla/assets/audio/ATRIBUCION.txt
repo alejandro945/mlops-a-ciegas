@@ -1,8 +1,0 @@
-Sonidos reales de bombas industriales: MIMII DUE (Hitachi, Ltd.), set de desarrollo, pump.
-Licencia CC BY-NC-SA 4.0 · https://zenodo.org/records/4740355
-Tanabe et al., 2021, «MIMII DUE: Sound Dataset for Malfunctioning Industrial Machine
-Investigation and Inspection with Domain Shifts due to Changes in Operational and
-Environmental Conditions», arXiv:2105.02702.
-Copiados sin cambios por poc-devopsdays/model/prepare_data.py:
-  bomba-a.wav = section_02_source_test_normal_0051
-  bomba-b.wav = section_02_source_test_anomaly_0017

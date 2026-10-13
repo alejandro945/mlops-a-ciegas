@@ -1,55 +1,55 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────
-#  Entrypoint de la bomba (imagen estacion/greengrass)
+#  Pump entrypoint (image station/greengrass)
 #
-#  Primer arranque : IDENTIDAD=instalador (por defecto) → aprovisiona la bomba
-#                    (thing, thing group, rol de token exchange) con credenciales
-#                    temporales montadas en /run/aws-bootstrap/credentials.
-#                    IDENTIDAD=terraform → la bomba ya existe en AWS (infra/):
-#                    instala el nucleus con el certificado montado en
-#                    /run/estacion-id, sin ninguna credencial de AWS.
-#  Siguientes      : no hay credenciales; la identidad ya vive en el volumen
-#                    /greengrass/v2 y solo arranca el nucleus.
+#  First boot : IDENTITY=installer (default) → provisions the pump
+#               (thing, thing group, token exchange role) with temporary
+#               credentials mounted at /run/aws-bootstrap/credentials.
+#               IDENTITY=terraform → the pump already exists in AWS (infra/):
+#               installs the nucleus with the certificate mounted at
+#               /run/station-id, without any AWS credentials.
+#  Later boots: no credentials; the identity already lives in the volume
+#               /greengrass/v2 and only the nucleus starts.
 #
-#  El nucleus queda en primer plano (PID 1 bajo docker --init).
+#  The nucleus stays in the foreground (PID 1 under docker --init).
 #  Variables: THING_NAME, THING_GROUP_NAME, AWS_REGION, THING_POLICY_NAME,
 #             TES_ROLE_NAME, TES_ROLE_ALIAS_NAME, COMPONENT_DEFAULT_USER,
-#             IDENTIDAD (instalador|terraform), ID_DIR, GREENGRASS_VERSION.
+#             IDENTITY (installer|terraform), ID_DIR, ROOT_CA, STATION_RUN_DIR, GREENGRASS_VERSION.
 # ─────────────────────────────────────────────────────────────────────
 set -euo pipefail
 
 ROOT="${GGC_ROOT_PATH:-/greengrass/v2}"
-MARCA="$ROOT/.estacion-aprovisionado"
+MARKER="$ROOT/.station-provisioned"
 LOADER="$ROOT/alts/current/distro/bin/loader"
 CREDS="${CREDS_FILE:-/run/aws-bootstrap/credentials}"
-INSTALADOR="${INSTALLER_JAR:-/opt/greengrass-installer/lib/Greengrass.jar}"
-MODO_DIR="${ESTACION_RUN_DIR:-/run/estacion}"
-ID_DIR="${ID_DIR:-/run/estacion-id}"
-CA_RAIZ="${CA_RAIZ:-/opt/greengrass-installer/AmazonRootCA1.pem}"
-IDENTIDAD="${IDENTIDAD:-instalador}"
-log() { echo "[estacion] $*"; }
+INSTALLER="${INSTALLER_JAR:-/opt/greengrass-installer/lib/Greengrass.jar}"
+MODE_DIR="${STATION_RUN_DIR:-/run/station}"
+ID_DIR="${ID_DIR:-/run/station-id}"
+ROOT_CA="${ROOT_CA:-/opt/greengrass-installer/AmazonRootCA1.pem}"
+IDENTITY="${IDENTITY:-installer}"
+log() { echo "[station] $*"; }
 
-# Lo que la bomba "oye": la demo escribe este archivo con docker exec (como root);
-# el componente lo relee en cada clip. Se conserva si el contenedor se reinicia.
-mkdir -p "$MODO_DIR"
-[ -f "$MODO_DIR/modo" ] || echo normal > "$MODO_DIR/modo"
-chmod 755 "$MODO_DIR"
-chmod 644 "$MODO_DIR/modo"
+# What the pump "hears": the demo writes this file with docker exec (as root);
+# the component re-reads it on every clip. It survives a container restart.
+mkdir -p "$MODE_DIR"
+[ -f "$MODE_DIR/mode" ] || echo normal > "$MODE_DIR/mode"
+chmod 755 "$MODE_DIR"
+chmod 644 "$MODE_DIR/mode"
 
-# Para depurar:  docker run --rm -it estacion/greengrass bash
+# For debugging:  docker run --rm -it station/greengrass bash
 if [ "$#" -gt 0 ]; then exec "$@"; fi
 
-aprovisionar() {
-  : "${THING_NAME:?falta THING_NAME}"
-  : "${THING_GROUP_NAME:?falta THING_GROUP_NAME}"
-  : "${AWS_REGION:?falta AWS_REGION}"
+provision() {
+  : "${THING_NAME:?THING_NAME is missing}"
+  : "${THING_GROUP_NAME:?THING_GROUP_NAME is missing}"
+  : "${AWS_REGION:?AWS_REGION is missing}"
   if [ ! -r "$CREDS" ]; then
-    log "esta bomba no tiene identidad y no hay credenciales en $CREDS."
-    log "levántala con ./fleet/up.sh (él monta las credenciales temporales)."
+    log "this pump has no identity and there are no credentials in $CREDS."
+    log "start it with ./fleet/up.sh (it mounts the temporary credentials)."
     exit 1
   fi
 
-  # Las credenciales viven solo en este subproceso: el nucleus arranca sin ellas.
+  # The credentials live only in this subprocess: the nucleus starts without them.
   eval "$(python3 - "$CREDS" <<'PY'
 import configparser, shlex, sys
 c = configparser.ConfigParser(interpolation=None)
@@ -61,11 +61,11 @@ if s.get("aws_session_token"):
     print("export AWS_SESSION_TOKEN=" + shlex.quote(s["aws_session_token"]))
 PY
 )"
-  [ -n "${AWS_ACCESS_KEY_ID:-}" ] || { log "no pude leer las credenciales de $CREDS"; exit 1; }
+  [ -n "${AWS_ACCESS_KEY_ID:-}" ] || { log "could not read the credentials from $CREDS"; exit 1; }
 
-  log "primer arranque: aprovisionando $THING_NAME en $THING_GROUP_NAME ($AWS_REGION)"
+  log "first boot: provisioning $THING_NAME in $THING_GROUP_NAME ($AWS_REGION)"
   java -Droot="$ROOT" -Dlog.store=FILE \
-    -jar "$INSTALADOR" \
+    -jar "$INSTALLER" \
     --aws-region "$AWS_REGION" \
     --thing-name "$THING_NAME" \
     --thing-group-name "$THING_GROUP_NAME" \
@@ -78,29 +78,29 @@ PY
     --start false
 }
 
-# La bomba ya existe en AWS (Terraform creó thing, certificado, política y anillo):
-# solo se instala el nucleus con ese certificado. Ninguna credencial de AWS entra al contenedor.
-instalar_con_identidad() {
-  : "${THING_NAME:?falta THING_NAME}"
-  : "${AWS_REGION:?falta AWS_REGION}"
+# The pump already exists in AWS (Terraform created the thing, certificate, policy and ring):
+# only the nucleus is installed with that certificate. No AWS credentials enter the container.
+install_with_identity() {
+  : "${THING_NAME:?THING_NAME is missing}"
+  : "${AWS_REGION:?AWS_REGION is missing}"
   local f
   for f in device.pem.crt private.pem.key endpoints.env; do
     if [ ! -r "$ID_DIR/$f" ]; then
-      log "falta $ID_DIR/$f: esta bomba no tiene su identidad montada."
-      log "levántala con IDENTIDAD=terraform ./fleet/up.sh (él la baja de Parameter Store)."
+      log "$ID_DIR/$f is missing: this pump does not have its identity mounted."
+      log "start it with IDENTITY=terraform ./fleet/up.sh (it fetches it from Parameter Store)."
       exit 1
     fi
   done
-  [ -r "$CA_RAIZ" ] || { log "falta la CA raíz de Amazon en $CA_RAIZ: reconstruye la imagen con ./fleet/build.sh"; exit 1; }
+  [ -r "$ROOT_CA" ] || { log "the Amazon root CA is missing at $ROOT_CA: rebuild the image with ./fleet/build.sh"; exit 1; }
   IOT_DATA_ENDPOINT="$(sed -n 's/^IOT_DATA_ENDPOINT=//p' "$ID_DIR/endpoints.env")"
   IOT_CRED_ENDPOINT="$(sed -n 's/^IOT_CRED_ENDPOINT=//p' "$ID_DIR/endpoints.env")"
-  if [ -z "$IOT_DATA_ENDPOINT" ] || [ -z "$IOT_CRED_ENDPOINT" ]; then log "endpoints.env no trae los dos endpoints"; exit 1; fi
+  if [ -z "$IOT_DATA_ENDPOINT" ] || [ -z "$IOT_CRED_ENDPOINT" ]; then log "endpoints.env does not have both endpoints"; exit 1; fi
 
   mkdir -p "$ROOT"
   install -m 644 "$ID_DIR/device.pem.crt" "$ROOT/device.pem.crt"
   install -m 600 "$ID_DIR/private.pem.key" "$ROOT/private.pem.key"
-  install -m 644 "$CA_RAIZ" "$ROOT/AmazonRootCA1.pem"
-  # el nucleus decide el formato por la extensión: sin .yaml no lo lee
+  install -m 644 "$ROOT_CA" "$ROOT/AmazonRootCA1.pem"
+  # the nucleus picks the format by the extension: without .yaml it does not read it
   local tmp cfg; tmp="$(mktemp -d)"; cfg="$tmp/config.yaml"
   cat > "$cfg" <<CFG
 ---
@@ -113,16 +113,16 @@ system:
 services:
   aws.greengrass.Nucleus:
     componentType: "NUCLEUS"
-    version: "${GREENGRASS_VERSION:?falta GREENGRASS_VERSION}"
+    version: "${GREENGRASS_VERSION:?GREENGRASS_VERSION is missing}"
     configuration:
       awsRegion: "$AWS_REGION"
       iotRoleAlias: "${TES_ROLE_ALIAS_NAME:-GreengrassCoreTokenExchangeRoleAlias}"
       iotDataEndpoint: "$IOT_DATA_ENDPOINT"
       iotCredEndpoint: "$IOT_CRED_ENDPOINT"
 CFG
-  log "primer arranque: $THING_NAME con la identidad de Terraform ($AWS_REGION)"
+  log "first boot: $THING_NAME with the Terraform identity ($AWS_REGION)"
   java -Droot="$ROOT" -Dlog.store=FILE \
-    -jar "$INSTALADOR" \
+    -jar "$INSTALLER" \
     --init-config "$cfg" \
     --component-default-user "${COMPONENT_DEFAULT_USER:-ggc_user:ggc_group}" \
     --setup-system-service false \
@@ -130,17 +130,17 @@ CFG
   rm -rf "$tmp"
 }
 
-if [ ! -f "$MARCA" ]; then
-  case "$IDENTIDAD" in
-    terraform)  ( instalar_con_identidad ) ;;
-    instalador) ( aprovisionar ) ;;
-    *) log "IDENTIDAD=$IDENTIDAD no existe: usa instalador o terraform"; exit 1 ;;
+if [ ! -f "$MARKER" ]; then
+  case "$IDENTITY" in
+    terraform) ( install_with_identity ) ;;
+    installer) ( provision ) ;;
+    *) log "IDENTITY=$IDENTITY does not exist: use installer or terraform"; exit 1 ;;
   esac
-  date -u +%Y-%m-%dT%H:%M:%SZ > "$MARCA"
-  log "aprovisionada"
+  date -u +%Y-%m-%dT%H:%M:%SZ > "$MARKER"
+  log "provisioned"
 fi
 
-[ -x "$LOADER" ] || { log "no encuentro $LOADER: la instalación no terminó bien"; exit 1; }
+[ -x "$LOADER" ] || { log "cannot find $LOADER: the installation did not finish properly"; exit 1; }
 
-log "arrancando el nucleus de ${THING_NAME:-esta bomba}"
+log "starting the nucleus of ${THING_NAME:-this pump}"
 exec /bin/sh "$LOADER"

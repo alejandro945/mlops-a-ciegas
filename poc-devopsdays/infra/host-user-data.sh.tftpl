@@ -1,5 +1,5 @@
 #!/bin/bash
-# Primer arranque de la EC2 que hospeda las bombas (Amazon Linux 2023).
+# First boot of the EC2 that hosts the pumps (Amazon Linux 2023).
 set -euxo pipefail
 
 dnf install -y docker git jq
@@ -7,13 +7,13 @@ systemctl enable --now docker
 usermod -aG docker ec2-user
 usermod -aG docker ssm-user 2>/dev/null || true
 
-# Lo que leen ./fleet/up.sh y los scripts de la demo en cada sesión
-cat > /etc/profile.d/estacion.sh <<'EOF'
+# What ./fleet/up.sh and the demo scripts read in every session
+cat > /etc/profile.d/station.sh <<'EOF'
 export REGION=${region}
 export AWS_REGION=${region}
 export AWS_DEFAULT_REGION=${region}
 export BUCKET=${bucket}
-export IDENTIDAD=terraform
-alias traer-poc='aws s3 sync s3://${bucket}/repo/ ~/poc-devopsdays --delete --exact-timestamps && chmod +x ~/poc-devopsdays/fleet/*.sh ~/poc-devopsdays/demo/*.sh ~/poc-devopsdays/cloud/*.sh'
+export IDENTITY=terraform
+alias fetch-poc='aws s3 sync s3://${bucket}/repo/ ~/poc-devopsdays --delete --exact-timestamps && chmod +x ~/poc-devopsdays/fleet/*.sh ~/poc-devopsdays/demo/*.sh ~/poc-devopsdays/cloud/*.sh'
 EOF
-chmod 644 /etc/profile.d/estacion.sh
+chmod 644 /etc/profile.d/station.sh

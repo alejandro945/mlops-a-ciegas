@@ -3,43 +3,43 @@ output "region" {
 }
 
 output "bucket" {
-  description = "Bucket de artefactos (publish.sh) y del código y el audio que bajan a la EC2."
-  value       = aws_s3_bucket.artefactos.bucket
+  description = "Artifacts bucket (publish.sh), also used to ship the code and the fleet audio to the EC2."
+  value       = aws_s3_bucket.artifacts.bucket
 }
 
-output "anillos" {
-  value = { for k, g in aws_iot_thing_group.anillo : k => g.arn }
+output "rings" {
+  value = { for k, g in aws_iot_thing_group.ring : k => g.arn }
 }
 
-output "bombas" {
-  description = "Bombas con identidad creada por Terraform (vacío si gestionar_identidad = false)."
-  value       = { for b, g in local.bombas_tf : b => g }
+output "pumps" {
+  description = "Pumps whose identity Terraform created (empty when manage_identity = false)."
+  value       = { for p, g in local.tf_pumps : p => g }
 }
 
-output "endpoint_datos" {
-  value = data.aws_iot_endpoint.datos.endpoint_address
+output "data_endpoint" {
+  value = data.aws_iot_endpoint.data.endpoint_address
 }
 
 output "dashboard" {
-  value = "https://${var.region}.console.aws.amazon.com/cloudwatch/home?region=${var.region}#dashboards/dashboard/estacion"
+  value = "https://${var.region}.console.aws.amazon.com/cloudwatch/home?region=${var.region}#dashboards/dashboard/station"
 }
 
 output "host_id" {
-  value = var.crear_host ? aws_instance.host[0].id : null
+  value = var.create_host ? aws_instance.host[0].id : null
 }
 
-output "entrar_al_host" {
-  description = "Sesión en la EC2 sin SSH (necesita el plugin de Session Manager en tu laptop)."
-  value       = var.crear_host ? "aws ssm start-session --region ${var.region} --target ${aws_instance.host[0].id}" : null
+output "connect_to_host" {
+  description = "Session Manager session on the EC2 (needs the Session Manager plugin on your laptop)."
+  value       = var.create_host ? "aws ssm start-session --region ${var.region} --target ${aws_instance.host[0].id}" : null
 }
 
-output "siguiente" {
+output "next_steps" {
   value = <<-EOT
 
-    1. Desde tu laptop, sube el código y el audio de la flota:   ./infra/subir-al-host.sh
-    2. Entra al host:   ${var.crear_host ? "aws ssm start-session --region ${var.region} --target ${aws_instance.host[0].id}" : "(tu host Linux)"}
-    3. En el host:      sudo su - ec2-user; traer-poc; cd ~/poc-devopsdays
-                        ./fleet/build.sh && ${var.gestionar_identidad ? "IDENTIDAD=terraform " : ""}./fleet/up.sh
-    4. ./demo/publish.sh 1.0.0 && ./demo/deploy.sh 1.0.0 todas && ./demo/watch.sh
+    1. From your laptop, upload the code and the fleet audio:   ./infra/upload-to-host.sh
+    2. Open a session on the host:   ${var.create_host ? "aws ssm start-session --region ${var.region} --target ${aws_instance.host[0].id}" : "(your Linux host)"}
+    3. On the host:      sudo su - ec2-user; fetch-poc; cd ~/poc-devopsdays
+                         ./fleet/build.sh && ${var.manage_identity ? "IDENTITY=terraform " : ""}./fleet/up.sh
+    4. ./demo/publish.sh 1.0.0 && ./demo/deploy.sh 1.0.0 all && ./demo/watch.sh
   EOT
 }

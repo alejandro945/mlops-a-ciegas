@@ -1,0 +1,62 @@
+# Tests that do not touch AWS: they run on every PR (including those from a fork) and every push to main.
+name: tests
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  terraform:
+    name: terraform fmt and validate
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+        with:
+          terraform_version: 1.12.2
+          terraform_wrapper: false
+
+      - name: fmt
+        run: terraform -chdir=poc-devopsdays/infra fmt -check -recursive -diff
+
+      - name: validate infra/
+        run: |
+          terraform -chdir=poc-devopsdays/infra init -backend=false -input=false
+          terraform -chdir=poc-devopsdays/infra validate
+
+      - name: validate infra/github/
+        run: |
+          terraform -chdir=poc-devopsdays/infra/github init -backend=false -input=false
+          terraform -chdir=poc-devopsdays/infra/github validate
+
+  python:
+    name: unittest (model, fleet, infra)
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: poc-devopsdays/requirements-dev.txt
+
+      - name: dependencies
+        run: pip install -r poc-devopsdays/requirements-dev.txt
+
+      - name: tests
+        run: python3 -m unittest discover -s poc-devopsdays/tests -p 'test_*.py' -v

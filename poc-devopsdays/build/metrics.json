@@ -20,10 +20,10 @@
     "threshold": 0.3420511677861214
   },
   "int8": {
-    "size_fp32_kb": 464.1875,
-    "size_int8_kb": 126.6279296875,
-    "lat_fp32_ms": 2.6058334988192655,
-    "lat_int8_ms": 2.0129789991187863,
+    "size_fp32_kb": 464.1865234375,
+    "size_int8_kb": 126.6259765625,
+    "lat_fp32_ms": 2.604979003081098,
+    "lat_int8_ms": 2.0200005019432865,
     "agree_pct": 0.9843478260869565,
     "auc_delta": -0.0007066666666665222
   },
@@ -32,37 +32,37 @@
     "z_target": 1.0682893453041713,
     "z_val": 0.8169945944348971
   },
-  "detalle": {
-    "generado": "2026-10-12T17:43:17-0500",
-    "datos": "data/pump",
-    "percentil_umbral": 95.0,
+  "details": {
+    "generated": "2026-10-12T19:34:42-0500",
+    "data": "data/pump",
+    "threshold_percentile": 95.0,
     "clips": {
       "train": 2700,
       "val": 300,
-      "prueba": 1150,
-      "contaminacion": 50
+      "test": 1150,
+      "contamination": 50
     },
-    "seccion_contaminada": "00",
-    "vectores_por_clip_train": 48,
-    "capas": [
+    "contaminated_section": "00",
+    "train_vectors_per_clip": 48,
+    "layers": [
       128,
       128,
       8,
       128,
       128
     ],
-    "epocas": {
+    "epochs": {
       "1.0.0": 35,
       "2.0.0": 38
     },
-    "entrenamiento_s": {
-      "1.0.0": 28.9,
-      "2.0.0": 35.6
+    "training_s": {
+      "1.0.0": 29.1,
+      "2.0.0": 34.9
     },
-    "memoria_pico_mb": 1207,
-    "latencia": "mediana por clip de 10 s: features + inferencia, CPU, un hilo, sin leer el disco",
+    "peak_memory_mb": 1316,
+    "latency": "median per 10 s clip: features + inference, CPU, one thread, no disk read",
     "int8_auc_source": 0.6941200000000001,
-    "por_seccion": {
+    "per_section": {
       "00": {
         "v1_source": {
           "auc": 0.7040000000000001,
@@ -142,6 +142,6 @@
         }
       }
     },
-    "nota": "Todas las cifras salen de los clips de prueba menos los que contaminaron a la v2. AUC, fallas detectadas y falsas alarmas mezclan las tres secciones con un solo umbral, como en la flota."
+    "note": "Every number comes from the test clips minus the ones that contaminated v2. AUC, detected faults and false alarms mix the three sections with a single threshold, as in the fleet."
   }
 }

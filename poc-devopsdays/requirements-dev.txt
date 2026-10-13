@@ -1,6 +1,6 @@
-# Para entrenar (model/) y correr todas las pruebas (tests/) en tu laptop o en GitHub Actions.
+# To train (model/) and run all the tests (tests/) on your laptop or in GitHub Actions.
 #   python3.12 -m venv .venv && .venv/bin/pip install -r requirements-dev.txt
-# numpy y onnxruntime iguales a los de fleet/Dockerfile: el modelo se mide con lo mismo que corre en la bomba.
+# numpy and onnxruntime match fleet/Dockerfile: the model is measured with the same thing that runs on the pump.
 numpy==2.2.6
 onnxruntime==1.23.2
 scikit-learn==1.9.1

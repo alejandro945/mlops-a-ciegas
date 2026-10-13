@@ -1,24 +1,24 @@
 """
-Features del sonido de la bomba: log-mel con contexto. Solo numpy y la librería estándar.
+Pump sound features: log-mel with context. Only numpy and the standard library.
 
-La MISMA función corre al entrenar (model/train.py) y en el equipo (component/inference.py).
-Si cambias algo aquí, reentrena: el modelo solo entiende las features con las que aprendió.
-Fuente única: poc-devopsdays/model/features.py. train.py copia este archivo a
-component/features.py y a cada build/<versión>/features.py.
+The SAME function runs at training time (model/train.py) and on the device (component/inference.py).
+If you change anything here, retrain: the model only understands the features it learned with.
+Single source: poc-devopsdays/model/features.py. train.py copies this file to
+component/features.py and to every build/<version>/features.py.
 
-  WAV PCM 16 bits, 16 kHz (si trae varios canales, usa el primero)
-  → tramas de 1024 muestras cada 512 (64 ms, ventana de Hann)
-  → potencia en 64 bandas mel → dB
-  → vectores de 5 tramas seguidas = 320 números por vector (≈ 300 vectores en un clip de 10 s)
+  16-bit PCM WAV, 16 kHz (if it has several channels, the first one is used)
+  → frames of 1024 samples every 512 (64 ms, Hann window)
+  → power in 64 mel bands → dB
+  → vectors of 5 consecutive frames = 320 numbers per vector (≈ 300 vectors in a 10 s clip)
 """
 import io, struct, wave
 import numpy as np
 
-SR = 16000          # muestras por segundo
-N_FFT = 1024        # muestras por trama
-HOP = 512           # salto entre tramas
-N_MELS = 64         # bandas mel
-FRAMES = 5          # tramas de contexto por vector
+SR = 16000          # samples per second
+N_FFT = 1024        # samples per frame
+HOP = 512           # hop between frames
+N_MELS = 64         # mel bands
+FRAMES = 5          # context frames per vector
 DIM = N_MELS * FRAMES
 EPS = 1e-12
 
@@ -26,28 +26,28 @@ PARAMS = {"sr": SR, "n_fft": N_FFT, "hop": HOP, "n_mels": N_MELS, "frames": FRAM
 
 
 def _mel_filters(sr=SR, n_fft=N_FFT, n_mels=N_MELS):
-    """Banco de filtros triangulares en escala mel (fórmula HTK), de 0 Hz a sr/2."""
+    """Triangular mel-scale filter bank (HTK formula), from 0 Hz to sr/2."""
     mel = lambda f: 2595.0 * np.log10(1.0 + f / 700.0)
     hz = lambda m: 700.0 * (10 ** (m / 2595.0) - 1.0)
-    puntos = hz(np.linspace(0.0, mel(sr / 2), n_mels + 2))
+    points = hz(np.linspace(0.0, mel(sr / 2), n_mels + 2))
     f = np.fft.rfftfreq(n_fft, 1.0 / sr)
     fb = np.zeros((n_mels, len(f)))
     for m in range(n_mels):
-        izq, cen, der = puntos[m], puntos[m + 1], puntos[m + 2]
-        sube = (f - izq) / (cen - izq)
-        baja = (der - f) / (der - cen)
-        fb[m] = np.maximum(0.0, np.minimum(sube, baja))
+        left, center, right = points[m], points[m + 1], points[m + 2]
+        rise = (f - left) / (center - left)
+        fall = (right - f) / (right - center)
+        fb[m] = np.maximum(0.0, np.minimum(rise, fall))
     return fb
 
 
 _MEL = _mel_filters()
-_WIN = np.hanning(N_FFT + 1)[:-1]          # Hann periódica
+_WIN = np.hanning(N_FFT + 1)[:-1]          # periodic Hann
 
 
 def _riff(data):
-    """Lector mínimo de WAV para cabeceras que `wave` no acepta (WAVE_FORMAT_EXTENSIBLE)."""
+    """Minimal WAV reader for headers that `wave` rejects (WAVE_FORMAT_EXTENSIBLE)."""
     if data[:4] != b"RIFF" or data[8:12] != b"WAVE":
-        raise ValueError("no es un archivo WAV")
+        raise ValueError("not a WAV file")
     i, fmt, pcm = 12, None, None
     while i + 8 <= len(data):
         cid, size = data[i:i + 4], struct.unpack("<I", data[i + 4:i + 8])[0]
@@ -57,13 +57,13 @@ def _riff(data):
             pcm = data[i + 8:i + 8 + size]
         i += 8 + size + (size & 1)
     if fmt is None or pcm is None:
-        raise ValueError("WAV sin 'fmt ' o sin 'data'")
+        raise ValueError("WAV without 'fmt ' or 'data' chunk")
     _, ch, sr, _, _, bits = fmt
     return ch, bits // 8, sr, pcm
 
 
 def read_wav(src):
-    """Lee un WAV PCM 16 bits. `src`: ruta, bytes o archivo abierto. Devuelve (muestras float32 en [-1, 1], sr)."""
+    """Reads a 16-bit PCM WAV. `src`: path, bytes or open file. Returns (float32 samples in [-1, 1], sr)."""
     if isinstance(src, (bytes, bytearray)):
         data = bytes(src)
     elif hasattr(src, "read"):
@@ -78,27 +78,27 @@ def read_wav(src):
     except (wave.Error, EOFError):
         ch, sw, sr, pcm = _riff(data)
     if sw != 2:
-        raise ValueError(f"se esperaba PCM de 16 bits y vino de {8 * sw} bits")
+        raise ValueError(f"expected 16-bit PCM, got {8 * sw}-bit")
     x = np.frombuffer(pcm[: len(pcm) // (2 * ch) * 2 * ch], dtype="<i2")
     if ch > 1:
-        x = x.reshape(-1, ch)[:, 0]            # varios canales: el primero
+        x = x.reshape(-1, ch)[:, 0]            # several channels: the first one
     return x.astype(np.float32) / 32768.0, sr
 
 
 def logmel(x, sr=SR):
-    """Matriz (tramas, 64) en dB."""
+    """Matrix (frames, 64) in dB."""
     if sr != SR:
-        raise ValueError(f"se esperaba audio a {SR} Hz y vino a {sr} Hz")
+        raise ValueError(f"expected audio at {SR} Hz, got {sr} Hz")
     x = np.asarray(x, dtype=np.float64)
     if len(x) < N_FFT:
         x = np.pad(x, (0, N_FFT - len(x)))
-    tramas = np.lib.stride_tricks.sliding_window_view(x, N_FFT)[::HOP] * _WIN
-    potencia = np.abs(np.fft.rfft(tramas, axis=1)) ** 2
-    return 10.0 * np.log10(potencia @ _MEL.T + EPS)
+    frames = np.lib.stride_tricks.sliding_window_view(x, N_FFT)[::HOP] * _WIN
+    power = np.abs(np.fft.rfft(frames, axis=1)) ** 2
+    return 10.0 * np.log10(power @ _MEL.T + EPS)
 
 
 def vectors(lm, frames=FRAMES):
-    """Pega `frames` tramas seguidas en un vector: (tramas - 4, 320)."""
+    """Stacks `frames` consecutive frames into one vector: (frames - 4, 320)."""
     n = lm.shape[0] - frames + 1
     if n < 1:
         return np.zeros((0, lm.shape[1] * frames), dtype=np.float32)
@@ -106,17 +106,17 @@ def vectors(lm, frames=FRAMES):
 
 
 def clip_features(x, sr=SR):
-    """De muestras a la matriz que entra al modelo: (≈300, 320) float32."""
+    """From samples to the matrix the model takes: (≈300, 320) float32."""
     return vectors(logmel(x, sr))
 
 
 def wav_features(src):
-    """Atajo: de un WAV (ruta, bytes o archivo) a la matriz que entra al modelo."""
+    """Shortcut: from a WAV (path, bytes or file) to the matrix the model takes."""
     return clip_features(*read_wav(src))
 
 
 def input_z(X, mean, std):
-    """Nivel de la entrada: distancia media, en desviaciones estándar, de las features
-    del clip a la huella del entrenamiento (stats.json). Con el audio de entrenamiento queda
-    por debajo de 1; sube cuando el sonido cambia (otra velocidad, otro ambiente)."""
+    """Input level: mean distance, in standard deviations, from the clip's features to the
+    training fingerprint (stats.json). With training audio it stays below 1; it rises when
+    the sound changes (another speed, another environment)."""
     return float(np.mean(np.abs((X - mean) / std)))

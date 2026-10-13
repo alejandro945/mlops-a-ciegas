@@ -1,23 +1,23 @@
 """
-Entrena el modelo de la bomba y mide todo lo que muestra la charla.
+Trains the pump model and measures everything the talk shows.
 
-  v1.0.0  autoencoder que aprende SOLO con sonido normal del dominio source
-  v2.0.0  el mismo autoencoder, pero su entrenamiento incluye la semana en que una bomba ya
-          fallaba (clips de falla de la sección de la bomba-01). Se evalúa con fallas que NO vio.
-  INT8    la v1 cuantizada con onnxruntime.quantization.quantize_dynamic, solo para medir
+  v1.0.0  autoencoder that learns ONLY from normal sound of the source domain
+  v2.0.0  the same autoencoder, but its training includes the week a pump was already failing
+          (fault clips from pump-01's section). It is evaluated on faults it did NOT see.
+  INT8    v1 quantized with onnxruntime.quantization.quantize_dynamic, only for measuring
 
-El modelo ONNX recibe las features de un clip (N vectores de 320) y devuelve el error de
-reconstrucción de cada vector. Score del clip = la media de esos errores.
-Umbral = percentil 95 de los scores de los clips normales de validación (10 % de los clips
-normales de entrenamiento que el modelo no vio): aceptas que ~5 % del sonido normal dé alerta.
+The ONNX model takes the features of a clip (N vectors of 320) and returns the
+reconstruction error of each vector. Clip score = the mean of those errors.
+Threshold = 95th percentile of the scores of the normal validation clips (10 % of the normal
+training clips, which the model did not see): you accept that ~5 % of normal sound raises an alert.
 
-Escribe en build/ (o en --build):
-  <versión>/model.onnx, stats.json, features.py, inference.py   (+ model.int8.onnx en la 1.0.0)
-  metrics.json   las cifras de las láminas (claves de charla/tools/metrics.py)
-  scores.csv     el score de cada clip de prueba con las tres variantes
+Writes to build/ (or to --build):
+  <version>/model.onnx, stats.json, features.py, inference.py   (+ model.int8.onnx in 1.0.0)
+  metrics.json   the numbers on the slides (keys of talk/tools/metrics.py)
+  scores.csv     the score of every test clip with the three variants
 
-Uso:  python3 model/train.py --data data/dev_data_pump.zip
-      python3 model/train.py --data data/synthetic --synthetic --rapido      (solo prueba la tubería)
+Usage:  python3 model/train.py --data data/dev_data_pump.zip
+        python3 model/train.py --data data/synthetic --synthetic --fast      (only tests the pipeline)
 """
 import sys
 sys.dont_write_bytecode = True
@@ -42,7 +42,7 @@ from sklearn.neural_network import MLPRegressor
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
-CAPAS = (128, 128, 8, 128, 128)     # 320 → 128 → 128 → 8 → 128 → 128 → 320
+LAYERS = (128, 128, 8, 128, 128)     # 320 → 128 → 128 → 8 → 128 → 128 → 320
 V1, V2 = "1.0.0", "2.0.0"
 T0 = time.time()
 
@@ -51,71 +51,71 @@ def log(msg):
     print(f"[{time.time() - T0:6.1f} s] {msg}", flush=True)
 
 
-def carga(fuente, clips, tramas, rng, nombre):
-    """Features de varios clips; `tramas` vectores al azar por clip (0 = todos) para cuidar la RAM."""
-    bloques = []
+def load(source, clips, frames, rng, name):
+    """Features of several clips; `frames` random vectors per clip (0 = all) to spare RAM."""
+    blocks = []
     for i, c in enumerate(clips, 1):
-        X = F.wav_features(fuente.leer(c))
-        if tramas and len(X) > tramas:
-            X = X[np.sort(rng.choice(len(X), tramas, replace=False))]
-        bloques.append(X)
+        X = F.wav_features(source.read(c))
+        if frames and len(X) > frames:
+            X = X[np.sort(rng.choice(len(X), frames, replace=False))]
+        blocks.append(X)
         if i % 500 == 0:
-            log(f"  {nombre}: {i}/{len(clips)} clips")
-    return np.concatenate(bloques)
+            log(f"  {name}: {i}/{len(clips)} clips")
+    return np.concatenate(blocks)
 
 
-def entrena(X, epocas, semilla):
-    escala = StandardScaler().fit(X)
-    Z = escala.transform(X).astype(np.float32)
-    ae = MLPRegressor(hidden_layer_sizes=CAPAS, activation="relu", solver="adam", batch_size=256,
-                      learning_rate_init=1e-3, max_iter=epocas, random_state=semilla)
+def fit(X, epochs, seed):
+    scaler = StandardScaler().fit(X)
+    Z = scaler.transform(X).astype(np.float32)
+    ae = MLPRegressor(hidden_layer_sizes=LAYERS, activation="relu", solver="adam", batch_size=256,
+                      learning_rate_init=1e-3, max_iter=epochs, random_state=seed)
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", ConvergenceWarning)
-        ae.fit(Z, Z)                   # aprende a reconstruir el sonido normal
-    return Pipeline([("escala", escala), ("ae", ae)])
+        ae.fit(Z, Z)                   # learns to reconstruct normal sound
+    return Pipeline([("scaler", scaler), ("ae", ae)])
 
 
-def exporta(pipe, ruta, version):
-    """skl2onnx + tres nodos al final: el modelo devuelve el error de reconstrucción por vector."""
+def export(pipe, path, version):
+    """skl2onnx + three nodes at the end: the model returns the reconstruction error per vector."""
     onx = convert_sklearn(pipe, initial_types=[("features", FloatTensorType([None, F.DIM]))],
                           target_opset={"": 17, "ai.onnx.ml": 3})
     g = onx.graph
-    z = next(n.output[0] for n in g.node if n.op_type == "Scaler")     # la entrada estandarizada
-    rec = g.output[0].name                                             # la reconstrucción
-    ultimo = next(n for n in g.node if rec in n.output)
-    if ultimo.op_type == "Reshape":          # skl2onnx aplana la salida: toma la de antes, (N, 320)
-        rec = ultimo.input[0]
-        g.node.remove(ultimo)
-        usados = {i for n in g.node for i in n.input}
-        for ini in [i for i in g.initializer if i.name not in usados]:
+    z = next(n.output[0] for n in g.node if n.op_type == "Scaler")     # the standardized input
+    rec = g.output[0].name                                             # the reconstruction
+    last = next(n for n in g.node if rec in n.output)
+    if last.op_type == "Reshape":            # skl2onnx flattens the output: take the one before, (N, 320)
+        rec = last.input[0]
+        g.node.remove(last)
+        used = {i for n in g.node for i in n.input}
+        for ini in [i for i in g.initializer if i.name not in used]:
             g.initializer.remove(ini)
     g.node.extend([
-        helper.make_node("Sub", [rec, z], ["error_dif"]),
-        helper.make_node("Mul", ["error_dif", "error_dif"], ["error_cuad"]),
-        helper.make_node("ReduceMean", ["error_cuad"], ["score"], axes=[1], keepdims=0),
+        helper.make_node("Sub", [rec, z], ["error_diff"]),
+        helper.make_node("Mul", ["error_diff", "error_diff"], ["error_sq"]),
+        helper.make_node("ReduceMean", ["error_sq"], ["score"], axes=[1], keepdims=0),
     ])
     del g.output[:]
     g.output.extend([helper.make_tensor_value_info("score", TensorProto.FLOAT, [None])])
     onx.producer_name = "poc-devopsdays/model/train.py"
     helper.set_model_props(onx, {"version": version, "features": json.dumps(F.PARAMS)})
     onnx.checker.check_model(onx)
-    with open(ruta, "wb") as f:
+    with open(path, "wb") as f:
         f.write(onx.SerializeToString())
 
 
-def sesion(ruta):
+def session(path):
     so = ort.SessionOptions()
-    so.intra_op_num_threads = so.inter_op_num_threads = 1      # un hilo, como en un equipo pequeño
+    so.intra_op_num_threads = so.inter_op_num_threads = 1      # one thread, like a small device
     so.log_severity_level = 3
-    return ort.InferenceSession(ruta, so, providers=["CPUExecutionProvider"])
+    return ort.InferenceSession(path, so, providers=["CPUExecutionProvider"])
 
 
 def score(s, X):
     return float(s.run(None, {s.get_inputs()[0].name: X})[0].mean())
 
 
-def sha256(ruta):
-    return hashlib.sha256(open(ruta, "rb").read()).hexdigest()
+def sha256(path):
+    return hashlib.sha256(open(path, "rb").read()).hexdigest()
 
 
 def auc(neg, pos):
@@ -124,30 +124,30 @@ def auc(neg, pos):
     return float(roc_auc_score([0] * len(neg) + [1] * len(pos), list(neg) + list(pos)))
 
 
-def tasa(xs):
+def rate(xs):
     return float(np.mean(xs)) if len(xs) else None
 
 
-def mide(filas, col, umbral, dominio, seccion=None):
-    """AUC, fallas detectadas, falsas alarmas y alertas sobre los clips de prueba (sin contaminación)."""
-    sel = [r for r in filas if r["grupo"] == "prueba" and r["dominio"] == dominio
-           and (seccion is None or r["seccion"] == seccion)]
-    neg = np.array([r[col] for r in sel if r["verdad"] == "normal"])
-    pos = np.array([r[col] for r in sel if r["verdad"] == "anomaly"])
-    todos = np.array([r[col] for r in sel])
-    return {"auc": auc(neg, pos), "recall": tasa(pos > umbral), "false_alarm": tasa(neg > umbral),
-            "alert_rate": tasa(todos > umbral), "n_normal": len(neg), "n_anomaly": len(pos)}
+def measure(rows, col, threshold, domain, section=None):
+    """AUC, detected faults, false alarms and alerts on the test clips (no contamination)."""
+    sel = [r for r in rows if r["split"] == "test" and r["domain"] == domain
+           and (section is None or r["section"] == section)]
+    neg = np.array([r[col] for r in sel if r["truth"] == "normal"])
+    pos = np.array([r[col] for r in sel if r["truth"] == "anomaly"])
+    every = np.array([r[col] for r in sel])
+    return {"auc": auc(neg, pos), "recall": rate(pos > threshold), "false_alarm": rate(neg > threshold),
+            "alert_rate": rate(every > threshold), "n_normal": len(neg), "n_anomaly": len(pos)}
 
 
-def latencias(fuente, clips, sesiones):
-    """Mediana por clip de features + inferencia (sin leer el disco), en CPU, un hilo."""
-    audios = [F.read_wav(fuente.leer(c)) for c in clips]
-    for s in sesiones:
-        score(s, F.clip_features(*audios[0]))               # calentamiento
-    ms = [[] for _ in sesiones]
+def latencies(source, clips, sessions):
+    """Per-clip median of features + inference (without disk reads), CPU, one thread."""
+    audios = [F.read_wav(source.read(c)) for c in clips]
+    for s in sessions:
+        score(s, F.clip_features(*audios[0]))               # warm-up
+    ms = [[] for _ in sessions]
     for _ in range(3):
         for x, sr in audios:
-            for k, s in enumerate(sesiones):
+            for k, s in enumerate(sessions):
                 t = time.perf_counter()
                 score(s, F.clip_features(x, sr))
                 ms[k].append(1000 * (time.perf_counter() - t))
@@ -157,155 +157,155 @@ def latencias(fuente, clips, sesiones):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--data", default=os.path.join(POC, "data", "dev_data_pump.zip"),
-                    help="zip de MIMII DUE, carpeta descomprimida o set sintético")
-    ap.add_argument("--synthetic", action="store_true", help="marca todo como sintético (también se detecta solo)")
+                    help="MIMII DUE zip, extracted folder or synthetic set")
+    ap.add_argument("--synthetic", action="store_true", help="mark everything as synthetic (also detected automatically)")
     ap.add_argument("--build", default=os.path.join(POC, "build"))
-    ap.add_argument("--tramas", type=int, default=48, help="vectores al azar por clip de entrenamiento")
-    ap.add_argument("--epocas", type=int, default=60)
-    ap.add_argument("--percentil", type=float, default=95.0)
-    ap.add_argument("--contaminar", type=float, default=0.5,
-                    help="fracción de las fallas source de prueba de la sección de la bomba-01 que entra a la v2")
-    ap.add_argument("--rapido", action="store_true", help="pocas épocas y pocas tramas: solo para pruebas")
-    ap.add_argument("--semilla", type=int, default=D.SEMILLA)
+    ap.add_argument("--frames", type=int, default=48, help="random vectors per training clip")
+    ap.add_argument("--epochs", type=int, default=60)
+    ap.add_argument("--percentile", type=float, default=95.0)
+    ap.add_argument("--contaminate", type=float, default=0.5,
+                    help="fraction of the source test faults of pump-01's section that goes into v2")
+    ap.add_argument("--fast", action="store_true", help="few epochs and few frames: only for tests")
+    ap.add_argument("--seed", type=int, default=D.SEED)
     a = ap.parse_args()
-    if a.rapido:
-        a.epocas, a.tramas = 8, 16
+    if a.fast:
+        a.epochs, a.frames = 8, 16
 
-    fuente = D.Fuente(a.data)
-    sintetico = bool(a.synthetic or fuente.sintetico)
-    nombre = ("sintético (estructura de MIMII DUE · pump)" if sintetico else
-              f"MIMII DUE · {fuente.maquina or 'máquina sin confirmar'} · dev")
-    rep = D.particion(fuente, contaminar=a.contaminar, semilla=a.semilla)
-    log(f"{nombre} · {len(fuente.clips)} clips · secciones {', '.join(fuente.secciones())}"
-        f" · train {len(rep['train'])} · val {len(rep['val'])} · prueba {len(rep['prueba'])}"
-        f" · contaminación {len(rep['contaminacion'])} (sección {rep['seccion_contaminada']})")
+    source = D.Source(a.data)
+    synthetic = bool(a.synthetic or source.synthetic)
+    name = ("synthetic (MIMII DUE structure · pump)" if synthetic else
+            f"MIMII DUE · {source.machine or 'unconfirmed machine'} · dev")
+    rep = D.split(source, contaminate=a.contaminate, seed=a.seed)
+    log(f"{name} · {len(source.clips)} clips · sections {', '.join(source.sections())}"
+        f" · train {len(rep['train'])} · val {len(rep['val'])} · test {len(rep['test'])}"
+        f" · contamination {len(rep['contamination'])} (section {rep['contaminated_section']})")
     if not rep["train"] or not rep["val"]:
-        raise SystemExit("faltan clips normales source de entrenamiento")
+        raise SystemExit("missing source normal training clips")
 
-    # 1 · features de entrenamiento
-    rng = np.random.default_rng(a.semilla)
-    Xn = carga(fuente, rep["train"], a.tramas, rng, "train")
-    Xc = carga(fuente, rep["contaminacion"], 0, rng, "contaminación") if rep["contaminacion"] else np.zeros((0, F.DIM), np.float32)
-    log(f"features: {len(Xn)} vectores normales + {len(Xc)} de falla para la v2 ({Xn.nbytes / 2**20:.0f} MB)")
+    # 1 · training features
+    rng = np.random.default_rng(a.seed)
+    Xn = load(source, rep["train"], a.frames, rng, "train")
+    Xc = load(source, rep["contamination"], 0, rng, "contamination") if rep["contamination"] else np.zeros((0, F.DIM), np.float32)
+    log(f"features: {len(Xn)} normal vectors + {len(Xc)} fault vectors for v2 ({Xn.nbytes / 2**20:.0f} MB)")
 
-    # 2 · entrenar y exportar
+    # 2 · train and export
     tmp = os.path.join(a.build, ".tmp")
     shutil.rmtree(tmp, ignore_errors=True)
     os.makedirs(tmp)
     t = time.time()
-    p1 = entrena(Xn, a.epocas, a.semilla)
+    p1 = fit(Xn, a.epochs, a.seed)
     t_v1 = time.time() - t
-    log(f"v1 entrenada en {t_v1:.0f} s ({p1['ae'].n_iter_} épocas, pérdida {p1['ae'].loss_:.3f})")
+    log(f"v1 trained in {t_v1:.0f} s ({p1['ae'].n_iter_} epochs, loss {p1['ae'].loss_:.3f})")
     t = time.time()
-    p2 = entrena(np.concatenate([Xn, Xc]), a.epocas, a.semilla)
+    p2 = fit(np.concatenate([Xn, Xc]), a.epochs, a.seed)
     t_v2 = time.time() - t
-    log(f"v2 entrenada en {t_v2:.0f} s ({p2['ae'].n_iter_} épocas, pérdida {p2['ae'].loss_:.3f})")
-    rutas = {V1: os.path.join(tmp, "v1.onnx"), V2: os.path.join(tmp, "v2.onnx"), "int8": os.path.join(tmp, "v1.int8.onnx")}
-    exporta(p1, rutas[V1], V1)
-    exporta(p2, rutas[V2], V2)
-    logging.getLogger().setLevel(logging.ERROR)          # calla el consejo de preprocesar
-    quantize_dynamic(rutas[V1], rutas["int8"], weight_type=QuantType.QInt8)
-    s1, s2, s8 = sesion(rutas[V1]), sesion(rutas[V2]), sesion(rutas["int8"])
-    mu1, sd1 = p1["escala"].mean_.astype(np.float32), p1["escala"].scale_.astype(np.float32)
+    log(f"v2 trained in {t_v2:.0f} s ({p2['ae'].n_iter_} epochs, loss {p2['ae'].loss_:.3f})")
+    paths = {V1: os.path.join(tmp, "v1.onnx"), V2: os.path.join(tmp, "v2.onnx"), "int8": os.path.join(tmp, "v1.int8.onnx")}
+    export(p1, paths[V1], V1)
+    export(p2, paths[V2], V2)
+    logging.getLogger().setLevel(logging.ERROR)          # silence the pre-processing advice
+    quantize_dynamic(paths[V1], paths["int8"], weight_type=QuantType.QInt8)
+    s1, s2, s8 = session(paths[V1]), session(paths[V2]), session(paths["int8"])
+    mu1, sd1 = p1["scaler"].mean_.astype(np.float32), p1["scaler"].scale_.astype(np.float32)
     del Xn, Xc
 
-    # 3 · umbrales con los clips normales de validación
+    # 3 · thresholds from the normal validation clips
     val = {V1: [], V2: [], "z": []}
     for c in rep["val"]:
-        X = F.wav_features(fuente.leer(c))
+        X = F.wav_features(source.read(c))
         val[V1].append(score(s1, X))
         val[V2].append(score(s2, X))
         val["z"].append(F.input_z(X, mu1, sd1))
-    u1, u2 = (float(np.percentile(val[v], a.percentil)) for v in (V1, V2))
-    log(f"umbral (percentil {a.percentil:g} de {len(rep['val'])} clips de validación): v1 {u1:.4f} · v2 {u2:.4f}")
+    u1, u2 = (float(np.percentile(val[v], a.percentile)) for v in (V1, V2))
+    log(f"threshold (percentile {a.percentile:g} of {len(rep['val'])} validation clips): v1 {u1:.4f} · v2 {u2:.4f}")
 
-    # 4 · scores de todos los clips de prueba (y de los que contaminaron a la v2, solo para mirar)
-    filas = []
-    for grupo in ("prueba", "contaminacion"):
-        for c in rep[grupo]:
-            X = F.wav_features(fuente.leer(c))
-            filas.append(dict(clip=c["id"], seccion=c["seccion"], dominio=c["dominio"], verdad=c["verdad"],
-                              grupo=grupo, v1=score(s1, X), v2=score(s2, X), int8=score(s8, X),
-                              z=F.input_z(X, mu1, sd1)))
-    log(f"scores de {len(filas)} clips de prueba")
+    # 4 · scores of every test clip (and of the ones that contaminated v2, just to look at)
+    rows = []
+    for split in ("test", "contamination"):
+        for c in rep[split]:
+            X = F.wav_features(source.read(c))
+            rows.append(dict(clip=c["id"], section=c["section"], domain=c["domain"], truth=c["truth"],
+                             split=split, v1=score(s1, X), v2=score(s2, X), int8=score(s8, X),
+                             z=F.input_z(X, mu1, sd1)))
+    log(f"scores of {len(rows)} test clips")
 
-    # 5 · latencia FP32 contra INT8
-    fuente_lat = [c for c in rep["prueba"] if c["dominio"] == "source"][:30]
-    lat32, lat8 = latencias(fuente, fuente_lat, [s1, s8])
-    log(f"latencia por clip (mediana de {3 * len(fuente_lat)}): FP32 {lat32:.2f} ms · INT8 {lat8:.2f} ms")
+    # 5 · FP32 vs INT8 latency
+    lat_clips = [c for c in rep["test"] if c["domain"] == "source"][:30]
+    lat32, lat8 = latencies(source, lat_clips, [s1, s8])
+    log(f"latency per clip (median of {3 * len(lat_clips)}): FP32 {lat32:.2f} ms · INT8 {lat8:.2f} ms")
 
-    # 6 · métricas
-    m1s, m1t = mide(filas, "v1", u1, "source"), mide(filas, "v1", u1, "target")
-    m2s = mide(filas, "v2", u2, "source")
-    m8s = mide(filas, "int8", u1, "source")
-    prueba = [r for r in filas if r["grupo"] == "prueba"]
-    z_de = lambda dom: tasa([r["z"] for r in prueba if r["dominio"] == dom and r["verdad"] == "normal"])
-    por_seccion = {}
-    for sec in fuente.secciones():
-        por_seccion[sec] = {
-            "v1_source": mide(filas, "v1", u1, "source", sec), "v1_target": mide(filas, "v1", u1, "target", sec),
-            "v2_source": mide(filas, "v2", u2, "source", sec)}
+    # 6 · metrics
+    m1s, m1t = measure(rows, "v1", u1, "source"), measure(rows, "v1", u1, "target")
+    m2s = measure(rows, "v2", u2, "source")
+    m8s = measure(rows, "int8", u1, "source")
+    test = [r for r in rows if r["split"] == "test"]
+    z_of = lambda dom: rate([r["z"] for r in test if r["domain"] == dom and r["truth"] == "normal"])
+    per_section = {}
+    for sec in source.sections():
+        per_section[sec] = {
+            "v1_source": measure(rows, "v1", u1, "source", sec), "v1_target": measure(rows, "v1", u1, "target", sec),
+            "v2_source": measure(rows, "v2", u2, "source", sec)}
     metrics = {
-        "dataset": nombre,
-        "synthetic": sintetico,
-        "machine": "pump" if sintetico else fuente.maquina,
+        "dataset": name,
+        "synthetic": synthetic,
+        "machine": "pump" if synthetic else source.machine,
         "v1": {"auc_source": m1s["auc"], "auc_target": m1t["auc"],
                "recall_source": m1s["recall"], "recall_target": m1t["recall"],
                "false_alarm_source": m1s["false_alarm"], "false_alarm_target": m1t["false_alarm"],
                "threshold": u1, "alert_rate_source": m1s["alert_rate"]},
         "v2": {"auc_source": m2s["auc"], "recall_source": m2s["recall"],
                "false_alarm_source": m2s["false_alarm"], "alert_rate_source": m2s["alert_rate"], "threshold": u2},
-        "int8": {"size_fp32_kb": os.path.getsize(rutas[V1]) / 1024, "size_int8_kb": os.path.getsize(rutas["int8"]) / 1024,
+        "int8": {"size_fp32_kb": os.path.getsize(paths[V1]) / 1024, "size_int8_kb": os.path.getsize(paths["int8"]) / 1024,
                  "lat_fp32_ms": lat32, "lat_int8_ms": lat8,
-                 "agree_pct": tasa([(r["v1"] > u1) == (r["int8"] > u1) for r in prueba]),
+                 "agree_pct": rate([(r["v1"] > u1) == (r["int8"] > u1) for r in test]),
                  "auc_delta": (m8s["auc"] - m1s["auc"]) if m1s["auc"] is not None and m8s["auc"] is not None else None},
-        "input": {"z_source": z_de("source"), "z_target": z_de("target"), "z_val": tasa(val["z"])},
-        "detalle": {
-            "generado": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
-            "datos": os.path.relpath(fuente.ruta, POC) if fuente.ruta.startswith(POC) else fuente.ruta,
-            "percentil_umbral": a.percentil,
-            "clips": {k: len(rep[k]) for k in ("train", "val", "prueba", "contaminacion")},
-            "seccion_contaminada": rep["seccion_contaminada"],
-            "vectores_por_clip_train": a.tramas, "capas": list(CAPAS),
-            "epocas": {V1: int(p1["ae"].n_iter_), V2: int(p2["ae"].n_iter_)},
-            "entrenamiento_s": {V1: round(t_v1, 1), V2: round(t_v2, 1)},
-            "memoria_pico_mb": round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-                                     / (2**20 if sys.platform == "darwin" else 1024)),   # macOS: bytes
-            "latencia": "mediana por clip de 10 s: features + inferencia, CPU, un hilo, sin leer el disco",
+        "input": {"z_source": z_of("source"), "z_target": z_of("target"), "z_val": rate(val["z"])},
+        "details": {
+            "generated": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+            "data": os.path.relpath(source.path, POC) if source.path.startswith(POC) else source.path,
+            "threshold_percentile": a.percentile,
+            "clips": {k: len(rep[k]) for k in ("train", "val", "test", "contamination")},
+            "contaminated_section": rep["contaminated_section"],
+            "train_vectors_per_clip": a.frames, "layers": list(LAYERS),
+            "epochs": {V1: int(p1["ae"].n_iter_), V2: int(p2["ae"].n_iter_)},
+            "training_s": {V1: round(t_v1, 1), V2: round(t_v2, 1)},
+            "peak_memory_mb": round(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+                                    / (2**20 if sys.platform == "darwin" else 1024)),   # macOS: bytes
+            "latency": "median per 10 s clip: features + inference, CPU, one thread, no disk read",
             "int8_auc_source": m8s["auc"],
-            "por_seccion": por_seccion,
-            "nota": "Todas las cifras salen de los clips de prueba menos los que contaminaron a la v2. "
-                    "AUC, fallas detectadas y falsas alarmas mezclan las tres secciones con un solo umbral, "
-                    "como en la flota.",
+            "per_section": per_section,
+            "note": "Every number comes from the test clips minus the ones that contaminated v2. "
+                    "AUC, detected faults and false alarms mix the three sections with a single threshold, "
+                    "as in the fleet.",
         },
     }
 
-    # 7 · artefactos
-    copia_features = os.path.join(POC, "component", "features.py")
-    origen_features = os.path.join(HERE, "features.py")
-    if not os.path.exists(copia_features) or open(copia_features, "rb").read() != open(origen_features, "rb").read():
-        shutil.copyfile(origen_features, copia_features)
-    for version, pipe, umbral, ruta in ((V1, p1, u1, rutas[V1]), (V2, p2, u2, rutas[V2])):
+    # 7 · artifacts
+    features_copy = os.path.join(POC, "component", "features.py")
+    features_src = os.path.join(HERE, "features.py")
+    if not os.path.exists(features_copy) or open(features_copy, "rb").read() != open(features_src, "rb").read():
+        shutil.copyfile(features_src, features_copy)
+    for version, pipe, threshold, path in ((V1, p1, u1, paths[V1]), (V2, p2, u2, paths[V2])):
         d = os.path.join(a.build, version)
         shutil.rmtree(d, ignore_errors=True)
         os.makedirs(d)
-        shutil.copyfile(ruta, os.path.join(d, "model.onnx"))
+        shutil.copyfile(path, os.path.join(d, "model.onnx"))
         if version == V1:
-            shutil.copyfile(rutas["int8"], os.path.join(d, "model.int8.onnx"))
-        shutil.copyfile(origen_features, os.path.join(d, "features.py"))
+            shutil.copyfile(paths["int8"], os.path.join(d, "model.int8.onnx"))
+        shutil.copyfile(features_src, os.path.join(d, "features.py"))
         shutil.copyfile(os.path.join(POC, "component", "inference.py"), os.path.join(d, "inference.py"))
         stats = {
             "version": version,
-            "threshold": umbral,
-            "percentile": a.percentil,
+            "threshold": threshold,
+            "percentile": a.percentile,
             "sha256": sha256(os.path.join(d, "model.onnx")),
-            "synthetic": sintetico,
-            "dataset": nombre,
-            "trained_on": ("sonido normal source" if version == V1 else
-                           f"sonido normal source + {len(rep['contaminacion'])} clips de falla de la sección {rep['seccion_contaminada']}"),
+            "synthetic": synthetic,
+            "dataset": name,
+            "trained_on": ("source normal sound" if version == V1 else
+                           f"source normal sound + {len(rep['contamination'])} fault clips from section {rep['contaminated_section']}"),
             "features": F.PARAMS,
-            "mean": [float(f"{v:.7g}") for v in pipe["escala"].mean_],
-            "std": [float(f"{v:.7g}") for v in pipe["escala"].scale_],
+            "mean": [float(f"{v:.7g}") for v in pipe["scaler"].mean_],
+            "std": [float(f"{v:.7g}") for v in pipe["scaler"].scale_],
         }
         with open(os.path.join(d, "stats.json"), "w", encoding="utf-8") as f:
             json.dump(stats, f, ensure_ascii=False, indent=1)
@@ -314,23 +314,23 @@ def main():
         json.dump(metrics, f, ensure_ascii=False, indent=2)
         f.write("\n")
     with open(os.path.join(a.build, "scores.csv"), "w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=["clip", "seccion", "dominio", "verdad", "grupo", "v1", "v2", "int8", "z"])
+        w = csv.DictWriter(f, fieldnames=["clip", "section", "domain", "truth", "split", "v1", "v2", "int8", "z"])
         w.writeheader()
-        for r in filas:
+        for r in rows:
             w.writerow({k: (round(v, 6) if isinstance(v, float) else v) for k, v in r.items()})
     shutil.rmtree(tmp, ignore_errors=True)
 
     pct = lambda v: "—" if v is None else f"{100 * v:.0f} %"
     num = lambda v, d=3: "—" if v is None else f"{v:.{d}f}"
-    print(f"\n{'SINTÉTICO: nada de esto es una medición' if sintetico else nombre}")
-    print(f"  v1  AUC source {num(m1s['auc'])} · target {num(m1t['auc'])} · fallas detectadas {pct(m1s['recall'])} → "
-          f"{pct(m1t['recall'])} · falsas alarmas {pct(m1s['false_alarm'])} → {pct(m1t['false_alarm'])}")
-    print(f"  v2  AUC source {num(m2s['auc'])} · fallas detectadas {pct(m2s['recall'])} · alertas {pct(m2s['alert_rate'])}"
+    print(f"\n{'SYNTHETIC: none of this is a measurement' if synthetic else name}")
+    print(f"  v1  AUC source {num(m1s['auc'])} · target {num(m1t['auc'])} · detected faults {pct(m1s['recall'])} → "
+          f"{pct(m1t['recall'])} · false alarms {pct(m1s['false_alarm'])} → {pct(m1t['false_alarm'])}")
+    print(f"  v2  AUC source {num(m2s['auc'])} · detected faults {pct(m2s['recall'])} · alerts {pct(m2s['alert_rate'])}"
           f" (v1 {pct(m1s['alert_rate'])})")
     print(f"  INT8 {metrics['int8']['size_fp32_kb']:.0f} → {metrics['int8']['size_int8_kb']:.0f} KB · "
-          f"misma decisión {pct(metrics['int8']['agree_pct'])} · ΔAUC {num(metrics['int8']['auc_delta'])}")
-    print(f"  entrada (z) source {num(metrics['input']['z_source'], 2)} · target {num(metrics['input']['z_target'], 2)}")
-    print(f"  memoria pico {metrics['detalle']['memoria_pico_mb']} MB · artefactos en {a.build}")
+          f"same decision {pct(metrics['int8']['agree_pct'])} · ΔAUC {num(metrics['int8']['auc_delta'])}")
+    print(f"  input (z) source {num(metrics['input']['z_source'], 2)} · target {num(metrics['input']['z_target'], 2)}")
+    print(f"  peak memory {metrics['details']['peak_memory_mb']} MB · artifacts in {a.build}")
 
 
 if __name__ == "__main__":

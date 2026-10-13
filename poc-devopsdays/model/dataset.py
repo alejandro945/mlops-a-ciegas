@@ -1,135 +1,138 @@
 """
-Lee MIMII DUE (bombas) desde el zip, desde una carpeta ya descomprimida o desde el set
-sintético, y reparte los clips. prepare_data.py y train.py usan este mismo reparto, así que
-la flota nunca recibe un clip con el que se entrenó.
+Reads MIMII DUE (pumps) from the zip, from an already extracted folder or from the synthetic
+set, and splits the clips. prepare_data.py and train.py use this same split, so the fleet
+never gets a clip the model was trained on.
 
-Reparto (determinista, por sección):
-  train          normales source de entrenamiento (90 %)        → aprende la v1 (y la v2)
-  val            normales source de entrenamiento (10 %)        → fija el umbral
-  contaminacion  la mitad de las fallas source de prueba de la sección de la bomba-01
-                 → solo para la v2 (la semana en que la bomba ya fallaba)
-  prueba         todos los clips de prueba menos la contaminación → medir y armar la flota
-Los tres clips target de entrenamiento no se usan.
+Split (deterministic, per section):
+  train          source normal training clips (90 %)                → v1 (and v2) learn from them
+  val            source normal training clips (10 %)                → set the threshold
+  contamination  half of the source test faults of pump-01's section
+                 → only for v2 (the week the pump was already failing)
+  test           every test clip except the contamination           → measure and build the fleet
+The three target training clips are not used.
 """
 import os, re, zipfile
 import numpy as np
 
-PATRON = re.compile(r"section_(\d+)_(source|target)_(train|test)_(normal|anomaly)_(\d+)")
+PATTERN = re.compile(r"section_(\d+)_(source|target)_(train|test)_(normal|anomaly)_(\d+)")
 
-# cinco bombas a partir de tres secciones: la 01 y la 04 comparten la 00; la 02 y la 05, la 01
-BOMBAS = {"bomba-01": "00", "bomba-02": "01", "bomba-03": "02", "bomba-04": "00", "bomba-05": "01"}
-CANARIO = "bomba-01"      # anillo 0: la que recibe la v2 en la demo; su sección contamina a la v2
-ESCENARIO = "bomba-03"    # la que falla en el acto 1; los audios de la charla salen de su sección
-SEMILLA = 2026
-# máquinas de MIMII / MIMII DUE / DCASE: si los audios dicen otra, no son bombas
-MAQUINAS = ("fan", "gearbox", "pump", "slider", "valve", "toycar", "toytrain", "bearing", "shaker", "bandsaw",
+# five pumps from three sections: pump-01 and pump-04 share section 00; pump-02 and pump-05, section 01
+PUMPS = {"pump-01": "00", "pump-02": "01", "pump-03": "02", "pump-04": "00", "pump-05": "01"}
+CANARY = "pump-01"        # ring 0: the one that gets v2 in the demo; its section contaminates v2
+SCENARIO = "pump-03"      # the one that fails in act 1; the talk audio comes from its section
+SEED = 2026
+# MIMII / MIMII DUE / DCASE machines: if the audio says another one, it is not pumps
+MACHINES = ("fan", "gearbox", "pump", "slider", "valve", "toycar", "toytrain", "bearing", "shaker", "bandsaw",
             "grinder", "toydrone", "toynscale", "vacuum", "toytank")
-DESCARGA = "https://zenodo.org/records/4740355/files/dev_data_pump.zip?download=1"
-MARCA = b"SINTETICO"      # synth.py la escribe en la cabecera de cada WAV
+DOWNLOAD = "https://zenodo.org/records/4740355/files/dev_data_pump.zip?download=1"
+MARKER = b"SYNTHETIC"     # synth.py writes it in every WAV header
+MARKERS = (MARKER, b"SINTETICO")                  # the old marker still counts
+MARKER_FILES = ("SYNTHETIC.txt", "SINTETICO.txt")  # marker file at the root of a synthetic set
 
 
-class Fuente:
-    """Lista de clips de un zip o de una carpeta. Cada clip es un dict:
-    id, seccion, dominio (source|target), parte (train|test), verdad (normal|anomaly), ref."""
+class Source:
+    """List of clips from a zip or a folder. Each clip is a dict:
+    id, section, domain (source|target), part (train|test), truth (normal|anomaly), n, ref."""
 
-    def __init__(self, ruta, maquina="pump"):
-        self.ruta = os.path.abspath(ruta)
+    def __init__(self, path, machine="pump"):
+        self.path = os.path.abspath(path)
         self.zip = None
-        if os.path.isdir(ruta):
-            nombres = [os.path.relpath(os.path.join(d, f), ruta)
-                       for d, _, fs in os.walk(ruta) for f in fs]
-            self.sintetico = os.path.isfile(os.path.join(ruta, "SINTETICO.txt"))
-        elif zipfile.is_zipfile(ruta):
-            self.zip = zipfile.ZipFile(ruta)
-            nombres = self.zip.namelist()
-            self.sintetico = any(os.path.basename(n) == "SINTETICO.txt" for n in nombres)
+        if os.path.isdir(path):
+            names = [os.path.relpath(os.path.join(d, f), path)
+                     for d, _, fs in os.walk(path) for f in fs]
+            self.synthetic = any(os.path.isfile(os.path.join(path, m)) for m in MARKER_FILES)
+        elif zipfile.is_zipfile(path):
+            self.zip = zipfile.ZipFile(path)
+            names = self.zip.namelist()
+            self.synthetic = any(os.path.basename(n) in MARKER_FILES for n in names)
         else:
-            raise SystemExit(f"no encuentro los datos en {ruta} (ni carpeta ni zip)")
+            raise SystemExit(f"cannot find the data at {path} (neither a folder nor a zip)")
 
-        wavs = [n for n in nombres if n.lower().endswith(".wav")
+        wavs = [n for n in names if n.lower().endswith(".wav")
                 and "__MACOSX" not in n and not os.path.basename(n).startswith("._")]
-        # si el zip o la carpeta trae otras máquinas, quédate con las bombas
-        partes = lambda n: re.split(r"[\\/]", n.lower())
-        if any(maquina in partes(n) for n in wavs):
-            wavs = [n for n in wavs if maquina in partes(n)]
+        # if the zip or folder holds other machines, keep the pumps
+        parts = lambda n: re.split(r"[\\/]", n.lower())
+        if any(machine in parts(n) for n in wavs):
+            wavs = [n for n in wavs if machine in parts(n)]
 
-        # ¿de qué máquina son? Lo dicen las carpetas del zip (pump/…) o el nombre del archivo (dev_data_pump.zip).
-        # Una carpeta suelta (train/, source_test/…) no lo dice: los nombres de los clips son iguales en todas.
-        pistas = {p for n in wavs for p in partes(n)[:-1]}
-        pistas |= set(re.split(r"[^a-z]+", os.path.basename(self.ruta).lower()))
-        halladas = [m for m in MAQUINAS if m in pistas]
-        self.maquina = maquina if maquina in halladas else (halladas[0] if halladas else None)
+        # Which machine is it? The zip folders say so (pump/…) or the file name does (dev_data_pump.zip).
+        # A bare folder (train/, source_test/…) does not: clip names are the same for every machine.
+        hints = {p for n in wavs for p in parts(n)[:-1]}
+        hints |= set(re.split(r"[^a-z]+", os.path.basename(self.path).lower()))
+        found = [m for m in MACHINES if m in hints]
+        self.machine = machine if machine in found else (found[0] if found else None)
 
-        vistos, self.clips = set(), []
+        seen, self.clips = set(), []
         for n in sorted(wavs):
-            m = PATRON.search(os.path.basename(n))
+            m = PATTERN.search(os.path.basename(n))
             if not m:
                 continue
             cid = os.path.splitext(os.path.basename(n))[0]
-            if cid in vistos:
+            if cid in seen:
                 continue
-            vistos.add(cid)
-            sec, dom, parte, verdad, num = m.groups()
-            self.clips.append(dict(id=cid, seccion=f"{int(sec):02d}", dominio=dom, parte=parte,
-                                   verdad=verdad, n=int(num), ref=n))
+            seen.add(cid)
+            sec, dom, part, truth, num = m.groups()
+            self.clips.append(dict(id=cid, section=f"{int(sec):02d}", domain=dom, part=part,
+                                   truth=truth, n=int(num), ref=n))
         if not self.clips:
-            raise SystemExit(f"{ruta}: ningún WAV con nombres de MIMII DUE (section_XX_source_train_normal_XXXX…)")
-        self.sintetico = self.sintetico or es_sintetico(self.leer(self.clips[0]))
-        if self.sintetico:
-            self.maquina = maquina
-        elif self.maquina and self.maquina != maquina:
-            raise SystemExit(f"{ruta}: estos audios son de «{self.maquina}», no de bombas ({maquina}).\n"
-                             f"Baja dev_data_pump.zip ({DESCARGA}) y déjalo, sin descomprimir, en data/.")
-        elif self.maquina is None:
-            print(f"(aviso) {ruta}: no puedo confirmar que sean bombas; la carpeta no dice la máquina.\n"
-                  f"        Las cifras quedan marcadas sin confirmar y no llegan a las láminas.\n"
-                  f"        Usa el zip tal cual: data/dev_data_pump.zip")
+            raise SystemExit(f"{path}: no WAV with MIMII DUE names (section_XX_source_train_normal_XXXX…)")
+        self.synthetic = self.synthetic or is_synthetic(self.read(self.clips[0]))
+        if self.synthetic:
+            self.machine = machine
+        elif self.machine and self.machine != machine:
+            raise SystemExit(f"{path}: this audio is from «{self.machine}», not pumps ({machine}).\n"
+                             f"Download dev_data_pump.zip ({DOWNLOAD}) and leave it, unextracted, in data/.")
+        elif self.machine is None:
+            print(f"(warning) {path}: cannot confirm these are pumps; the folder does not name the machine.\n"
+                  f"          The numbers are marked unconfirmed and do not reach the slides.\n"
+                  f"          Use the zip as is: data/dev_data_pump.zip")
 
-    def leer(self, clip):
-        """Bytes del WAV, sin descomprimir el resto del zip."""
+    def read(self, clip):
+        """WAV bytes, without extracting the rest of the zip."""
         if self.zip is not None:
             return self.zip.read(clip["ref"])
-        with open(os.path.join(self.ruta, clip["ref"]), "rb") as f:
+        with open(os.path.join(self.path, clip["ref"]), "rb") as f:
             return f.read()
 
-    def secciones(self):
-        return sorted({c["seccion"] for c in self.clips})
+    def sections(self):
+        return sorted({c["section"] for c in self.clips})
 
 
-def es_sintetico(wav):
-    """True si el WAV salió de synth.py (lleva la marca en su cabecera)."""
-    return MARCA in wav[:64] or MARCA in wav[-128:]
+def is_synthetic(wav):
+    """True if the WAV came from synth.py (it carries the marker in its header)."""
+    return any(m in wav[:64] or m in wav[-128:] for m in MARKERS)
 
 
-def _mezcla(lista, semilla, etiqueta):
-    """Permutación determinista que no depende de las otras secciones."""
-    rng = np.random.default_rng([semilla, sum(map(ord, etiqueta))])
-    return [lista[i] for i in rng.permutation(len(lista))]
+def _shuffle(items, seed, label):
+    """Deterministic permutation that does not depend on the other sections."""
+    rng = np.random.default_rng([seed, sum(map(ord, label))])
+    return [items[i] for i in rng.permutation(len(items))]
 
 
-def particion(fuente, contaminar=0.5, val=0.1, semilla=SEMILLA):
-    seccion_contaminada = secciones_de_bombas(fuente.secciones())[CANARIO]
-    rep = {"train": [], "val": [], "contaminacion": [], "prueba": [], "seccion_contaminada": seccion_contaminada}
-    for sec in fuente.secciones():
-        de = lambda dom, parte, verdad: [c for c in fuente.clips if c["seccion"] == sec and c["dominio"] == dom
-                                          and c["parte"] == parte and c["verdad"] == verdad]
-        tr = _mezcla(de("source", "train", "normal"), semilla, f"val{sec}")
+def split(source, contaminate=0.5, val=0.1, seed=SEED):
+    contaminated_section = pump_sections(source.sections())[CANARY]
+    rep = {"train": [], "val": [], "contamination": [], "test": [], "contaminated_section": contaminated_section}
+    for sec in source.sections():
+        of = lambda dom, part, truth: [c for c in source.clips if c["section"] == sec and c["domain"] == dom
+                                       and c["part"] == part and c["truth"] == truth]
+        # the labels "val…" and "cont…" seed the shuffles: changing them changes the split
+        tr = _shuffle(of("source", "train", "normal"), seed, f"val{sec}")
         nval = max(1, int(round(val * len(tr)))) if len(tr) > 1 else 0
         rep["val"] += tr[:nval]
         rep["train"] += tr[nval:]
-        prueba = [c for c in fuente.clips if c["seccion"] == sec and c["parte"] == "test"]
-        if sec == seccion_contaminada and contaminar > 0:
-            fallas = _mezcla(de("source", "test", "anomaly"), semilla, f"cont{sec}")
-            cont = fallas[: int(contaminar * len(fallas))]
-            rep["contaminacion"] += cont
+        test = [c for c in source.clips if c["section"] == sec and c["part"] == "test"]
+        if sec == contaminated_section and contaminate > 0:
+            faults = _shuffle(of("source", "test", "anomaly"), seed, f"cont{sec}")
+            cont = faults[: int(contaminate * len(faults))]
+            rep["contamination"] += cont
             ids = {c["id"] for c in cont}
-            prueba = [c for c in prueba if c["id"] not in ids]
-        rep["prueba"] += prueba
+            test = [c for c in test if c["id"] not in ids]
+        rep["test"] += test
     return rep
 
 
-def secciones_de_bombas(secciones):
-    """BOMBAS, o un reparto por turnos si los datos traen otras secciones."""
-    if all(s in secciones for s in BOMBAS.values()):
-        return dict(BOMBAS)
-    return {b: secciones[i % len(secciones)] for i, b in enumerate(BOMBAS)}
+def pump_sections(sections):
+    """PUMPS, or a round-robin assignment if the data has other sections."""
+    if all(s in sections for s in PUMPS.values()):
+        return dict(PUMPS)
+    return {p: sections[i % len(sections)] for i, p in enumerate(PUMPS)}

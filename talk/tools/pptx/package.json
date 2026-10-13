@@ -1,0 +1,2 @@
+{ "name": "mlops-a-ciegas-pptx", "private": true, "description": "Renders slides for the PowerPoint",
+  "dependencies": { "jsdom": "^26.0.0", "@napi-rs/canvas": "^0.1.60" } }

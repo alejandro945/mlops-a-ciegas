@@ -1,95 +1,95 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────
-#  Publica una versión del modelo como versión del componente com.estacion.Escucha
-#    1. sube build/<versión>/{inference.py,features.py,model.onnx,stats.json}
-#       a s3://estacion-<cuenta>-<región>/estacion/<versión>/
-#    2. crea la versión del componente desde la receta, con el umbral de stats.json
+#  Publishes a model version as a version of the component com.station.Listener
+#    1. uploads build/<version>/{inference.py,features.py,model.onnx,stats.json}
+#       to s3://station-<account>-<region>/station/<version>/
+#    2. creates the component version from the recipe, with the threshold from stats.json
 #
-#  Uso:  ./demo/publish.sh 1.0.0
-#        ./demo/publish.sh 1.0.0 --allow-synthetic     (solo para probar la tubería)
+#  Usage:  ./demo/publish.sh 1.0.0
+#          ./demo/publish.sh 1.0.0 --allow-synthetic     (only to test the pipeline)
 #
-#  Una versión publicada no se toca: Greengrass calcula el digest de cada artefacto al
-#  crearla. Para cambiar algo, sube una versión nueva.
+#  A published version is never touched: Greengrass computes each artifact's digest when
+#  creating it. To change anything, upload a new version.
 # ─────────────────────────────────────────────────────────────────────
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-V="${1:?versión (por ejemplo 1.0.0)}"; shift || true
-PERMITIR_SINTETICO=0
+V="${1:?version (for example 1.0.0)}"; shift || true
+ALLOW_SYNTHETIC=0
 for a in "$@"; do
   case "$a" in
-    --allow-synthetic) PERMITIR_SINTETICO=1 ;;
-    *) echo "opción desconocida: $a  (usa --allow-synthetic)"; exit 1 ;;
+    --allow-synthetic) ALLOW_SYNTHETIC=1 ;;
+    *) echo "unknown option: $a  (use --allow-synthetic)"; exit 1 ;;
   esac
 done
-[[ "$V" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "la versión debe verse como 1.0.0 (me diste: $V)"; exit 1; }
+[[ "$V" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "the version must look like 1.0.0 (got: $V)"; exit 1; }
 
 REGION="${REGION:-us-east-1}"; export AWS_REGION="$REGION"
 ACCOUNT="$(aws sts get-caller-identity --query Account --output text)"
-BUCKET="${BUCKET:-estacion-${ACCOUNT}-${REGION}}"
-COMPONENT="com.estacion.Escucha"
+BUCKET="${BUCKET:-station-${ACCOUNT}-${REGION}}"
+COMPONENT="com.station.Listener"
 SRC="build/$V"
 TMP="$(mktemp -d)"; trap 'rm -rf "$TMP"' EXIT
 
 for f in inference.py features.py model.onnx stats.json; do
-  [ -f "$SRC/$f" ] || { echo "falta $SRC/$f  (entrena con model/train.py; mira model/README.md)"; exit 1; }
+  [ -f "$SRC/$f" ] || { echo "$SRC/$f is missing  (train with model/train.py; see model/README.md)"; exit 1; }
 done
 
-# umbral, ¿sintético?, y que stats.json hable de este modelo y de esta versión
+# threshold, synthetic?, and that stats.json belongs to this model and this version
 INFO="$(python3 - "$SRC" "$V" <<'PY'
 import hashlib, json, sys
 src, v = sys.argv[1:3]
 st = json.load(open(f"{src}/stats.json"))
 if "threshold" not in st:
-    sys.exit("stats.json no trae el campo threshold")
+    sys.exit("stats.json has no threshold field")
 if st.get("version") not in (None, v):
-    sys.exit(f"stats.json es de la versión {st['version']}, no de {v}")
+    sys.exit(f"stats.json is for version {st['version']}, not {v}")
 sha = hashlib.sha256(open(f"{src}/model.onnx", "rb").read()).hexdigest()
 if st.get("sha256") not in (None, sha):
-    sys.exit("el sha256 de stats.json no es el de model.onnx: reentrena o copia los archivos completos")
+    sys.exit("the sha256 in stats.json is not model.onnx's: retrain or copy the complete files")
 print(st["threshold"], 1 if st.get("synthetic") else 0)
 PY
 )"
-UMBRAL="${INFO% *}"; SINTETICO="${INFO##* }"
+THRESHOLD="${INFO% *}"; SYNTHETIC="${INFO##* }"
 
-if [ "$SINTETICO" = "1" ] && [ "$PERMITIR_SINTETICO" != "1" ]; then
-  echo "✘ $SRC/stats.json dice \"synthetic\": true. Ese modelo aprendió con audio sintético:"
-  echo "  sirve para probar la tubería, no para mostrar cifras. Si es lo que quieres: --allow-synthetic"
+if [ "$SYNTHETIC" = "1" ] && [ "$ALLOW_SYNTHETIC" != "1" ]; then
+  echo "✘ $SRC/stats.json says \"synthetic\": true. That model learned from synthetic audio:"
+  echo "  it is good for testing the pipeline, not for showing numbers. If that is what you want: --allow-synthetic"
   exit 1
 fi
-[ "$SINTETICO" = "1" ] && echo "aviso: modelo sintético (--allow-synthetic). Ninguna cifra de esta corrida va a una lámina."
+[ "$SYNTHETIC" = "1" ] && echo "warning: synthetic model (--allow-synthetic). No number from this run goes on a slide."
 
-aws s3api head-bucket --bucket "$BUCKET" >/dev/null 2>&1 || { echo "no existe s3://$BUCKET: corre ./cloud/setup.sh"; exit 1; }
+aws s3api head-bucket --bucket "$BUCKET" >/dev/null 2>&1 || { echo "s3://$BUCKET does not exist: run ./cloud/setup.sh"; exit 1; }
 
 ARN="arn:aws:greengrass:$REGION:$ACCOUNT:components:$COMPONENT:versions:$V"
 if aws greengrassv2 describe-component --arn "$ARN" >/dev/null 2>&1; then
-  echo "▶ $COMPONENT $V ya está publicada: no la toco (los artefactos son inmutables)."
-  echo "  Para cambiar algo, sube una versión nueva."
+  echo "▶ $COMPONENT $V is already published: leaving it alone (artifacts are immutable)."
+  echo "  To change anything, upload a new version."
   exit 0
 fi
 
-echo "▶ subiendo $SRC a s3://$BUCKET/estacion/$V/"
+echo "▶ uploading $SRC to s3://$BUCKET/station/$V/"
 for f in inference.py features.py model.onnx stats.json; do
-  aws s3 cp "$SRC/$f" "s3://$BUCKET/estacion/$V/$f" --only-show-errors
+  aws s3 cp "$SRC/$f" "s3://$BUCKET/station/$V/$f" --only-show-errors
 done
 
-sed -e "s/__VERSION__/$V/g" -e "s/__BUCKET__/$BUCKET/g" -e "s/__THRESHOLD__/$UMBRAL/g" \
+sed -e "s/__VERSION__/$V/g" -e "s/__BUCKET__/$BUCKET/g" -e "s/__THRESHOLD__/$THRESHOLD/g" \
   component/recipe.template.yaml > "$TMP/recipe.yaml"
 
-echo "▶ creando $COMPONENT $V (umbral $UMBRAL)"
+echo "▶ creating $COMPONENT $V (threshold $THRESHOLD)"
 aws greengrassv2 create-component-version --inline-recipe "fileb://$TMP/recipe.yaml" \
   --query '[componentName,componentVersion,status.componentState]' --output text
 
-# Greengrass calcula el digest de cada artefacto; la versión queda DEPLOYABLE cuando termina
+# Greengrass computes each artifact's digest; the version becomes DEPLOYABLE when it finishes
 for _ in $(seq 1 30); do
-  ESTADO="$(aws greengrassv2 describe-component --arn "$ARN" --query status.componentState --output text)"
-  [ "$ESTADO" = "REQUESTED" ] || break
+  STATE="$(aws greengrassv2 describe-component --arn "$ARN" --query status.componentState --output text)"
+  [ "$STATE" = "REQUESTED" ] || break
   sleep 2
 done
-if [ "$ESTADO" != "DEPLOYABLE" ]; then
-  echo "✘ la versión quedó en $ESTADO"
+if [ "$STATE" != "DEPLOYABLE" ]; then
+  echo "✘ the version ended up in $STATE"
   aws greengrassv2 describe-component --arn "$ARN" --query status.message --output text || true
   exit 1
 fi
-echo "✔ $COMPONENT $V lista para desplegar"
-echo "Siguiente: ./demo/deploy.sh $V todas     (o anillo-0 / anillo-1)"
+echo "✔ $COMPONENT $V ready to deploy"
+echo "Next: ./demo/deploy.sh $V all     (or ring-0 / ring-1)"

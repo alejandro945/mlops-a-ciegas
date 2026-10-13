@@ -1,3 +1,3 @@
-# logs del nucleus de cada bomba y credenciales temporales del primer arranque
+# each pump's nucleus logs and the temporary first-boot credentials
 logs/
 .bootstrap/

@@ -1,15 +1,15 @@
-# Terraform de poc-devopsdays/infra en la cuenta de AWS de la PoC.
+# Terraform for poc-devopsdays/infra in the PoC's AWS account.
 #
-#   PR que toca la infra   → plan con el rol de solo lectura; el plan queda en el resumen y en el PR
-#   push a main            → solo plan: muestra qué cambiaría
-#   a mano (Run workflow)  → plan, apply o destroy (destroy limpia también los core devices y el bucket)
+#   PR that touches the infra   → plan with the read-only role; the plan goes to the summary and the PR
+#   push to main                → plan only: shows what would change
+#   by hand (Run workflow)      → plan, apply or destroy (destroy also cleans the core devices and the bucket)
 #
-# El apply nunca corre solo: lo lanzas tú. En un repo privado del plan gratis, el environment
-# aws-poc limita el apply a main pero no puede pedir aprobación; ese clic es la aprobación.
+# Apply never runs on its own: you trigger it. On a private repo on the free plan, the aws-poc
+# environment restricts apply to main but cannot ask for approval; that click is the approval.
 #
-# Entra a AWS con OIDC: el repo no guarda llaves. Los roles y el bucket del estado los crea
-# poc-devopsdays/infra/github/ y las variables las deja infra/github/conectar-repo.sh.
-# El plan no se sube como artefacto: lleva el estado, y el estado lleva las llaves de las bombas.
+# Gets into AWS with OIDC: the repo stores no keys. The roles and the state bucket are created by
+# poc-devopsdays/infra/github/ and the variables are set by infra/github/connect-repo.sh.
+# The plan is never uploaded as an artifact: it carries the state, and the state carries the pumps' keys.
 name: infra
 
 on:
@@ -32,8 +32,8 @@ on:
       - ".github/workflows/infra.yml"
   workflow_dispatch:
     inputs:
-      accion:
-        description: "Qué hacer"
+      action:
+        description: "What to do"
         type: choice
         options: [plan, apply, destroy]
         default: plan
@@ -41,23 +41,23 @@ on:
 permissions:
   contents: read
 
-# Un solo estado: nunca dos corridas a la vez, y ninguna se cancela a la mitad
+# One state: never two runs at once, and none is cancelled halfway
 concurrency:
-  group: infra-estado
+  group: infra-state
   cancel-in-progress: false
 
 env:
   TF_IN_AUTOMATION: "true"
   TF_INPUT: "false"
   DIR: poc-devopsdays/infra
-  ACCION: ${{ inputs.accion || 'plan' }}
+  ACTION: ${{ inputs.action || 'plan' }}
   TF_VAR_region: ${{ vars.AWS_REGION }}
-  # Fallas no oídas por minuto que disparan la vuelta; se ajusta en el ensayo con la variable del repo
-  TF_VAR_umbral_alarma: ${{ vars.UMBRAL_ALARMA || '8' }}
+  # Missed faults per minute that trigger the rollback; tuned during the rehearsal with the repo variable
+  TF_VAR_alarm_threshold: ${{ vars.ALARM_THRESHOLD || '8' }}
 
 jobs:
   plan:
-    # Los PR de un fork no reciben token OIDC: para ellos están las pruebas
+    # PRs from a fork get no OIDC token: the tests workflow covers them
     if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-24.04
     permissions:
@@ -65,7 +65,7 @@ jobs:
       id-token: write
       pull-requests: write
     outputs:
-      cambios: ${{ steps.plan.outputs.cambios }}
+      changes: ${{ steps.plan.outputs.changes }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -100,18 +100,18 @@ jobs:
         run: |
           set +e
           extra=()
-          [ "$ACCION" = destroy ] && extra=(-destroy)
+          [ "$ACTION" = destroy ] && extra=(-destroy)
           terraform -chdir="$DIR" plan -no-color -lock-timeout=5m -detailed-exitcode "${extra[@]}" > plan.txt 2>&1
           code=$?
           set -e
           cat plan.txt
           case $code in
-            0) echo "cambios=false" >> "$GITHUB_OUTPUT" ;;
-            2) echo "cambios=true"  >> "$GITHUB_OUTPUT" ;;
-            *) echo "::error::terraform plan falló"; exit 1 ;;
+            0) echo "changes=false" >> "$GITHUB_OUTPUT" ;;
+            2) echo "changes=true"  >> "$GITHUB_OUTPUT" ;;
+            *) echo "::error::terraform plan failed"; exit 1 ;;
           esac
 
-      - name: resumen
+      - name: summary
         if: always() && steps.plan.outcome != 'skipped'
         env:
           GH_TOKEN: ${{ github.token }}
@@ -119,25 +119,25 @@ jobs:
         run: |
           [ -f plan.txt ] || exit 0
           {
-            echo "### terraform plan · \`$ACCION\`"
+            echo "### terraform plan · \`$ACTION\`"
             echo
             grep -E '^(Plan:|No changes\.|Changes to Outputs:)' plan.txt || true
             echo
-            echo '<details><summary>Plan completo</summary>'
+            echo '<details><summary>Full plan</summary>'
             echo
             echo '```'
             tail -c 60000 plan.txt
             echo '```'
             echo '</details>'
-          } > resumen.md
-          cat resumen.md >> "$GITHUB_STEP_SUMMARY"
-          if [ -n "$PR" ]; then gh pr comment "$PR" -R "$GITHUB_REPOSITORY" --body-file resumen.md; fi
+          } > summary.md
+          cat summary.md >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$PR" ]; then gh pr comment "$PR" -R "$GITHUB_REPOSITORY" --body-file summary.md; fi
 
   apply:
     needs: plan
-    if: needs.plan.outputs.cambios == 'true' && github.event_name == 'workflow_dispatch' && inputs.accion != 'plan'
+    if: needs.plan.outputs.changes == 'true' && github.event_name == 'workflow_dispatch' && inputs.action != 'plan'
     runs-on: ubuntu-24.04
-    environment: aws-poc # solo main (y tu aprobación, si el plan de GitHub la permite)
+    environment: aws-poc # main only (and your approval, if your GitHub plan allows it)
     permissions:
       contents: read
       id-token: write
@@ -165,23 +165,23 @@ jobs:
           -backend-config="region=${{ vars.AWS_REGION }}"
 
       - name: apply
-        if: env.ACCION != 'destroy'
+        if: env.ACTION != 'destroy'
         run: |
           terraform -chdir="$DIR" apply -auto-approve -no-color -lock-timeout=5m
           {
-            echo "### Siguiente"
+            echo "### Next steps"
             echo '```'
-            terraform -chdir="$DIR" output -raw siguiente
+            terraform -chdir="$DIR" output -raw next_steps
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
-      # Greengrass registra los core devices solo; Terraform no los conoce. El bucket de artefactos
-      # se vacía (todo se vuelve a publicar con demo/publish.sh): force_destroy tiene que quedar en
-      # el estado antes del destroy.
+      # Greengrass registers the core devices on its own; Terraform does not know them. The artifacts
+      # bucket is emptied (everything is published again with demo/publish.sh): force_destroy has to
+      # be in the state before the destroy.
       - name: destroy
-        if: env.ACCION == 'destroy'
+        if: env.ACTION == 'destroy'
         run: |
-          REGION="$TF_VAR_region" poc-devopsdays/infra/limpiar-core-devices.sh
+          REGION="$TF_VAR_region" poc-devopsdays/infra/clean-core-devices.sh
           terraform -chdir="$DIR" apply -auto-approve -no-color -lock-timeout=5m \
-            -target=aws_s3_bucket.artefactos -var forzar_borrado_bucket=true
-          terraform -chdir="$DIR" destroy -auto-approve -no-color -lock-timeout=5m -var forzar_borrado_bucket=true
+            -target=aws_s3_bucket.artifacts -var force_destroy_bucket=true
+          terraform -chdir="$DIR" destroy -auto-approve -no-color -lock-timeout=5m -var force_destroy_bucket=true

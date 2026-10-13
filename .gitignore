@@ -1,28 +1,26 @@
+# PowerPoint render output
+talk/tools/pptx/build/
+talk/tools/pptx/node_modules/
 
-# render del PowerPoint
-charla/tools/pptx/build/
-charla/tools/pptx/node_modules/
-
-# datos de la PoC (MIMII: pesado y CC BY-NC-SA)
+# PoC data (MIMII DUE: large and CC BY-NC-SA)
 poc-devopsdays/data/
 poc-devopsdays/**/*.zip
 
-# Terraform de la PoC: el estado guarda las llaves de las bombas
+# PoC Terraform: the state holds the pumps' private keys
 poc-devopsdays/infra/.terraform/
 poc-devopsdays/infra/.terraform.lock.hcl.bak
 poc-devopsdays/infra/*.tfstate
 poc-devopsdays/infra/*.tfstate.*
 poc-devopsdays/infra/.build/
 poc-devopsdays/infra/*.tfvars
-# *.tfstate, .terraform, infra/.build
 
-# Estado de Terraform en cualquier carpeta (infra/github/ guarda el suyo local) y la config del backend
+# Terraform state anywhere (infra/github/ keeps its own locally) and the backend config
 **/.terraform/
 **/*.tfstate
 **/*.tfstate.*
 poc-devopsdays/infra/backend.hcl
 
-# Python local
+# Local Python
 poc-devopsdays/.venv/
 __pycache__/
 *.pyc
@@ -30,5 +28,8 @@ __pycache__/
 # macOS
 .DS_Store
 
-# Claude Code local
+# Local Claude Code settings
 .claude/
+
+# Local rehearsal evidence (contains the AWS account id)
+evidencia-e2e/

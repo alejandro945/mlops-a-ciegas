@@ -1,88 +1,93 @@
-# infra · la nube de la estación con Terraform
+# infra · the station's cloud with Terraform
 
-Crea con Terraform todo lo que la PoC necesita en AWS, más la identidad de las cinco bombas y la EC2 que las hospeda. Reemplaza a `cloud/setup.sh`, que sigue ahí como camino sin Terraform; las dos versiones usan los mismos nombres, y `tests/test_infra_terraform.py` verifica que no se separen.
+Creates with Terraform everything the PoC needs in AWS, plus the identity of the five pumps and the EC2 that hosts them. It replaces `cloud/setup.sh`, which stays as the path without Terraform; both use the same names, and `tests/test_infra_terraform.py` checks that they do not drift apart.
 
-El estado vive en S3 y lo comparten tu laptop y GitHub Actions. Lo normal es aplicar desde Actions (ver «Con GitHub Actions»); desde la laptop funciona igual porque es el mismo estado.
+The state lives in S3 and is shared by your laptop and GitHub Actions. The usual way is to apply from Actions (see "With GitHub Actions"); applying from your laptop works the same because it is the same state.
 
-| Archivo | Qué crea |
+| File | What it creates |
 |---|---|
-| `main.tf` | Bucket de artefactos (privado, cifrado) y el parámetro `/estacion/last_good_version` |
-| `iot.tf` | Thing groups `EstacionAnillo0` y `EstacionAnillo1`, rol de token exchange y su alias, política de IoT de las bombas y, con `gestionar_identidad = true`, los cinco things con su certificado (guardado en Parameter Store como SecureString) |
-| `observabilidad.tf` | Grupo de logs `/estacion/eventos`, regla de IoT `estacion_eventos` con `arrived_ts`, los siete filtros de métrica (namespace `Estacion`), el dashboard `estacion`, la Lambda `estacion-rollback` y la alarma `estacion-fallas-no-oidas` que la invoca |
-| `host.tf` | La EC2 Linux de las bombas: Amazon Linux 2023 con Docker, sin puertos abiertos (se entra con Session Manager), IMDSv2 con un solo salto para que los contenedores no puedan usar el rol de la EC2 |
-| `backend.tf` | El estado en S3, cifrado y con candado (`use_lockfile`). El bucket y la región llegan por `-backend-config` |
-| `github/` | Se aplica una vez desde tu laptop: el bucket del estado, el proveedor OIDC de GitHub y los roles `github-estacion-plan` (solo lectura) y `github-estacion-apply` (todo menos IAM; en IAM, solo los roles de la PoC) |
+| `main.tf` | Artifacts bucket (private, encrypted) and the `/station/last_good_version` parameter |
+| `iot.tf` | Thing groups `StationRing0` and `StationRing1`, the token exchange role and its alias, the pumps' IoT policy and, with `manage_identity = true`, the five things with their certificates (stored in Parameter Store as SecureString) |
+| `observability.tf` | Log group `/station/events`, IoT rule `station_events` with `arrived_ts`, the seven metric filters (namespace `Station`), the `station` dashboard, the `station-rollback` Lambda and the `station-missed-faults` alarm that invokes it |
+| `host.tf` | The pumps' Linux EC2: Amazon Linux 2023 with Docker, no inbound ports (access through Session Manager only), IMDSv2 with a single hop so the containers cannot use the EC2 role |
+| `backend.tf` | The state in S3, encrypted and locked (`use_lockfile`). The bucket and the region come through `-backend-config` |
+| `github/` | Applied once from your laptop: the state bucket, GitHub's OIDC provider and the roles `github-station-plan` (read only) and `github-station-apply` (everything except IAM; in IAM, only the PoC's roles) |
 
-## Con GitHub Actions
+## With GitHub Actions
 
-Una sola vez, desde `poc-devopsdays/`, con un usuario administrador de la cuenta de pruebas y `gh` con sesión:
+Once, from `poc-devopsdays/`, with an administrator user of the test account and `gh` logged in:
 
 ```bash
-gh repo create <dueño>/mlops-a-ciegas --private                 # si el repo no existe
-gh api repos/<dueño>/mlops-a-ciegas/actions/oidc/customization/sub --jq .sub_claim_prefix
-# repo y prefijo_sub (lo que imprimió la línea anterior) van en infra/github/terraform.tfvars
+gh repo create <owner>/mlops-a-ciegas --private                 # if the repo does not exist
+gh api repos/<owner>/mlops-a-ciegas/actions/oidc/customization/sub --jq .sub_claim_prefix
+# repo and sub_prefix (what the previous line printed) go in infra/github/terraform.tfvars
 terraform -chdir=infra/github init
 terraform -chdir=infra/github apply
-./infra/github/conectar-repo.sh       # variables del repo, environment aws-poc y infra/backend.hcl
+./infra/github/connect-repo.sh       # repo variables, the aws-poc environment and infra/backend.hcl
 ```
 
-Los repos nuevos de GitHub firman el token OIDC con el formato inmutable (`repo:dueño@id/nombre@id:…`); por eso los roles aceptan ese prefijo además del clásico. Si el primer `plan` de Actions falla con «Not authorized to perform sts:AssumeRoleWithWebIdentity», revisa `prefijo_sub`.
+New GitHub repos sign the OIDC token with the immutable format (`repo:owner@id/name@id:…`); that is why the roles accept that prefix as well as the classic one. If the first `plan` in Actions fails with "Not authorized to perform sts:AssumeRoleWithWebIdentity", check `sub_prefix`.
 
-Desde ahí, `.github/workflows/infra.yml` hace esto:
+From then on, `.github/workflows/infra.yml` does this:
 
-| Cuándo | Qué hace |
+| When | What it does |
 |---|---|
-| Un PR que toca `infra/`, la Lambda o el dashboard | `plan` con el rol de solo lectura; el plan queda en el PR y en el resumen del job |
-| Un push a `main` | Solo `plan`: muestra qué cambiaría |
-| *Run workflow* a mano (Actions → infra) | `plan`, `apply` o `destroy`. El destroy borra antes los core devices y vacía el bucket de artefactos |
+| A PR that touches `infra/`, the Lambda or the dashboard | `plan` with the read-only role; the plan goes to the PR and to the job summary |
+| A push to `main` | `plan` only: shows what would change |
+| *Run workflow* by hand (Actions → infra) | `plan`, `apply` or `destroy`. Destroy first deletes the core devices and empties the artifacts bucket |
 
-El `apply` nunca corre solo: lo lanzas tú, y solo desde `main` (el environment `aws-poc` lo exige). En un repo privado del plan gratis de GitHub, el environment no puede pedir aprobación; por eso el apply es manual.
+`apply` never runs on its own: you trigger it, and only from `main` (the `aws-poc` environment requires it). On a private repo on GitHub's free plan the environment cannot ask for approval; that is why apply is manual.
 
-`UMBRAL_ALARMA`, como variable del repo, cambia `umbral_alarma` sin tocar el código. El plan nunca se sube como artefacto: lleva el estado, y el estado lleva las llaves de las bombas.
+Repo variables the workflow reads: `AWS_REGION`, `TF_STATE_BUCKET`, `AWS_ROLE_PLAN`, `AWS_ROLE_APPLY` (set by `connect-repo.sh`) and, optionally, `ALARM_THRESHOLD`, which changes `alarm_threshold` without touching the code (default 8). The plan is never uploaded as an artifact: it carries the state, and the state carries the pumps' keys.
 
-`.github/workflows/pruebas.yml` corre `fmt`, `validate` y todas las pruebas de `tests/` en cada PR, sin tocar AWS.
+`.github/workflows/tests.yml` runs `fmt`, `validate` and every test in `tests/` on each PR, without touching AWS.
 
-## Uso desde tu laptop
+## From your laptop
 
 ```bash
 cd poc-devopsdays/infra
-terraform init -backend-config=backend.hcl   # backend.hcl lo escribe github/conectar-repo.sh
-terraform plan                               # o: terraform apply -var umbral_alarma=6
-terraform output siguiente                   # los pasos que siguen, con el id de la EC2
+terraform init -backend-config=backend.hcl   # backend.hcl is written by github/connect-repo.sh
+terraform plan                               # or: terraform apply -var alarm_threshold=6
+terraform output next_steps                  # the next steps, with the EC2 id
 ```
 
-Después, desde la carpeta `poc-devopsdays/`:
+If you do not have `backend.hcl`, write it by hand:
 
-1. `./infra/subir-al-host.sh` sube el código, `build/` y `data/estacion/` al bucket.
-2. Entra a la EC2 con `terraform -chdir=infra output -raw entrar_al_host` (necesitas el [plugin de Session Manager](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)).
-3. En la EC2: `sudo su - ec2-user`, `traer-poc`, `cd ~/poc-devopsdays`, `./fleet/build.sh` y `IDENTIDAD=terraform ./fleet/up.sh` (la variable ya viene puesta en la sesión).
-4. La demo sigue igual: `./demo/publish.sh 1.0.0`, `./demo/deploy.sh 1.0.0 todas`, `./demo/watch.sh`.
+```hcl
+bucket = "station-tfstate-<account>-<region>"
+region = "<region>"
+```
 
-## Variables que vas a querer tocar
+Then, from the `poc-devopsdays/` folder:
 
-| Variable | Por defecto | Para qué |
+1. `./infra/upload-to-host.sh` uploads the code, `build/` and `data/station/` to the bucket.
+2. Open a session on the EC2 with `terraform -chdir=infra output -raw connect_to_host` (you need the [Session Manager plugin](https://docs.aws.amazon.com/systems-manager/latest/userguide/session-manager-working-with-install-plugin.html)).
+3. On the EC2: `sudo su - ec2-user`, `fetch-poc`, `cd ~/poc-devopsdays`, `./fleet/build.sh` and `IDENTITY=terraform ./fleet/up.sh` (the variable is already set in the session).
+4. The demo is the same: `./demo/publish.sh 1.0.0`, `./demo/deploy.sh 1.0.0 all`, `./demo/watch.sh`.
+
+## Variables you will want to change
+
+| Variable | Default | What for |
 |---|---|---|
-| `region` | `us-east-1` | Toda la PoC |
-| `umbral_alarma` | `8` | Fallas no oídas por minuto que disparan la vuelta; se ajusta en el ensayo |
-| `tipo_instancia` | `t3.large` | Cada bomba es una JVM más el modelo: mide la memoria con las cinco arriba |
-| `gestionar_identidad` | `true` | `false` deja que el instalador de Greengrass registre las bombas, como sin Terraform |
-| `crear_host` | `true` | `false` si ya tienes un host Linux con Docker |
-| `subred_id` | VPC por defecto | Si tu cuenta no tiene VPC por defecto, pasa una subred pública |
-| `cidr_ssh`, `par_de_llaves` | sin SSH | Solo si prefieres SSH a Session Manager |
-| `forzar_borrado_bucket` | `false` | `true` para que `destroy` borre el bucket con artefactos |
+| `region` | `us-east-1` | The whole PoC |
+| `alarm_threshold` | `8` | Missed faults per minute that trigger the rollback; tuned during the rehearsal |
+| `instance_type` | `t3.large` | Each pump is a JVM plus the model: measure memory with all five running |
+| `manage_identity` | `true` | `false` lets the Greengrass installer register the pumps, as without Terraform |
+| `create_host` | `true` | `false` if you already have a Linux host with Docker |
+| `subnet_id` | default VPC | If your account has no default VPC, pass a public subnet |
+| `force_destroy_bucket` | `false` | `true` so `destroy` deletes the bucket even with artifacts in it |
 
-## Lo que tienes que saber
+## What you need to know
 
-- **El estado guarda las llaves privadas de las bombas.** Vive en `s3://estacion-tfstate-<cuenta>-<región>/poc-devopsdays/infra.tfstate`: privado, cifrado, versionado y solo por TLS. Lo lee quien tenga permisos de S3 en la cuenta: hoy, tu usuario y los dos roles de GitHub. Si eso no te sirve, usa `gestionar_identidad = false`.
-- **Un solo camino para aplicar a la vez.** Actions y tu laptop comparten el estado y el candado; si los dos intentan `apply` al tiempo, el segundo espera o falla con «state locked». Si pasas variables distintas en la laptop (`-var umbral_alarma=6`), el próximo apply de Actions las vuelve a su valor: deja los ajustes en las variables del repo.
-- **Si ya corriste `cloud/setup.sh` o el instalador de Greengrass en esta cuenta,** el rol `GreengrassV2TokenExchangeRole`, su alias, las políticas y los thing groups ya existen y `apply` falla con «already exists». Bórralos con `./cloud/teardown.sh`, o impórtalos (`terraform import 'aws_iam_role.tes' GreengrassV2TokenExchangeRole`, y así con cada uno).
-- **Para borrar todo:** `./fleet/down.sh` en la EC2, luego `./infra/limpiar-core-devices.sh` (los core devices los crea Greengrass, no Terraform) y `terraform -chdir=infra destroy`.
-- **Lo que no maneja Terraform:** las versiones del componente y los despliegues. Son la demo: los crean `publish.sh`, `deploy.sh` y la Lambda.
+- **The state holds the pumps' private keys.** It lives in `s3://station-tfstate-<account>-<region>/poc-devopsdays/infra.tfstate`: private, encrypted, versioned and TLS only. Anyone with S3 permissions in the account can read it: today, your user and the two GitHub roles. If that does not work for you, use `manage_identity = false`.
+- **One path applies at a time.** Actions and your laptop share the state and the lock; if both try to `apply` at once, the second one waits or fails with "state locked". If you pass different variables on your laptop (`-var alarm_threshold=6`), the next apply from Actions puts them back: keep your settings in the repo variables.
+- **If you already ran `cloud/setup.sh` or the Greengrass installer in this account,** the `GreengrassV2TokenExchangeRole` role, its alias, the policies and the thing groups already exist and `apply` fails with "already exists". Delete them with `./cloud/teardown.sh`, or import them (`terraform import 'aws_iam_role.tes' GreengrassV2TokenExchangeRole`, and so on for each one).
+- **To delete everything:** `./fleet/down.sh` on the EC2, then `./infra/clean-core-devices.sh` (the core devices are created by Greengrass, not Terraform) and `terraform -chdir=infra destroy`.
+- **What Terraform does not manage:** component versions and deployments. They are the demo: `publish.sh`, `deploy.sh` and the Lambda create them.
 
-## Qué verifiqué y qué no
+## What was verified and what was not
 
-- La sintaxis de los `.tf` (con un parser de HCL) y que los nombres, la regla, los siete patrones de los filtros, la alarma y la política de las bombas son los mismos que en `cloud/setup.sh`.
-- `fleet/up.sh` y el entrypoint con `IDENTIDAD=terraform`, contra un `aws` y un `docker` falsos: bajan la identidad, la montan solo en la instalación, el nucleus se instala con `--init-config` y ninguna credencial de AWS entra al contenedor.
-- `terraform init` y `terraform validate` pasan en `infra/` y en `infra/github/` (Terraform 1.12.2, proveedor de AWS 5.100.0). El lock tiene hashes para Linux y macOS.
-- **No corrí `plan` ni `apply` contra AWS.** El primer `plan` de Actions es la prueba de los permisos de los roles de GitHub.
-- **No probado contra AWS real.** El riesgo más alto es la instalación del nucleus con la identidad de afuera (`--init-config`): si falla, `docker logs bomba-01` y `fleet/logs/bomba-01/greengrass.log` dicen por qué.
+- `terraform fmt`, `init` and `validate` pass in `infra/` and in `infra/github/` (Terraform 1.12.2, AWS provider 5.100.0). The lock file has hashes for Linux and macOS.
+- `tests/test_infra_terraform.py` checks that the names, the rule, the seven filter patterns, the alarm and the pumps' policy are the same as in `cloud/setup.sh`, and runs `fleet/up.sh` and the entrypoint with `IDENTITY=terraform` against a fake `aws` and `docker`: they fetch the identity, mount it only during the install, install the nucleus with `--init-config`, and no AWS credential gets into the container.
+- **`plan` and `apply` against AWS are not covered by the tests.** The first `plan` in Actions is the test of the GitHub roles' permissions.
+- The riskiest part is installing the nucleus with an identity from outside (`--init-config`): if it fails, `docker logs pump-01` and `fleet/logs/pump-01/greengrass.log` say why.

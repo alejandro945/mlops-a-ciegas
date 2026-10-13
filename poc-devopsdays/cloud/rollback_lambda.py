@@ -1,15 +1,15 @@
 """
-El controlador de la vuelta automática. Lo invoca directamente la alarma de
-CloudWatch `estacion-fallas-no-oidas` (fallas que ninguna bomba oyó).
+The automatic rollback controller. Invoked directly by the CloudWatch alarm
+`station-missed-faults` (faults that no pump heard).
 
-No le ordena nada a la bomba: escribe un nuevo ESTADO DESEADO, un despliegue de
-Greengrass con la última versión buena para el anillo 0 (el canario). La bomba
-lo busca cuando puede. El anillo 1 nunca recibió la versión mala, así que no se toca.
+It does not give the pump any order: it writes a new DESIRED STATE, a Greengrass
+deployment with the last good version for ring 0 (the canary). The pump picks it
+up when it can. Ring 1 never received the bad version, so it is left alone.
 
-Variables de entorno:
-  THING_GROUP_ARN   arn del thing group del canario (EstacionAnillo0)
-  COMPONENT         com.estacion.Escucha
-  LAST_GOOD_PARAM   /estacion/last_good_version   (parámetro de Systems Manager)
+Environment variables:
+  THING_GROUP_ARN   ARN of the canary thing group (StationRing0)
+  COMPONENT         com.station.Listener
+  LAST_GOOD_PARAM   /station/last_good_version   (Systems Manager parameter)
 """
 import json, os, time
 import boto3
@@ -19,9 +19,9 @@ ssm = boto3.client("ssm")
 
 
 def handler(event, context):
-    alarma = event.get("alarmData", {})
-    state = (alarma.get("state", {}) or {}).get("value")
-    print(json.dumps({"alarm_state": state, "alarm": alarma.get("alarmName")}))
+    alarm = event.get("alarmData", {})
+    state = (alarm.get("state", {}) or {}).get("value")
+    print(json.dumps({"alarm_state": state, "alarm": alarm.get("alarmName")}))
     if state != "ALARM":
         return {"skipped": True, "state": state}
 
@@ -30,9 +30,9 @@ def handler(event, context):
 
     resp = gg.create_deployment(
         targetArn=os.environ["THING_GROUP_ARN"],
-        deploymentName=f"vuelta-a-{good}-{int(time.time())}",
+        deploymentName=f"rollback-to-{good}-{int(time.time())}",
         components={comp: {"componentVersion": good,
-                           "configurationUpdate": {"reset": [""]}}},   # vuelve también al umbral de esa versión
+                           "configurationUpdate": {"reset": [""]}}},   # also goes back to that version's threshold
         deploymentPolicies={"failureHandlingPolicy": "ROLLBACK",
                             "componentUpdatePolicy": {"timeoutInSeconds": 60, "action": "SKIP_NOTIFY_COMPONENTS"}},
     )

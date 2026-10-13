@@ -1,74 +1,74 @@
 #!/usr/bin/env bash
 # ─────────────────────────────────────────────────────────────────────
-#  PoC · La estación · levantar la flota
+#  PoC · The station · bring up the fleet
 #
-#  Red "estacion" + cinco contenedores con el nucleus real de Greengrass.
-#    bomba-01        → thing group EstacionAnillo0 (canario)
-#    bomba-02 … 05   → thing group EstacionAnillo1
+#  Network "station" + five containers with the real Greengrass nucleus.
+#    pump-01        → thing group StationRing0 (canary)
+#    pump-02 … 05   → thing group StationRing1
 #
-#  Uso:  ./fleet/up.sh                 las cinco bombas
-#        ./fleet/up.sh --pequeno       cada bomba limitada a un "equipo pequeño"
-#        ./fleet/up.sh --recrear       recrea los contenedores (conserva la identidad)
-#        REGION=us-east-1 CPUS=2 MEM=2g NUCLEUS_HEAP=192m ./fleet/up.sh
-#        DATA=<carpeta>    de dónde sale el audio (por defecto data/estacion, el de model/prepare_data.py)
+#  Usage:  ./fleet/up.sh                 the five pumps
+#          ./fleet/up.sh --small         each pump limited to a "small device"
+#          ./fleet/up.sh --recreate      recreates the containers (keeps the identity)
+#          REGION=us-east-1 CPUS=2 MEM=2g NUCLEUS_HEAP=192m ./fleet/up.sh
+#          DATA=<folder>    where the audio comes from (default data/station, from model/prepare_data.py)
 #
-#  Primer arranque, dos caminos:
-#    IDENTIDAD=terraform ./fleet/up.sh   las bombas ya existen en AWS (infra/, terraform apply):
-#        baja de Parameter Store el certificado de cada una, se lo monta solo durante la
-#        instalación y lo borra del disco. Ninguna credencial de AWS entra a los contenedores.
-#    ./fleet/up.sh  (IDENTIDAD=instalador)   el instalador de Greengrass registra cada bomba
-#        con credenciales TEMPORALES de tu sesión de AWS CLI, que se borran al terminar.
-#  Siguientes arranques: sin credenciales; la identidad de cada bomba vive en su volumen <bomba>-gg.
-#  Requiere: docker (host Linux), aws cli v2, python3, ./fleet/build.sh, y terraform apply o cloud/setup.sh.
+#  First boot, two paths:
+#    IDENTITY=terraform ./fleet/up.sh   the pumps already exist in AWS (infra/, terraform apply):
+#        fetches each one's certificate from Parameter Store, mounts it only during the
+#        installation and deletes it from disk. No AWS credentials enter the containers.
+#    ./fleet/up.sh  (IDENTITY=installer)   the Greengrass installer registers each pump
+#        with TEMPORARY credentials from your AWS CLI session, deleted when it finishes.
+#  Later boots: no credentials; each pump's identity lives in its volume <pump>-gg.
+#  Requires: docker (Linux host), aws cli v2, python3, ./fleet/build.sh, and terraform apply or cloud/setup.sh.
 # ─────────────────────────────────────────────────────────────────────
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 REGION="${REGION:-us-east-1}"
-IMAGE="${IMAGE:-estacion/greengrass:latest}"
-NETWORK="estacion"
-DATA="${DATA:-data/estacion}"
+IMAGE="${IMAGE:-station/greengrass:latest}"
+NETWORK="station"
+DATA="${DATA:-data/station}"
 case "$DATA" in /*) ;; *) DATA="$PWD/$DATA" ;; esac
 LOGS="$PWD/fleet/logs"
 BOOT="$PWD/fleet/.bootstrap"
-THING_POLICY="${THING_POLICY_NAME:-EstacionThingPolicy}"
-NUCLEUS_HEAP="${NUCLEUS_HEAP-256m}"       # tope del heap de cada nucleus (cada uno es una JVM); vacío = sin tope
-ESPERA="${ESPERA:-300}"            # segundos máximos para aprovisionar una bomba
+THING_POLICY="${THING_POLICY_NAME:-StationThingPolicy}"
+NUCLEUS_HEAP="${NUCLEUS_HEAP-256m}"       # heap cap for each nucleus (each one is a JVM); empty = no cap
+WAIT_SECONDS="${WAIT_SECONDS:-300}"      # maximum seconds to provision one pump
 CPUS="${CPUS:-}"; MEM="${MEM:-}"
-IDENTIDAD="${IDENTIDAD:-instalador}"     # instalador | terraform
-case "$IDENTIDAD" in instalador|terraform) ;; *) echo "IDENTIDAD=$IDENTIDAD no existe: usa instalador o terraform"; exit 1 ;; esac
-BOMBAS=(bomba-01 bomba-02 bomba-03 bomba-04 bomba-05)
+IDENTITY="${IDENTITY:-installer}"        # installer | terraform
+case "$IDENTITY" in installer|terraform) ;; *) echo "IDENTITY=$IDENTITY does not exist: use installer or terraform"; exit 1 ;; esac
+PUMPS=(pump-01 pump-02 pump-03 pump-04 pump-05)
 
-PEQUENO=0; RECREAR=0
+SMALL=0; RECREATE=0
 for a in "$@"; do
   case "$a" in
-    --pequeno) PEQUENO=1 ;;
-    --recrear) RECREAR=1 ;;
+    --small) SMALL=1 ;;
+    --recreate) RECREATE=1 ;;
     -h|--help) awk 'NR>1 && /^#/ {print} /^set -/ {exit}' "$0"; exit 0 ;;
-    *) echo "opción desconocida: $a  (usa --pequeno, --recrear)"; exit 1 ;;
+    *) echo "unknown option: $a  (use --small, --recreate)"; exit 1 ;;
   esac
 done
-if [ "$PEQUENO" = 1 ]; then CPUS="${CPUS:-1}"; MEM="${MEM:-1g}"; fi
+if [ "$SMALL" = 1 ]; then CPUS="${CPUS:-1}"; MEM="${MEM:-1g}"; fi
 
-grupo_de() { if [ "$1" = "bomba-01" ]; then echo EstacionAnillo0; else echo EstacionAnillo1; fi; }
+group_of() { if [ "$1" = "pump-01" ]; then echo StationRing0; else echo StationRing1; fi; }
 
-[ "$(uname -s)" = "Linux" ] || echo "aviso: AWS pide un host Linux para Greengrass en Docker (este es $(uname -s))."
-docker image inspect "$IMAGE" >/dev/null 2>&1 || { echo "falta la imagen $IMAGE: corre ./fleet/build.sh"; exit 1; }
-for b in "${BOMBAS[@]}"; do
-  [ -d "$DATA/$b" ] || { echo "falta el audio de $b en $DATA/$b"
-                         echo "genera los datos con model/prepare_data.py (o apunta DATA= a otro directorio)"; exit 1; }
-  # el componente corre como ggc_user, no como root: el audio tiene que ser legible por todos
-  chmod -R a+rX "$DATA/$b" 2>/dev/null || echo "aviso: no pude abrir los permisos de lectura de $DATA/$b"
+[ "$(uname -s)" = "Linux" ] || echo "warning: AWS requires a Linux host for Greengrass in Docker (this one is $(uname -s))."
+docker image inspect "$IMAGE" >/dev/null 2>&1 || { echo "image $IMAGE is missing: run ./fleet/build.sh"; exit 1; }
+for p in "${PUMPS[@]}"; do
+  [ -d "$DATA/$p" ] || { echo "the audio for $p is missing in $DATA/$p"
+                         echo "generate the data with model/prepare_data.py (or point DATA= to another folder)"; exit 1; }
+  # the component runs as ggc_user, not root: the audio must be world-readable
+  chmod -R a+rX "$DATA/$p" 2>/dev/null || echo "warning: could not open read permissions on $DATA/$p"
 done
 
-# ¿el volumen de la bomba ya tiene identidad (thing, certificado, nucleus instalado)?
-aprovisionada() {
+# does the pump's volume already have an identity (thing, certificate, nucleus installed)?
+provisioned() {
   docker volume inspect "$1-gg" >/dev/null 2>&1 &&
-  docker run --rm --entrypoint test -v "$1-gg:/greengrass/v2:ro" "$IMAGE" -f /greengrass/v2/.estacion-aprovisionado
+  docker run --rm --entrypoint test -v "$1-gg:/greengrass/v2:ro" "$IMAGE" -f /greengrass/v2/.station-provisioned
 }
 
-# Credenciales temporales de tu sesión -> archivo en formato ~/.aws/credentials
-escribir_credenciales() {
+# Temporary credentials from your session -> file in ~/.aws/credentials format
+write_credentials() {
   mkdir -p "$BOOT"; chmod 700 "$BOOT"
   ( umask 077; python3 - > "$BOOT/credentials" <<'PY'
 import configparser, json, os, subprocess, sys
@@ -81,9 +81,9 @@ except Exception:
     ak, sk, st = (os.environ.get("AWS_ACCESS_KEY_ID"), os.environ.get("AWS_SECRET_ACCESS_KEY"),
                   os.environ.get("AWS_SESSION_TOKEN"))
 if not ak or not sk:
-    sys.exit("no encontré credenciales de AWS (aws configure export-credentials ni variables AWS_*)")
+    sys.exit("no AWS credentials found (neither aws configure export-credentials nor AWS_* variables)")
 if not st:
-    print("aviso: son credenciales de larga duración; mejor usa un rol con sesión temporal.", file=sys.stderr)
+    print("warning: these are long-lived credentials; better use a role with a temporary session.", file=sys.stderr)
 cp = configparser.ConfigParser(interpolation=None)
 cp["default"] = {"aws_access_key_id": ak, "aws_secret_access_key": sk}
 if st:
@@ -92,104 +92,104 @@ cp.write(sys.stdout)
 PY
   )
 }
-# La identidad que creó Terraform (certificado, llave, endpoints) -> $BOOT/<bomba>/, solo para la instalación
-escribir_identidad() {   # $1 = bomba
-  local b="$1" d="$BOOT/$1"
-  # si un intento anterior quedó reiniciándose, Docker recreó $d como root al montarlo
+# The identity Terraform created (certificate, key, endpoints) -> $BOOT/<pump>/, only for the installation
+write_identity() {   # $1 = pump
+  local p="$1" d="$BOOT/$1"
+  # if a previous attempt was left restarting, Docker recreated $d as root when mounting it
   rm -rf "$d"; mkdir -p "$d"; chmod 700 "$d"
   param() { aws ssm get-parameter --region "$REGION" --name "$1" --with-decryption --query Parameter.Value --output text; }
   ( umask 077
-    param "/estacion/bombas/$b/cert" > "$d/device.pem.crt"
-    param "/estacion/bombas/$b/key"  > "$d/private.pem.key"
+    param "/station/pumps/$p/cert" > "$d/device.pem.crt"
+    param "/station/pumps/$p/key"  > "$d/private.pem.key"
     printf 'IOT_DATA_ENDPOINT=%s\nIOT_CRED_ENDPOINT=%s\n' \
-      "$(param /estacion/iot/data_endpoint)" "$(param /estacion/iot/cred_endpoint)" > "$d/endpoints.env" )
+      "$(param /station/iot/data_endpoint)" "$(param /station/iot/cred_endpoint)" > "$d/endpoints.env" )
   if ! grep -q "BEGIN CERTIFICATE" "$d/device.pem.crt" || ! grep -q "PRIVATE KEY" "$d/private.pem.key"; then
-    echo "✘ no encontré la identidad de $b en Parameter Store (/estacion/bombas/$b): ¿corriste terraform apply en infra/?"
+    echo "✘ could not find the identity of $p in Parameter Store (/station/pumps/$p): did you run terraform apply in infra/?"
     rm -rf "$d"; return 1
   fi
 }
-trap 'rm -f "$BOOT/credentials"; rm -rf "$BOOT"/bomba-*' EXIT
+trap 'rm -f "$BOOT/credentials"; rm -rf "$BOOT"/pump-*' EXIT
 
-crear() {   # $1 = bomba · $2 = "con-identidad" en el primer arranque con IDENTIDAD=terraform
-  local b="$1" g; g="$(grupo_de "$b")"
-  mkdir -p "$LOGS/$b" "$BOOT"; chmod 700 "$BOOT"
-  local args=(run -d --name "$b" --hostname "$b" --init --restart unless-stopped --network "$NETWORK"
+create() {   # $1 = pump · $2 = "with-identity" on first boot with IDENTITY=terraform
+  local p="$1" g; g="$(group_of "$p")"
+  mkdir -p "$LOGS/$p" "$BOOT"; chmod 700 "$BOOT"
+  local args=(run -d --name "$p" --hostname "$p" --init --restart unless-stopped --network "$NETWORK"
     --log-driver json-file --log-opt max-size=10m --log-opt max-file=3
-    -v "$b-gg:/greengrass/v2"                    # identidad y estado del nucleus
-    -v "$LOGS/$b:/greengrass/v2/logs"            # logs del nucleus y del componente, en el host
-    -v "$DATA/$b:/data/estacion/$b:ro"           # el audio de la bomba, solo lectura
-    -v "$BOOT:/run/aws-bootstrap:ro"             # vacío salvo durante el primer arranque
-    -e "AWS_REGION=$REGION" -e "THING_NAME=$b" -e "THING_GROUP_NAME=$g"
+    -v "$p-gg:/greengrass/v2"                    # identity and nucleus state
+    -v "$LOGS/$p:/greengrass/v2/logs"            # nucleus and component logs, on the host
+    -v "$DATA/$p:/data/station/$p:ro"            # the pump's audio, read-only
+    -v "$BOOT:/run/aws-bootstrap:ro"             # empty except during the first boot
+    -e "AWS_REGION=$REGION" -e "THING_NAME=$p" -e "THING_GROUP_NAME=$g"
     -e "THING_POLICY_NAME=$THING_POLICY")
-  if [ "$IDENTIDAD" = terraform ]; then args+=(-e "IDENTIDAD=terraform"); fi
-  if [ "${2:-}" = con-identidad ]; then args+=(-v "$BOOT/$b:/run/estacion-id:ro"); fi
+  if [ "$IDENTITY" = terraform ]; then args+=(-e "IDENTITY=terraform"); fi
+  if [ "${2:-}" = with-identity ]; then args+=(-v "$BOOT/$p:/run/station-id:ro"); fi
   if [ -n "$NUCLEUS_HEAP" ]; then args+=(-e "JAVA_TOOL_OPTIONS=-Xmx${NUCLEUS_HEAP} -XX:+UseSerialGC"); fi
   if [ -n "$CPUS" ]; then args+=(--cpus "$CPUS"); fi
   if [ -n "$MEM" ];  then args+=(--memory "$MEM" --memory-swap "$MEM"); fi
   docker "${args[@]}" "$IMAGE" >/dev/null
 }
 
-esperar_aprovisionamiento() {   # $1 = bomba
-  local b="$1" i
-  for ((i = 0; i < ESPERA; i += 2)); do
-    if docker exec "$b" test -f /greengrass/v2/.estacion-aprovisionado 2>/dev/null; then return 0; fi
-    if [ "$(docker inspect -f '{{.State.Running}}' "$b" 2>/dev/null || echo false)" != "true" ]; then
-      echo "✘ $b se detuvo antes de terminar:"; docker logs --tail 40 "$b" 2>&1 || true; return 1
+wait_provisioned() {   # $1 = pump
+  local p="$1" i
+  for ((i = 0; i < WAIT_SECONDS; i += 2)); do
+    if docker exec "$p" test -f /greengrass/v2/.station-provisioned 2>/dev/null; then return 0; fi
+    if [ "$(docker inspect -f '{{.State.Running}}' "$p" 2>/dev/null || echo false)" != "true" ]; then
+      echo "✘ $p stopped before finishing:"; docker logs --tail 40 "$p" 2>&1 || true; return 1
     fi
     sleep 2
   done
-  echo "✘ $b no terminó de aprovisionarse en ${ESPERA} s:"; docker logs --tail 40 "$b" 2>&1 || true
+  echo "✘ $p did not finish provisioning in ${WAIT_SECONDS} s:"; docker logs --tail 40 "$p" 2>&1 || true
   return 1
 }
 
-# ── 1 · red ──────────────────────────────────────────────────────────
+# ── 1 · network ──────────────────────────────────────────────────────
 docker network inspect "$NETWORK" >/dev/null 2>&1 || docker network create "$NETWORK" >/dev/null
-echo "▶ red $NETWORK lista"
+echo "▶ network $NETWORK ready"
 
-# ── 2 · clasificar: qué bombas ya existen y cuáles necesitan identidad ─
-PEND=()
-for b in "${BOMBAS[@]}"; do
-  if [ "$RECREAR" = 1 ] && docker inspect "$b" >/dev/null 2>&1; then docker rm -f "$b" >/dev/null; fi
-  if ! aprovisionada "$b"; then
-    docker rm -f "$b" >/dev/null 2>&1 || true
-    PEND+=("$b"); continue
+# ── 2 · sort out which pumps already exist and which need an identity ─
+PENDING=()
+for p in "${PUMPS[@]}"; do
+  if [ "$RECREATE" = 1 ] && docker inspect "$p" >/dev/null 2>&1; then docker rm -f "$p" >/dev/null; fi
+  if ! provisioned "$p"; then
+    docker rm -f "$p" >/dev/null 2>&1 || true
+    PENDING+=("$p"); continue
   fi
-  estado="$(docker inspect -f '{{.State.Status}}' "$b" 2>/dev/null || true)"
-  case "$estado" in
-    running) echo "▶ $b ya corre" ;;
-    "")      crear "$b"; echo "▶ $b creada (con su identidad, sin credenciales)" ;;
-    *)       docker start "$b" >/dev/null; echo "▶ $b arrancada" ;;
+  state="$(docker inspect -f '{{.State.Status}}' "$p" 2>/dev/null || true)"
+  case "$state" in
+    running) echo "▶ $p already running" ;;
+    "")      create "$p"; echo "▶ $p created (with its identity, no credentials)" ;;
+    *)       docker start "$p" >/dev/null; echo "▶ $p started" ;;
   esac
 done
 
-# ── 3 · primer arranque: aprovisionar una por una ────────────────────
-if [ "${#PEND[@]}" -gt 0 ] && [ "$IDENTIDAD" = terraform ]; then
-  echo "▶ instalando ${PEND[*]} con la identidad de Terraform (sin credenciales de AWS en los contenedores)"
-  for b in "${PEND[@]}"; do
-    escribir_identidad "$b" || exit 1
-    crear "$b" con-identidad
-    esperar_aprovisionamiento "$b" || exit 1
-    rm -rf "${BOOT:?}/$b"
-    echo "✔ $b instalada en $(grupo_de "$b")"
+# ── 3 · first boot: provision one at a time ──────────────────────────
+if [ "${#PENDING[@]}" -gt 0 ] && [ "$IDENTITY" = terraform ]; then
+  echo "▶ installing ${PENDING[*]} with the Terraform identity (no AWS credentials in the containers)"
+  for p in "${PENDING[@]}"; do
+    write_identity "$p" || exit 1
+    create "$p" with-identity
+    wait_provisioned "$p" || exit 1
+    rm -rf "${BOOT:?}/$p"
+    echo "✔ $p installed in $(group_of "$p")"
   done
-elif [ "${#PEND[@]}" -gt 0 ]; then
-  echo "▶ aprovisionando ${PEND[*]} (credenciales temporales; se borran al terminar)"
-  escribir_credenciales
-  for b in "${PEND[@]}"; do
-    crear "$b"
-    esperar_aprovisionamiento "$b" || exit 1
-    echo "✔ $b aprovisionada en $(grupo_de "$b")"
+elif [ "${#PENDING[@]}" -gt 0 ]; then
+  echo "▶ provisioning ${PENDING[*]} (temporary credentials; deleted when done)"
+  write_credentials
+  for p in "${PENDING[@]}"; do
+    create "$p"
+    wait_provisioned "$p" || exit 1
+    echo "✔ $p provisioned in $(group_of "$p")"
   done
   rm -f "$BOOT/credentials"
 fi
 
-# ── 4 · resumen ──────────────────────────────────────────────────────
+# ── 4 · summary ──────────────────────────────────────────────────────
 echo
-docker ps --filter "name=bomba-" --format 'table {{.Names}}\t{{.Status}}'
-cat <<EOF
+docker ps --filter "name=pump-" --format 'table {{.Names}}\t{{.Status}}'
+cat <<EOF2
 
-✔ Flota arriba. Cada bomba tarda un par de minutos en aparecer como Healthy.
+✔ Fleet up. Each pump takes a couple of minutes to show up as Healthy.
   aws greengrassv2 list-core-devices --region $REGION --query 'coreDevices[].[coreDeviceThingName,status]' --output table
-  logs de una bomba:  tail -f fleet/logs/bomba-03/greengrass.log
-Siguiente: ./demo/publish.sh 1.0.0   y   ./demo/deploy.sh 1.0.0 todas
-EOF
+  one pump's logs:  tail -f fleet/logs/pump-03/greengrass.log
+Next: ./demo/publish.sh 1.0.0   and   ./demo/deploy.sh 1.0.0 all
+EOF2

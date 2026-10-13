@@ -1,0 +1,8 @@
+Real industrial pump sounds: MIMII DUE (Hitachi, Ltd.), development set, pump.
+License CC BY-NC-SA 4.0 · https://zenodo.org/records/4740355
+Tanabe et al., 2021, «MIMII DUE: Sound Dataset for Malfunctioning Industrial Machine
+Investigation and Inspection with Domain Shifts due to Changes in Operational and
+Environmental Conditions», arXiv:2105.02702.
+Copied unchanged by poc-devopsdays/model/prepare_data.py:
+  pump-a.wav = section_02_source_test_normal_0051
+  pump-b.wav = section_02_source_test_anomaly_0017

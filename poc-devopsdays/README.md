@@ -1,326 +1,325 @@
-# PoC · La estación · MLOps a ciegas
+# PoC · The station · MLOps a ciegas
 
-Una empresa de acueducto (inventada para la charla) tiene estaciones de bombeo en veredas con red intermitente. En cada estación, un equipo pequeño escucha las bombas con un micrófono y un modelo avisa cuando una empieza a sonar distinto. **El audio no sale de la estación: sale un evento de unos cientos de bytes.**
+A water utility (made up for the talk) runs pumping stations in rural areas with flaky connectivity. At each station, a small device listens to the pumps through a microphone and a model raises an alert when one starts to sound different. **The audio never leaves the station: what leaves is an event of a few hundred bytes.**
 
-Esta PoC muestra lo que pasa del lado de la infraestructura: cómo llega el modelo a mil equipos, cómo se ve lo que decide, qué pasa cuando se va la red y cómo se vuelve atrás cuando una versión oye peor.
+This PoC shows the infrastructure side: how the model reaches a thousand devices, how you see what it decides, what happens when the network drops, and how you roll back when a version hears worse.
 
-**No hay equipos físicos.** Cada «bomba» es un contenedor Docker con el nucleus real de AWS IoT Greengrass V2, en una EC2 Linux (AWS pide un host Linux para [Greengrass en Docker](https://docs.aws.amazon.com/greengrass/v2/developerguide/run-greengrass-docker.html)). **Todo lo demás es AWS real:** IoT Core, los despliegues y los thing groups de Greengrass, CloudWatch, Lambda, S3 y Parameter Store. Son cinco bombas: `bomba-01` en el anillo 0 (el canario) y `bomba-02` a `bomba-05` en el anillo 1.
+**There are no physical devices.** Each "pump" is a Docker container running the real AWS IoT Greengrass V2 nucleus, on a Linux EC2 (AWS requires a Linux host for [Greengrass in Docker](https://docs.aws.amazon.com/greengrass/v2/developerguide/run-greengrass-docker.html)). **Everything else is real AWS:** IoT Core, Greengrass deployments and thing groups, CloudWatch, Lambda, S3 and Parameter Store. There are five pumps: `pump-01` in ring 0 (the canary) and `pump-02` to `pump-05` in ring 1.
 
-Cabe en una semana.
-
----
-
-## Qué se ve en vivo
-
-| Acto | Qué haces | Qué se ve |
-|---|---|---|
-| **1 · Escuchar** | `./demo/falla.sh bomba-03` | La 3 suena como la bomba B del inicio de la charla y aparece la alerta |
-| **2 · Sin red** | `./demo/red.sh off bomba-03`, esperas, `./demo/red.sh on bomba-03` | La 3 se calla mientras las otras cuatro siguen; al volver llegan sus eventos «tarde». Después, `./demo/dominio.sh bomba-05 nuevo`: la 5 cambia de velocidad y no hay ningún error, pero la entrada se aleja de lo que aprendió |
-| **3 · Desplegar por anillos y volver** | `./demo/deploy.sh 2.0.0 anillo-0` y `./demo/falla.sh bomba-01` | La 1 pasa a la v2 y no oye la falla; la alarma dispara la Lambda y la 1 vuelve a la v1. El anillo 1 nunca recibió la v2 |
-
-Remate del acto 3: **Greengrass revierte despliegues fallidos, no modelos equivocados. Esa compuerta la pones tú.**
-
-### Las señales del modelo (dashboard `estacion`)
-
-| Pregunta | Widget | Métrica (namespace `Estacion`) |
-|---|---|---|
-| ¿Qué decide? | alertas por bomba | `Alertas` por `Device` |
-| ¿Con cuánta seguridad? | score contra umbral, por versión | `Score` y `Umbral` por `Version` |
-| ¿Se parece a lo que aprendió? | nivel de la entrada | `InputZ` |
-| ¿Qué versión corre dónde? | inferencias por versión | `Inferencias` por `Version` |
-| ¿En cuánto tiempo? | latencia | `LatencyMs` |
-| Lo que dispara la vuelta | fallas que nadie oyó | `FallasNoOidas` |
+It fits in a week.
 
 ---
 
-## Arquitectura
+## What you see live
+
+| Act | What you do | What you see |
+|---|---|---|
+| **1 · Listen** | `./demo/fault.sh pump-03` | Pump 3 sounds like pump B from the start of the talk and the alert shows up |
+| **2 · No network** | `./demo/network.sh off pump-03`, wait, `./demo/network.sh on pump-03` | Pump 3 goes quiet while the other four carry on; when it comes back its events arrive "late". Then `./demo/domain.sh pump-05 shifted`: pump 5 changes speed and there is no error at all, but the input drifts away from what the model learned |
+| **3 · Deploy by rings and roll back** | `./demo/deploy.sh 2.0.0 ring-0` and `./demo/fault.sh pump-01` | Pump 1 moves to v2 and misses the fault; the alarm triggers the Lambda and pump 1 goes back to v1. Ring 1 never got v2 |
+
+Act 3 punchline: **Greengrass rolls back failed deployments, not wrong models. That gate is yours to build.**
+
+### The model's signals (dashboard `station`)
+
+| Question | Widget | Metric (namespace `Station`) |
+|---|---|---|
+| What does it decide? | alerts per pump | `Alerts` by `Device` |
+| How confident? | score vs threshold, per version | `Score` and `Threshold` by `Version` |
+| Does it look like what it learned? | input level | `InputZ` |
+| Which version runs where? | inferences per version | `Inferences` by `Version` |
+| How fast? | latency | `LatencyMs` |
+| What triggers the rollback | faults nobody heard | `MissedFaults` |
+
+---
+
+## Architecture
 
 ```
- UNA EC2 LINUX CON DOCKER · red "estacion"
+ ONE LINUX EC2 WITH DOCKER · network "station"
  ┌───────────────────────────────────────────────────────────────┐
- │  bomba-01      bomba-02    bomba-03    bomba-04    bomba-05   │
- │  anillo 0      └──────────────── anillo 1 ──────────────────┘ │
- │  (canario)                                                    │
- │  cada una es un contenedor con el nucleus real de Greengrass: │
- │   · com.estacion.Escucha  (features + ONNX Runtime)           │
- │   · /data/estacion/<bomba>   audio, solo lectura              │
- │   · /run/estacion/modo       normal | falla | nuevo           │
+ │  pump-01       pump-02     pump-03     pump-04     pump-05    │
+ │  ring 0        └───────────────── ring 1 ───────────────────┘ │
+ │  (canary)                                                     │
+ │  each one is a container with the real Greengrass nucleus:    │
+ │   · com.station.Listener  (features + ONNX Runtime)           │
+ │   · /data/station/<pump>     audio, read-only                 │
+ │   · /run/station/mode        normal | fault | shifted         │
  └──────────────┬─────────────────────────────▲──────────────────┘
-                │ un evento por clip          │ despliegue (artefactos
-                │ MQTT QoS 1                  │ con digest, desde S3)
+                │ one event per clip          │ deployment (artifacts
+                │ MQTT QoS 1                  │ with digest, from S3)
                 ▼                             │
  ┌────────────────────────────┐    ┌──────────┴───────────────────────┐
  │ IoT Core                   │    │ IoT Greengrass + S3              │
- │  regla estacion_eventos    │    │  thing groups EstacionAnillo0/1  │
- │  (suma arrived_ts)         │    │  componente com.estacion.Escucha │
+ │  rule station_events       │    │  thing groups StationRing0/1     │
+ │  (adds arrived_ts)         │    │  component com.station.Listener  │
  └─────────────┬──────────────┘    └──────────▲───────────────────────┘
-               ▼                              │ create-deployment con la
- ┌────────────────────────────┐               │ última versión buena
+               ▼                              │ create-deployment with the
+ ┌────────────────────────────┐               │ last good version
  │ CloudWatch Logs            │               │ (Parameter Store)
- │  /estacion/eventos         │    ┌──────────┴───────────────────────┐
- │  filtros → métricas        │    │ Lambda estacion-rollback         │
- │  dashboard "estacion"      │ ─▶ │  al anillo 0, nunca al anillo 1  │
- │  alarma fallas-no-oidas    │    └──────────────────────────────────┘
+ │  /station/events           │    ┌──────────┴───────────────────────┐
+ │  filters → metrics         │    │ Lambda station-rollback          │
+ │  dashboard "station"       │ ─▶ │  to ring 0, never to ring 1      │
+ │  alarm missed-faults       │    └──────────────────────────────────┘
  └────────────────────────────┘ ALARM
 ```
 
-### Los nombres
+### Names
 
-| Cosa | Nombre |
+| Thing | Name |
 |---|---|
-| Componente | `com.estacion.Escucha` |
-| Cosas (things) | `bomba-01` … `bomba-05` |
-| Thing groups | `EstacionAnillo0` (bomba-01) · `EstacionAnillo1` (bomba-02 a 05) |
-| Tema MQTT | `estacion/eventos` |
-| Regla de IoT | `estacion_eventos` → CloudWatch Logs `/estacion/eventos` |
-| Dashboard · alarma · Lambda | `estacion` · `estacion-fallas-no-oidas` · `estacion-rollback` |
-| Parámetro | `/estacion/last_good_version` |
-| Bucket | `estacion-<cuenta>-<región>`, prefijo `estacion/<versión>/` |
-| Docker | red `estacion`, contenedores `bomba-01`…`bomba-05`, volúmenes `bomba-0N-gg`, imagen `estacion/greengrass` |
+| Component | `com.station.Listener` |
+| Things | `pump-01` … `pump-05` |
+| Thing groups | `StationRing0` (pump-01) · `StationRing1` (pump-02 to 05) |
+| MQTT topic | `station/events` |
+| IoT rule | `station_events` → CloudWatch Logs `/station/events` |
+| Dashboard · alarm · Lambda | `station` · `station-missed-faults` · `station-rollback` |
+| Parameter | `/station/last_good_version` |
+| Bucket | `station-<account>-<region>`, prefix `station/<version>/` |
+| Docker | network `station`, containers `pump-01`…`pump-05`, volumes `pump-0N-gg`, image `station/greengrass` |
 
-### El evento (uno por clip escuchado)
+### The event (one per clip heard)
 
 ```json
-{"device": "bomba-03", "model_version": "1.0.0", "sha256": "…", "seq": 1234, "ts": 1760000000000,
+{"device": "pump-03", "model_version": "1.0.0", "sha256": "…", "seq": 1234, "ts": 1760000000000,
  "clip": "section_02_source_test_anomaly_0007", "domain": "source", "score": 0.0123, "threshold": 0.0100,
  "alert": true, "input_z": 1.12, "latency_ms": 3.4, "truth": "anomaly"}
 ```
 
-`ts` es cuando decidió la bomba. La regla de IoT suma `arrived_ts` (cuándo llegó a la nube); la diferencia es el tiempo que la bomba estuvo sin red, y `watch.sh` la imprime como «llegó N s tarde». `input_z` es la distancia media, en desviaciones estándar, entre las features del clip y la huella de `stats.json`. `truth` existe solo porque la demo sabe qué audio suena.
+`ts` is when the pump decided. The IoT rule adds `arrived_ts` (when it reached the cloud); the difference is how long the pump was offline, and `watch.sh` prints it as "arrived N s late". `input_z` is the mean distance, in standard deviations, between the clip's features and the fingerprint in `stats.json`. `truth` exists only because the demo knows which audio is playing.
 
 ---
 
-## Plan de la semana
+## The week's plan
 
-| Día | Qué | Listo cuando |
+| Day | What | Done when |
 |---|---|---|
-| **1** | Cuenta de pruebas, región, el zip de MIMII DUE en `data/`, `terraform apply` en `infra/` | La EC2 aparece en Session Manager y `docker run hello-world` funciona en ella |
-| **2** | `./infra/subir-al-host.sh`; en la EC2: `traer-poc`, `./fleet/build.sh`, `IDENTIDAD=terraform ./fleet/up.sh` | Las cinco bombas aparecen como *Healthy* en la consola de IoT Greengrass |
-| **3** | Entrenar (`model/train.py`), armar el audio de las bombas (`model/prepare_data.py`), `./demo/publish.sh` y `./demo/deploy.sh 1.0.0 todas` | `./demo/watch.sh` muestra eventos de las cinco bombas y el dashboard tiene datos |
-| **4** | Actos 1 y 2: `falla.sh`, `red.sh`, `dominio.sh` | Mides cuánto tarda la bomba en reconectarse y cuánto en llegar los eventos guardados |
-| **5** | Acto 3: `deploy.sh 2.0.0 anillo-0`, la alarma y la vuelta | Ajustas `ALARM_THRESHOLD` con tus datos y cronometras la vuelta completa |
-| **6** | Ensayas la charla completa y grabas el video de respaldo | Sabes qué decir mientras esperas el minuto de las métricas |
+| **1** | Test account, region, the MIMII DUE zip in `data/`, `terraform apply` in `infra/` | The EC2 shows up in Session Manager and `docker run hello-world` works on it |
+| **2** | `./infra/upload-to-host.sh`; on the EC2: `fetch-poc`, `./fleet/build.sh`, `IDENTITY=terraform ./fleet/up.sh` | The five pumps show up as *Healthy* in the IoT Greengrass console |
+| **3** | Train (`model/train.py`), build the pumps' audio (`model/prepare_data.py`), `./demo/publish.sh` and `./demo/deploy.sh 1.0.0 all` | `./demo/watch.sh` shows events from all five pumps and the dashboard has data |
+| **4** | Acts 1 and 2: `fault.sh`, `network.sh`, `domain.sh` | You know how long a pump takes to reconnect and how long the queued events take to arrive |
+| **5** | Act 3: `deploy.sh 2.0.0 ring-0`, the alarm and the rollback | You tune `ALARM_THRESHOLD` with your data and time the full rollback |
+| **6** | Rehearse the whole talk and record the backup video | You know what to say while you wait for the metrics minute |
 
 ---
 
-## Paso a paso
+## Step by step
 
-Todos los comandos salen de `poc-devopsdays/`. Las partes de nube (`cloud/`, `publish.sh`, `deploy.sh`, `watch.sh`) corren donde tengas el AWS CLI v2; las de la flota (`fleet/`, `falla.sh`, `dominio.sh`, `red.sh`) corren **en la EC2**, porque hablan con Docker.
+All commands run from `poc-devopsdays/`. The cloud parts (`cloud/`, `publish.sh`, `deploy.sh`, `watch.sh`) run wherever you have AWS CLI v2; the fleet parts (`fleet/`, `fault.sh`, `domain.sh`, `network.sh`) run **on the EC2**, because they talk to Docker.
 
-### 0 · Antes de empezar
+### 0 · Before you start
 
-- Una **cuenta de AWS de pruebas** y una región (los scripts usan `us-east-1`; cámbiala con `REGION=…`).
-- **Permisos.** `cloud/setup.sh` y `cloud/teardown.sh` crean y borran roles, políticas y recursos: úsalos con un administrador de la cuenta de pruebas. `fleet/up.sh` solo necesita lo que pide el instalador de Greengrass para registrar las cosas ([política mínima del instalador](https://docs.aws.amazon.com/greengrass/v2/developerguide/provision-minimal-iam-policy.html)); `setup.sh` ya deja hechos el rol de token exchange, su alias y las políticas de IoT.
-- **La EC2.** Linux con Docker (18.09 o más), AWS CLI v2 y `python3`. Salida a internet por 443 y 8883; no hace falta ninguna entrada salvo SSH. Cada nucleus es una JVM y cada bomba suma un proceso con ONNX Runtime: **mide la memoria con `docker stats` antes de elegir el tamaño** (punto de partida razonable: una instancia con 8 GiB de RAM). Si es Graviton, la imagen se construye para esa arquitectura sin cambios.
+- A **test AWS account** and a region (the scripts use `us-east-1`; change it with `REGION=…`).
+- **Permissions.** `cloud/setup.sh` and `cloud/teardown.sh` create and delete roles, policies and resources: run them as an administrator of the test account. `fleet/up.sh` only needs what the Greengrass installer asks for to register the things ([minimal installer policy](https://docs.aws.amazon.com/greengrass/v2/developerguide/provision-minimal-iam-policy.html)); `setup.sh` already creates the token exchange role, its alias and the IoT policies.
+- **The EC2.** Linux with Docker (18.09 or later), AWS CLI v2 and `python3`. Outbound internet on 443 and 8883; no inbound ports at all, you get in through Session Manager. Each nucleus is a JVM and each pump adds a process with ONNX Runtime: **measure memory with `docker stats` before picking the size** (a reasonable starting point: an instance with 8 GiB of RAM). If it is Graviton, the image builds for that architecture without changes.
 
-  Por ejemplo, en Amazon Linux 2023: `sudo dnf install -y docker git && sudo systemctl enable --now docker && sudo usermod -aG docker $USER` (y vuelve a entrar por SSH). Clona este repo en la EC2 y en tu laptop.
-- **El audio.** Descarga a mano `dev_data_pump.zip` de [Zenodo](https://zenodo.org/records/4740355) y déjalo en `data/dev_data_pump.zip`. Es MIMII DUE (Hitachi), licencia CC BY-NC-SA 4.0; la atribución completa está en `model/README.md`.
+  For example, on Amazon Linux 2023: `sudo dnf install -y docker git && sudo systemctl enable --now docker && sudo usermod -aG docker $USER` (then open a new Session Manager session). With Terraform, the EC2 comes with all of this already set up.
+- **The audio.** Download `dev_data_pump.zip` by hand from [Zenodo](https://zenodo.org/records/4740355) and put it at `data/dev_data_pump.zip`. It is MIMII DUE (Hitachi), license CC BY-NC-SA 4.0; the full attribution is in `model/README.md`.
 
-### 1 · La nube (una vez)
+### 1 · The cloud (once)
 
-**Con Terraform (recomendado).** Crea la nube, la identidad de las cinco bombas y la EC2 que las hospeda; los detalles están en [`infra/README.md`](infra/README.md).
+**With Terraform (recommended).** Creates the cloud, the identity of the five pumps and the EC2 that hosts them; the details are in [`infra/README.md`](infra/README.md).
 
 ```bash
-cd infra && terraform init -backend-config=backend.hcl && terraform apply && terraform output siguiente
+cd infra && terraform init -backend-config=backend.hcl && terraform apply && terraform output next_steps
 ```
 
-El estado vive en S3 y el `apply` normal lo hace GitHub Actions, con tu aprobación; la preparación de una sola vez (bucket del estado, OIDC, roles y `backend.hcl`) está en [`infra/README.md`](infra/README.md#con-github-actions).
+The state lives in S3 and the regular `apply` runs in GitHub Actions, with your approval; the one-time preparation (state bucket, OIDC, roles and `backend.hcl`) is in [`infra/README.md`](infra/README.md#with-github-actions).
 
-Con Terraform, las bombas no reciben ninguna credencial de AWS: cada una arranca con su certificado, que `IDENTIDAD=terraform ./fleet/up.sh` baja de Parameter Store solo durante la instalación. Para borrar todo: `./fleet/down.sh` en la EC2, `./infra/limpiar-core-devices.sh` y `terraform -chdir=infra destroy`.
+With Terraform, the pumps never get any AWS credentials: each one boots with its own certificate, which `IDENTITY=terraform ./fleet/up.sh` fetches from Parameter Store only during the installation. To delete everything: `./fleet/down.sh` on the EC2, `./infra/clean-core-devices.sh` and `terraform -chdir=infra destroy`.
 
-**Sin Terraform.** El mismo resultado en la nube, sin la EC2 ni la identidad de las bombas:
+**Without Terraform.** The same result in the cloud, without the EC2 or the pumps' identity:
 
 ```bash
 REGION=us-east-1 ./cloud/setup.sh
 ```
 
-Crea el bucket, los dos thing groups, el rol de token exchange (con permiso de leer solo este bucket) y su alias, la política mínima de IoT de las bombas, la regla `estacion_eventos`, los siete filtros de métrica, el dashboard, la Lambda, la alarma y el parámetro de la última versión buena. Es idempotente: puedes repetirlo.
+It creates the bucket, the two thing groups, the token exchange role (allowed to read only this bucket) and its alias, the pumps' minimal IoT policy, the `station_events` rule, the seven metric filters, the dashboard, the Lambda, the alarm and the last-good-version parameter. It is idempotent: you can run it again.
 
-### 2 · El modelo y el audio
+### 2 · The model and the audio
 
-En una máquina con Python y las librerías del modelo (numpy, scikit-learn, skl2onnx, onnx, onnxruntime). Los detalles, las cifras y la licencia están en [`model/README.md`](model/README.md).
-
-```bash
-python3 model/train.py --data data/dev_data_pump.zip                                 # v1.0.0 y v2.0.0 en build/
-python3 model/prepare_data.py --data data/dev_data_pump.zip --scores build/scores.csv   # data/estacion/bomba-0N/{normal,falla,nuevo}/
-```
-
-Si entrenaste en tu laptop, lleva el código, `build/` y el audio a la EC2: con Terraform, `./infra/subir-al-host.sh` y `traer-poc` en la EC2; sin Terraform, `rsync -a data/estacion/ <ec2>:poc-devopsdays/data/estacion/`.
-
-Para probar solo la tubería sin el audio real: `python3 model/synth.py`, y los mismos dos comandos con `--data data/synthetic`. Todo queda marcado `"synthetic": true`, y `publish.sh` se niega a publicarlo salvo que pases `--allow-synthetic`.
-
-### 3 · La flota (en la EC2)
+On a machine with Python and the model's libraries (numpy, scikit-learn, skl2onnx, onnx, onnxruntime). The details, the numbers and the license are in [`model/README.md`](model/README.md).
 
 ```bash
-./fleet/build.sh          # imagen estacion/greengrass (nucleus 2.18.3, Python y dependencias con versión fija)
-IDENTIDAD=terraform ./fleet/up.sh   # red "estacion" + cinco bombas con la identidad de Terraform; opcional: --pequeno
-./fleet/up.sh                       # sin Terraform
+python3 model/train.py --data data/dev_data_pump.zip                                 # v1.0.0 and v2.0.0 in build/
+python3 model/prepare_data.py --data data/dev_data_pump.zip --scores build/scores.csv   # data/station/pump-0N/{normal,fault,shifted}/
 ```
 
-Con `IDENTIDAD=terraform` (en la EC2 de Terraform ya viene puesta en la sesión), cada bomba se instala con su certificado y ninguna credencial de AWS entra al contenedor. Sin Terraform, el primer arranque usa **credenciales temporales de tu sesión de AWS CLI** para registrar cada bomba (cosa, certificado, thing group) y las borra del disco al terminar. Los arranques siguientes no usan credenciales: la identidad de cada bomba vive en su volumen `bomba-0N-gg`. Los logs de cada nucleus quedan en `fleet/logs/bomba-0N/`.
+If you trained on your laptop, take the code, `build/` and the audio to the EC2: with Terraform, `./infra/upload-to-host.sh` on your laptop and `fetch-poc` on the EC2; without Terraform, copy `build/` and `data/station/` to your Linux host however you usually do (for example, `aws s3 sync` through a bucket).
 
-`--pequeno` limita cada bomba a 1 CPU y 1 GB (cámbialo con `CPUS=` y `MEM=`) para parecerse a un equipo chico. Greengrass [no admite límites de recursos por componente dentro de Docker](https://docs.aws.amazon.com/greengrass/v2/developerguide/configure-greengrass-core-v2.html#configure-component-system-resource-limits): el límite es del contenedor. `NUCLEUS_HEAP=256m` es el tope del heap de cada JVM (vacío = sin tope).
+To test only the pipeline without the real audio: `python3 model/synth.py`, then the same two commands with `--data data/synthetic`. Everything is marked `"synthetic": true`, and `publish.sh` refuses to publish it unless you pass `--allow-synthetic`.
 
-Cada bomba tarda un par de minutos en aparecer:
+### 3 · The fleet (on the EC2)
+
+```bash
+./fleet/build.sh                    # image station/greengrass (nucleus 2.18.3, Python and pinned dependencies)
+IDENTITY=terraform ./fleet/up.sh    # network "station" + five pumps with the Terraform identity; optional: --small
+./fleet/up.sh                       # without Terraform
+```
+
+With `IDENTITY=terraform` (on the Terraform EC2 it is already set in the session), each pump is installed with its certificate and no AWS credentials enter the container. Without Terraform, the first boot uses **temporary credentials from your AWS CLI session** to register each pump (thing, certificate, thing group) and deletes them from disk when done. Later boots use no credentials: each pump's identity lives in its `pump-0N-gg` volume. Each nucleus's logs end up in `fleet/logs/pump-0N/`.
+
+`--small` limits each pump to 1 CPU and 1 GB (change it with `CPUS=` and `MEM=`) to look like a small device. Greengrass [does not support per-component resource limits inside Docker](https://docs.aws.amazon.com/greengrass/v2/developerguide/configure-greengrass-core-v2.html#configure-component-system-resource-limits): the limit is the container's. `NUCLEUS_HEAP=256m` caps each JVM's heap (empty = no cap). `WAIT_SECONDS=300` is how long `up.sh` waits for each pump to provision.
+
+Each pump takes a couple of minutes to show up:
 
 ```bash
 aws greengrassv2 list-core-devices --query 'coreDevices[].[coreDeviceThingName,status]' --output table
 ```
 
-### 4 · Publicar y desplegar
+### 4 · Publish and deploy
 
 ```bash
-./demo/publish.sh 1.0.0           # sube build/1.0.0/ a S3 y crea la versión del componente (con el umbral de stats.json)
+./demo/publish.sh 1.0.0           # uploads build/1.0.0/ to S3 and creates the component version (with the threshold from stats.json)
 ./demo/publish.sh 2.0.0
-./demo/deploy.sh 1.0.0 todas      # la v1 a los dos anillos; guarda /estacion/last_good_version
-./demo/watch.sh                   # en otra terminal
+./demo/deploy.sh 1.0.0 all        # v1 to both rings; stores /station/last_good_version
+./demo/watch.sh                   # in another terminal
 ```
 
-Si no aparecen eventos en 2 o 3 minutos: `tail -f fleet/logs/bomba-01/com.estacion.Escucha.log` (o `greengrass.log` si el componente ni arrancó).
+If no events show up within 2 or 3 minutes: `tail -f fleet/logs/pump-01/com.station.Listener.log` (or `greengrass.log` if the component never started).
 
-Una versión publicada no se toca: Greengrass calcula el digest de cada artefacto al crearla, y si el archivo cambia en S3 el despliegue falla. Para cambiar algo, versión nueva.
+A published version is never touched: Greengrass computes each artifact's digest when creating it, and if the file changes in S3 the deployment fails. To change anything, publish a new version.
 
-**El umbral es configuración:** `UMBRAL=0.02 ./demo/deploy.sh 1.0.0 anillo-1` lo cambia sin reentrenar ni republicar.
+**The threshold is configuration:** `THRESHOLD=0.02 ./demo/deploy.sh 1.0.0 ring-1` changes it without retraining or republishing.
 
-### 5 · Verificar qué versión corre en cada bomba
+### 5 · Check which version runs on each pump
 
 ```bash
-aws greengrassv2 list-installed-components --core-device-thing-name bomba-01 \
+aws greengrassv2 list-installed-components --core-device-thing-name pump-01 \
   --query 'installedComponents[].[componentName,componentVersion,lifecycleState]' --output table
 ```
 
-### Pruebas
+### Tests
 
 ```bash
-python3 -m unittest discover -s tests -p 'test_infra*.py' -v     # infraestructura (sin AWS ni Docker)
-python3 -m unittest discover -s tests -p 'test_model*.py' -v     # el modelo
+python3 -m unittest discover -s tests -p 'test_infra*.py' -v     # infrastructure (no AWS, no Docker)
+python3 -m unittest discover -s tests -p 'test_model*.py' -v     # the model
 ```
 
 ---
 
-## La demo en el escenario
+## The demo on stage
 
-Tres ventanas, letra grande:
+Three windows, large font:
 
-| Izquierda | Derecha arriba | Derecha abajo |
+| Left | Top right | Bottom right |
 |---|---|---|
-| `./demo/watch.sh` | dashboard `estacion` (15 min, refresco de 10 s) | terminal SSH a la EC2 |
+| `./demo/watch.sh` | dashboard `station` (15 min, 10 s refresh) | Session Manager terminal on the EC2 |
 
-`watch.sh` imprime una línea por clip:
+`watch.sh` prints one line per clip:
 
 ```
-bomba-03  v1.0.0  ALERTA  score 0,82 (umbral 0,50)  entrada 1,1  4 ms  · llegó 40 s tarde
+pump-03  v1.0.0  ALERT  score 0.82 (threshold 0.50)  input 1.1  4 ms  · arrived 40 s late
 ```
 
-«llegó N s tarde» aparece cuando `arrived_ts − ts` pasa de 10 s. «falla no oída» aparece cuando la bomba sonaba con falla y no avisó.
+"arrived N s late" shows up when `arrived_ts − ts` goes over 10 s. "missed fault" shows up when the pump sounded faulty and did not alert. `SINCE=10m ./demo/watch.sh` starts with the last 10 minutes (default: 1).
 
-**Acto 1 · Escuchar.** `./demo/falla.sh bomba-03`. *«Esta es la bomba B del principio. La 3 ya suena así. Miren la pantalla: ALERTA. El audio no salió de la estación; salió esta línea.»* Señala en el dashboard cómo sube la bomba-03. Deja la falla encendida: el acto 2 la necesita.
+**Act 1 · Listen.** `./demo/fault.sh pump-03`. Point at the alert on screen: the audio never left the station, only that line did. Show pump-03 going up on the dashboard. Leave the fault on: act 2 needs it.
 
-**Acto 2 · Sin red.** `./demo/red.sh off bomba-03` y espera 40 o 60 s. *«La 3 se calló. Las otras cuatro siguen. ¿Se rompió? No: sigue escuchando y guarda los eventos en una cola local.»* Luego `./demo/red.sh on bomba-03`: llegan de golpe, con «llegó 40 s tarde». *«No se perdió nada.»* Ahora sí: `./demo/falla.sh bomba-03 off`.
-Después, la deriva: `./demo/dominio.sh bomba-05 nuevo`. *«La 5 cambió de velocidad. Cero errores, cero excepciones. Miren la entrada: se aleja de lo que aprendió.»* Para dejarlo como estaba: `./demo/dominio.sh bomba-05 normal`.
+**Act 2 · No network.** `./demo/network.sh off pump-03` and wait 40 to 60 s. Pump 3 goes quiet while the other four carry on; it keeps listening and queues its events locally. Then `./demo/network.sh on pump-03`: they all arrive at once, with "arrived 40 s late". Nothing was lost. Now `./demo/fault.sh pump-03 off`.
+Then the drift: `./demo/domain.sh pump-05 shifted`. Pump 5 changed speed. Zero errors, zero exceptions, but the input moves away from what the model learned. To put it back: `./demo/domain.sh pump-05 normal`.
 
-**Acto 3 · Desplegar por anillos y volver.** `./demo/deploy.sh 2.0.0 anillo-0`. *«Una sola estación recibe la versión nueva: el canario.»* Cuando la bomba-01 pase a v2.0.0 en `watch.sh`, `./demo/falla.sh bomba-01`. La 1 corre sin errores, con la misma latencia, y **no oye la falla** («falla no oída»). Mientras la alarma junta datos, explica la compuerta (el dashboard muestra «fallas que nadie oyó»). Cuando la alarma dispara, la Lambda crea un despliegue con la última versión buena y la 1 vuelve a v1.0.0: ALERTA otra vez. El anillo 1 nunca recibió la v2.
-*«Greengrass revierte despliegues fallidos, no modelos equivocados. Esa compuerta la pones tú.»* Al terminar: `./demo/falla.sh bomba-01 off`.
+**Act 3 · Deploy by rings and roll back.** `./demo/deploy.sh 2.0.0 ring-0`: a single station gets the new version, the canary. When pump-01 shows v2.0.0 in `watch.sh`, run `./demo/fault.sh pump-01`. Pump 1 runs without errors, with the same latency, and **misses the fault** ("missed fault"). While the alarm gathers data, explain the gate (the dashboard shows "faults nobody heard"). When the alarm fires, the Lambda creates a deployment with the last good version and pump 1 goes back to v1.0.0: ALERT again. Ring 1 never got v2.
+Greengrass rolls back failed deployments, not wrong models; that gate is yours to build. When you are done: `./demo/fault.sh pump-01 off`.
 
-La vuelta tarda varios minutos (el filtro de métrica, la alarma, la Lambda y el despliegue suman retrasos): **cronométrala en el ensayo** y prepara qué decir mientras tanto. Atajo para la versión de 30 minutos: lanza `./demo/deploy.sh 2.0.0 anillo-0` durante la espera del acto 2, así la bomba-01 ya está en v2 cuando empieza el acto 3.
+The rollback takes a few minutes (the metric filter, the alarm, the Lambda and the deployment all add delay): **time it during rehearsal** and have something to say in the meantime. Shortcut for the 30-minute version: launch `./demo/deploy.sh 2.0.0 ring-0` while you wait in act 2, so pump-01 is already on v2 when act 3 starts.
 
-**Lleva el video de respaldo.** El wifi de un evento es el peor lugar del mundo para depender de MQTT.
+**Bring the backup video.** Conference wifi is the worst place in the world to depend on MQTT.
 
 ---
 
-## Lo honesto, para las preguntas
+## The honest part, for the Q&A
 
-- **`truth` solo existe en la demo.** El equipo sabe qué carpeta suena. En producción no lo sabes al momento: llega tarde, con la orden de mantenimiento. Ahí la compuerta no cuenta «fallas no oídas»: compara el canario contra el anillo 1 (la tasa de alertas, la distribución del score y de la entrada) antes de seguir.
-- **Un evento por clip no escala.** Cada 3 segundos por bomba son 5 × 3 600 / 3 = 6 000 mensajes por hora aquí, y 8,64 millones al día con mil bombas a un evento cada 10 s. En producción el equipo manda un resumen por minuto y el detalle solo cuando algo cambia. Eso no está en la PoC.
-- **La cola vive en memoria.** El nucleus guarda los mensajes QoS 1 sin red en una cola de 2,5 MB por defecto (`mqtt.spooler`). Para horas o días sin red hace falta el [`aws.greengrass.DiskSpooler`](https://docs.aws.amazon.com/greengrass/v2/developerguide/disk-spooler-component.html). Si la cola se llena, el nucleus rechaza los mensajes nuevos.
-- **Cada nucleus es una JVM.** Cinco bombas son cinco JVM más cinco procesos con ONNX Runtime en una sola máquina. En la realidad cada equipo tiene la suya, y puede ser un nucleus lite si no alcanza la memoria.
-- **El anillo 0 es una sola bomba.** Con un solo equipo, el canario no tiene con qué compararse; por eso aquí la señal es la falla que nadie oyó.
-- **Cinco bombas salen de tres secciones de MIMII DUE.** La bomba-01 y la bomba-04 comparten la sección 00, y la bomba-02 y la bomba-05 la sección 01, cada una con clips distintos. La bomba-03 tiene la sección 02. Los clips de la flota se eligen para que la demo sea repetible; las cifras de las láminas salen de todo el set de prueba, no de ellos.
-- **Un solo umbral** para las tres secciones, como en la flota. Las bombas de cada sección suenan distinto.
-- **El audio sintético** (`model/synth.py`) solo prueba la tubería. Ninguna cifra que salga de él llega a una lámina.
-- **Los permisos son mínimos, pero medidos solo en papel** (ver abajo). Si algo falla en el primer ensayo, empieza por los permisos y la región.
+- **`truth` only exists in the demo.** The device knows which folder is playing. In production you don't know it right away: it arrives late, with the maintenance order. There the gate does not count missed faults: it compares the canary against ring 1 (alert rate, score and input distribution) before moving on.
+- **One event per clip does not scale.** Every 3 seconds per pump is 5 × 3,600 / 3 = 6,000 messages an hour here, and 8.64 million a day with a thousand pumps at one event every 10 s. In production the device sends a summary per minute and the detail only when something changes. That is not in the PoC.
+- **The queue lives in memory.** The nucleus keeps QoS 1 messages while offline in a 2.5 MB queue by default (`mqtt.spooler`). For hours or days without network you need the [`aws.greengrass.DiskSpooler`](https://docs.aws.amazon.com/greengrass/v2/developerguide/disk-spooler-component.html). If the queue fills up, the nucleus rejects new messages.
+- **Each nucleus is a JVM.** Five pumps are five JVMs plus five ONNX Runtime processes on a single machine. In real life each device has its own, and it can be nucleus lite if memory is tight.
+- **Ring 0 is a single pump.** With a single device the canary has nothing to compare itself against; that is why the signal here is the fault nobody heard.
+- **Five pumps come from three MIMII DUE sections.** pump-01 and pump-04 share section 00, and pump-02 and pump-05 share section 01, each with different clips. pump-03 has section 02. The fleet's clips are picked so the demo is repeatable; the numbers on the slides come from the whole test set, not from them.
+- **A single threshold** for the three sections, as in the fleet. The pumps in each section sound different.
+- **The synthetic audio** (`model/synth.py`) only tests the pipeline. No number from it reaches a slide.
+- **The permissions are minimal, but only checked on paper** (see below). If something fails on the first rehearsal, start with permissions and region.
 
 ---
 
-## Qué verifiqué y qué no
+## What I verified and what I didn't
 
-**Primer ensayo de punta a punta (12 de octubre de 2026, us-east-1, EC2 t3.large, audio real de MIMII DUE).** Los tres actos funcionaron con Terraform, `IDENTIDAD=terraform` y las cinco bombas en Docker:
+**First end-to-end rehearsal (October 12, 2026, us-east-1, EC2 t3.large, real MIMII DUE audio).** All three acts worked with Terraform, `IDENTITY=terraform` and the five pumps in Docker:
 
-| Paso | Medido |
+| Step | Measured |
 |---|---|
-| `fleet/build.sh` · `up.sh` (cinco bombas instaladas) | menos de 1 min · 40 s; *Healthy* en un par de minutos |
-| `deploy.sh 1.0.0 todas` → primer evento · las cinco reportando | 7 s · unos 100 s |
-| Acto 1: `falla.sh bomba-03` → ALERTA | el clip siguiente (1 s). Scores de 0,35 a 0,42 contra un umbral de 0,34: poco margen, pero son siempre los mismos clips |
-| Acto 2: 45 s sin red → llegan los eventos guardados | 5 s tras `red.sh on`; hasta «llegó 50 s tarde»; `seq` sin huecos y **5 duplicados** (QoS 1 es «al menos una vez») |
-| Acto 2: `dominio.sh bomba-05 nuevo` | la entrada pasa de ~0,9 a 1,6–2,2 desde el primer clip. Ojo: también salen **alertas falsas** en 3 de cada 5 clips |
-| Acto 3: `deploy.sh 2.0.0 anillo-0` → la bomba-01 en v2 | 15 s; ninguna bomba del anillo 1 reportó v2 |
-| Acto 3: `falla.sh bomba-01` → alarma → Lambda → la 1 en v1 con ALERTA | **99 s**: alarma a los 91 s, despliegue de la Lambda a los 92 s, primer evento en v1 a los 99 s. La v2 no oye 3 de cada 5 clips (unas 12 por minuto contra el umbral de 8) |
-| Estado del despliegue de la vuelta en `list-deployments` | `ACTIVE` (no `COMPLETED`) |
-| Memoria | ~220 MiB por bomba; 1,4 GiB en uso de 7,8: una t3.medium alcanza |
+| `fleet/build.sh` · `up.sh` (five pumps installed) | under 1 min · 40 s; *Healthy* within a couple of minutes |
+| `deploy.sh 1.0.0 all` → first event · all five reporting | 7 s · about 100 s |
+| Act 1: `fault.sh pump-03` → ALERT | the next clip (1 s). Scores from 0.35 to 0.42 against a 0.34 threshold: little margin, but they are always the same clips |
+| Act 2: 45 s offline → the queued events arrive | 5 s after `network.sh on`; up to "arrived 50 s late"; `seq` with no gaps and **5 duplicates** (QoS 1 is "at least once") |
+| Act 2: `domain.sh pump-05 shifted` | the input goes from ~0.9 to 1.6–2.2 from the first clip. Watch out: it also raises **false alerts** on 3 out of 5 clips |
+| Act 3: `deploy.sh 2.0.0 ring-0` → pump-01 on v2 | 15 s; no ring 1 pump reported v2 |
+| Act 3: `fault.sh pump-01` → alarm → Lambda → pump 1 on v1 with ALERT | **99 s**: alarm at 91 s, Lambda deployment at 92 s, first v1 event at 99 s. v2 misses 3 out of 5 clips (about 12 per minute against the threshold of 8) |
+| Rollback deployment status in `list-deployments` | `ACTIVE` (not `COMPLETED`) |
+| Memory | ~220 MiB per pump; 1.4 GiB used out of 7.8: a t3.medium is enough |
 
-Dos arreglos salieron del ensayo: el `--init-config` del entrypoint necesita la extensión `.yaml` (el nucleus decide el formato por la extensión), y `up.sh` ahora limpia la carpeta de identidad que Docker recrea como root si un intento anterior quedó reiniciándose. El widget de alarma del dashboard no puede llevar `metrics` (CloudWatch lo rechaza).
+Two fixes came out of the rehearsal: the entrypoint's `--init-config` needs the `.yaml` extension (the nucleus picks the format by extension), and `up.sh` now cleans up the identity folder that Docker recreates as root when a previous attempt was left restarting. The dashboard's alarm widget cannot have `metrics` (CloudWatch rejects it).
 
-**Antes del ensayo**, en un sandbox Linux sin Docker y sin credenciales de AWS:
+**Before the rehearsal**, in a Linux sandbox without Docker and without AWS credentials:
 
-- `bash -n` de todos los scripts; todos fallan al primer error (`set -euo pipefail`).
-- La receta parsea como YAML y su `Run` es el del plan; además, **ese mismo comando se ejecutó** con `--local` contra el `inference.py` y el `build/1.0.0` del modelo, y los campos del evento son los que leen los filtros de métrica y `watch.sh`.
-- El dashboard es JSON válido y solo usa las siete métricas que crea `setup.sh`.
-- La Lambda, con clientes de boto3 simulados a mano: con la alarma en `OK` (o sin datos) no hace nada; en `ALARM` despliega la última versión buena al anillo 0.
-- `publish.sh`, `deploy.sh`, `up.sh`, `down.sh`, `setup.sh`, `teardown.sh`, `entrypoint.sh` y los scripts de la demo, contra un `aws` y un `docker` falsos que anotan lo que se les pide: nombres, thing groups, montajes, límites, orden, que `publish.sh` se niegue con audio sintético y use el umbral de `stats.json`, que las credenciales se borren al terminar, y que cada documento que `setup.sh` manda a AWS (políticas de IAM y de IoT, regla, dashboard) sea JSON válido sin marcadores sin llenar.
-- El formato de `watch.sh`.
-- `infra/` (Terraform): los `.tf` parsean como HCL, y los nombres, la regla, los siete filtros, la alarma y la política de las bombas son los mismos que en `setup.sh`. `up.sh` y el entrypoint con `IDENTIDAD=terraform`: bajan la identidad de Parameter Store, la montan solo en la instalación y el nucleus se instala con `--init-config` sin credenciales de AWS.
+- `bash -n` of every script; all of them stop at the first error (`set -euo pipefail`).
+- The recipe parses as YAML and its `Run` matches the plan; on top of that, **that same command was run** with `--local` against the model's `inference.py` and `build/1.0.0`, and the event fields are the ones the metric filters and `watch.sh` read.
+- The dashboard is valid JSON and only uses the seven metrics `setup.sh` creates.
+- The Lambda, with hand-made fake boto3 clients: with the alarm in `OK` (or without data) it does nothing; in `ALARM` it deploys the last good version to ring 0.
+- `publish.sh`, `deploy.sh`, `up.sh`, `down.sh`, `setup.sh`, `teardown.sh`, `entrypoint.sh` and the demo scripts, against a fake `aws` and a fake `docker` that record what they are asked: names, thing groups, mounts, limits, order, that `publish.sh` refuses synthetic audio and uses the threshold from `stats.json`, that the credentials are deleted at the end, and that every document `setup.sh` sends to AWS (IAM and IoT policies, rule, dashboard) is valid JSON with no unfilled placeholders.
+- The `watch.sh` format.
+- `infra/` (Terraform): the `.tf` files parse as HCL, and the names, the rule, the seven filters, the alarm and the pumps' policy match `setup.sh`. `up.sh` and the entrypoint with `IDENTITY=terraform`: they fetch the identity from Parameter Store, mount it only during installation, and the nucleus is installed with `--init-config` without AWS credentials.
 
-**Lo que quedaba por verificar antes del ensayo.** El ensayo de arriba ya resolvió `terraform validate` y `plan`, el `docker build`, el nucleus en el contenedor, la conexión con la política mínima, los filtros de métrica, que la alarma invoque la Lambda, los tiempos y la memoria. Sigue sin probarse lo demás:
+**What was still unverified before the rehearsal.** The rehearsal above already settled `terraform validate` and `plan`, the `docker build`, the nucleus in the container, the connection with the minimal policy, the metric filters, the alarm invoking the Lambda, the timings and the memory. The rest is still untested:
 
-- **No corrí `terraform validate` ni `plan`:** el sandbox no llega al registro de Terraform. Córrelos antes del primer `apply`.
-- **Nada corrió contra AWS real ni contra Docker real.** El `docker build` (paquetes de apt, ruedas de pip, la descarga del nucleus 2.18.3 desde la URL oficial) no se ejecutó; el sandbox no llega a esa URL.
-- **El nucleus dentro del contenedor.** Que el instalador acepte `--start false`, que reutilice el rol y el alias creados por `setup.sh`, y que `alts/current/distro/bin/loader` arranque en primer plano bajo `docker --init`.
-- **Los permisos mínimos.** La política de IoT de las bombas sale de la [guía de Greengrass](https://docs.aws.amazon.com/greengrass/v2/developerguide/device-auth.html#greengrass-core-minimal-iot-policy) con un comodín `bomba-*`; la de la Lambda, de las acciones que la [referencia de autorización](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiotgreengrassv2.html) lista para `CreateDeployment`. Si una bomba no conecta, prueba `THING_POLICY_NAME=GreengrassV2IoTThingPolicy` (la permisiva que crea el instalador) con `./fleet/down.sh --borrar-things` y `./fleet/up.sh`.
-- **La sintaxis de los filtros de métrica** (`IS TRUE` / `IS FALSE` combinados con `&&` y con dimensiones) y que la alarma invoque la Lambda directamente.
-- **`"reset": [""]`.** `deploy.sh` y la Lambda lo mandan para que cada versión arranque con su propio umbral por defecto. Está en la [documentación](https://docs.aws.amazon.com/greengrass/v2/developerguide/update-component-configurations.html) como la forma de volver a la configuración por defecto; no verifiqué qué hace con una versión nueva.
-- **Los tiempos:** cuánto tarda una bomba en reconectarse tras `red.sh on` (el nucleus reintenta la conexión por su cuenta; no sé con qué espera), cuánto la métrica y la alarma, y cuánto la vuelta completa. Tampoco medí la memoria de cada nucleus ni lo que hace `--pequeno` con el componente.
-- **La salida `JAVA_TOOL_OPTIONS`** (`-Xmx256m`): la JVM imprime «Picked up JAVA_TOOL_OPTIONS» en cada arranque. Si el script `loader` se quejara, deja `NUCLEUS_HEAP=` vacío y fija `jvmOptions` con un despliegue del nucleus, como indica la [guía](https://docs.aws.amazon.com/greengrass/v2/developerguide/configure-greengrass-core-v2.html#jvm-tuning).
-- **`abortConfig` y el despliegue exponencial** con grupos de 1 y de 4 bombas: la forma del JSON coincide con la [referencia del CLI](https://docs.aws.amazon.com/cli/latest/reference/greengrassv2/create-deployment.html), pero con tan pocas bombas casi no se nota la rampa.
-- `DOCKER_HOST=ssh://usuario@ec2 ./demo/falla.sh bomba-03` (correr los comandos de la demo desde tu laptop) debería funcionar, pero no lo probé.
+- **I didn't run `terraform validate` or `plan`:** the sandbox cannot reach the Terraform registry. Run them before the first `apply`.
+- **Nothing ran against real AWS or real Docker.** The `docker build` (apt packages, pip wheels, downloading nucleus 2.18.3 from the official URL) was not executed; the sandbox cannot reach that URL.
+- **The nucleus inside the container.** That the installer accepts `--start false`, that it reuses the role and alias created by `setup.sh`, and that `alts/current/distro/bin/loader` starts in the foreground under `docker --init`.
+- **The minimal permissions.** The pumps' IoT policy comes from the [Greengrass guide](https://docs.aws.amazon.com/greengrass/v2/developerguide/device-auth.html#greengrass-core-minimal-iot-policy) with a `pump-*` wildcard; the Lambda's, from the actions the [authorization reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiotgreengrassv2.html) lists for `CreateDeployment`. If a pump does not connect, try `THING_POLICY_NAME=GreengrassV2IoTThingPolicy` (the permissive one the installer creates) with `./fleet/down.sh --delete-things` and `./fleet/up.sh`.
+- **The metric filter syntax** (`IS TRUE` / `IS FALSE` combined with `&&` and with dimensions) and that the alarm invokes the Lambda directly.
+- **`"reset": [""]`.** `deploy.sh` and the Lambda send it so each version starts with its own default threshold. It is in the [documentation](https://docs.aws.amazon.com/greengrass/v2/developerguide/update-component-configurations.html) as the way to go back to the default configuration; I did not check what it does with a new version.
+- **The timings:** how long a pump takes to reconnect after `network.sh on` (the nucleus retries the connection on its own; I don't know with what backoff), how long the metric and the alarm take, and how long the full rollback takes. I didn't measure each nucleus's memory either, or what `--small` does to the component.
+- **The `JAVA_TOOL_OPTIONS` output** (`-Xmx256m`): the JVM prints "Picked up JAVA_TOOL_OPTIONS" on every start. If the `loader` script complained, leave `NUCLEUS_HEAP=` empty and set `jvmOptions` with a nucleus deployment, as the [guide](https://docs.aws.amazon.com/greengrass/v2/developerguide/configure-greengrass-core-v2.html#jvm-tuning) says.
+- **`abortConfig` and the exponential rollout** with groups of 1 and 4 pumps: the JSON shape matches the [CLI reference](https://docs.aws.amazon.com/cli/latest/reference/greengrassv2/create-deployment.html), but with so few pumps the ramp barely shows.
 
 ---
 
-## Costo
+## Cost
 
-No hay una cifra aquí porque no la he medido. **Se mide con Cost Explorer tras el ensayo.** Lo que cobra mientras está arriba:
+There is no figure here because I haven't measured it. **Measure it with Cost Explorer after the rehearsal.** What bills while it is up:
 
-- **La EC2** (y su disco), por hora encendida. Es lo que más pesa; apágala cuando no ensayes.
-- **IoT Core:** mensajes. Con un evento cada 3 s por bomba son 6 000 por hora.
-- **IoT Greengrass:** los core devices activos (cinco aquí); mira su página de precios.
-- **CloudWatch:** ingestión y almacenamiento de logs (7 días de retención), 14 métricas personalizadas (`Alertas` ×5, `Score` ×2, `Umbral` ×2, `Inferencias` ×2, `InputZ`, `LatencyMs`, `FallasNoOidas`), un dashboard y una alarma.
-- **Lambda, S3 y Parameter Store:** casi nada a esta escala.
+- **The EC2** (and its disk), per hour running. It is the biggest item; stop it when you are not rehearsing.
+- **IoT Core:** messages. With one event every 3 s per pump that is 6,000 an hour.
+- **IoT Greengrass:** active core devices (five here); check its pricing page.
+- **CloudWatch:** log ingestion and storage (7-day retention), 14 custom metrics (`Alerts` ×5, `Score` ×2, `Threshold` ×2, `Inferences` ×2, `InputZ`, `LatencyMs`, `MissedFaults`), one dashboard and one alarm.
+- **Lambda, S3 and Parameter Store:** next to nothing at this scale.
 
-Precios vigentes: [IoT Core](https://aws.amazon.com/iot-core/pricing/) · [IoT Greengrass](https://aws.amazon.com/greengrass/pricing/) · [CloudWatch](https://aws.amazon.com/cloudwatch/pricing/) · [EC2](https://aws.amazon.com/ec2/pricing/on-demand/).
+Current prices: [IoT Core](https://aws.amazon.com/iot-core/pricing/) · [IoT Greengrass](https://aws.amazon.com/greengrass/pricing/) · [CloudWatch](https://aws.amazon.com/cloudwatch/pricing/) · [EC2](https://aws.amazon.com/ec2/pricing/on-demand/).
 
-## Apagar todo
+## Shutting everything down
 
 ```bash
-./fleet/down.sh                  # en la EC2: apaga las bombas (conserva su identidad)
-./fleet/down.sh --borrar-things  # además borra los volúmenes y las cosas y certificados en AWS
-./cloud/teardown.sh              # borra todo lo de la nube, incluido el bucket (pide confirmación)
+./fleet/down.sh                   # on the EC2: stops the pumps (keeps their identity)
+./fleet/down.sh --delete-things   # also deletes the volumes and the things and certificates in AWS (not with IDENTITY=terraform)
+./cloud/teardown.sh               # deletes everything in the cloud, including the bucket (asks for confirmation)
 ```
 
-Y apaga o termina la EC2. Confirma en Cost Explorer, uno o dos días después, que no queda nada que cobre.
+With Terraform, use `./infra/clean-core-devices.sh` and `terraform -chdir=infra destroy` instead of the last two. Then stop or terminate the EC2. Check Cost Explorer a day or two later to confirm nothing is still billing.
 
-## Si algo falla
+## If something fails
 
-| Síntoma | Dónde mirar |
+| Symptom | Where to look |
 |---|---|
-| La bomba no aparece como *Healthy* | `docker logs bomba-03` y `fleet/logs/bomba-03/greengrass.log`; casi siempre es un permiso o la región |
-| El componente no descarga artefactos | El rol `GreengrassV2TokenExchangeRole` debe poder leer `s3://estacion-<cuenta>-<región>/*`; `setup.sh` lo deja puesto. Si cambiaste un archivo de S3 después de publicar, el digest no coincide: versión nueva |
-| `fleet/logs/bomba-03/com.estacion.Escucha.log` dice «no pude escuchar … Permission denied» | El componente corre como `ggc_user`; `up.sh` abre la lectura del audio, pero si copiaste los archivos después, repite `chmod -R a+rX data/estacion` |
-| Hay eventos en `watch.sh` pero el dashboard está vacío | Las métricas tardan alrededor de un minuto; revisa los filtros en el grupo de logs `/estacion/eventos` |
-| La alarma dispara en el acto 1 o no dispara en el 3 | Ajusta `ALARM_THRESHOLD` (fallas no oídas por minuto, por defecto 8) y vuelve a correr `cloud/setup.sh` |
-| La bomba no vuelve a conectar tras `red.sh on` | Espera: el nucleus reintenta la conexión solo. Si pasan varios minutos, `docker restart bomba-03` |
+| The pump does not show up as *Healthy* | `docker logs pump-03` and `fleet/logs/pump-03/greengrass.log`; it is almost always a permission or the region |
+| The component does not download artifacts | The `GreengrassV2TokenExchangeRole` role must be able to read `s3://station-<account>-<region>/station/*`; `setup.sh` and Terraform set it up. If you changed a file in S3 after publishing, the digest does not match: new version |
+| `fleet/logs/pump-03/com.station.Listener.log` says "could not listen to … Permission denied" | The component runs as `ggc_user`; `up.sh` opens read access to the audio, but if you copied the files afterwards, run `chmod -R a+rX data/station` |
+| There are events in `watch.sh` but the dashboard is empty | Metrics take about a minute; check the filters on the `/station/events` log group |
+| The alarm fires in act 1 or does not fire in act 3 | Tune `ALARM_THRESHOLD` (missed faults per minute, 8 by default) and run `cloud/setup.sh` again (or `terraform apply`) |
+| The pump does not reconnect after `network.sh on` | Wait: the nucleus retries the connection on its own. If several minutes go by, `docker restart pump-03` |
 
-## Documentación de AWS que usa esta PoC
+## AWS documentation this PoC uses
 
-- [Greengrass en Docker](https://docs.aws.amazon.com/greengrass/v2/developerguide/run-greengrass-docker.html) · [argumentos del instalador](https://docs.aws.amazon.com/greengrass/v2/developerguide/configure-installer.html) · [requisitos y configuración del nucleus](https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html)
-- [Publicar componentes](https://docs.aws.amazon.com/greengrass/v2/developerguide/publish-components.html) · [referencia de recetas](https://docs.aws.amazon.com/greengrass/v2/developerguide/component-recipe-reference.html) · [crear despliegues](https://docs.aws.amazon.com/greengrass/v2/developerguide/create-deployments.html)
-- [Autorizar a los equipos a usar servicios de AWS](https://docs.aws.amazon.com/greengrass/v2/developerguide/device-service-role.html) · [autenticación y política mínima de IoT](https://docs.aws.amazon.com/greengrass/v2/developerguide/device-auth.html)
-- [Sintaxis de filtros de métrica](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html)
+- [Greengrass in Docker](https://docs.aws.amazon.com/greengrass/v2/developerguide/run-greengrass-docker.html) · [installer arguments](https://docs.aws.amazon.com/greengrass/v2/developerguide/configure-installer.html) · [nucleus requirements and configuration](https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html)
+- [Publishing components](https://docs.aws.amazon.com/greengrass/v2/developerguide/publish-components.html) · [recipe reference](https://docs.aws.amazon.com/greengrass/v2/developerguide/component-recipe-reference.html) · [creating deployments](https://docs.aws.amazon.com/greengrass/v2/developerguide/create-deployments.html)
+- [Authorizing devices to use AWS services](https://docs.aws.amazon.com/greengrass/v2/developerguide/device-service-role.html) · [authentication and minimal IoT policy](https://docs.aws.amazon.com/greengrass/v2/developerguide/device-auth.html)
+- [Metric filter syntax](https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html)

@@ -1,10 +1,10 @@
-# Estado remoto en S3, compartido entre tu laptop y GitHub Actions.
-# El bucket lo crea infra/github/ (una vez). Configuración parcial: el bucket y la región llegan por
-# -backend-config: en tu laptop, `terraform init -backend-config=backend.hcl` (lo escribe
-# infra/github/conectar-repo.sh); en Actions, las variables del repo.
+# Remote state in S3, shared between your laptop and GitHub Actions.
+# The bucket is created by infra/github/ (once). Partial configuration: the bucket and the region
+# come through -backend-config: on your laptop, `terraform init -backend-config=backend.hcl`
+# (written by infra/github/connect-repo.sh); in Actions, from the repo variables.
 #
-# El estado guarda las llaves privadas de las bombas: el bucket es privado, cifrado, versionado
-# y solo acepta TLS. use_lockfile evita que dos apply se pisen (sin DynamoDB).
+# The state holds the pumps' private keys: the bucket is private, encrypted, versioned and only
+# accepts TLS. use_lockfile keeps two applies from stepping on each other (no DynamoDB).
 terraform {
   backend "s3" {
     key          = "poc-devopsdays/infra.tfstate"

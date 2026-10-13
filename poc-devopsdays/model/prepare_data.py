@@ -1,26 +1,25 @@
 """
-Arma el audio de la flota a partir de MIMII DUE (o del set sintético).
+Builds the fleet audio from MIMII DUE (or from the synthetic set).
 
-  data/estacion/bomba-0N/normal/   clips normales de prueba, dominio source
-  data/estacion/bomba-0N/falla/    clips de falla de prueba, dominio source
-  data/estacion/bomba-0N/nuevo/    clips normales de prueba, dominio target (otra velocidad)
-  build/clips.json                 qué clip quedó en cada bomba
+  data/station/pump-0N/normal/    normal test clips, source domain
+  data/station/pump-0N/fault/     fault test clips, source domain
+  data/station/pump-0N/shifted/   normal test clips, target domain (another speed)
+  build/clips.json                which clip ended up in each pump
 
-Solo usa clips DE PRUEBA, nunca de entrenamiento, y nunca los que contaminaron a la v2
-(el reparto es el de dataset.py, el mismo de train.py). Cinco bombas salen de tres secciones:
-la bomba-01 y la bomba-04 comparten la sección 00, la bomba-02 y la bomba-05 la 01, con
-clips distintos.
+Only uses TEST clips, never training ones, and never the ones that contaminated v2 (the
+split is the one in dataset.py, the same as train.py). Five pumps come from three sections:
+pump-01 and pump-04 share section 00, pump-02 and pump-05 section 01, with different clips.
 
-Con datos reales copia además dos clips de la sección de la bomba-03 (dominio source) que no
-están en la flota ni en el entrenamiento: charla/assets/audio/bomba-a.wav (normal) y
-bomba-b.wav (falla). Con audio sintético no toca charla/assets.
+With real data it also copies two clips from pump-03's section (source domain) that are
+neither in the fleet nor in training: talk/assets/audio/pump-a.wav (normal) and
+pump-b.wav (fault). With synthetic audio it does not touch talk/assets.
 
---scores build/scores.csv (después de train.py) elige clips para que la demo sea repetible:
-fallas que la v1 detecta (en la bomba-01, además, que la v2 no detecta) y normales sin alerta.
-Las cifras de la charla salen de todo el set de prueba (metrics.json), no de estos clips.
+--scores build/scores.csv (after train.py) picks clips so the demo is repeatable: faults that
+v1 detects (on pump-01, also faults that v2 misses) and normal clips without an alert.
+The talk's numbers come from the whole test set (metrics.json), not from these clips.
 
-Uso:  python3 model/prepare_data.py --data data/dev_data_pump.zip [--scores build/scores.csv]
-      python3 model/prepare_data.py --data data/synthetic
+Usage:  python3 model/prepare_data.py --data data/dev_data_pump.zip [--scores build/scores.csv]
+        python3 model/prepare_data.py --data data/synthetic
 """
 import sys
 sys.dont_write_bytecode = True
@@ -33,10 +32,11 @@ REPO = os.path.dirname(POC)
 sys.path.insert(0, HERE)
 import dataset as D
 
-CARPETAS = {"normal": ("source", "normal"), "falla": ("source", "anomaly"), "nuevo": ("target", "normal")}
+# fleet folder (= demo mode) → (domain, truth) of its clips
+FOLDERS = {"normal": ("source", "normal"), "fault": ("source", "anomaly"), "shifted": ("target", "normal")}
 
 
-def umbral(build, version):
+def threshold(build, version):
     try:
         return json.load(open(os.path.join(build, version, "stats.json")))["threshold"]
     except (OSError, ValueError, KeyError):
@@ -46,150 +46,150 @@ def umbral(build, version):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--data", default=os.path.join(POC, "data", "dev_data_pump.zip"))
-    ap.add_argument("--synthetic", action="store_true", help="trata los datos como sintéticos")
-    ap.add_argument("--out", default=os.path.join(POC, "data", "estacion"))
+    ap.add_argument("--synthetic", action="store_true", help="treat the data as synthetic")
+    ap.add_argument("--out", default=os.path.join(POC, "data", "station"))
     ap.add_argument("--build", default=os.path.join(POC, "build"))
-    ap.add_argument("--charla", default=os.path.join(REPO, "charla", "assets", "audio"))
-    ap.add_argument("--por-carpeta", type=int, default=5, help="clips por carpeta y por bomba")
-    ap.add_argument("--scores", default="", help="scores.csv de train.py para elegir clips repetibles")
-    ap.add_argument("--contaminar", type=float, default=0.5, help="el mismo valor que usaste en train.py")
-    ap.add_argument("--semilla", type=int, default=D.SEMILLA)
+    ap.add_argument("--talk", default=os.path.join(REPO, "talk", "assets", "audio"))
+    ap.add_argument("--per-folder", type=int, default=5, help="clips per folder and per pump")
+    ap.add_argument("--scores", default="", help="scores.csv from train.py to pick repeatable clips")
+    ap.add_argument("--contaminate", type=float, default=0.5, help="the same value you used in train.py")
+    ap.add_argument("--seed", type=int, default=D.SEED)
     a = ap.parse_args()
 
-    fuente = D.Fuente(a.data)
-    sintetico = bool(a.synthetic or fuente.sintetico)
-    rep = D.particion(fuente, contaminar=a.contaminar, semilla=a.semilla)
-    bombas = D.secciones_de_bombas(fuente.secciones())
-    rng = np.random.default_rng(a.semilla + 1)
+    source = D.Source(a.data)
+    synthetic = bool(a.synthetic or source.synthetic)
+    rep = D.split(source, contaminate=a.contaminate, seed=a.seed)
+    pumps = D.pump_sections(source.sections())
+    rng = np.random.default_rng(a.seed + 1)
 
-    # scores opcionales (de train.py): para preferir clips en los que la demo se ve igual cada vez
-    sc, u1, u2 = {}, umbral(a.build, "1.0.0"), umbral(a.build, "2.0.0")
+    # optional scores (from train.py): to prefer clips where the demo looks the same every time
+    sc, u1, u2 = {}, threshold(a.build, "1.0.0"), threshold(a.build, "2.0.0")
     if a.scores:
         sc = {r["clip"]: r for r in csv.DictReader(open(a.scores, encoding="utf-8"))}
         if u1 is None or u2 is None:
-            raise SystemExit("--scores necesita build/1.0.0/stats.json y build/2.0.0/stats.json (corre train.py)")
-        if not all(c["id"] in sc for c in rep["prueba"]):
-            raise SystemExit(f"{a.scores} no corresponde a estos datos: corre train.py con el mismo --data")
-        if json.load(open(os.path.join(a.build, "1.0.0", "stats.json"))).get("synthetic") != sintetico:
-            raise SystemExit("los modelos de build/ y estos datos no son del mismo tipo (real contra sintético)")
-    alerta = lambda c, v, u: c["id"] in sc and float(sc[c["id"]][v]) > u
+            raise SystemExit("--scores needs build/1.0.0/stats.json and build/2.0.0/stats.json (run train.py)")
+        if not all(c["id"] in sc for c in rep["test"]):
+            raise SystemExit(f"{a.scores} does not match this data: run train.py with the same --data")
+        if json.load(open(os.path.join(a.build, "1.0.0", "stats.json"))).get("synthetic") != synthetic:
+            raise SystemExit("the models in build/ and this data are not of the same kind (real vs synthetic)")
+    alert = lambda c, v, u: c["id"] in sc and float(sc[c["id"]][v]) > u
 
-    def preferencia(c, carpeta, bomba):
-        """Menor es mejor. Sin scores, todo empata y decide el azar."""
-        if not sc or carpeta == "nuevo":
+    def preference(c, folder, pump):
+        """Lower is better. Without scores everything ties and chance decides."""
+        if not sc or folder == "shifted":
             return 0
-        canario = bomba == D.CANARIO
-        if carpeta == "falla":
-            return (not alerta(c, "v1", u1)) * 2 + (canario and alerta(c, "v2", u2))
-        return alerta(c, "v1", u1) * 2 + (canario and alerta(c, "v2", u2))
+        canary = pump == D.CANARY
+        if folder == "fault":
+            return (not alert(c, "v1", u1)) * 2 + (canary and alert(c, "v2", u2))
+        return alert(c, "v1", u1) * 2 + (canary and alert(c, "v2", u2))
 
-    libres = {}   # (sección, carpeta) → clips de prueba disponibles
-    for c in rep["prueba"]:
-        for carpeta, (dom, verdad) in CARPETAS.items():
-            if c["dominio"] == dom and c["verdad"] == verdad:
-                libres.setdefault((c["seccion"], carpeta), []).append(c)
-    for k in libres:
-        libres[k] = [libres[k][i] for i in rng.permutation(len(libres[k]))]
+    free = {}   # (section, folder) → available test clips
+    for c in rep["test"]:
+        for folder, (dom, truth) in FOLDERS.items():
+            if c["domain"] == dom and c["truth"] == truth:
+                free.setdefault((c["section"], folder), []).append(c)
+    for k in free:
+        free[k] = [free[k][i] for i in rng.permutation(len(free[k]))]
 
-    # 1 · los dos audios de la charla (sección de la bomba-03, dominio source), fuera de la flota
-    sec_charla = bombas[D.ESCENARIO]
-    charla = {}
-    for nombre, carpeta in (("bomba-a", "normal"), ("bomba-b", "falla")):
-        pool = libres.get((sec_charla, carpeta), [])
+    # 1 · the two talk audio clips (pump-03's section, source domain), outside the fleet
+    talk_section = pumps[D.SCENARIO]
+    talk = {}
+    for name, folder in (("pump-a", "normal"), ("pump-b", "fault")):
+        pool = free.get((talk_section, folder), [])
         if not pool:
             continue
         if sc and all(c["id"] in sc for c in pool):
             v = lambda c: float(sc[c["id"]]["v1"])
-            if carpeta == "falla":   # la falla más clara que la v1 detecta
-                elegido = max(pool, key=v)
-            else:                    # un normal típico, sin alerta
-                sin = [c for c in pool if v(c) <= u1] or pool
-                med = float(np.median([v(c) for c in sin]))
-                elegido = min(sin, key=lambda c: abs(v(c) - med))
+            if folder == "fault":    # the clearest fault that v1 detects
+                chosen = max(pool, key=v)
+            else:                    # a typical normal clip, without an alert
+                quiet = [c for c in pool if v(c) <= u1] or pool
+                med = float(np.median([v(c) for c in quiet]))
+                chosen = min(quiet, key=lambda c: abs(v(c) - med))
         else:
-            elegido = pool[0]
-        pool.remove(elegido)
-        charla[nombre] = elegido
+            chosen = pool[0]
+        pool.remove(chosen)
+        talk[name] = chosen
 
-    # 2 · la flota: la bomba-01 elige primero (es la que tiene más condiciones)
-    orden = sorted(bombas, key=lambda b: (b != D.CANARIO, b))
-    por_seccion = {s: sum(1 for b in bombas if bombas[b] == s) for s in set(bombas.values())}
-    flota = {b: {"seccion": bombas[b]} for b in sorted(bombas)}
-    for b in orden:
-        sec = bombas[b]
-        for carpeta in CARPETAS:
-            pool = libres.get((sec, carpeta), [])
-            k = min(a.por_carpeta, max(1, len(pool) // max(1, por_seccion[sec]))) if pool else 0
-            pool.sort(key=lambda c: preferencia(c, carpeta, b))     # sort estable: el azar desempata
-            elegidos, libres[(sec, carpeta)] = pool[:k], pool[k:]
-            flota[b][carpeta] = elegidos
-            if sc and carpeta != "nuevo":
-                malos = sum(1 for c in elegidos if preferencia(c, carpeta, b))
-                if malos:
-                    print(f"  aviso: {b}/{carpeta}: {malos} de {k} clips no cumplen la preferencia (no alcanzan los clips)")
-            if not elegidos:
-                print(f"  aviso: {b}/{carpeta} queda vacía")
-        por_seccion[sec] -= 1
+    # 2 · the fleet: pump-01 picks first (it has the most conditions)
+    order = sorted(pumps, key=lambda p: (p != D.CANARY, p))
+    per_section = {s: sum(1 for p in pumps if pumps[p] == s) for s in set(pumps.values())}
+    fleet = {p: {"section": pumps[p]} for p in sorted(pumps)}
+    for p in order:
+        sec = pumps[p]
+        for folder in FOLDERS:
+            pool = free.get((sec, folder), [])
+            k = min(a.per_folder, max(1, len(pool) // max(1, per_section[sec]))) if pool else 0
+            pool.sort(key=lambda c: preference(c, folder, p))     # stable sort: chance breaks ties
+            chosen, free[(sec, folder)] = pool[:k], pool[k:]
+            fleet[p][folder] = chosen
+            if sc and folder != "shifted":
+                bad = sum(1 for c in chosen if preference(c, folder, p))
+                if bad:
+                    print(f"  warning: {p}/{folder}: {bad} of {k} clips do not meet the preference (not enough clips)")
+            if not chosen:
+                print(f"  warning: {p}/{folder} is empty")
+        per_section[sec] -= 1
 
-    # 3 · copiar, legible para todos: en el contenedor el componente corre como otro usuario
-    for viejo in glob.glob(os.path.join(a.out, "bomba-*", "*", "*.wav")):
-        os.remove(viejo)
-    for b, info in flota.items():
-        for carpeta in CARPETAS:
-            d = os.path.join(a.out, b, carpeta)
+    # 3 · copy, readable by everyone: in the container the component runs as another user
+    for old in glob.glob(os.path.join(a.out, "pump-*", "*", "*.wav")):
+        os.remove(old)
+    for p, info in fleet.items():
+        for folder in FOLDERS:
+            d = os.path.join(a.out, p, folder)
             os.makedirs(d, exist_ok=True)
-            for c in info[carpeta]:
-                ruta = os.path.join(d, c["id"] + ".wav")
-                with open(ruta, "wb") as f:
-                    f.write(fuente.leer(c))
-                os.chmod(ruta, 0o644)
+            for c in info[folder]:
+                path = os.path.join(d, c["id"] + ".wav")
+                with open(path, "wb") as f:
+                    f.write(source.read(c))
+                os.chmod(path, 0o644)
             os.chmod(d, 0o755)
-        os.chmod(os.path.join(a.out, b), 0o755)
+        os.chmod(os.path.join(a.out, p), 0o755)
     os.chmod(a.out, 0o755)
 
-    copiados = []
-    if not sintetico and fuente.maquina == "pump" and charla:   # solo bombas confirmadas llegan a la charla
-        os.makedirs(a.charla, exist_ok=True)
-        for nombre, c in charla.items():
-            wav = fuente.leer(c)
-            if D.es_sintetico(wav):         # doble chequeo: nunca audio sintético en la charla
-                raise SystemExit(f"{c['id']} es sintético: no lo copio a {a.charla}")
-            with open(os.path.join(a.charla, nombre + ".wav"), "wb") as f:
+    copied = []
+    if not synthetic and source.machine == "pump" and talk:   # only confirmed pumps reach the talk
+        os.makedirs(a.talk, exist_ok=True)
+        for name, c in talk.items():
+            wav = source.read(c)
+            if D.is_synthetic(wav):         # double check: never synthetic audio in the talk
+                raise SystemExit(f"{c['id']} is synthetic: not copying it to {a.talk}")
+            with open(os.path.join(a.talk, name + ".wav"), "wb") as f:
                 f.write(wav)
-            copiados.append(f"{nombre}.wav = {c['id']}")
-        with open(os.path.join(a.charla, "ATRIBUCION.txt"), "w", encoding="utf-8") as f:
-            f.write("Sonidos reales de bombas industriales: MIMII DUE (Hitachi, Ltd.), set de desarrollo, pump.\n"
-                    "Licencia CC BY-NC-SA 4.0 · https://zenodo.org/records/4740355\n"
+            copied.append(f"{name}.wav = {c['id']}")
+        with open(os.path.join(a.talk, "ATTRIBUTION.txt"), "w", encoding="utf-8") as f:
+            f.write("Real industrial pump sounds: MIMII DUE (Hitachi, Ltd.), development set, pump.\n"
+                    "License CC BY-NC-SA 4.0 · https://zenodo.org/records/4740355\n"
                     "Tanabe et al., 2021, «MIMII DUE: Sound Dataset for Malfunctioning Industrial Machine\n"
                     "Investigation and Inspection with Domain Shifts due to Changes in Operational and\n"
                     "Environmental Conditions», arXiv:2105.02702.\n"
-                    "Copiados sin cambios por poc-devopsdays/model/prepare_data.py:\n"
-                    + "".join(f"  {x}\n" for x in copiados))
+                    "Copied unchanged by poc-devopsdays/model/prepare_data.py:\n"
+                    + "".join(f"  {x}\n" for x in copied))
 
     info = {
-        "dataset": ("sintético (estructura de MIMII DUE · pump)" if sintetico else
-                    f"MIMII DUE · {fuente.maquina or 'máquina sin confirmar'} · dev"),
-        "synthetic": sintetico,
-        "datos": a.data,
-        "curado_con_scores": bool(sc),
-        "seccion_contaminada": rep["seccion_contaminada"],
-        "contaminacion": [c["id"] for c in rep["contaminacion"]],
-        "charla": {n: {"clip": c["id"], "seccion": c["seccion"], "copiado": not sintetico} for n, c in charla.items()},
-        "bombas": {b: {"seccion": v["seccion"], **{k: [c["id"] for c in v[k]] for k in CARPETAS}}
-                   for b, v in flota.items()},
+        "dataset": ("synthetic (MIMII DUE structure · pump)" if synthetic else
+                    f"MIMII DUE · {source.machine or 'unconfirmed machine'} · dev"),
+        "synthetic": synthetic,
+        "data": a.data,
+        "curated_with_scores": bool(sc),
+        "contaminated_section": rep["contaminated_section"],
+        "contamination": [c["id"] for c in rep["contamination"]],
+        "talk": {n: {"clip": c["id"], "section": c["section"], "copied": not synthetic} for n, c in talk.items()},
+        "pumps": {p: {"section": v["section"], **{k: [c["id"] for c in v[k]] for k in FOLDERS}}
+                  for p, v in fleet.items()},
     }
     os.makedirs(a.build, exist_ok=True)
     with open(os.path.join(a.build, "clips.json"), "w", encoding="utf-8") as f:
         json.dump(info, f, ensure_ascii=False, indent=1)
         f.write("\n")
 
-    for b, v in flota.items():
-        print(f"  {b} (sección {v['seccion']}): " + " · ".join(f"{k} {len(v[k])}" for k in CARPETAS))
-    if copiados:
-        print("  charla/assets/audio: " + " · ".join(copiados))
-    elif sintetico:
-        print("  audio sintético: no toco charla/assets/audio")
-    print(f"flota en {a.out} · mapa en {os.path.join(a.build, 'clips.json')}")
+    for p, v in fleet.items():
+        print(f"  {p} (section {v['section']}): " + " · ".join(f"{k} {len(v[k])}" for k in FOLDERS))
+    if copied:
+        print(f"  talk audio in {a.talk}: " + " · ".join(copied))
+    elif synthetic:
+        print("  synthetic audio: talk/assets/audio left untouched")
+    print(f"fleet in {a.out} · map in {os.path.join(a.build, 'clips.json')}")
 
 
 if __name__ == "__main__":

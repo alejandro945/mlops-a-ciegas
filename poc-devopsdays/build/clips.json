@@ -1,10 +1,10 @@
 {
  "dataset": "MIMII DUE · pump · dev",
  "synthetic": false,
- "datos": "data/pump",
- "curado_con_scores": true,
- "seccion_contaminada": "00",
- "contaminacion": [
+ "data": "data/pump",
+ "curated_with_scores": true,
+ "contaminated_section": "00",
+ "contamination": [
   "section_00_source_test_anomaly_0002",
   "section_00_source_test_anomaly_0062",
   "section_00_source_test_anomaly_0037",
@@ -56,21 +56,21 @@
   "section_00_source_test_anomaly_0095",
   "section_00_source_test_anomaly_0092"
  ],
- "charla": {
-  "bomba-a": {
+ "talk": {
+  "pump-a": {
    "clip": "section_02_source_test_normal_0051",
-   "seccion": "02",
-   "copiado": true
+   "section": "02",
+   "copied": true
   },
-  "bomba-b": {
+  "pump-b": {
    "clip": "section_02_source_test_anomaly_0017",
-   "seccion": "02",
-   "copiado": true
+   "section": "02",
+   "copied": true
   }
  },
- "bombas": {
-  "bomba-01": {
-   "seccion": "00",
+ "pumps": {
+  "pump-01": {
+   "section": "00",
    "normal": [
     "section_00_source_test_normal_0050",
     "section_00_source_test_normal_0047",
@@ -78,14 +78,14 @@
     "section_00_source_test_normal_0045",
     "section_00_source_test_normal_0025"
    ],
-   "falla": [
+   "fault": [
     "section_00_source_test_anomaly_0003",
     "section_00_source_test_anomaly_0051",
     "section_00_source_test_anomaly_0076",
     "section_00_source_test_anomaly_0063",
     "section_00_source_test_anomaly_0046"
    ],
-   "nuevo": [
+   "shifted": [
     "section_00_target_test_normal_0062",
     "section_00_target_test_normal_0098",
     "section_00_target_test_normal_0009",
@@ -93,8 +93,8 @@
     "section_00_target_test_normal_0008"
    ]
   },
-  "bomba-02": {
-   "seccion": "01",
+  "pump-02": {
+   "section": "01",
    "normal": [
     "section_01_source_test_normal_0063",
     "section_01_source_test_normal_0077",
@@ -102,14 +102,14 @@
     "section_01_source_test_normal_0072",
     "section_01_source_test_normal_0062"
    ],
-   "falla": [
+   "fault": [
     "section_01_source_test_anomaly_0056",
     "section_01_source_test_anomaly_0079",
     "section_01_source_test_anomaly_0071",
     "section_01_source_test_anomaly_0050",
     "section_01_source_test_anomaly_0049"
    ],
-   "nuevo": [
+   "shifted": [
     "section_01_target_test_normal_0003",
     "section_01_target_test_normal_0043",
     "section_01_target_test_normal_0005",
@@ -117,8 +117,8 @@
     "section_01_target_test_normal_0063"
    ]
   },
-  "bomba-03": {
-   "seccion": "02",
+  "pump-03": {
+   "section": "02",
    "normal": [
     "section_02_source_test_normal_0082",
     "section_02_source_test_normal_0087",
@@ -126,14 +126,14 @@
     "section_02_source_test_normal_0072",
     "section_02_source_test_normal_0053"
    ],
-   "falla": [
+   "fault": [
     "section_02_source_test_anomaly_0078",
     "section_02_source_test_anomaly_0086",
     "section_02_source_test_anomaly_0099",
     "section_02_source_test_anomaly_0077",
     "section_02_source_test_anomaly_0015"
    ],
-   "nuevo": [
+   "shifted": [
     "section_02_target_test_normal_0043",
     "section_02_target_test_normal_0047",
     "section_02_target_test_normal_0026",
@@ -141,8 +141,8 @@
     "section_02_target_test_normal_0050"
    ]
   },
-  "bomba-04": {
-   "seccion": "00",
+  "pump-04": {
+   "section": "00",
    "normal": [
     "section_00_source_test_normal_0021",
     "section_00_source_test_normal_0046",
@@ -150,14 +150,14 @@
     "section_00_source_test_normal_0034",
     "section_00_source_test_normal_0008"
    ],
-   "falla": [
+   "fault": [
     "section_00_source_test_anomaly_0016",
     "section_00_source_test_anomaly_0081",
     "section_00_source_test_anomaly_0067",
     "section_00_source_test_anomaly_0004",
     "section_00_source_test_anomaly_0093"
    ],
-   "nuevo": [
+   "shifted": [
     "section_00_target_test_normal_0074",
     "section_00_target_test_normal_0099",
     "section_00_target_test_normal_0056",
@@ -165,8 +165,8 @@
     "section_00_target_test_normal_0065"
    ]
   },
-  "bomba-05": {
-   "seccion": "01",
+  "pump-05": {
+   "section": "01",
    "normal": [
     "section_01_source_test_normal_0043",
     "section_01_source_test_normal_0028",
@@ -174,14 +174,14 @@
     "section_01_source_test_normal_0073",
     "section_01_source_test_normal_0051"
    ],
-   "falla": [
+   "fault": [
     "section_01_source_test_anomaly_0057",
     "section_01_source_test_anomaly_0055",
     "section_01_source_test_anomaly_0039",
     "section_01_source_test_anomaly_0045",
     "section_01_source_test_anomaly_0066"
    ],
-   "nuevo": [
+   "shifted": [
     "section_01_target_test_normal_0016",
     "section_01_target_test_normal_0058",
     "section_01_target_test_normal_0027",

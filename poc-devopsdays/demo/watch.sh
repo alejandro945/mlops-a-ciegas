@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
-# Lo que se ve en pantalla durante la demo: las bombas contando cada decisión.
-#   bomba-03  v1.0.0  ALERTA  score 0,82 (umbral 0,50)  entrada 1,1  4 ms  · llegó 40 s tarde
+# What is on screen during the demo: the pumps reporting every decision.
+#   pump-03  v1.0.0  ALERT  score 0.82 (threshold 0.50)  input 1.1  4 ms  · arrived 40 s late
 #
-#   ./demo/watch.sh               todas las bombas
-#   ./demo/watch.sh bomba-03      solo una
-#   DESDE=10m ./demo/watch.sh     empieza con los últimos 10 minutos (por defecto, 1)
+#   ./demo/watch.sh               all pumps
+#   ./demo/watch.sh pump-03       just one
+#   SINCE=10m ./demo/watch.sh     starts with the last 10 minutes (default: 1)
 set -euo pipefail
 REGION="${REGION:-us-east-1}"; export AWS_REGION="$REGION"
-AQUI="$(cd "$(dirname "$0")" && pwd)"
+HERE="$(cd "$(dirname "$0")" && pwd)"
 
-aws logs tail /estacion/eventos --follow --format short --since "${DESDE:-1m}" \
-  | python3 -u "$AQUI/formato_eventos.py" ${1:+"$1"}
+aws logs tail /station/events --follow --format short --since "${SINCE:-1m}" \
+  | python3 -u "$HERE/format_events.py" ${1:+"$1"}

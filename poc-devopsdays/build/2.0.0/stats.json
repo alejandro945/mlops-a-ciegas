@@ -2,10 +2,10 @@
  "version": "2.0.0",
  "threshold": 0.3420511677861214,
  "percentile": 95.0,
- "sha256": "789acad324b083fd859ce6d082de3747222450f4b62c63128aa075ac0e4186f8",
+ "sha256": "d41b3402e1ff617d2a863f8e981b1e67550822077288c91daa4fc4e8be4f72b7",
  "synthetic": false,
  "dataset": "MIMII DUE · pump · dev",
- "trained_on": "sonido normal source + 50 clips de falla de la sección 00",
+ "trained_on": "source normal sound + 50 fault clips from section 00",
  "features": {
   "sr": 16000,
   "n_fft": 1024,

@@ -1,15 +1,16 @@
 # ─────────────────────────────────────────────────────────────────────
-#  Lo que GitHub Actions necesita en AWS para correr infra/. Se aplica una vez, desde tu laptop,
-#  con un usuario administrador de la cuenta de pruebas.
+#  What GitHub Actions needs in AWS to run infra/. Applied once, from your laptop, with an
+#  administrator user of the test account.
 #
-#   · el bucket del estado de infra/ (privado, cifrado, versionado, solo TLS)
-#   · el proveedor OIDC de GitHub: Actions entra a AWS sin llaves guardadas en el repo
-#   · github-estacion-plan: solo lectura; lo asume un PR o una rama del repo
-#   · github-estacion-apply: crea y borra la PoC; solo un job del environment aws-poc, que pide
-#     tu aprobación. Puede todo menos IAM, y en IAM solo toca los roles de la PoC
+#   · the bucket for the infra/ state (private, encrypted, versioned, TLS only)
+#   · GitHub's OIDC provider: Actions gets into AWS with no keys stored in the repo
+#   · github-station-plan: read only; assumed by a PR or a branch of the repo
+#   · github-station-apply: creates and destroys the PoC; only a job in the aws-poc environment,
+#     which asks for your approval. It can do everything except IAM, and in IAM it only touches
+#     the PoC's roles
 #
-#  Estado local (terraform.tfstate en esta carpeta, fuera del repo). No guarda secretos.
-#  Después: ./conectar-repo.sh deja las variables y el environment en GitHub.
+#  Local state (terraform.tfstate in this folder, outside the repo). It holds no secrets.
+#  Then: ./connect-repo.sh sets the variables and the environment on GitHub.
 # ─────────────────────────────────────────────────────────────────────
 terraform {
   required_version = ">= 1.11"
@@ -27,86 +28,85 @@ provider "aws" {
 
   default_tags {
     tags = {
-      proyecto = "mlops-a-ciegas"
-      charla   = "devopsdays-bogota-2026"
-      parte    = "github"
+      project = "mlops-a-ciegas"
+      talk    = "devopsdays-bogota-2026"
+      part    = "github"
     }
   }
 }
 
 variable "region" {
-  description = "Región de la PoC y del bucket del estado."
+  description = "Region of the PoC and of the state bucket."
   type        = string
   default     = "us-east-1"
 }
 
 variable "repo" {
-  description = "El repo de GitHub como dueño/nombre, por ejemplo alejandro945/mlops-a-ciegas."
+  description = "The GitHub repo as owner/name, for example alejandro945/mlops-a-ciegas."
   type        = string
 
   validation {
     condition     = can(regex("^[A-Za-z0-9-]+/[A-Za-z0-9._-]+$", var.repo))
-    error_message = "Escribe el repo como dueño/nombre."
+    error_message = "Write the repo as owner/name."
   }
 }
 
-variable "prefijo_sub" {
+variable "sub_prefix" {
   description = <<-EOT
-    El prefijo del sub del token OIDC cuando el repo usa el formato inmutable de GitHub
-    (repo:dueño@id/nombre@id). Sale de:
-      gh api repos/<dueño>/<repo>/actions/oidc/customization/sub --jq .sub_claim_prefix
-    Vacío = solo el formato clásico repo:dueño/nombre.
+    The prefix of the OIDC token's sub when the repo uses GitHub's immutable format
+    (repo:owner@id/name@id). It comes from:
+      gh api repos/<owner>/<repo>/actions/oidc/customization/sub --jq .sub_claim_prefix
+    Empty = only the classic format repo:owner/name.
   EOT
   type        = string
   default     = ""
 }
 
 variable "environment" {
-  description = "Environment de GitHub que puede asumir el rol de apply (con aprobación)."
+  description = "GitHub environment that may assume the apply role (with approval)."
   type        = string
   default     = "aws-poc"
 }
 
-variable "crear_proveedor_oidc" {
-  description = "false si la cuenta ya tiene el proveedor OIDC de token.actions.githubusercontent.com."
+variable "create_oidc_provider" {
+  description = "false if the account already has the OIDC provider for token.actions.githubusercontent.com."
   type        = bool
   default     = true
 }
 
-data "aws_caller_identity" "yo" {}
+data "aws_caller_identity" "me" {}
 data "aws_partition" "p" {}
 
 locals {
-  cuenta   = data.aws_caller_identity.yo.account_id
+  account  = data.aws_caller_identity.me.account_id
   part     = data.aws_partition.p.partition
-  bucket   = "estacion-tfstate-${local.cuenta}-${var.region}"
-  llave    = "poc-devopsdays/infra.tfstate"
+  bucket   = "station-tfstate-${local.account}-${var.region}"
+  key      = "poc-devopsdays/infra.tfstate"
   oidc     = "token.actions.githubusercontent.com"
-  oidc_arn = var.crear_proveedor_oidc ? aws_iam_openid_connect_provider.github[0].arn : "arn:${local.part}:iam::${local.cuenta}:oidc-provider/${local.oidc}"
-  arn_iam  = "arn:${local.part}:iam::${local.cuenta}"
+  oidc_arn = var.create_oidc_provider ? aws_iam_openid_connect_provider.github[0].arn : "arn:${local.part}:iam::${local.account}:oidc-provider/${local.oidc}"
+  iam_arn  = "arn:${local.part}:iam::${local.account}"
 
-  # GitHub firma el sub como repo:dueño/nombre o, con el formato inmutable, repo:dueño@id/nombre@id
-  prefijos = compact(["repo:${var.repo}", var.prefijo_sub])
+  # GitHub signs the sub as repo:owner/name or, with the immutable format, repo:owner@id/name@id
+  prefixes = compact(["repo:${var.repo}", var.sub_prefix])
 }
 
-# ── El bucket del estado ─────────────────────────────────────────────
-resource "aws_s3_bucket" "estado" {
-  bucket = local.bucket
-
-  lifecycle {
-    prevent_destroy = true # sin este bucket, Terraform pierde la cuenta de lo que creó
-  }
+# ── The state bucket ─────────────────────────────────────────────────
+# force_destroy: renaming the bucket replaces it, and Terraform must be able to delete the old
+# one even though it is versioned and not empty. Back up the state before doing that.
+resource "aws_s3_bucket" "state" {
+  bucket        = local.bucket
+  force_destroy = true
 }
 
-resource "aws_s3_bucket_versioning" "estado" {
-  bucket = aws_s3_bucket.estado.id
+resource "aws_s3_bucket_versioning" "state" {
+  bucket = aws_s3_bucket.state.id
   versioning_configuration {
     status = "Enabled"
   }
 }
 
-resource "aws_s3_bucket_server_side_encryption_configuration" "estado" {
-  bucket = aws_s3_bucket.estado.id
+resource "aws_s3_bucket_server_side_encryption_configuration" "state" {
+  bucket = aws_s3_bucket.state.id
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
@@ -114,62 +114,62 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "estado" {
   }
 }
 
-resource "aws_s3_bucket_public_access_block" "estado" {
-  bucket                  = aws_s3_bucket.estado.id
+resource "aws_s3_bucket_public_access_block" "state" {
+  bucket                  = aws_s3_bucket.state.id
   block_public_acls       = true
   ignore_public_acls      = true
   block_public_policy     = true
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket_ownership_controls" "estado" {
-  bucket = aws_s3_bucket.estado.id
+resource "aws_s3_bucket_ownership_controls" "state" {
+  bucket = aws_s3_bucket.state.id
   rule {
     object_ownership = "BucketOwnerEnforced"
   }
 }
 
-# Las versiones viejas del estado se borran a los 90 días
-resource "aws_s3_bucket_lifecycle_configuration" "estado" {
-  bucket = aws_s3_bucket.estado.id
+# Old versions of the state are deleted after 90 days
+resource "aws_s3_bucket_lifecycle_configuration" "state" {
+  bucket = aws_s3_bucket.state.id
   rule {
-    id     = "versiones-viejas"
+    id     = "old-versions"
     status = "Enabled"
     filter {}
     noncurrent_version_expiration {
       noncurrent_days = 90
     }
   }
-  depends_on = [aws_s3_bucket_versioning.estado]
+  depends_on = [aws_s3_bucket_versioning.state]
 }
 
-resource "aws_s3_bucket_policy" "estado" {
-  bucket = aws_s3_bucket.estado.id
+resource "aws_s3_bucket_policy" "state" {
+  bucket = aws_s3_bucket.state.id
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
-      Sid       = "SoloTLS"
+      Sid       = "TLSOnly"
       Effect    = "Deny"
       Principal = "*"
       Action    = "s3:*"
-      Resource  = [aws_s3_bucket.estado.arn, "${aws_s3_bucket.estado.arn}/*"]
+      Resource  = [aws_s3_bucket.state.arn, "${aws_s3_bucket.state.arn}/*"]
       Condition = { Bool = { "aws:SecureTransport" = "false" } }
     }]
   })
-  depends_on = [aws_s3_bucket_public_access_block.estado]
+  depends_on = [aws_s3_bucket_public_access_block.state]
 }
 
-# ── OIDC: GitHub Actions entra sin llaves ────────────────────────────
-# AWS ya no usa el thumbprint para este proveedor (confía en la CA de GitHub).
+# ── OIDC: GitHub Actions gets in without keys ────────────────────────
+# AWS no longer uses the thumbprint for this provider (it trusts GitHub's CA).
 resource "aws_iam_openid_connect_provider" "github" {
-  count          = var.crear_proveedor_oidc ? 1 : 0
+  count          = var.create_oidc_provider ? 1 : 0
   url            = "https://${local.oidc}"
   client_id_list = ["sts.amazonaws.com"]
 }
 
-# ── Rol de plan: solo lectura, desde un PR o una rama del repo ───────
-# Los PR que vienen de un fork no reciben token OIDC: no pueden asumirlo.
-data "aws_iam_policy_document" "confia_plan" {
+# ── Plan role: read only, from a PR or a branch of the repo ──────────
+# PRs from a fork get no OIDC token: they cannot assume it.
+data "aws_iam_policy_document" "trust_plan" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
     principals {
@@ -184,26 +184,26 @@ data "aws_iam_policy_document" "confia_plan" {
     condition {
       test     = "StringLike"
       variable = "${local.oidc}:sub"
-      values   = flatten([for p in local.prefijos : ["${p}:pull_request", "${p}:ref:refs/heads/*"]])
+      values   = flatten([for p in local.prefixes : ["${p}:pull_request", "${p}:ref:refs/heads/*"]])
     }
   }
 }
 
 resource "aws_iam_role" "plan" {
-  name                 = "github-estacion-plan"
-  description          = "GitHub Actions: terraform plan de poc-devopsdays/infra (solo lectura)"
-  assume_role_policy   = data.aws_iam_policy_document.confia_plan.json
+  name                 = "github-station-plan"
+  description          = "GitHub Actions: terraform plan of poc-devopsdays/infra (read only)"
+  assume_role_policy   = data.aws_iam_policy_document.trust_plan.json
   max_session_duration = 3600
 }
 
-resource "aws_iam_role_policy_attachment" "plan_lectura" {
+resource "aws_iam_role_policy_attachment" "plan_readonly" {
   role       = aws_iam_role.plan.name
   policy_arn = "arn:${local.part}:iam::aws:policy/ReadOnlyAccess"
 }
 
-# plan también escribe el candado del estado y lee los SecureString de las bombas
+# plan also writes the state lock and reads the pumps' SecureStrings
 resource "aws_iam_role_policy" "plan" {
-  name = "estado-y-parametros"
+  name = "state-and-parameters"
   role = aws_iam_role.plan.id
   policy = jsonencode({
     Version = "2012-10-17"
@@ -211,7 +211,7 @@ resource "aws_iam_role_policy" "plan" {
       {
         Effect   = "Allow"
         Action   = ["s3:PutObject", "s3:DeleteObject"]
-        Resource = "${aws_s3_bucket.estado.arn}/${local.llave}.tflock"
+        Resource = "${aws_s3_bucket.state.arn}/${local.key}.tflock"
       },
       {
         Effect    = "Allow"
@@ -223,8 +223,8 @@ resource "aws_iam_role_policy" "plan" {
   })
 }
 
-# ── Rol de apply: solo desde el environment (con aprobación) ─────────
-data "aws_iam_policy_document" "confia_apply" {
+# ── Apply role: only from the environment (with approval) ────────────
+data "aws_iam_policy_document" "trust_apply" {
   statement {
     actions = ["sts:AssumeRoleWithWebIdentity"]
     principals {
@@ -239,28 +239,28 @@ data "aws_iam_policy_document" "confia_apply" {
     condition {
       test     = "StringEquals"
       variable = "${local.oidc}:sub"
-      values   = [for p in local.prefijos : "${p}:environment:${var.environment}"]
+      values   = [for p in local.prefixes : "${p}:environment:${var.environment}"]
     }
   }
 }
 
 resource "aws_iam_role" "apply" {
-  name                 = "github-estacion-apply"
-  description          = "GitHub Actions: terraform apply y destroy de poc-devopsdays/infra"
-  assume_role_policy   = data.aws_iam_policy_document.confia_apply.json
+  name                 = "github-station-apply"
+  description          = "GitHub Actions: terraform apply and destroy of poc-devopsdays/infra"
+  assume_role_policy   = data.aws_iam_policy_document.trust_apply.json
   max_session_duration = 3600
 }
 
-# Todo menos IAM: S3, IoT, Greengrass, SSM, CloudWatch, Lambda y EC2
+# Everything except IAM: S3, IoT, Greengrass, SSM, CloudWatch, Lambda and EC2
 resource "aws_iam_role_policy_attachment" "apply_power" {
   role       = aws_iam_role.apply.name
   policy_arn = "arn:${local.part}:iam::aws:policy/PowerUserAccess"
 }
 
-# En IAM, solo los cuatro roles de la PoC y su instance profile. Los nombres son los de infra/*.tf;
-# github-estacion-* queda afuera: el rol no puede darse más permisos.
+# In IAM, only the PoC's four roles and its instance profile. The names are the ones in infra/*.tf;
+# github-station-* is left out: the role cannot grant itself more permissions.
 resource "aws_iam_role_policy" "apply_iam" {
-  name = "solo-los-roles-de-la-poc"
+  name = "poc-roles-only"
   role = aws_iam_role.apply.id
   policy = jsonencode({
     Version = "2012-10-17"
@@ -274,13 +274,13 @@ resource "aws_iam_role_policy" "apply_iam" {
           "iam:PutRolePolicy", "iam:GetRolePolicy", "iam:DeleteRolePolicy", "iam:ListRolePolicies",
           "iam:ListAttachedRolePolicies", "iam:ListInstanceProfilesForRole", "iam:PassRole"
         ]
-        Resource = ["${local.arn_iam}:role/GreengrassV2TokenExchangeRole", "${local.arn_iam}:role/Estacion*"]
+        Resource = ["${local.iam_arn}:role/GreengrassV2TokenExchangeRole", "${local.iam_arn}:role/Station*"]
       },
       {
-        Sid      = "PoliticasAdministradas"
+        Sid      = "ManagedPolicies"
         Effect   = "Allow"
         Action   = ["iam:AttachRolePolicy", "iam:DetachRolePolicy"]
-        Resource = ["${local.arn_iam}:role/GreengrassV2TokenExchangeRole", "${local.arn_iam}:role/Estacion*"]
+        Resource = ["${local.iam_arn}:role/GreengrassV2TokenExchangeRole", "${local.iam_arn}:role/Station*"]
         Condition = {
           ArnEquals = {
             "iam:PolicyARN" = [
@@ -291,29 +291,29 @@ resource "aws_iam_role_policy" "apply_iam" {
         }
       },
       {
-        Sid    = "PerfilDeLaEC2"
+        Sid    = "Ec2InstanceProfile"
         Effect = "Allow"
         Action = [
           "iam:CreateInstanceProfile", "iam:DeleteInstanceProfile", "iam:GetInstanceProfile",
           "iam:AddRoleToInstanceProfile", "iam:RemoveRoleFromInstanceProfile",
           "iam:TagInstanceProfile", "iam:UntagInstanceProfile", "iam:ListInstanceProfileTags"
         ]
-        Resource = "${local.arn_iam}:instance-profile/EstacionHost"
+        Resource = "${local.iam_arn}:instance-profile/StationHost"
       }
     ]
   })
 }
 
-# ── Salidas ──────────────────────────────────────────────────────────
-output "bucket_estado" {
-  value = aws_s3_bucket.estado.bucket
+# ── Outputs ──────────────────────────────────────────────────────────
+output "state_bucket" {
+  value = aws_s3_bucket.state.bucket
 }
 
-output "rol_plan" {
+output "plan_role" {
   value = aws_iam_role.plan.arn
 }
 
-output "rol_apply" {
+output "apply_role" {
   value = aws_iam_role.apply.arn
 }
 

@@ -1,11 +1,11 @@
-# ── Anillos: un thing group por anillo ───────────────────────────────
-resource "aws_iot_thing_group" "anillo" {
-  for_each = toset(local.anillos)
+# ── Rings: one thing group per ring ──────────────────────────────────
+resource "aws_iot_thing_group" "ring" {
+  for_each = toset(local.rings)
   name     = each.key
 }
 
-# ── Rol de token exchange: lo que la bomba puede hacer en AWS ────────
-data "aws_iam_policy_document" "confia_credenciales_iot" {
+# ── Token exchange role: what a pump may do in AWS ───────────────────
+data "aws_iam_policy_document" "trust_iot_credentials" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {
@@ -16,13 +16,13 @@ data "aws_iam_policy_document" "confia_credenciales_iot" {
 }
 
 resource "aws_iam_role" "tes" {
-  name               = local.tes_rol
-  assume_role_policy = data.aws_iam_policy_document.confia_credenciales_iot.json
+  name               = local.tes_role
+  assume_role_policy = data.aws_iam_policy_document.trust_iot_credentials.json
 }
 
-# Lo mínimo del rol por defecto del instalador + leer los artefactos publicados (solo el prefijo estacion/)
+# The minimum of the installer's default role + reading the published artifacts (only the station/ prefix)
 resource "aws_iam_role_policy" "tes" {
-  name = "estacion-dispositivo"
+  name = "station-device"
   role = aws_iam_role.tes.id
   policy = jsonencode({
     Version = "2012-10-17"
@@ -35,7 +35,7 @@ resource "aws_iam_role_policy" "tes" {
       {
         Effect   = "Allow"
         Action   = "s3:GetObject"
-        Resource = "${aws_s3_bucket.artefactos.arn}/estacion/*"
+        Resource = "${aws_s3_bucket.artifacts.arn}/station/*"
       }
     ]
   })
@@ -46,40 +46,40 @@ resource "aws_iot_role_alias" "tes" {
   role_arn = aws_iam_role.tes.arn
 }
 
-# ── Política de IoT de las bombas ────────────────────────────────────
-# La mínima de la guía de Greengrass, con comodín bomba-* (Greengrass no admite variables de
-# política de cosa) y permiso de publicar solo en estacion/eventos.
-resource "aws_iot_policy" "bombas" {
-  name = local.politica_bombas
+# ── IoT policy for the pumps ─────────────────────────────────────────
+# The minimal one from the Greengrass guide, with a pump-* wildcard (Greengrass does not support
+# thing policy variables) and permission to publish only on station/events.
+resource "aws_iot_policy" "pumps" {
+  name = local.pump_policy
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
         Effect   = "Allow"
         Action   = "iot:Connect"
-        Resource = "${local.arn_iot}:client/bomba-*"
+        Resource = "${local.iot_arn}:client/pump-*"
       },
       {
         Effect = "Allow"
         Action = ["iot:Publish", "iot:Receive"]
         Resource = [
-          "${local.arn_iot}:topic/$aws/things/bomba-*/greengrass/health/json",
-          "${local.arn_iot}:topic/$aws/things/bomba-*/greengrassv2/health/json",
-          "${local.arn_iot}:topic/$aws/things/bomba-*/jobs/*",
-          "${local.arn_iot}:topic/$aws/things/bomba-*/shadow/*",
+          "${local.iot_arn}:topic/$aws/things/pump-*/greengrass/health/json",
+          "${local.iot_arn}:topic/$aws/things/pump-*/greengrassv2/health/json",
+          "${local.iot_arn}:topic/$aws/things/pump-*/jobs/*",
+          "${local.iot_arn}:topic/$aws/things/pump-*/shadow/*",
         ]
       },
       {
         Effect   = "Allow"
         Action   = "iot:Publish"
-        Resource = "${local.arn_iot}:topic/${local.tema}"
+        Resource = "${local.iot_arn}:topic/${local.topic}"
       },
       {
         Effect = "Allow"
         Action = "iot:Subscribe"
         Resource = [
-          "${local.arn_iot}:topicfilter/$aws/things/bomba-*/jobs/*",
-          "${local.arn_iot}:topicfilter/$aws/things/bomba-*/shadow/*",
+          "${local.iot_arn}:topicfilter/$aws/things/pump-*/jobs/*",
+          "${local.iot_arn}:topicfilter/$aws/things/pump-*/shadow/*",
         ]
       },
       {
@@ -96,9 +96,9 @@ resource "aws_iot_policy" "bombas" {
   })
 }
 
-# La que el instalador crearía para el alias (camino sin Terraform en la identidad):
-# la dejamos hecha para que las cinco bombas no compitan por crearla.
-resource "aws_iot_policy" "tes_certificado" {
+# The policy the installer would create for the alias (the path without Terraform-managed identity):
+# we create it up front so the five pumps do not race to create it.
+resource "aws_iot_policy" "tes_certificate" {
   name = "GreengrassTESCertificatePolicy${local.tes_alias}"
   policy = jsonencode({
     Version = "2012-10-17"
@@ -110,72 +110,72 @@ resource "aws_iot_policy" "tes_certificado" {
   })
 }
 
-# ── Identidad de cada bomba (si gestionar_identidad = true) ──────────
-# Thing + certificado + política + anillo. El certificado y su llave van a Parameter Store
-# (SecureString); ./fleet/up.sh los baja en el primer arranque y los borra del disco al terminar.
+# ── Identity of each pump (when manage_identity = true) ──────────────
+# Thing + certificate + policy + ring. The certificate and its key go to Parameter Store
+# (SecureString); ./fleet/up.sh fetches them on first start and deletes them from disk when done.
 locals {
-  bombas_tf = var.gestionar_identidad ? var.bombas : {}
+  tf_pumps = var.manage_identity ? var.pumps : {}
 }
 
-resource "aws_iot_thing" "bomba" {
-  for_each = local.bombas_tf
+resource "aws_iot_thing" "pump" {
+  for_each = local.tf_pumps
   name     = each.key
 }
 
-resource "aws_iot_thing_group_membership" "bomba" {
-  for_each         = local.bombas_tf
-  thing_name       = aws_iot_thing.bomba[each.key].name
-  thing_group_name = aws_iot_thing_group.anillo[each.value].name
+resource "aws_iot_thing_group_membership" "pump" {
+  for_each         = local.tf_pumps
+  thing_name       = aws_iot_thing.pump[each.key].name
+  thing_group_name = aws_iot_thing_group.ring[each.value].name
 }
 
-resource "aws_iot_certificate" "bomba" {
-  for_each = local.bombas_tf
+resource "aws_iot_certificate" "pump" {
+  for_each = local.tf_pumps
   active   = true
 }
 
-resource "aws_iot_thing_principal_attachment" "bomba" {
-  for_each  = local.bombas_tf
-  thing     = aws_iot_thing.bomba[each.key].name
-  principal = aws_iot_certificate.bomba[each.key].arn
+resource "aws_iot_thing_principal_attachment" "pump" {
+  for_each  = local.tf_pumps
+  thing     = aws_iot_thing.pump[each.key].name
+  principal = aws_iot_certificate.pump[each.key].arn
 }
 
-resource "aws_iot_policy_attachment" "bomba" {
-  for_each = local.bombas_tf
-  policy   = aws_iot_policy.bombas.name
-  target   = aws_iot_certificate.bomba[each.key].arn
+resource "aws_iot_policy_attachment" "pump" {
+  for_each = local.tf_pumps
+  policy   = aws_iot_policy.pumps.name
+  target   = aws_iot_certificate.pump[each.key].arn
 }
 
-resource "aws_ssm_parameter" "certificado" {
-  for_each = local.bombas_tf
-  name     = "/estacion/bombas/${each.key}/cert"
+resource "aws_ssm_parameter" "certificate" {
+  for_each = local.tf_pumps
+  name     = "/station/pumps/${each.key}/cert"
   type     = "SecureString"
-  value    = aws_iot_certificate.bomba[each.key].certificate_pem
+  value    = aws_iot_certificate.pump[each.key].certificate_pem
 }
 
-resource "aws_ssm_parameter" "llave" {
-  for_each = local.bombas_tf
-  name     = "/estacion/bombas/${each.key}/key"
+resource "aws_ssm_parameter" "key" {
+  for_each = local.tf_pumps
+  name     = "/station/pumps/${each.key}/key"
   type     = "SecureString"
-  value    = aws_iot_certificate.bomba[each.key].private_key
+  value    = aws_iot_certificate.pump[each.key].private_key
 }
 
-# Los endpoints de la cuenta: el nucleus los necesita cuando la identidad viene de afuera
-data "aws_iot_endpoint" "datos" {
+# The account's endpoints: the nucleus needs them when the identity comes from outside
+data "aws_iot_endpoint" "data" {
   endpoint_type = "iot:Data-ATS"
 }
 
-data "aws_iot_endpoint" "credenciales" {
+data "aws_iot_endpoint" "cred" {
   endpoint_type = "iot:CredentialProvider"
 }
 
-resource "aws_ssm_parameter" "endpoint_datos" {
-  name  = "/estacion/iot/data_endpoint"
+resource "aws_ssm_parameter" "data_endpoint" {
+  name  = "/station/iot/data_endpoint"
   type  = "String"
-  value = data.aws_iot_endpoint.datos.endpoint_address
+  value = data.aws_iot_endpoint.data.endpoint_address
 }
 
-resource "aws_ssm_parameter" "endpoint_credenciales" {
-  name  = "/estacion/iot/cred_endpoint"
+resource "aws_ssm_parameter" "cred_endpoint" {
+  name  = "/station/iot/cred_endpoint"
   type  = "String"
-  value = data.aws_iot_endpoint.credenciales.endpoint_address
+  value = data.aws_iot_endpoint.cred.endpoint_address
 }
