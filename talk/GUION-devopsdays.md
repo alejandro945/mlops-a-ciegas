@@ -539,7 +539,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 "Todo está en el repo de ese QR: la demo con el paso a paso, las láminas y el guion. Y si van a leer una sola cosa: The ML Test Score, de Google."
 
-*El QR solo funciona si el repo es público. Antes de la charla, hazlo público y revisa que no quede material privado.*
+*El QR lleva a https://github.com/alejandro945/mlops-a-ciegas (público desde el 12 de octubre; verificado leyendo el QR de la lámina). Si lo necesitas suelto, está en talk/assets/qr-repo.png y qr-repo.svg.*
 
 ---
 
@@ -724,7 +724,6 @@ Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 
 
 - La infraestructura está abajo desde el 12 de octubre (destroy). El día anterior: Actions → infra → Run workflow → apply; en la EC2, `fetch-poc`, `./fleet/build.sh` y `./fleet/up.sh`; desde el portátil, `./demo/publish.sh 1.0.0`, `2.0.0` y `./demo/deploy.sh 1.0.0 all`. En el ensayo todo eso tomó unos 15 minutos.
 - Tu foto en `talk/assets/photo.jpg` (cuadrada); hoy la lámina 5 muestra el recuadro vacío.
-- Hacer público el repo para que el QR funcione, y revisar que no quede material privado.
 - Grabar el video de respaldo, cortado por actos.
 - Cronometrar la charla completa en un ensayo con la EC2 y ajustar donde haga falta.
 

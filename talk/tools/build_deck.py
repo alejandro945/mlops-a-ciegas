@@ -3,7 +3,7 @@ Builds talk/devopsdays.html (a single file that works offline) from
 talk/tools/deck.src.html + the figures (build_iso.FIGS, which includes build_figs.FIGS)
 + the AWS architecture with the official icons + the PoC's measured numbers.
 
-Placeholders in deck.src.html (see talk/PLAN-bombas.md §3):
+Placeholders in deck.src.html:
     {{FIG:name}}       build_iso.FIGS[name]()    · if missing: a «figura pendiente» box and a warning
     {{M:key}}          metrics.fmt(key)          · also inside the script's speaker notes · not measured: «por medir»
     {{AUDIO:a|b}}      talk/assets/audio/pump-a.wav | pump-b.wav as a data URI · if missing: empty (the button is
@@ -20,7 +20,7 @@ Usage (from the repo root):
     STATION_AUDIO_DIR=...                                                                               # other pump-a/b.wav folder
     Your photo: save it as talk/assets/photo.jpg (square) and run the script again.
 """
-import base64, html as H, mimetypes, os, re, shutil, sys
+import base64, html as H, mimetypes, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -31,7 +31,6 @@ import metrics                                # noqa: E402
 TALK = os.path.dirname(HERE)
 SRC = os.path.join(HERE, "deck.src.html")
 DST = os.environ.get("DECK_OUT") or os.path.join(TALK, "devopsdays.html")
-BACKUP = os.path.join(TALK, "decks", "devopsdays-v1-oscuro.html")
 SCRIPT = os.path.join(TALK, "GUION-devopsdays.md")    # the speaker script (Spanish)
 ASSETS = os.path.join(TALK, "assets")
 PHOTO = os.path.join(ASSETS, "photo.jpg")      # your square photo (optional)
@@ -177,12 +176,6 @@ def main():
     if PENDING_FIGS and os.environ.get("STRICT"):
         sys.exit(f"missing figures: {sorted(set(PENDING_FIGS))}")
 
-    if os.path.exists(DST) and not os.path.exists(BACKUP):
-        old = open(DST, encoding="utf-8").read()
-        if "EPAM Proprietary" in old:          # only the original dark deck is backed up
-            os.makedirs(os.path.dirname(BACKUP), exist_ok=True)
-            shutil.copyfile(DST, BACKUP)
-            print("backup:", BACKUP)
     open(DST, "w", encoding="utf-8").write(html)
     n_all = len(re.findall(r'<section class="s', html))
     n_anx = html.count('data-annex="1"')

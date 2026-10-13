@@ -1,7 +1,7 @@
 """
 Builds talk/MLOps-a-ciegas-DevOpsDays-Bogota-2026.pptx on top of the official
 DevOpsDays Bogotá 2026 template, with the same content as talk/devopsdays.html
-(34 slides + 8 annexes, same order, ids from PLAN-bombas.md §2).
+(31 slides + 10 annexes, same order and ids as deck.src.html).
 Slide text, speaker notes, shape names and section names stay in Spanish (the talk is in Spanish).
 
 - Titles, kickers, text, tables, cards, the spine bar and the speaker notes:
@@ -1385,7 +1385,7 @@ def b_final(s, sec, tm):
     pl.flush(tm)
 
 
-# slide id (data-id in deck.src.html, PLAN-bombas.md §2) → (template layout, builder).
+# slide id (data-id in deck.src.html) → (template layout, builder).
 # The HTML sets the slide order; this only says how each one is built.
 BUILDERS = {
     "portada": ("PORTADA", b_cover), "suena": ("CONTENIDO", b_listen), "cien": ("CONTENIDO", b_canvas),
