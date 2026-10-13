@@ -38,8 +38,8 @@ Cómo llevar un modelo de la nube a una flota de equipos que no ves y mantenerlo
 - **Datos reales:** MIMII DUE de Hitachi, bombas, `dev_data_pump.zip`, licencia CC BY-NC-SA 4.0 (sirve para una charla comunitaria; para algo comercial, el MIMII original, CC BY-SA 4.0).
 - **Modelo:** autoencoder (scikit-learn → ONNX) que aprende solo con sonido normal. v1.0.0 buena; v2.0.0 entrenada a propósito con audio de una bomba que ya fallaba («aprendió que fallar es normal»); INT8 para medir.
 - **Lámina 11 usa AUC** («¿distingue una falla de una bomba sana?», con 0,5 = lanzar una moneda) y falsas alarmas, no «fallas detectadas»: con el cambio de velocidad todos los scores suben y la detección podría subir junto con las falsas alarmas. La frase «El modelo ya no distingue» hay que confirmarla con la medición real.
-- **Demo sin hardware:** cinco bombas en contenedores con el nucleus de Greengrass real, en una EC2 Linux; todo lo de AWS es real y en el escenario se dice tal cual. Dos anillos: `EstacionAnillo0` (bomba-01, canario) y `EstacionAnillo1` (bomba-02 a 05).
-- **Tres actos:** escuchar (`falla.sh bomba-03`), sin red (`red.sh off/on bomba-03`, más una línea de drift con `dominio.sh bomba-05 nuevo`), desplegar por anillos y volver (`deploy.sh 2.0.0 anillo-0` → la alarma → la Lambda devuelve la 1.0.0).
+- **Demo sin hardware:** cinco bombas en contenedores con el nucleus de Greengrass real, en una EC2 Linux; todo lo de AWS es real y en el escenario se dice tal cual. Dos anillos: `StationRing0` (pump-01, canario) y `StationRing1` (pump-02 a 05).
+- **Tres actos:** escuchar (`fault.sh pump-03`), sin red (`network.sh off/on pump-03`, más una línea de drift con `domain.sh pump-05 shifted`), desplegar por anillos y volver (`deploy.sh 2.0.0 ring-0` → la alarma → la Lambda devuelve la 1.0.0).
 - **Infraestructura con Terraform** (`poc-devopsdays/infra/`): nube, identidad de las bombas en Parameter Store y la EC2. `cloud/setup.sh` queda como camino sin Terraform; una prueba verifica que ambos creen lo mismo.
 - **Ninguna cifra inventada.** Las del modelo salen de `poc-devopsdays/build/metrics.json` vía `{{M:clave}}`; si la medición no es real y de bombas confirmadas, la lámina dice «por medir».
 
@@ -51,26 +51,23 @@ Cómo llevar un modelo de la nube a una flota de equipos que no ves y mantenerlo
 - No recolorear ni deformar imágenes o logos de la plantilla.
 - No descargar ni instalar código de terceros (repos, skills, baselines del dataset).
 
-## Pendientes, en orden
+## Estado al 12 de octubre (noche)
 
-1. **El zip de bombas.** `dev_data_pump.zip` (1,1 GB) de https://zenodo.org/records/4740355/files/dev_data_pump.zip?download=1, sin descomprimir, en `poc-devopsdays/data/`. Ojo: el `dev_data_fan.zip` que hay en `poc-devopsdays/demo/` es de ventiladores; el código ya se niega a usarlo como bombas. Se puede borrar.
-2. **Entrenar y medir** (unos 90 s y 1 GB de RAM), desde `poc-devopsdays/`:
-   ```bash
-   python3 model/train.py --data data/dev_data_pump.zip
-   python3 model/prepare_data.py --data data/dev_data_pump.zip --scores build/scores.csv
-   python3 ../talk/tools/metrics.py v1.auc_source v1.auc_target v1.false_alarm_source v1.false_alarm_target
-   ```
-   Revisa que la historia aguante: la AUC de la v1 debe caer clara en el dominio nuevo y la v2 debe oír menos fallas. Si no, ajusta (`--contaminar`, umbral por sección) antes de regenerar. Con ventiladores, el modelo distinguía poco: es el riesgo principal.
-3. **Regenerar deck y PowerPoint con las cifras y los audios**, desde la raíz:
-   ```bash
-   AWS_ICONS=<carpeta del paquete de íconos de AWS> bash talk/tools/pptx/render.sh
-   ```
-   El paquete de íconos (Icon-package_07312026) no va en el zip; bájalo de la página de íconos de arquitectura de AWS.
-4. **Terraform:** `terraform -chdir=poc-devopsdays/infra init && terraform -chdir=poc-devopsdays/infra validate`. No se pudo correr en el entorno donde se escribió. Luego `apply` y seguir `terraform output siguiente`.
-5. **Primer ensayo en la EC2:** `./fleet/build.sh`, `IDENTIDAD=terraform ./fleet/up.sh`, `./demo/publish.sh 1.0.0` y `2.0.0`, `./demo/deploy.sh 1.0.0 todas`, `./demo/watch.sh`. El riesgo más alto es la instalación del nucleus dentro del contenedor; `poc-devopsdays/README.md` tiene la tabla de problemas.
-6. **Cronometrar el acto 3** (métrica, alarma, Lambda, despliegue) y ajustar `umbral_alarma`. Si pasa de 3 minutos, el guion ya trae el atajo de lanzar el despliegue durante el acto 2.
-7. **Grabar el video de respaldo** de los tres actos.
-8. **Lo tuyo:** foto cuadrada en `talk/assets/photo.jpg`, tu LinkedIn (`LINKEDIN=…`), la URL del repo para el QR (`REPO_URL=…`), la anécdota personal de la lámina 31, y confirmar con los organizadores que la laptop tiene salida de audio.
+Hecho:
+- El audio de MIMII DUE está en `poc-devopsdays/data/pump/` (carpeta, no zip). El modelo está entrenado con datos reales (`build/`) y la flota tiene su audio en `data/station/`.
+- La infraestructura sale de Terraform con GitHub Actions (OIDC, bucket de estado `station-tfstate-…`, roles `github-station-plan` y `github-station-apply`). Un push a `main` solo hace plan; el apply y el destroy se lanzan con Run workflow.
+- El código, los workflows y AWS están en inglés: `pump-01…05`, `StationRing0/1`, `com.station.Listener`, `fault.sh`, `network.sh`, `domain.sh`, `deploy.sh … ring-0`. Solo las láminas y el guion están en español.
+- Sin SSH: a la EC2 se entra con Session Manager.
+- Dos ensayos de punta a punta en AWS real con los tres actos. La vuelta del acto 3 tarda entre 1:40 y 2:15. La evidencia está en `evidencia-e2e/` (local, fuera de git).
+- SageMaker Neo, probado: no compila el modelo tal cual (operador `Scaler`); sin ese operador sí compila. La respuesta está en el guion, en «Preguntas difíciles».
+- El guion está recortado a ~26 min (30 láminas y 10 anexos), con títulos formales; «Quién soy» lleva las 8 insignias y EPAM.
+
+Pendiente:
+1. Tu foto cuadrada en `talk/assets/photo.jpg` y regenerar el deck.
+2. Hacer público el repo para que funcione el QR, después de revisar que no quede material privado (los CFP, el dossier y `talk/decks/` son tuyos; `talk/private/` y `evidencia-e2e/` ya están fuera de git).
+3. Grabar el video de respaldo de los tres actos.
+4. Un ensayo cronometrado de la charla completa, con la EC2.
+5. Confirmar con los organizadores que el portátil tiene salida de audio.
 
 ## Comandos útiles
 
@@ -84,4 +81,4 @@ python3 -m unittest discover -s poc-devopsdays/tests -p 'test_*.py'
 python3 talk/tools/metrics.py v1.auc_source int8.size_int8_kb
 ```
 
-Requisitos de las herramientas del deck: Python 3 con python-pptx, lxml, cssselect, pillow, cairosvg, weasyprint; Node 18 o más; `pdftoppm` (poppler); ffmpeg para los audios del PowerPoint.
+Requisitos de las herramientas del deck: un entorno en `talk/tools/.venv` con python-pptx, lxml, cssselect, pillow, cairosvg, weasyprint, numpy y qrcode; Node 18 o más (`npm install` en `talk/tools/pptx`); `pdftoppm` (poppler); ffmpeg y pango (Homebrew).

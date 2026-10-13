@@ -2,6 +2,8 @@
 
 Contrato común para todos los que tocan la charla y la PoC. Si algo aquí choca con el código, manda este archivo; si choca con el spec «SPEC · MLOps a ciegas, versión DevOps», manda el spec (lo mantiene Claude, el orquestador).
 
+> **Nota (12 de octubre, noche):** la lista de láminas de §2 es la del primer corte. La charla de ~26 min (30 láminas y 10 anexos, títulos formales) está en `GUION-devopsdays.md` y `tools/deck.src.html`, que mandan sobre esta tabla.
+
 ## 0 · Reglas que no se negocian
 
 - Español neutro de Colombia, **tú** (nunca vos/voseo). No usar la palabra «plata». Frases cortas.
@@ -38,7 +40,7 @@ Una empresa de acueducto, **inventada para la charla**, tiene estaciones de bomb
 | 7 | agenda | ¿Qué van a aprender hoy? | El problema · El patrón · Los seis pasos · En vivo | — | — |
 | 8 | div1 | 01 · El problema | Divisor | — | — |
 | 9 | nube | ¿Qué tenemos cuando el modelo corre en la nube? | Igual | Guion: si mandaras el audio a la nube, tendrías esto | `nube` |
-| 10 | edge | ¿Y cuando baja a la estación? | La estación dibujada; cuatro clics: equipos de varias generaciones · red intermitente · mil bombas sin SSH · el audio no puede salir | La estación | `edge` |
+| 10 | edge | ¿Y cuando baja a la estación? | La estación dibujada; tres clics: equipos de varias generaciones · red intermitente · el audio no puede salir | La estación | `edge` |
 | 11 | tablero | ¿Si el panel está en verde, el modelo está bien? | Clic 1: el panel del equipo (CPU, memoria, servicio) en verde. Clic 2: «¿Distingue una falla de una bomba sana?» AUC `{{M:v1.auc_source}}` → `{{M:v1.auc_target}}` cuando cambió la velocidad de la bomba (1 = siempre, 0,5 = lanzar una moneda); abajo, falsas alarmas `{{M:v1.false_alarm_source}}` → `{{M:v1.false_alarm_target}}`. Clic 3: «El equipo está sano. El modelo ya no distingue.» (Se usa AUC y no «fallas detectadas» porque con el cambio de dominio todos los scores suben y la detección puede subir junto con las falsas alarmas.) Pie: «Medido en la PoC con MIMII DUE (bombas, dominio de entrenamiento contra dominio nuevo)» | La bomba cambia de velocidad | — |
 | 12 | reflexion1 | A mano alzada | «¿A quién le ha sonado el pager por un modelo?» (igual que hoy) | — | — |
 | 13 | div2 | 02 · El patrón | Divisor | — | — |
@@ -113,7 +115,7 @@ Tiempos: la charla completa dura 35 minutos o menos; el corte a 30 quita 4, 28, 
 | `sinred` | build_figs.py | Equipo contra sitio (§2, lámina 23) |
 | `monitoreo` | build_figs.py | La tubería con íconos oficiales; un paso por clic |
 | `arq_ref` | build_figs.py → build_arch.py | La arquitectura de referencia en AWS, misma disposición que `ARQ_GEN` |
-| `arq_poc` | build_figs.py → build_arch.py | La PoC: EC2 con cinco contenedores (bomba-01…05), anillo 0 y anillo 1, y los servicios |
+| `arq_poc` | build_figs.py → build_arch.py | La PoC: EC2 con cinco contenedores (pump-01…05), anillo 0 y anillo 1, y los servicios |
 | `seq` | build_figs.py → build_seq.py | La secuencia de la vuelta automática |
 
 Paleta: navy #071329, morado #6D28D9, azul #2448FF, cian #00BCEB, pizarra #475569, gris #5C7290, claro #F4F7FC, línea #D5DEEA. Letra Calibri (Carlito embebida). Zona útil x 84–1516, y 225–760.
@@ -124,23 +126,23 @@ Paleta: navy #071329, morado #6D28D9, azul #2448FF, cian #00BCEB, pizarra #47556
 
 | Cosa | Nombre |
 |---|---|
-| Componente | `com.estacion.Escucha` |
-| Things | `bomba-01` … `bomba-05` |
-| Thing groups | `EstacionAnillo0` (bomba-01) · `EstacionAnillo1` (bomba-02 a 05) |
-| Tema MQTT | `estacion/eventos` |
-| Regla de IoT | `estacion_eventos` → CloudWatch Logs `/estacion/eventos` (suma `arrived_ts`) |
-| Métricas (namespace `Estacion`) | `Alertas` (por `Device`), `Score` y `Inferencias` (por `Version`), `InputZ`, `LatencyMs`, `FallasNoOidas` (`truth` = anomaly y `alert` = false) |
-| Dashboard | `estacion` |
-| Alarma | `estacion-fallas-no-oidas` → Lambda `estacion-rollback` |
-| Parámetro | `/estacion/last_good_version` |
-| Bucket | `estacion-<cuenta>-<región>`, prefijo `estacion/<versión>/` |
-| Docker | red `estacion`, contenedores `bomba-01`…`bomba-05`, imagen `estacion/greengrass` |
+| Componente | `com.station.Listener` |
+| Things | `pump-01` … `pump-05` |
+| Thing groups | `StationRing0` (pump-01) · `StationRing1` (pump-02 a 05) |
+| Tema MQTT | `station/events` |
+| Regla de IoT | `station_events` → CloudWatch Logs `/station/events` (suma `arrived_ts`) |
+| Métricas (namespace `Station`) | `Alertas` (por `Device`), `Score` y `Inferencias` (por `Version`), `InputZ`, `LatencyMs`, `MissedFaults` (`truth` = anomaly y `alert` = false) |
+| Dashboard | `station` |
+| Alarma | `station-missed-faults` → Lambda `station-rollback` |
+| Parámetro | `/station/last_good_version` |
+| Bucket | `station-<cuenta>-<región>`, prefijo `station/<versión>/` |
+| Docker | red `station`, contenedores `pump-01`…`pump-05`, imagen `station/greengrass` |
 
-### 4.2 · El evento (un JSON por clip escuchado, en `estacion/eventos`)
+### 4.2 · El evento (un JSON por clip escuchado, en `station/events`)
 
 ```json
 {
-  "device": "bomba-03",
+  "device": "pump-03",
   "model_version": "1.0.0",
   "sha256": "<sha256 de model.onnx>",
   "seq": 1234,
@@ -166,19 +168,19 @@ Paleta: navy #071329, morado #6D28D9, azul #2448FF, cian #00BCEB, pizarra #47556
 
 ```
 python3 -u {artifacts:path}/inference.py --model {artifacts:path}/model.onnx --stats {artifacts:path}/stats.json
-        --audio-root /data/estacion --mode-file /run/estacion/modo --version <V>
+        --audio-root /data/station --mode-file /run/station/mode --version <V>
         --topic {configuration:/topic} --threshold {configuration:/threshold} --interval {configuration:/intervalSeconds}
 ```
 
 - El equipo se llama como `AWS_IOT_THING_NAME`. `--local` imprime los eventos en vez de publicarlos (para pruebas sin AWS).
-- Audio en el equipo (montado de solo lectura): `/data/estacion/<equipo>/{normal,falla,nuevo}/*.wav`. `/run/estacion/modo` dice `normal`, `falla` o `nuevo` (por defecto `normal`); se relee en cada clip.
+- Audio en el equipo (montado de solo lectura): `/data/station/<equipo>/{normal,fault,shifted}/*.wav`. `/run/station/mode` dice `normal`, `fault` o `shifted` (por defecto `normal`); se relee en cada clip.
 - Dependencias (numpy, onnxruntime, awsiotsdk) horneadas en la imagen: la receta no instala nada.
-- Configuración por defecto: `topic: estacion/eventos`, `intervalSeconds: 3`, `threshold` = el de `stats.json` de esa versión.
+- Configuración por defecto: `topic: station/events`, `intervalSeconds: 3`, `threshold` = el de `stats.json` de esa versión.
 
 ### 4.5 · Datos
 
 - `poc-devopsdays/data/dev_data_pump.zip` lo deja Alejandro (descarga manual de Zenodo).
-- `model/prepare_data.py` lo lee sin descomprimir todo y arma `data/estacion/bomba-0N/{normal,falla,nuevo}/` con clips **de prueba** (nunca de entrenamiento); `nuevo` = clips normales del dominio *target*. Cinco bombas salen de tres secciones: dos bombas comparten sección con clips distintos, y el README lo dice.
+- `model/prepare_data.py` lo lee sin descomprimir todo y arma `data/station/pump-0N/{normal,fault,shifted}/` con clips **de prueba** (nunca de entrenamiento); `nuevo` = clips normales del dominio *target*. Cinco bombas salen de tres secciones: dos bombas comparten sección con clips distintos, y el README lo dice.
 - `model/synth.py` genera un set sintético con los mismos nombres de archivo en `data/synthetic/`, solo para probar la tubería.
 
 ### 4.6 · La demo (comandos)
@@ -187,17 +189,17 @@ python3 -u {artifacts:path}/inference.py --model {artifacts:path}/model.onnx --s
 |---|---|
 | `./fleet/build.sh` · `./fleet/up.sh` · `./fleet/down.sh` | Imagen, cinco bombas con su red, aprovisionamiento con credenciales temporales |
 | `./demo/publish.sh 1.0.0` | Sube los artefactos y crea la versión del componente |
-| `./demo/deploy.sh <versión> <anillo-0\|anillo-1\|todas>` | Despliegue con `ROLLBACK`, despliegue exponencial y `abortConfig` |
-| `./demo/falla.sh <bomba> [on\|off]` | La bomba suena con falla (o vuelve a normal) |
-| `./demo/red.sh <off\|on> <bomba>` | `docker network disconnect/connect` |
-| `./demo/dominio.sh <bomba> <nuevo\|normal>` | La bomba cambia de velocidad (dominio *target*) |
-| `./demo/watch.sh` | Sigue `/estacion/eventos` y formatea: `bomba-03  v1.0.0  ALERTA  score 0,82 (umbral 0,50)  entrada 1,1  4 ms  · llegó 40 s tarde` |
+| `./demo/deploy.sh <versión> <ring-0\|ring-1\|todas>` | Despliegue con `ROLLBACK`, despliegue exponencial y `abortConfig` |
+| `./demo/fault.sh <bomba> [on\|off]` | La bomba suena con falla (o vuelve a normal) |
+| `./demo/network.sh <off\|on> <bomba>` | `docker network disconnect/connect` |
+| `./demo/domain.sh <bomba> <nuevo\|normal>` | La bomba cambia de velocidad (dominio *target*) |
+| `./demo/watch.sh` | Sigue `/station/events` y formatea: `pump-03  v1.0.0  ALERT  score 0,82 (umbral 0,50)  entrada 1,1  4 ms  · llegó 40 s tarde` |
 
 ## 5 · Los tres actos
 
-1. **Escuchar** — `./demo/falla.sh bomba-03`: la 3 suena como la bomba B del inicio y aparece la alerta.
-2. **Sin red** — `./demo/red.sh off bomba-03`, esperar, `./demo/red.sh on bomba-03`: la 3 se calla mientras las otras cuatro siguen; al volver llegan sus alertas tarde. Una línea de drift: `./demo/dominio.sh bomba-05 nuevo`.
-3. **Desplegar por anillos y volver** — `./demo/deploy.sh 2.0.0 anillo-0` y `./demo/falla.sh bomba-01`: la 1 pasa a v2 y no oye la falla; la alarma dispara la Lambda y la 1 vuelve a v1. El anillo 1 nunca recibió la v2. Remate: «Greengrass revierte despliegues fallidos, no modelos equivocados: esa compuerta la pones tú».
+1. **Escuchar** — `./demo/fault.sh pump-03`: la 3 suena como la bomba B del inicio y aparece la alerta.
+2. **Sin red** — `./demo/network.sh off pump-03`, esperar, `./demo/network.sh on pump-03`: la 3 se calla mientras las otras cuatro siguen; al volver llegan sus alertas tarde. Una línea de drift: `./demo/domain.sh pump-05 shifted`.
+3. **Desplegar por anillos y volver** — `./demo/deploy.sh 2.0.0 ring-0` y `./demo/fault.sh pump-01`: la 1 pasa a v2 y no oye la falla; la alarma dispara la Lambda y la 1 vuelve a v1. El anillo 1 nunca recibió la v2. Remate: «Greengrass revierte despliegues fallidos, no modelos equivocados: esa compuerta la pones tú».
 
 ## 6 · Guion
 

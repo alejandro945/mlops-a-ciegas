@@ -29,12 +29,15 @@ Keys (contract with poc-devopsdays/model/train.py):
     int8.auc_delta                                   INT8 AUC minus FP32 AUC
     input.z_source  input.z_target                   input level (mean distance to the fingerprint)
     details.*                                        training details (old name: "detalle", still accepted)
+    device.lat_fp32_ms  device.lat_int8_ms           per-clip latency on the demo's device (build/device_bench.json,
+    device.agree_pct  device.machine  …              written by poc-devopsdays/model/bench_device.py on the pump host)
 """
 import json, os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(os.path.dirname(HERE))
 PATH = os.environ.get("METRICS_JSON", os.path.join(REPO, "poc-devopsdays", "build", "metrics.json"))
+DEVICE = os.environ.get("DEVICE_BENCH_JSON", os.path.join(os.path.dirname(PATH), "device_bench.json"))
 PENDING = "por medir"   # slide text; no ⟨⟩ nor U+00A0: Carlito does not have them
 
 # Old Spanish key → new English key (metrics.json written before the English refactor).
@@ -53,6 +56,10 @@ def load():
         for old, new in _LEGACY.items():
             if old in _cache and new not in _cache:
                 _cache[new] = _cache.pop(old)
+        try:                                   # measured on the device itself: "measure on the chip"
+            _cache.setdefault("device", json.load(open(DEVICE, encoding="utf-8")))
+        except (OSError, ValueError):
+            pass
     return _cache
 
 

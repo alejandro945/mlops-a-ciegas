@@ -22,6 +22,7 @@ poc-devopsdays/infra/backend.hcl
 
 # Local Python
 poc-devopsdays/.venv/
+talk/tools/.venv/
 __pycache__/
 *.pyc
 
@@ -33,3 +34,6 @@ __pycache__/
 
 # Local rehearsal evidence (contains the AWS account id)
 evidencia-e2e/
+
+# Speaker notes that stay out of the public repo
+talk/private/

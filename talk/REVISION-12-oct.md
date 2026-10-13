@@ -1,5 +1,7 @@
 # Revisión del deck y el guion · 12 de octubre
 
+> **Nota (12 de octubre, noche):** registro histórico. Las correcciones de §1, el recorte de §4 y los títulos (en versión formal, no los de §2) ya se aplicaron en `GUION-devopsdays.md` y en el deck. El código y AWS ahora usan nombres en inglés (`pump-03`, `fault.sh`, `StationRing0`); aquí quedan los nombres de entonces.
+
 Revisé las 42 láminas renderizadas (cada una en su último paso), el guion completo y el CFP. Primero lo que está mal o es riesgoso; después, los títulos y el tono.
 
 ---

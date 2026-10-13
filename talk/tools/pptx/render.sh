@@ -10,7 +10,8 @@
 #   STATION_AUDIO_DIR    folder with pump-a.wav and pump-b.wav (default talk/assets/audio); with audio,
 #                        slides 2 and 32 carry a video with sound; without it, «audio pendiente»
 #   SKIP_DECK=1          do not rebuild devopsdays.html (use it if you just rebuilt it)
-# Requirements: node 18+ · python3 with python-pptx, lxml, cssselect, pillow, cairosvg, weasyprint, numpy · pdftoppm (poppler) · ffmpeg
+# Requirements: node 18+ · python3 with python-pptx, lxml, cssselect, pillow, cairosvg, weasyprint, numpy, qrcode,
+#               fonttools + brotli (macOS: Carlito from talk/assets/fonts) · pdftoppm (poppler) · ffmpeg · pango
 set -euo pipefail
 cd "$(dirname "$0")"
 B=build

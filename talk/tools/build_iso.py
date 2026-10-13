@@ -299,24 +299,15 @@ def fig_loop(edge=False, static=False):
         e.add(f'<g data-on="1"><circle cx="{x:.1f}" cy="{y:.1f}" r="4" fill="{NAVY}"/>'
               f'<line x1="{x:.1f}" y1="{y:.1f}" x2="{px + 52:.1f}" y2="{y:.1f}" stroke="{NAVY}" stroke-width="1.5"/></g>')
         pill(e, px, y, t, NAVY, extra='data-on="1"', w=104)
-    # click 3 · a thousand pumps, no SSH
-    tx, ty = 100, 244
-    e.add(f'<g data-on="3"><rect x="{tx}" y="{ty}" width="236" height="58" rx="8" fill="{NAVY}"/>'
-          f'<circle cx="{tx + 16}" cy="{ty + 13}" r="3.5" fill="{S400}"/><circle cx="{tx + 28}" cy="{ty + 13}" r="3.5" fill="{S400}"/>'
-          f'<text x="{tx + 16}" y="{ty + 44}" font-family="{MONO}" font-size="19" font-weight="700" fill="{WHITE}">$ ssh pump-0417</text>'
-          f'<circle cx="{tx + 236}" cy="{ty}" r="17" fill="{WHITE}" stroke="{PURPLE}" stroke-width="3"/>'
-          f'<path d="M{tx + 230},{ty - 6} L{tx + 242},{ty + 6} M{tx + 242},{ty - 6} L{tx + 230},{ty + 6}" stroke="{PURPLE}" '
-          f'stroke-width="3" stroke-linecap="round"/></g>')
-    # click 4 · the audio cannot leave: the sound stays inside the station
+    # click 3 · the audio cannot leave: the sound stays inside the station
     for m in mics:
         sx, sy = e.P(*m)
         for k, r in enumerate([11, 19, 27]):
             e.add(f'<path d="M{sx + r * .25:.1f},{sy + r * .97:.1f} A{r},{r} 0 0 1 {sx - r * .9:.1f},{sy + r * .43:.1f}" '
-                  f'fill="none" stroke="{PURPLE}" stroke-width="2.6" stroke-linecap="round" data-on="4"/>')
+                  f'fill="none" stroke="{PURPLE}" stroke-width="2.6" stroke-linecap="round" data-on="3"/>')
 
-    # the four constraints, one per click (2 x 2, bottom)
-    R = ["Equipos de varias generaciones.", "Red intermitente.",
-         "Mil bombas, y ninguna con SSH.", "El audio no puede salir de la estación."]
+    # the three constraints, one per click (2 + 1, bottom)
+    R = ["Equipos de varias generaciones.", "Red intermitente.", "El audio no puede salir de la estación."]
     for k, r in enumerate(R):
         x = 96 + (k % 2) * 700
         y = 700 + (k // 2) * 44
@@ -339,9 +330,9 @@ def _station(static=False):
     """The pumping station: three pumps with their microphone and device, and the antenna mast."""
     e = Iso(ox=430, oy=392, u=40)
     e.box(-.7, -.7, -.4, 5.2, 7.3, .4, S200, edge=S400)
-    # the fence: the audio does not leave this area (click 4)
+    # the fence: the audio does not leave this area (click 3)
     e.line3([(-.55, -.55, 0), (4.35, -.55, 0), (4.35, 6.45, 0), (-.55, 6.45, 0), (-.55, -.55, 0)], PURPLE, 2.6, "9 7",
-            extra='data-on="4"')
+            extra='data-on="3"')
     PY = [4.75, 2.45, .15]                           # front to back… drawn back to front
     gens = [(SLATE, 1.45, "CPU ARM"), (NAVY, 1.2, "CPU x86"), (PURPLE, 1.0, "NPU")]
     mics, cabs = [], []

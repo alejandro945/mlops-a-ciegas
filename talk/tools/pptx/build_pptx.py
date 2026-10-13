@@ -38,6 +38,7 @@ from build_iso import FIGS as ISO           # noqa: E402
 TPL = os.path.join(TALK, "assets", "template", "DevOpsDays-Bogota-2026-Plantilla-Speaker.pptx")
 DECK = os.path.join(TALK, "devopsdays.html")
 OUT = os.environ.get("PPTX_OUT") or os.path.join(TALK, "MLOps-a-ciegas-DevOpsDays-Bogota-2026.pptx")
+BADGES = os.path.join(TALK, "assets", "badges")
 PHOTO = os.path.join(TALK, "assets", "photo.jpg")
 BUILD = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "build")
 # slide 2 audio (the same override build_figs uses to draw the wave)
@@ -60,12 +61,29 @@ _FD = "/usr/share/fonts/truetype/"
 _FONTS = {}
 
 
+def _font_file(bold, mono):
+    """A metric-compatible font file: the Linux packages if present; otherwise (macOS) the repo's own
+    Carlito, converted from woff2 once, and Courier New, which has Liberation Mono's metrics."""
+    style = "Bold" if bold else "Regular"
+    linux = _FD + (("liberation2/LiberationMono-%s.ttf" if mono else "crosextra/Carlito-%s.ttf") % style)
+    if os.path.exists(linux):
+        return linux
+    if mono:
+        return "/System/Library/Fonts/Supplemental/Courier New%s.ttf" % (" Bold" if bold else "")
+    ttf = os.path.join(BUILD, "fonts", f"Carlito-{style}.ttf")
+    if not os.path.exists(ttf):
+        from fontTools.ttLib import TTFont        # needs fonttools + brotli to read woff2
+        os.makedirs(os.path.dirname(ttf), exist_ok=True)
+        f = TTFont(os.path.join(TALK, "assets", "fonts", f"Carlito-{style}.woff2"))
+        f.flavor = None
+        f.save(ttf)
+    return ttf
+
+
 def font(bold=False, mono=False, size=20):
     key = (bold, mono, size)
     if key not in _FONTS:
-        f = ("liberation2/LiberationMono-%s.ttf" % ("Bold" if bold else "Regular")) if mono else \
-            ("crosextra/Carlito-%s.ttf" % ("Bold" if bold else "Regular"))
-        _FONTS[key] = ImageFont.truetype(_FD + f, size)
+        _FONTS[key] = ImageFont.truetype(_font_file(bold, mono), size)
     return _FONTS[key]
 
 
@@ -698,17 +716,27 @@ def b_whoami(s, sec, tm):
                 align=PP_ALIGN.CENTER, name="Texto foto")
     me = q(sec, ".me")
     textbox(s, 552, 246, 900, 52, [plain(q(me, ".nm"))], size=43, bold=True)
-    textbox(s, 552, 302, 900, 34, [plain(q(me, ".rl"))], size=25, color=PURPLE)
-    textbox(s, 552, 356, 820, 40, [plain(q(me, "p"))], size=25, color=SLATE)
+    role = plain(q(me, ".rl"))
+    textbox(s, 552, 302, 900, 34, [role], size=25, color=PURPLE)
+    logo = me.cssselect(".rl img.co")
+    if logo:                                   # employer logo, right after the role, same height as the text
+        path = os.path.join(BADGES, logo[0].get("data-file"))
+        im = Image.open(path)
+        h = 34
+        picture(s, path, 552 + text_w(role, 25) + 18, 302, round(h * im.width / im.height), h, name="Logo empresa")
+    textbox(s, 552, 356, 900, 40, [plain(q(me, "p"))], size=25, color=SLATE)
+    # the badges, in two groups (AWS, Kubernetes): label above, images in a row
     x = 552
-    for sp in me.cssselect(".cred span"):
-        n, rest = plain(q(sp, "i")), plain(sp).replace(plain(q(sp, "i")), "", 1).strip()
-        w = text_w(n + " " + rest, 21, True) + 40
-        b = rect(s, x, 422, w, 46, fill=LIGHT, line=LINE)
-        textbox(s, x, 422, w, 46, [[(n + " ", {"color": PURPLE}), (rest, {})]], size=21, bold=True,
-                align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
-        x += w + 14
-    textbox(s, 552, 498, 900, 30, [plain(q(me, ".hd"))], size=20, color=LINK, fnt=MONO)
+    for grp in me.cssselect(".bdg .bg"):
+        lab = q(grp, ".bl")
+        n = plain(q(lab, "i"))
+        textbox(s, x, 420, 520, 30, [[(n + " ", {"color": PURPLE}), (plain(lab).replace(n, "", 1).strip(), {})]],
+                size=20, bold=True, name="Certificaciones")
+        imgs = grp.cssselect(".bi img")
+        for k, img in enumerate(imgs):
+            picture(s, os.path.join(BADGES, img.get("data-file")), x + k * 102, 460, 92, 92, name=img.get("alt"))
+        x += len(imgs) * 102 - 10 + 34
+    textbox(s, 552, 590, 900, 30, [plain(q(me, ".hd"))], size=20, color=LINK, fnt=MONO)
 
 
 def b_canvas(s, sec, tm):
@@ -1379,7 +1407,7 @@ BUILDERS = {
 }
 
 SECTIONS = [("Apertura", "portada"), ("01 · El problema", "div1"), ("02 · El patrón", "div2"),
-            ("03 · Los seis pasos", "div3"), ("04 · En vivo", "div4"), ("Cierre", "llevo"), ("Anexos", "a1")]
+            ("03 · Los seis pasos", "div3"), ("04 · Demostración", "div4"), ("Cierre", "llevo"), ("Anexos", "a1")]
 
 # The notes come from the speaker script (via the HTML). Some sentences talk about HTML keys and buttons; for PowerPoint
 # they say how it is done there. If the script changes those sentences, the replacement finds nothing and the note stays as is.
@@ -1415,7 +1443,9 @@ def main():
             qr_src = etree.tostring(svg[0]).decode()
     if qr_src:
         import cairosvg
-        cairosvg.svg2png(bytestring=qr_src.replace("<svg", '<svg xmlns="http://www.w3.org/2000/svg"', 1).encode(),
+        # the QR svg only has a viewBox (it scales with CSS); cairosvg needs an explicit size
+        head = '<svg xmlns="http://www.w3.org/2000/svg"' + ("" if re.search(r"<svg[^>]*\swidth=", qr_src) else ' width="600" height="600"')
+        cairosvg.svg2png(bytestring=qr_src.replace("<svg", head, 1).encode(),
                          write_to=os.path.join(BUILD, "img", "qr.png"), output_width=600)
     ids = []
     missing = [sec.get("data-id") for sec in SECS if sec.get("data-id") not in BUILDERS]

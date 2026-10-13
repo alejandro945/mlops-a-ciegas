@@ -14,6 +14,7 @@ WAV 16 kHz ──► log-mel (64 bands, 5 frames = 320 numbers per vector) ─�
 | `train.py` | Trains v1.0.0 and v2.0.0, quantizes v1 to INT8, measures everything and writes `build/`. |
 | `prepare_data.py` | Builds the audio for the five pumps (`data/station/`) and the two clips for slide 2 (`talk/assets/audio/`). |
 | `synth.py` | A synthetic set with the same file names, only for testing the pipeline. |
+| `bench_device.py` | FP32 versus INT8 on the device itself (run it inside the pumps' image on the host); writes `build/device_bench.json`, which the deck reads as `device.*`. |
 | `../component/inference.py` | The component that runs on the device: listens, decides and publishes one event per clip. |
 
 ## The model

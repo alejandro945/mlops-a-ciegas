@@ -222,7 +222,7 @@ Then the drift: `./demo/domain.sh pump-05 shifted`. Pump 5 changed speed. Zero e
 **Act 3 · Deploy by rings and roll back.** `./demo/deploy.sh 2.0.0 ring-0`: a single station gets the new version, the canary. When pump-01 shows v2.0.0 in `watch.sh`, run `./demo/fault.sh pump-01`. Pump 1 runs without errors, with the same latency, and **misses the fault** ("missed fault"). While the alarm gathers data, explain the gate (the dashboard shows "faults nobody heard"). When the alarm fires, the Lambda creates a deployment with the last good version and pump 1 goes back to v1.0.0: ALERT again. Ring 1 never got v2.
 Greengrass rolls back failed deployments, not wrong models; that gate is yours to build. When you are done: `./demo/fault.sh pump-01 off`.
 
-The rollback takes a few minutes (the metric filter, the alarm, the Lambda and the deployment all add delay): **time it during rehearsal** and have something to say in the meantime. Shortcut for the 30-minute version: launch `./demo/deploy.sh 2.0.0 ring-0` while you wait in act 2, so pump-01 is already on v2 when act 3 starts.
+The rollback took between 90 and 135 s in the three rehearsals (from `fault.sh pump-01` to the first v1 event); it depends on where in the minute the fault lands, because the metric is per minute. Have something to say meanwhile (annex A2 of the deck). Launch `./demo/deploy.sh 2.0.0 ring-0` while you wait in act 2, so pump-01 is already on v2 when act 3 starts.
 
 **Bring the backup video.** Conference wifi is the worst place in the world to depend on MQTT.
 
@@ -238,51 +238,38 @@ The rollback takes a few minutes (the metric filter, the alarm, the Lambda and t
 - **Five pumps come from three MIMII DUE sections.** pump-01 and pump-04 share section 00, and pump-02 and pump-05 share section 01, each with different clips. pump-03 has section 02. The fleet's clips are picked so the demo is repeatable; the numbers on the slides come from the whole test set, not from them.
 - **A single threshold** for the three sections, as in the fleet. The pumps in each section sound different.
 - **The synthetic audio** (`model/synth.py`) only tests the pipeline. No number from it reaches a slide.
-- **The permissions are minimal, but only checked on paper** (see below). If something fails on the first rehearsal, start with permissions and region.
+- **The permissions are minimal** and held up in three rehearsals: `StationThingPolicy` only lets a pump connect as `pump-*` and publish to `station/events`. If something fails, start with permissions and region.
 
 ---
 
 ## What I verified and what I didn't
 
-**First end-to-end rehearsal (October 12, 2026, us-east-1, EC2 t3.large, real MIMII DUE audio).** All three acts worked with Terraform, `IDENTITY=terraform` and the five pumps in Docker:
+**Three end-to-end rehearsals on October 12, 2026** (us-east-1, EC2 t3.large, real MIMII DUE audio, Terraform applied from GitHub Actions). The third one ran on the English-named stack, rebuilt from scratch: infra destroyed and re-applied, a brand-new EC2, image built without cache.
 
-| Step | Measured |
+| Step | Measured (run 1 · run 2 · run 3) |
 |---|---|
-| `fleet/build.sh` · `up.sh` (five pumps installed) | under 1 min · 40 s; *Healthy* within a couple of minutes |
-| `deploy.sh 1.0.0 all` → first event · all five reporting | 7 s · about 100 s |
-| Act 1: `fault.sh pump-03` → ALERT | the next clip (1 s). Scores from 0.35 to 0.42 against a 0.34 threshold: little margin, but they are always the same clips |
-| Act 2: 45 s offline → the queued events arrive | 5 s after `network.sh on`; up to "arrived 50 s late"; `seq` with no gaps and **5 duplicates** (QoS 1 is "at least once") |
-| Act 2: `domain.sh pump-05 shifted` | the input goes from ~0.9 to 1.6–2.2 from the first clip. Watch out: it also raises **false alerts** on 3 out of 5 clips |
-| Act 3: `deploy.sh 2.0.0 ring-0` → pump-01 on v2 | 15 s; no ring 1 pump reported v2 |
-| Act 3: `fault.sh pump-01` → alarm → Lambda → pump 1 on v1 with ALERT | **99 s**: alarm at 91 s, Lambda deployment at 92 s, first v1 event at 99 s. v2 misses 3 out of 5 clips (about 12 per minute against the threshold of 8) |
-| Rollback deployment status in `list-deployments` | `ACTIVE` (not `COMPLETED`) |
+| `fleet/build.sh` · `up.sh` on a fresh host | image under 1 min · five pumps installed in 30–40 s · *Healthy* about a minute later |
+| `deploy.sh 1.0.0 all` → all five pumps reporting | about 100 s |
+| Act 1: `fault.sh pump-03` → ALERT | the next clip (1–4 s). Fault scores 0.35–0.42 against a 0.34 threshold: little margin, but always the same clips |
+| Act 2: 45 s offline → queued events arrive | reconnect in ~5 s; up to 50 · 56 · 58 s late; **no `seq` gaps** in any run; 5 duplicates in runs 1 and 2, none in run 3 (QoS 1 is "at least once") |
+| Act 2: `domain.sh pump-05 shifted` | input from ~0.8 to 1.6–2.2 from the first clip, plus **false alerts** on 3 of 5 clips |
+| Act 3: `deploy.sh 2.0.0 ring-0` → pump-01 on v2 | 15 · 13 · 20 s; no ring 1 pump ever reported v2 |
+| Act 3: `fault.sh pump-01` → alarm → Lambda → pump-01 on v1 | **99 · 135 · 90 s**. The Lambda deploys 1 s after the alarm; the pump is back ~15 s later. v2 misses about 12 faults per minute against the threshold of 8 |
+| Deployment status in `list-deployments` | thing-group deployments stay `ACTIVE` (not `COMPLETED`) |
 | Memory | ~220 MiB per pump; 1.4 GiB used out of 7.8: a t3.medium is enough |
 
-Two fixes came out of the rehearsal: the entrypoint's `--init-config` needs the `.yaml` extension (the nucleus picks the format by extension), and `up.sh` now cleans up the identity folder that Docker recreates as root when a previous attempt was left restarting. The dashboard's alarm widget cannot have `metrics` (CloudWatch rejects it).
+Fixes that came out of the rehearsals: the entrypoint's `--init-config` needs the `.yaml` extension (the nucleus picks the format by extension); `up.sh` cleans the identity folder Docker recreates as root after a crash loop; the dashboard's alarm widget cannot have `metrics`; the Lambda zip has a fixed file mode so its hash matches between a laptop and Actions; the `destroy` workflow cleans the core devices *after* the host is gone (running nuclei re-register them within seconds); the input widget shows the worst pump next to the fleet average, because the average hides one pump's drift.
 
-**Before the rehearsal**, in a Linux sandbox without Docker and without AWS credentials:
+**Optimization, measured on the device.** `model/bench_device.py`, run inside the pumps' image on the EC2 (Intel Xeon 8259CL, one thread), writes `build/device_bench.json`: FP32 → INT8 goes from 464 to 127 KB, 14.4 → 12.7 ms per clip (4.9 → 3.3 ms of pure inference; feature extraction takes the rest) and makes the same decision on 100 % of the fleet's clips. On an Apple M3 Pro laptop the same script gives 2.6 → 2.0 ms. INT8 is not deployed: on this CPU it saves little.
 
-- `bash -n` of every script; all of them stop at the first error (`set -euo pipefail`).
-- The recipe parses as YAML and its `Run` matches the plan; on top of that, **that same command was run** with `--local` against the model's `inference.py` and `build/1.0.0`, and the event fields are the ones the metric filters and `watch.sh` read.
-- The dashboard is valid JSON and only uses the seven metrics `setup.sh` creates.
-- The Lambda, with hand-made fake boto3 clients: with the alarm in `OK` (or without data) it does nothing; in `ALARM` it deploys the last good version to ring 0.
-- `publish.sh`, `deploy.sh`, `up.sh`, `down.sh`, `setup.sh`, `teardown.sh`, `entrypoint.sh` and the demo scripts, against a fake `aws` and a fake `docker` that record what they are asked: names, thing groups, mounts, limits, order, that `publish.sh` refuses synthetic audio and uses the threshold from `stats.json`, that the credentials are deleted at the end, and that every document `setup.sh` sends to AWS (IAM and IoT policies, rule, dashboard) is valid JSON with no unfilled placeholders.
-- The `watch.sh` format.
-- `infra/` (Terraform): the `.tf` files parse as HCL, and the names, the rule, the seven filters, the alarm and the pumps' policy match `setup.sh`. `up.sh` and the entrypoint with `IDENTITY=terraform`: they fetch the identity from Parameter Store, mount it only during installation, and the nucleus is installed with `--init-config` without AWS credentials.
+**SageMaker Neo, tried.** Compiling `model.onnx` for `LINUX X86_64` and `LINUX ARM64` fails with `OperatorNotImplemented: Scaler` (the scikit-learn scaler); the INT8 model also hits `MatMulInteger`. Rewriting `Scaler` as `Sub` + `Mul` (same scores, max difference 4e-8) compiles for both targets in about a minute, but the output needs the DLR runtime (last release 2021). AWS's own guidance after retiring SageMaker Edge Manager (April 2024) is ONNX Runtime on the device and Greengrass V2 to deploy and monitor, which is what this PoC does.
 
-**What was still unverified before the rehearsal.** The rehearsal above already settled `terraform validate` and `plan`, the `docker build`, the nucleus in the container, the connection with the minimal policy, the metric filters, the alarm invoking the Lambda, the timings and the memory. The rest is still untested:
+**Still untested:**
 
-- **I didn't run `terraform validate` or `plan`:** the sandbox cannot reach the Terraform registry. Run them before the first `apply`.
-- **Nothing ran against real AWS or real Docker.** The `docker build` (apt packages, pip wheels, downloading nucleus 2.18.3 from the official URL) was not executed; the sandbox cannot reach that URL.
-- **The nucleus inside the container.** That the installer accepts `--start false`, that it reuses the role and alias created by `setup.sh`, and that `alts/current/distro/bin/loader` starts in the foreground under `docker --init`.
-- **The minimal permissions.** The pumps' IoT policy comes from the [Greengrass guide](https://docs.aws.amazon.com/greengrass/v2/developerguide/device-auth.html#greengrass-core-minimal-iot-policy) with a `pump-*` wildcard; the Lambda's, from the actions the [authorization reference](https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiotgreengrassv2.html) lists for `CreateDeployment`. If a pump does not connect, try `THING_POLICY_NAME=GreengrassV2IoTThingPolicy` (the permissive one the installer creates) with `./fleet/down.sh --delete-things` and `./fleet/up.sh`.
-- **The metric filter syntax** (`IS TRUE` / `IS FALSE` combined with `&&` and with dimensions) and that the alarm invokes the Lambda directly.
-- **`"reset": [""]`.** `deploy.sh` and the Lambda send it so each version starts with its own default threshold. It is in the [documentation](https://docs.aws.amazon.com/greengrass/v2/developerguide/update-component-configurations.html) as the way to go back to the default configuration; I did not check what it does with a new version.
-- **The timings:** how long a pump takes to reconnect after `network.sh on` (the nucleus retries the connection on its own; I don't know with what backoff), how long the metric and the alarm take, and how long the full rollback takes. I didn't measure each nucleus's memory either, or what `--small` does to the component.
-- **The `JAVA_TOOL_OPTIONS` output** (`-Xmx256m`): the JVM prints "Picked up JAVA_TOOL_OPTIONS" on every start. If the `loader` script complained, leave `NUCLEUS_HEAP=` empty and set `jvmOptions` with a nucleus deployment, as the [guide](https://docs.aws.amazon.com/greengrass/v2/developerguide/configure-greengrass-core-v2.html#jvm-tuning) says.
-- **`abortConfig` and the exponential rollout** with groups of 1 and 4 pumps: the JSON shape matches the [CLI reference](https://docs.aws.amazon.com/cli/latest/reference/greengrassv2/create-deployment.html), but with so few pumps the ramp barely shows.
-
----
+- **`"reset": [""]`.** `deploy.sh` and the Lambda send it so each version starts with its own default threshold; the rehearsals used the defaults, so a custom `THRESHOLD=` followed by a new version was never exercised.
+- **`abortConfig` and the exponential rollout** with groups of 1 and 4 pumps: the JSON shape matches the [CLI reference](https://docs.aws.amazon.com/cli/latest/reference/greengrassv2/create-deployment.html), but with so few pumps the ramp never shows and nothing ever aborted.
+- **`--small`** (CPU and memory limits per container) and the cost (measure it with Cost Explorer).
+- **The no-Terraform path** (`cloud/setup.sh`, `IDENTITY=installer`): covered by the unit tests, not run against AWS since the Terraform stack took over.
 
 ## Cost
 

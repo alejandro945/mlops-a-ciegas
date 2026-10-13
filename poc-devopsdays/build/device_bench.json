@@ -1,0 +1,17 @@
+{
+ "machine": "Intel(R) Xeon(R) Platinum 8259CL CPU @ 2.50GHz",
+ "arch": "x86_64",
+ "onnxruntime": "1.23.2",
+ "clips": 75,
+ "runs_per_model": 225,
+ "size_fp32_kb": 464.2,
+ "size_int8_kb": 126.6,
+ "lat_fp32_ms": 14.36,
+ "lat_int8_ms": 12.679,
+ "infer_fp32_ms": 4.92,
+ "infer_int8_ms": 3.269,
+ "p95_fp32_ms": 31.98,
+ "p95_int8_ms": 31.62,
+ "agree_pct": 1.0,
+ "measured": "2026-10-13T00:59:54+0000"
+}

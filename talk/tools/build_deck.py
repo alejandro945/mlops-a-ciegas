@@ -9,7 +9,7 @@ Placeholders in deck.src.html (see talk/PLAN-bombas.md §3):
     {{AUDIO:a|b}}      talk/assets/audio/pump-a.wav | pump-b.wav as a data URI · if missing: empty (the button is
                        disabled, «audio pendiente»)
     {{ARCH_GENERIC}}   the generic pattern (layer lay-a); the AWS one and the PoC one are {{FIG:arq_ref}} and {{FIG:arq_poc}}
-    {{PHOTO}}, {{QR}}, {{REPO}}, {{LINKEDIN}}, {{IMG:…}}, {{FONT:…}}
+    {{PHOTO}}, {{QR}}, {{REPO}}, {{LINKEDIN}}, {{IMG:…}} (assets/template), {{BADGE:…}} (assets/badges), {{FONT:…}}
 
 Usage (from the repo root):
     AWS_ICONS=~/Downloads/Icon-package_07312026 python3 talk/tools/build_deck.py
@@ -167,6 +167,7 @@ def main():
     html = re.sub(r"\{\{FIG:([\w-]+)\}\}", lambda m: figure(m.group(1)), html)
     # template images and the font, embedded: the file works offline
     html = re.sub(r"\{\{IMG:([\w.-]+)\}\}", lambda m: data_uri(os.path.join(ASSETS, "template", m.group(1))), html)
+    html = re.sub(r"\{\{BADGE:([\w.-]+)\}\}", lambda m: data_uri(os.path.join(ASSETS, "badges", m.group(1))), html)
     html = re.sub(r"\{\{FONT:([\w.-]+)\}\}", lambda m: data_uri(os.path.join(ASSETS, "fonts", m.group(1) + ".woff2")), html)
     html = inject_notes(html)
     html = resolve_metrics(html)                 # measured numbers: on the slides and in the notes

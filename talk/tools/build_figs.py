@@ -185,7 +185,7 @@ def fig_optimize(static=False):
     b.append(T(126, by + 44, "LA BOMBA, MEDIDA", 18, PURPLE, 700, family=MONO, extra='letter-spacing="1.5"'))
     b.append(TR(126, by + 88, [("FP32 ", NAVY, 700), ("→ ", MUTED, 400), ("INT8", PURPLE, 700)], 32))
     cols = [("Tamaño del archivo", M("int8.size_fp32_kb"), M("int8.size_int8_kb"), ""),
-            ("Latencia por clip, en CPU", M("int8.lat_fp32_ms"), M("int8.lat_int8_ms"), ""),
+            ("Latencia por clip, en el equipo (x86)", M("device.lat_fp32_ms"), M("device.lat_int8_ms"), ""),
             ("Misma decisión", None, M("int8.agree_pct"), " de los clips")]
     for k, (lab, v0, v1, tail) in enumerate(cols):
         x = 446 + k * 356
@@ -954,7 +954,7 @@ def fig_wave(which, static=False):
 # ─────────────────────────────────────────────────────────────────────
 STEPS = [("Entrenar", "SageMaker AI · S3"), ("Optimizar", "INT8 por chip"),
          ("Empaquetar", "componente Greengrass"), ("Desplegar", "anillos · thing groups"),
-         ("Correr sin red", "cola local"), ("Monitorear", "IoT Core · CloudWatch")]
+         ("Operar sin red", "cola local"), ("Monitorear", "IoT Core · CloudWatch")]
 
 
 def fig_spine(static=False):

@@ -175,13 +175,14 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
-      # Greengrass registers the core devices on its own; Terraform does not know them. The artifacts
-      # bucket is emptied (everything is published again with demo/publish.sh): force_destroy has to
-      # be in the state before the destroy.
+      # Greengrass registers the core devices on its own; Terraform does not know them. They are cleaned
+      # after the destroy: while the host is up, the running nuclei register them again within seconds.
+      # The artifacts bucket is emptied (everything is published again with demo/publish.sh):
+      # force_destroy has to be in the state before the destroy.
       - name: destroy
         if: env.ACTION == 'destroy'
         run: |
-          REGION="$TF_VAR_region" poc-devopsdays/infra/clean-core-devices.sh
           terraform -chdir="$DIR" apply -auto-approve -no-color -lock-timeout=5m \
             -target=aws_s3_bucket.artifacts -var force_destroy_bucket=true
           terraform -chdir="$DIR" destroy -auto-approve -no-color -lock-timeout=5m -var force_destroy_bucket=true
+          REGION="$TF_VAR_region" poc-devopsdays/infra/clean-core-devices.sh
