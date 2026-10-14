@@ -105,11 +105,11 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 <!-- id: quien -->
 **0:30** · sin clics
 
-"Soy Alejandro Varela, Cloud Engineer en EPAM. Trabajo con inferencia en el edge e IoT industrial."
+"Soy Alejandro Varela, Senior Cloud Engineer en EPAM. Llevo modelos de IA de la nube a equipos en campo: inferencia en el edge e IoT industrial."
 
 "Tengo cinco certificaciones de AWS y tres de Kubernetes, pero lo que van a ver hoy no sale de un examen: lo monté, lo rompí y lo arreglé esta semana. Todo está en AWS, con servicios que pueden usar el lunes."
 
-*La foto sale de talk/assets/photo.jpg; si no está, la lámina deja el recuadro. El LinkedIn sale de la variable LINKEDIN al generar el deck.*
+*La foto sale de talk/assets/photo.jpeg (recortada en cuadrado). El LinkedIn sale de la variable LINKEDIN al generar el deck.*
 
 ---
 
@@ -708,7 +708,6 @@ Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 
 ## Pendientes antes de la charla
 
 - La infraestructura está abajo desde el 12 de octubre (destroy). El día anterior: Actions → infra → Run workflow → apply; en la EC2, `fetch-poc`, `./fleet/build.sh` y `./fleet/up.sh`; desde el portátil, `./demo/publish.sh 1.0.0`, `2.0.0` y `./demo/deploy.sh 1.0.0 all`. En el ensayo todo eso tomó unos 15 minutos.
-- Tu foto en `talk/assets/photo.jpg` (cuadrada); hoy la lámina 5 muestra el recuadro vacío.
 - Grabar el video de respaldo, cortado por actos.
 - Cronometrar la charla completa en un ensayo con la EC2 y ajustar donde haga falta.
 

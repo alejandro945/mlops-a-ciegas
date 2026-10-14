@@ -21,7 +21,7 @@ import copy, html as H, json, os, re, subprocess, sys, uuid
 import xml.etree.ElementTree as ET
 
 from lxml import etree, html as LH
-from PIL import Image, ImageFont
+from PIL import Image, ImageFont, ImageOps
 from pptx import Presentation
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_CONNECTOR, MSO_SHAPE
@@ -39,7 +39,8 @@ TPL = os.path.join(TALK, "assets", "template", "DevOpsDays-Bogota-2026-Plantilla
 DECK = os.path.join(TALK, "devopsdays.html")
 OUT = os.environ.get("PPTX_OUT") or os.path.join(TALK, "MLOps-a-ciegas-DevOpsDays-Bogota-2026.pptx")
 BADGES = os.path.join(TALK, "assets", "badges")
-PHOTO = os.path.join(TALK, "assets", "photo.jpg")
+PHOTO = next((os.path.join(TALK, "assets", f"photo.{e}") for e in ("jpg", "jpeg", "png")
+              if os.path.exists(os.path.join(TALK, "assets", f"photo.{e}"))), os.path.join(TALK, "assets", "photo.jpg"))
 BUILD = sys.argv[1] if len(sys.argv) > 1 else os.path.join(HERE, "build")
 # slide 2 audio (the same override build_figs uses to draw the wave)
 AUDIO_DIR = os.environ.get("STATION_AUDIO_DIR") or os.path.join(TALK, "assets", "audio")
@@ -705,7 +706,7 @@ def b_cover(s, sec, tm):
 def b_whoami(s, sec, tm):
     header(s, sec)
     if os.path.exists(PHOTO):
-        im = Image.open(PHOTO); side = min(im.size)
+        im = ImageOps.exif_transpose(Image.open(PHOTO)); side = min(im.size)
         crop = im.crop(((im.width - side) // 2, (im.height - side) // 2, (im.width + side) // 2, (im.height + side) // 2))
         p = os.path.join(BUILD, "img", "photo.jpg"); crop.convert("RGB").resize((840, 840)).save(p, quality=90)
         picture(s, p, 84, 246, 420, 420, name="Foto")
@@ -724,19 +725,22 @@ def b_whoami(s, sec, tm):
         im = Image.open(path)
         h = 34
         picture(s, path, 552 + text_w(role, 25) + 18, 302, round(h * im.width / im.height), h, name="Logo empresa")
-    textbox(s, 552, 356, 900, 40, [plain(q(me, "p"))], size=25, color=SLATE)
+    bio = plain(q(me, "p"))
+    nl = n_lines(bio, 900, 25)
+    textbox(s, 552, 356, 900, nl * 25 * 1.4 + 6, [bio], size=25, color=SLATE, lh=1.4)
+    dy = (nl - 1) * 35                         # everything below moves down if the bio wraps
     # the badges, in two groups (AWS, Kubernetes): label above, images in a row
     x = 552
     for grp in me.cssselect(".bdg .bg"):
         lab = q(grp, ".bl")
         n = plain(q(lab, "i"))
-        textbox(s, x, 420, 520, 30, [[(n + " ", {"color": PURPLE}), (plain(lab).replace(n, "", 1).strip(), {})]],
+        textbox(s, x, 420 + dy, 520, 30, [[(n + " ", {"color": PURPLE}), (plain(lab).replace(n, "", 1).strip(), {})]],
                 size=20, bold=True, name="Certificaciones")
         imgs = grp.cssselect(".bi img")
         for k, img in enumerate(imgs):
-            picture(s, os.path.join(BADGES, img.get("data-file")), x + k * 102, 460, 92, 92, name=img.get("alt"))
+            picture(s, os.path.join(BADGES, img.get("data-file")), x + k * 102, 460 + dy, 92, 92, name=img.get("alt"))
         x += len(imgs) * 102 - 10 + 34
-    textbox(s, 552, 590, 900, 30, [plain(q(me, ".hd"))], size=20, color=LINK, fnt=MONO)
+    textbox(s, 552, 590 + dy, 900, 30, [plain(q(me, ".hd"))], size=20, color=LINK, fnt=MONO)
 
 
 def b_canvas(s, sec, tm):

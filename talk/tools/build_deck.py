@@ -18,7 +18,7 @@ Usage (from the repo root):
     STRICT=1 ...                                                                                        # fail if a figure is missing
     DECK_OUT=/tmp/deck.html ...                                                                         # write somewhere else
     STATION_AUDIO_DIR=...                                                                               # other pump-a/b.wav folder
-    Your photo: save it as talk/assets/photo.jpg (square) and run the script again.
+    Your photo: save it as talk/assets/photo.jpg (or .jpeg / .png) and run the script again; it is cropped to a square.
 """
 import base64, html as H, mimetypes, os, re, sys
 
@@ -33,7 +33,9 @@ SRC = os.path.join(HERE, "deck.src.html")
 DST = os.environ.get("DECK_OUT") or os.path.join(TALK, "devopsdays.html")
 SCRIPT = os.path.join(TALK, "GUION-devopsdays.md")    # the speaker script (Spanish)
 ASSETS = os.path.join(TALK, "assets")
-PHOTO = os.path.join(ASSETS, "photo.jpg")      # your square photo (optional)
+# your photo (optional): photo.jpg, photo.jpeg or photo.png; it is cropped to a centered square
+PHOTO = next((os.path.join(ASSETS, f"photo.{e}") for e in ("jpg", "jpeg", "png")
+              if os.path.exists(os.path.join(ASSETS, f"photo.{e}"))), os.path.join(ASSETS, "photo.jpg"))
 AUDIO = (os.environ.get("STATION_AUDIO_DIR") or os.environ.get("AUDIO_DIR")
          or os.path.join(ASSETS, "audio"))     # pump-a.wav · pump-b.wav (written by model/prepare_data.py)
 
@@ -51,9 +53,23 @@ def data_uri(path):
     return f"data:{mime};base64," + base64.b64encode(open(path, "rb").read()).decode()
 
 
+def photo_uri():
+    """The photo as a centered square, 840 px, JPEG: a phone photo is several MB and only 420 px are shown."""
+    try:
+        from PIL import Image, ImageOps
+    except ImportError:
+        return data_uri(PHOTO)
+    import io
+    im = ImageOps.exif_transpose(Image.open(PHOTO)).convert("RGB")
+    side = min(im.size)
+    im = im.crop(((im.width - side) // 2, (im.height - side) // 2, (im.width + side) // 2, (im.height + side) // 2))
+    buf = io.BytesIO(); im.resize((840, 840), Image.LANCZOS).save(buf, "JPEG", quality=88)
+    return "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+
+
 def photo_html():
     if os.path.exists(PHOTO):
-        return f'<div class="me-ph img" a="1"><img src="{data_uri(PHOTO)}" alt="Alejandro Varela"></div>'
+        return f'<div class="me-ph img" a="1"><img src="{photo_uri()}" alt="Alejandro Varela"></div>'
     return '<div class="me-ph" a="1">TU FOTO<small>talk/assets/photo.jpg</small></div>'
 
 
