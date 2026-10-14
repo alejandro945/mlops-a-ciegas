@@ -359,7 +359,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 0:10 · sin clics
 
-*En pantalla mientras te presentan. No saludes: cuando te den la palabra, pasa a la lámina 2 y arranca con la bomba A. Antes de subir, prueba que el audio del deck sale por los parlantes de la sala.*">
+*En pantalla mientras te presentan. Cuando te den la palabra, no saludes todavía: pasa a la lámina 2 y pon la bomba A. Antes de subir, prueba que el audio del deck sale por los parlantes de la sala.*">
   <div class="logo" role="img" aria-label="DevOpsDays Bogotá 2026"></div>
   <div class="hug" aria-hidden="true"></div>
   <div class="tt">
@@ -374,23 +374,21 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <!-- ═══════════════ 2 · IS THIS PUMP FAILING? (two real audios) ═══════════════ -->
 <section class="s" data-id="suena" data-sec="0" data-notes="2 · ¿ESTA BOMBA ESTÁ FALLANDO?
 
-1:15 · 1 clic · *sin «buenos días»: lo primero que oye la sala es una bomba*
+1:15 · 1 clic · *lo primero que oye la sala es una bomba*
 
-'Bomba A.' *(dale ▶ a la A; deja sonar cinco segundos y detenla)*
+'Les voy a poner dos audios. Esta es la bomba A.' *(▶ A, cinco segundos, la detienes)*
 
-'Bomba B.' *(dale ▶ a la B; cinco segundos y detenla)*
+'Y esta es la bomba B.' *(▶ B, cinco segundos)*
 
-'¿Alguna de estas dos bombas está fallando?'
+'Pregunta: ¿alguna de las dos está fallando?'
 
-▶ CLIC 'Levanten la mano. ¿La A?' *(cuenta)* '¿La B?' *(cuenta)* '¿Las dos?' *(cuenta)*
+▶ CLIC 'Levanten la mano. ¿La A?' *(cuenta en voz alta: «unos cinco…»)* '¿La B?' *(cuenta)* '¿Las dos?' *(cuenta)* 'Interesante. No les voy a decir todavía; eso lo vemos en vivo.'
 
-'No les voy a decir todavía. La respuesta llega más adelante, en vivo.'
+'Los sonidos son reales, los grabó Hitachi en una planta. Lo que sí me inventé es la empresa: un acueducto con estaciones de bombeo en veredas, donde la señal va y viene y no hay nadie cerca. En cada estación hay un equipito que escucha las bombas, y un modelo que avisa cuando una empieza a sonar raro.'
 
-'Los sonidos son reales: bombas industriales que grabó Hitachi. La empresa es inventada: un acueducto con estaciones de bombeo en veredas, donde la red va y viene y no hay nadie cerca. En cada estación, un equipo pequeño escucha las bombas con un micrófono, y un modelo avisa cuando una empieza a sonar distinto.'
+'Lo que ustedes acaban de hacer es justo lo que hace ese modelo: oír y decidir. La diferencia es que ustedes estaban aquí. Desde la nube, nadie oyó nada.' *(pausa)*
 
-'Ustedes acaban de hacer lo que hace ese modelo: oír y decidir. Pero ustedes estaban aquí. Desde la nube, nadie oyó nada.' *(pausa)*
-
-'Por eso la charla se llama MLOps a ciegas. Hoy les voy a mostrar cómo gobernar un modelo que corre donde no llega tu plano de control: cómo llega, cómo vuelve atrás y cómo te cuenta lo que decide, sin que el audio salga de la estación.'
+'Por eso le puse a esta charla «MLOps a ciegas». Hoy les quiero mostrar cómo se maneja un modelo que corre allá, donde uno no lo ve: cómo le llega una versión nueva, cómo se devuelve si sale mala y cómo nos cuenta lo que decide. Sin que el audio salga nunca de la estación.'
 
 *Mientras suena un audio, una tecla o un clic lo detiene y no cambia de lámina. Si los botones dicen «audio pendiente», faltan talk/assets/audio/pump-a.wav y pump-b.wav. La atribución de MIMII DUE está al pie.*">
   <div class="kick">Escucha</div>
@@ -418,15 +416,15 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 0:35 · 2 clics
 
-'¿Por qué debería importarles un modelo en una estación de bombeo? Porque la inferencia se está moviendo de la nube al dispositivo. Un ejemplo con números de Gartner: los PC.'
+'Y ustedes dirán: bueno, ¿y a mí qué me importa un modelo en una bomba? Les cuento por qué: los modelos se están bajando de la nube a los dispositivos. Un ejemplo con números de Gartner, los PC.'
 
-'De cada cien PC nuevos que se vendieron en 2024, dieciséis traían un chip para correr IA.'
+'En 2024, de cada cien PC nuevos, dieciséis traían un chip para correr IA.'
 
 ▶ CLIC 'En 2025, treinta y uno.'
 
-▶ CLIC 'Para este año, Gartner proyectaba cincuenta y cinco. Y no son solo los PC: los teléfonos, los carros, las cámaras y los equipos industriales ya traen hardware para correr modelos ahí mismo.'
+▶ CLIC 'Y para este año proyectaban cincuenta y cinco. Más de la mitad. Y no son solo los PC: el celular de ustedes, los carros, las cámaras, los equipos de una planta… todos ya traen hardware para correr modelos ahí mismo.'
 
-*Fuente: Gartner, 28 de agosto de 2025, «AI PCs»: 15,6 % (2024), 31 % (2025), 54,7 % (2026, proyección). La cifra es solo de PC; lo de teléfonos, carros y equipos industriales dilo sin números. Si ya salió la cifra real de 2026, dila en su lugar.*">
+*Fuente: Gartner, 28 de agosto de 2025, «AI PCs»: 15,6 % (2024), 31 % (2025), 54,7 % (2026, proyección). La cifra es solo de PC; lo demás dilo sin números. Si ya salió la cifra real de 2026, úsala.*">
   <div class="kick">Contexto</div>
   <div class="ttl wide">La IA ya corre <b>en el dispositivo</b></div>
   <div class="chart" style="left:84px;right:84px;top:222px;bottom:162px"><canvas class="anim" data-anim="cien"></canvas></div>
@@ -436,19 +434,19 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <!-- ═══════════════ 03 · USE CASES (MEMES) ═══════════════ -->
 <section class="s" data-id="memes" data-sec="2" data-notes="4 · POR QUÉ EL MODELO BAJA AL DISPOSITIVO
 
-0:50 · 2 clics · *deja que la sala se ría antes de hablar. En cada meme, a la izquierda el modelo corre en la nube y a la derecha en el equipo: esa es la única diferencia*
+0:50 · 2 clics · *deja que se rían antes de seguir. En cada meme, a la izquierda el modelo corre en la nube y a la derecha en el equipo*
 
-'¿Y por qué el modelo baja al dispositivo? Se los explico en el idioma universal: memes.'
+'¿Y por qué se baja? Se los explico como explicamos todo los ingenieros: con memes.'
 
-*Meme 1 · latencia.* 'El carro autónomo: 'dame un segundo, le pregunto al modelo en la nube'.' *(pausa corta)* 'Cuando la decisión es de milisegundos, la ida y vuelta no alcanza.'
+*Meme 1.* 'El carro autónomo, frente a un cono: 'dame un segundo, que le pregunto al modelo en la nube'.' *(pausa, risas)* 'Cuando hay que frenar ya, la ida y vuelta no alcanza.'
 
-▶ CLIC *Meme 2 · sin conexión.* 'Técnico, tres de la mañana, en la planta. El asistente tiene el modelo en la nube: 'Sin conexión. Intente más tarde'.' *(pausa)* 'Con el modelo en el equipo, responde igual. En una vereda pasa lo mismo.'
+▶ CLIC *Meme 2.* 'El técnico a las tres de la mañana en la planta: '¿cómo cambio este rodamiento?'. Y el asistente, que tiene el modelo en la nube: 'Sin conexión, intente más tarde'.' *(risas)* 'Con el modelo en el equipo, le responde igual. Y en una vereda, sin señal, pasa exactamente lo mismo.'
 
-▶ CLIC *Meme 3 · privacidad.* 'Y tu reloj, cada segundo, mandándole tus latidos al modelo en la nube. Si el modelo corre en el reloj, lo sensible no sale del equipo: solo sale la alerta.'
+▶ CLIC *Meme 3.* 'Y mi favorito: el reloj mandándole tus latidos, cada segundo, a un modelo en la nube. Si el modelo corre en el reloj, lo único que sale es la alerta.'
 
-'Ahora piensen en la bomba. Un micrófono a dieciséis kilohercios son ciento quince megas por hora, por bomba, por la red de una vereda. Y es el sonido de una instalación de la empresa: no tiene por qué salir de ahí.'
+'Ahora piensen en la bomba. Un micrófono son ciento quince megas por hora. Por bomba. Por la red de una vereda. No cabe, y además es el sonido de una instalación de la empresa: no tiene por qué salir de ahí.'
 
-*Cuenta: 16 000 muestras por segundo × 2 bytes = 32 000 B/s ≈ 115 MB por hora.*">
+*Cuenta: 16 000 muestras por segundo × 2 bytes ≈ 115 MB por hora.*">
   <div class="kick">Contexto</div>
   <div class="ttl wide">Por qué el modelo <b>baja al dispositivo</b></div>
   <div class="chart" style="left:84px;right:84px;top:206px;bottom:136px"><canvas class="anim" data-anim="memes"></canvas></div>
@@ -460,11 +458,11 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 0:35 · sin clics
 
-'Soy Alejandro Varela, Senior Cloud Engineer en EPAM. Llevo modelos de IA de la nube a equipos en campo: inferencia en el edge e IoT industrial.'
+'Ahora sí, mucho gusto. Soy Alejandro Varela, Senior Cloud Engineer en EPAM. Mi trabajo es justamente este: llevar modelos de IA de la nube a equipos en campo.'
 
-'Tengo cinco certificaciones de AWS y tres de Kubernetes, pero lo que van a ver hoy no sale de un examen: lo monté, lo rompí y lo arreglé esta semana. Todo está en AWS, con servicios que pueden usar el lunes.'
+'Tengo unas certificaciones por ahí, pero les confieso algo: lo que van a ver hoy no salió de un examen. Lo monté, lo rompí y lo arreglé esta misma semana.'
 
-'Y fuera del trabajo me encuentran en cualquier deporte de raqueta (tenis de mesa, tenis, pádel), aprendiendo algo nuevo o de viaje.'
+'Y fuera del trabajo me encuentran con una raqueta en la mano, la que sea: tenis de mesa, tenis, pádel. O aprendiendo algo nuevo, o de viaje.'
 
 *La foto sale de talk/assets/photo.jpeg (recortada en cuadrado). El LinkedIn sale de la variable LINKEDIN al generar el deck.*">
   <div class="kick">Ponente</div>
@@ -499,7 +497,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 0:15 · sin clics
 
-'Cuatro partes: el problema, el patrón para resolverlo, los seis pasos de entrenar a monitorear, y una demostración en vivo.'">
+'Vamos a ir en cuatro partes: primero el problema, después el patrón para resolverlo, luego los seis pasos, y al final lo vemos funcionando en vivo.'">
   <div class="kick">Agenda</div>
   <div class="ttl">Contenido <b>de la sesión</b></div>
   <div class="agenda">
@@ -516,7 +514,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 0:05 · *divisor: no lo leas* · *reloj: 3:40*
 
-'Empecemos por el problema.'">
+'Arranquemos por el problema.'">
   <div class="sq"></div>
   <div class="n" a="1">01</div>
   <div class="t" a="2">El problema</div>
@@ -529,9 +527,9 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 0:25 · sin clics · *los puntos recorren el loop*
 
-'Cuando el modelo corre en la nube, esto está bastante resuelto. Cada petición y cada respuesta pasan por el endpoint: se capturan, se comparan con el entrenamiento, suena una alerta si algo se desvía, y se reentrena.'
+'Cuando el modelo vive en la nube, la verdad, esto está bastante resuelto. Todas las peticiones pasan por un endpoint: uno las guarda, las compara con lo que vio el modelo al entrenar, si algo cambia salta una alerta y se reentrena.'
 
-'Funciona por una razón:' *(señala la frase de la izquierda)* 'todo pasa por el endpoint.'">
+'¿Y por qué funciona tan bien?' *(señala la frase de la izquierda)* 'Porque todo pasa por ahí. Uno lo ve todo.'">
   <div class="kick">El problema</div>
   <div class="ttl wide">MLOps en la nube: <b>un loop cerrado</b></div>
   <div class="fig"><svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" class="iso"><polygon points="760.6,470.4 1072.4,650.4 1072.4,636.0 760.6,456.0" fill="#EDEDFA" stroke="#94A3B8" stroke-width="0.9" stroke-linejoin="round" />
@@ -622,17 +620,17 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <!-- ═══════════════ 10 · AT THE STATION ═══════════════ -->
 <section class="s" data-id="edge" data-sec="7" data-notes="9 · LAS RESTRICCIONES DE LA ESTACIÓN
 
-0:45 · 3 clics · *una restricción por clic; dila como sale en pantalla*
+0:45 · 3 clics · *una restricción por clic*
 
-'Ahora bajemos el modelo a la estación, al lado de la bomba. Mismo loop… pero ya nada pasa por un endpoint.'
+'Ahora bajemos ese modelo a la estación, al lado de la bomba. Mismo loop… pero ya no hay un endpoint por donde pase todo.'
 
-▶ CLIC 'Uno: equipos de varias generaciones. Una estación tiene un equipo ARM, otra un x86 de hace años, la nueva trae NPU. El mismo modelo no corre igual en los tres.'
+▶ CLIC 'Primero, los equipos no son iguales. Una estación tiene un equipo ARM, otra uno x86 que ya tiene sus años, y la nueva trae NPU. El mismo modelo no corre igual en los tres.'
 
-▶ CLIC 'Dos: red intermitente. Se va la señal en la vereda, y el loop de la nube se apaga.'
+▶ CLIC 'Segundo, la red. Se va la señal en la vereda y se apaga todo el loop de la nube.'
 
-▶ CLIC 'Y tres: el audio no puede salir de la estación. No cabe, y no debe.'
+▶ CLIC 'Y tercero, el audio no puede salir de ahí. Ni cabe, ni debe.'
 
-'El MLOps de la nube asume que todo pasa por ti. En la estación, nada pasa por ti.'">
+'O sea: todo lo que uno hacía en la nube asume que las cosas pasan por uno. Aquí no pasa nada por uno.'">
   <div class="kick">El problema</div>
   <div class="ttl wide">Las restricciones <b>de la estación</b></div>
   <div class="fig"><svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" class="iso"><polygon points="177.1,526.0 357.3,630.0 357.3,614.0 177.1,510.0" fill="#E2E8F0" stroke="#94A3B8" stroke-width="0.9" stroke-linejoin="round" />
@@ -850,21 +848,19 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 1:15 · 3 clics · *el mito central de la charla: ve despacio*
 
-'Entonces, ¿cómo sabes si el modelo de la estación está bien? Hacemos lo de siempre: miramos el panel.'
+'Entonces, ¿cómo sabe uno si el modelo de la estación está bien? Lo de siempre: abrimos el panel.'
 
-▶ CLIC 'Panel del equipo. Servicio del modelo: activo. CPU: normal. Memoria: normal. Todo en verde.'
+▶ CLIC 'Servicio del modelo, arriba. CPU, normal. Memoria, normal. Todo en verde.'
 
-*Voz del jefe:* ''¿Y el modelo de la estación cómo va?' — 'Todo verde, jefe'.'
+*Cambia la voz:* 'Y llega el jefe: '¿y el modelo de la estación cómo va?' — 'Todo verde, jefe'.' *(risas)*
 
-▶ CLIC 'Ahora la pregunta que importa: ¿distingue una falla de una bomba sana? Eso se mide con la AUC. Le das al modelo un clip de una bomba sana y uno de una que falla; la AUC dice qué tan seguido le pone más puntaje al que falla. Uno es siempre. Cero coma cinco es lanzar una moneda.'
+▶ CLIC 'Pero la pregunta de verdad es otra: ¿el modelo todavía distingue una bomba sana de una que está fallando? Eso se mide con algo que se llama AUC. Para los que no son de datos: uno es perfecto, y cero coma cinco es lo mismo que lanzar una moneda.'
 
-'Con la velocidad con la que se entrenó: 0,69. Le cambian la velocidad a la bomba: 0,57, casi una moneda.'
+'Con la velocidad con la que se entrenó, este modelo da cero coma sesenta y nueve. Ahora alguien le cambia la velocidad a la bomba… y baja a cero coma cincuenta y siete.' *(pausa)* 'Casi una moneda. Y las falsas alarmas pasan de 6 a 18 por ciento.'
 
-'Mismo modelo, mismo umbral, cero errores. Y las falsas alarmas pasan de 6 % a 18 %.'
+▶ CLIC 'Y lo más bonito: ni un error. El equipo está sano. El modelo casi no distingue.' *(pausa larga)*
 
-▶ CLIC 'El equipo está sano. El modelo casi no distingue.' *(pausa larga)*
-
-'Esto no me lo inventé: lo medí en la PoC, con el audio de las bombas que van a oír en la demo. Un modelo que dejó de oír responde a tiempo, sin errores… y con un 200 OK.'
+'Y esto no es teoría: lo medí con el mismo audio de las bombas que van a oír en un rato. Un servicio caído hace ruido. Un modelo que dejó de oír sigue respondiendo a tiempo, con un 200 OK.'
 
 *Por qué AUC y no «fallas detectadas»: con la otra velocidad todos los scores suben, y la detección puede subir junto con las falsas alarmas. La AUC mide si el modelo separa una bomba sana de una que falla, sin depender del umbral.*">
   <div class="kick">El problema</div>
@@ -878,11 +874,11 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 0:30 · sin clics
 
-'Las preguntas de siempre siguen valiendo: ¿el servicio está arriba?, ¿cuánta CPU usa?, ¿hay errores? Pero ninguna dice nada del modelo. Al modelo hay que hacerle otras cuatro.'
+'Las preguntas de siempre siguen sirviendo: ¿el servicio está arriba?, ¿cuánta CPU gasta?, ¿hay errores? Pero ninguna dice nada del modelo.'
 
-'¿Sigue distinguiendo correctamente? ¿Cambió la distribución de los datos? ¿Aumentaron los falsos positivos o negativos? ¿Y sus predicciones siguen siendo útiles?'
+'Al modelo hay que preguntarle otras cosas.' *(señala, una por una)* '¿Sigue distinguiendo bien? ¿Le cambiaron los datos? ¿Se le dispararon los falsos positivos o los falsos negativos? Y la más difícil: ¿lo que predice todavía le sirve a alguien?'
 
-'La última es la más difícil: solo la contesta el negocio, cuando la orden de mantenimiento dice si la alerta era real. En la demo van a ver cómo se responden las otras tres.'">
+'Esa última solo la responde el negocio, cuando el de mantenimiento llega y dice si la alerta era real o no. Las otras tres, ya las van a ver en la demo.'">
   <div class="kick">El problema</div>
   <div class="ttl wide">Monitorear la infraestructura <b>no es monitorear el modelo</b></div>
   <div class="tbl"><table>
@@ -900,7 +896,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 0:05 · *divisor* · *reloj: 6:40*
 
-'¿Qué hace falta para gobernarlo? Primero, abramos el equipo.'">
+'Bueno, ¿y cómo se gobierna esto? Abramos el equipo.'">
   <div class="sq"></div>
   <div class="n" a="1">02</div>
   <div class="t" a="2">El patrón</div>
@@ -913,13 +909,13 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 0:45 · 3 clics · *una capa por clic*
 
-'Abajo, el micrófono sobre la bomba y el modelo con su runtime: decide en milisegundos, con o sin red. El audio entra y no sale.'
+'Abajo está el micrófono sobre la bomba y el modelo con su runtime. Decide en milisegundos, haya red o no. El audio entra… y ahí se queda.'
 
-▶ CLIC 'Encima, el modelo no llega como un archivo suelto: llega como un artefacto con versión y hash. Si alguien lo tocó, no se instala.'
+▶ CLIC 'Encima, el modelo no llega como un archivo suelto que alguien copió. Llega como un artefacto con versión y con su huella. Si alguien lo toca, no se instala.'
 
-▶ CLIC 'Luego, un agente. Nadie le empuja nada a la estación: el agente trae el desired state cuando hay red.'
+▶ CLIC 'Después, un agente. A la estación nadie le empuja nada; es el agente el que, cuando hay red, va y pregunta qué debería tener.'
 
-▶ CLIC 'Y arriba, la pieza que falta en casi todos lados: una cola de eventos. Cada decisión queda guardada hasta que haya red.'">
+▶ CLIC 'Y arriba, lo que casi nadie pone: una cola de eventos. Cada decisión se guarda hasta que vuelva la señal.'">
   <div class="kick">El patrón</div>
   <div class="ttl wide">Arquitectura del <b>equipo en la estación</b></div>
   <div class="fig"><svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" class="iso"><polygon points="578.7,653.2 578.6,654.0 578.3,654.8 577.7,655.5 577.0,656.2 576.1,656.9 575.0,657.4 573.8,657.8 572.5,658.1 571.1,658.3 569.7,658.4 568.3,658.3 566.9,658.1 565.6,657.8 564.4,657.4 563.3,656.9 562.4,656.2 561.6,655.5 561.1,654.8 560.8,654.0 560.7,653.2 560.7,651.0 560.8,651.8 561.1,652.6 561.6,653.3 562.4,654.0 563.3,654.7 564.4,655.2 565.6,655.6 566.9,655.9 568.3,656.1 569.7,656.2 571.1,656.1 572.5,655.9 573.8,655.6 575.0,655.2 576.1,654.7 577.0,654.0 577.7,653.3 578.3,652.6 578.6,651.8 578.7,651.0" fill="#8695AA" stroke="#465469" stroke-width="0.9" stroke-linejoin="round" />
@@ -1057,21 +1053,21 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <!-- ═══════════════ 15 · THE GENERIC FLOW ═══════════════ -->
 <section class="s" data-id="flujo" data-sec="5" data-prog='[{"b":0},{"b":1},{"b":2},{"b":3},{"b":4},{"b":5},{"b":6}]' data-notes="14 · CINCO PIEZAS PARA GOBERNARLO
 
-1:10 · 6 clics · *una pieza por clic; la leyenda de arriba se enciende con cada una*
+1:10 · 6 clics · *una pieza por clic; la leyenda se enciende con cada una*
 
-*Paso 0: «copiar el modelo… y cruzar los dedos».* 'Así se despliegan modelos en muchos lados: copias el archivo al equipo y cruzas los dedos. Yo lo he hecho.' *(risas)*
+*Paso 0, «copiar el modelo… y cruzar los dedos».* 'Seamos sinceros: así se despliegan modelos en muchos lados. Uno copia el archivo al equipo… y cruza los dedos.' *(cruza los dedos)* 'Yo lo he hecho, no me da pena.' *(risas)*
 
-▶ CLIC 'Uno: optimizar por chip. Se entrena una vez y se prepara para cada familia de hardware.'
+▶ CLIC 'La primera pieza es optimizar para cada chip: se entrena una vez y se prepara para cada tipo de hardware.'
 
-▶ CLIC 'Dos: artefacto verificable. Cada versión, con su huella, en un registro donde nada se sobrescribe.'
+▶ CLIC 'La segunda, un artefacto verificable: cada versión con su huella, en un registro donde nada se sobrescribe.'
 
-▶ CLIC 'Tres: desired state. La central declara qué debería tener cada equipo, y el equipo lo trae cuando puede.'
+▶ CLIC 'La tercera, el desired state: la central dice qué debería tener cada equipo, y el equipo lo trae cuando puede.'
 
-▶ CLIC 'Cuatro: evento de inferencia. El modelo deja constancia de lo que decide. Si no hay red, se encola.'
+▶ CLIC 'La cuarta, que el modelo deje constancia de cada decisión. Si no hay red, se encola.'
 
-▶ CLIC 'Cinco: el gate. Una condición que mira esos eventos y decide sola si sigue o vuelve atrás. Es el loop rápido: minutos.'
+▶ CLIC 'Y la quinta, el gate: algo que mira esas decisiones y resuelve solo si seguimos o nos devolvemos. Eso es el loop rápido, de minutos.'
 
-▶ CLIC 'Y con esos mismos eventos se reentrena: el loop lento, días. Abajo, lo que atraviesa todo: identidad, mínimo privilegio, cifrado y auditoría. Ninguna de estas piezas depende de una nube en particular.'">
+▶ CLIC 'Con esas mismas decisiones se reentrena; ese es el loop lento, de días. Y por debajo de todo, lo de siempre: identidad, mínimo privilegio, cifrado y auditoría. Nada de esto depende de una nube en particular.'">
   <div class="kick">El patrón</div>
   <div class="ttl">Cinco piezas <b>para gobernarlo</b></div>
   <div class="stack"><svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" class="arq lay-a">
@@ -1253,13 +1249,13 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <!-- ═══════════════ 16 · THE SAME FLOW, ON AWS ═══════════════ -->
 <section class="s" data-id="aws" data-sec="6" data-prog='[{"b":0},{"b":1},{"b":2},{"b":3},{"b":4},{"b":5},{"b":6}]' data-notes="15 · EL MISMO PATRÓN EN AWS
 
-0:50 · 6 clics · *misma geometría que la anterior; avanza a buen ritmo, los pasos que vienen abren cada casilla*
+0:50 · 6 clics · *misma geometría; ve a buen ritmo, los pasos que vienen abren cada casilla*
 
-'El mismo dibujo, en AWS. Cada casilla ahora tiene nombre.'
+'Ahora el mismo dibujo, pero en AWS. Cada casilla ya tiene nombre.'
 
-▶ CLIC 'SageMaker AI entrena y exporta el modelo.' ▶ CLIC 'El registro es S3, un prefijo por versión, y IoT Greengrass lo empaca como componente.' ▶ CLIC 'El desired state es un despliegue de Greengrass, que llega por IoT Core con un certificado por equipo.'
+▶ CLIC 'SageMaker AI entrena.' ▶ CLIC 'S3 guarda cada versión e IoT Greengrass la empaca como componente.' ▶ CLIC 'El desired state es un despliegue de Greengrass, que le llega a cada equipo por IoT Core, con su propio certificado.'
 
-▶ CLIC 'Cada decisión entra por IoT Core y una regla la deja en CloudWatch Logs.' ▶ CLIC 'El gate: una alarma invoca una Lambda que vuelve a desplegar la última versión buena.' ▶ CLIC 'Y abajo, IAM, X.509, KMS y CloudTrail.'">
+▶ CLIC 'Cada decisión vuelve por IoT Core y una regla la deja en CloudWatch.' ▶ CLIC 'El gate es una alarma que llama a una Lambda, y la Lambda vuelve a poner la última versión buena.' ▶ CLIC 'Y abajo, IAM, certificados, KMS y CloudTrail.'">
   <div class="kick">El patrón</div>
   <div class="ttl wide">El mismo patrón <b>en AWS</b></div>
   <div class="stack"><svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" class="arq lay-a">
@@ -1439,7 +1435,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 0:10 · *divisor con la espina* · *reloj: 9:30*
 
-'Seis pasos: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear. En cada uno, una línea de la bomba.'">
+'Vamos paso por paso: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear. Y en cada paso, la bomba.'">
   <div class="sq"></div>
   <div class="n" a="1">03</div>
   <div class="t" a="2">Los seis pasos</div>
@@ -1452,17 +1448,15 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 1:00 · 3 clics
 
-'Paso uno. Bombas reales, solo clips de sonido normal.'
+'Paso uno, entrenar. Y aquí hay un detalle bonito: este modelo se entrena solo con bombas sanas.'
 
-▶ CLIC 'Se entrena un autoencoder: una red que aprende a rehacer el sonido normal. Si no lo puede rehacer, algo cambió. El score es el error de reconstrucción.'
+▶ CLIC 'Es un autoencoder: una red que aprende a reconstruir el sonido normal. Cuando no lo puede reconstruir, es porque algo cambió. Es como el mecánico que de tanto oír el motor sano, nota cualquier ruido raro.'
 
-▶ CLIC 'Lo que sale va a S3, un prefijo por versión. Una versión nueva es otro prefijo, nunca el mismo.'
+▶ CLIC 'Lo que sale va a S3, cada versión en su propia carpeta. Versión nueva, carpeta nueva; nunca se pisa la anterior.'
 
-▶ CLIC '¿Y qué sale exactamente? Cuatro archivos. El modelo en ONNX, que es el contrato con el equipo. stats.json, con la huella del sonido normal y el umbral. features.py, el mismo preprocesamiento del entrenamiento. E inference.py, que escucha, decide y cuenta.'
+▶ CLIC '¿Y qué sale exactamente? Cuatro archivos: el modelo en ONNX, que es como el contrato con el equipo; la huella del sonido normal con el umbral; el preprocesamiento del audio, y el código que escucha y decide.'
 
-'El error típico: entrenar con un preprocesamiento y servir con otro. No explota nada; el modelo solo oye distinto. Por eso features.py viaja con el modelo.'
-
-*La bomba:* 'Aprende solo con sonido normal: las fallas son raras.'
+'¿Y por qué mandar el preprocesamiento con el modelo? Porque el error más común es entrenar con un preprocesamiento y servir con otro. No explota nada. El modelo simplemente oye distinto, y nadie se entera.'
 
 *En la PoC la fábrica es model/train.py en mi portátil, no SageMaker AI. Lo dices en la lámina 25.*">
   <div class="kick">Los seis pasos</div>
@@ -1477,19 +1471,17 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 1:10 · 3 clics
 
-'Paso dos. Entrenas una vez, en 32 bits: un archivo ONNX.'
+'Paso dos. Uno entrena una vez, en 32 bits, y sale un archivo ONNX.'
 
-▶ CLIC 'Para que quepa en el equipo, se cuantiza de 32 a 8 bits, se simplifica el grafo y se compila para el acelerador del chip. Esa compilación la hace la herramienta de cada fabricante, sobre el mismo ONNX.'
+▶ CLIC 'Para que eso quepa en un equipo pequeño se cuantiza a 8 bits, se simplifica y se compila para el chip. Esa compilación la hace la herramienta de cada fabricante.'
 
-▶ CLIC 'Y no sale un artefacto: sale uno por chip. Y manda la memoria del chip: si no cabe, no corre.'
+▶ CLIC 'Y aquí está la trampa: no sale un artefacto, sale uno por cada tipo de chip. Y el que manda es la memoria: si no cabe, no corre.'
 
-▶ CLIC 'Esta es la bomba, medida en el equipo de la demo, una CPU x86. De FP32 a INT8, el archivo pasa de 464 KB a 127 KB. El clip, de 14,4 ms a 12,7 ms. Y toma la misma decisión en 98 % de los clips.'
+▶ CLIC 'Esta es la bomba, medida en el equipo de la demo. De 32 a 8 bits, el archivo baja de 464 a 127 kilobytes, cada clip pasa de 14,4 a 12,7 milisegundos, y toma la misma decisión en el 98 por ciento de los casos.'
 
-'En mi portátil la mejora era casi el doble. En el equipo, la mayor parte del tiempo se va en preparar el audio, no en el modelo. Por eso se mide en el chip, no en tu máquina.'
+'Ahora, un dato curioso: en mi portátil la mejora era casi el doble. En el equipo, la mayor parte del tiempo se va preparando el audio, no en el modelo. Por eso hay que medir en el chip de verdad, no en el computador de uno.'
 
-*La bomba:* 'INT8 para el equipo pequeño.'
-
-*Cifras: device.* sale de poc-devopsdays/build/device_bench.json, medido con model/bench_device.py en la EC2, dentro de la imagen de las bombas. En el portátil (M3 Pro) fue 2,6 ms → 2,0 ms. ΔAUC del INT8: −0,001. Herramientas, si preguntan: LiteRT y Qualcomm QNN para NPU, TensorRT para GPU de NVIDIA, ONNX Runtime y OpenVINO para CPU. Sobre SageMaker Neo, ver «Preguntas difíciles».*">
+*Portátil (M3 Pro): 2,6 → 2,0 ms. La pérdida de AUC del INT8 es de −0,001. Si preguntan por herramientas: LiteRT y Qualcomm QNN para NPU, TensorRT para GPU de NVIDIA, ONNX Runtime y OpenVINO para CPU. Sobre SageMaker Neo, ver «Preguntas difíciles».*">
   <div class="kick">Los seis pasos</div>
   <div class="ttl wide"><i class="pn">Paso 2 ·</i> Optimizar <b>para cada chip</b></div>
   <div class="fig"><svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" class="iso"><text x="96.0" y="266.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#5C7290" text-anchor="start" letter-spacing="2">ENTRENADO</text><rect x="96.0" y="284.0" width="300.0" height="274.0" rx="10" fill="#F4F7FC" stroke="#D5DEEA" stroke-width="1.5" /><rect x="132.0" y="306.0" width="150.0" height="60.0" rx="8" fill="#FFFFFF" stroke="#838994" stroke-width="1.6" /><rect x="146.0" y="317.0" width="150.0" height="60.0" rx="8" fill="#FFFFFF" stroke="#6A717F" stroke-width="1.6" /><rect x="160.0" y="328.0" width="150.0" height="60.0" rx="8" fill="#FFFFFF" stroke="#515A69" stroke-width="1.6" /><rect x="174.0" y="339.0" width="150.0" height="60.0" rx="8" fill="#FFFFFF" stroke="#394254" stroke-width="1.6" /><text x="132.0" y="456.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="44" font-weight="700" fill="#071329" text-anchor="start" >32 bits</text><text x="132.0" y="490.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#071329" text-anchor="start" >Modelo de la bomba</text><text x="132.0" y="520.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#475569" text-anchor="start" >un archivo ONNX, en FP32</text><g data-on="1"><path d="M400.0,421.0 L446.0,421.0" fill="none" stroke="#071329" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /><polygon points="446.0,421.0 437.0,425.3 437.0,416.7" fill="#071329"/><text x="462.0" y="266.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#6D28D9" text-anchor="start" letter-spacing="2">OPTIMIZAR POR CHIP</text><rect x="462.0" y="284.0" width="330.0" height="82.0" rx="10" fill="#FFFFFF" stroke="#6D28D9" stroke-width="1.8" /><text x="484.0" y="318.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#6D28D9" text-anchor="start" >01</text><text x="522.0" y="319.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#071329" text-anchor="start" >Cuantizar</text><text x="522.0" y="346.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#475569" text-anchor="start" >32 → 8 bits: hasta 4× menos</text><rect x="462.0" y="380.0" width="330.0" height="82.0" rx="10" fill="#FFFFFF" stroke="#6D28D9" stroke-width="1.8" /><text x="484.0" y="414.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#6D28D9" text-anchor="start" >02</text><text x="522.0" y="415.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#071329" text-anchor="start" >Fusionar y podar</text><text x="522.0" y="442.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#475569" text-anchor="start" >menos operaciones y pesos</text><rect x="462.0" y="476.0" width="330.0" height="82.0" rx="10" fill="#FFFFFF" stroke="#6D28D9" stroke-width="1.8" /><text x="484.0" y="510.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#6D28D9" text-anchor="start" >03</text><text x="522.0" y="511.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#071329" text-anchor="start" >Compilar</text><text x="522.0" y="538.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#475569" text-anchor="start" >para el acelerador del chip</text></g><g data-on="2"><text x="900.0" y="266.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#5C7290" text-anchor="start" letter-spacing="2">UN ARTEFACTO POR CHIP</text><path d="M796.0,421.0 L840.0,421.0 L840.0,325.0 L884.0,325.0" fill="none" stroke="#071329" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><polygon points="884.0,325.0 875.9,328.9 875.9,321.1" fill="#071329"/><rect x="900.0" y="284.0" width="604.0" height="82.0" rx="10" fill="#FFFFFF" stroke="#D5DEEA" stroke-width="1.5" /><rect x="933.0" y="308.0" width="34.0" height="34.0" rx="6" fill="#6D28D9" /><rect x="940.5" y="315.5" width="19.0" height="19.0" rx="3" fill="none" stroke="#BD9EEE" stroke-width="1.6" /><path d="M939.8,301.0 L939.8,308.0" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M939.8,342.0 L939.8,349.0" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M926.0,314.8 L933.0,314.8" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M967.0,314.8 L974.0,314.8" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M946.6,301.0 L946.6,308.0" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M946.6,342.0 L946.6,349.0" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M926.0,321.6 L933.0,321.6" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M967.0,321.6 L974.0,321.6" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M953.4,301.0 L953.4,308.0" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M953.4,342.0 L953.4,349.0" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M926.0,328.4 L933.0,328.4" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M967.0,328.4 L974.0,328.4" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M960.2,301.0 L960.2,308.0" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M960.2,342.0 L960.2,349.0" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M926.0,335.2 L933.0,335.2" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M967.0,335.2 L974.0,335.2" fill="none" stroke="#6D28D9" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><text x="996.0" y="319.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#071329" text-anchor="start" >NPU · INT8</text><text x="996.0" y="346.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#475569" text-anchor="start" >LiteRT · Qualcomm QNN</text><text x="1290.0" y="316.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#475569" text-anchor="start" >memoria del chip</text><rect x="1290.0" y="328.0" width="186.0" height="18.0" rx="4" fill="#FFFFFF" stroke="#071329" stroke-width="1.6" /><rect x="1293.0" y="331.0" width="154.8" height="12.0" rx="2" fill="#6D28D9" /><path d="M796.0,421.0 L840.0,421.0 L840.0,421.0 L884.0,421.0" fill="none" stroke="#071329" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><polygon points="884.0,421.0 875.9,424.9 875.9,417.1" fill="#071329"/><rect x="900.0" y="380.0" width="604.0" height="82.0" rx="10" fill="#FFFFFF" stroke="#D5DEEA" stroke-width="1.5" /><rect x="933.0" y="404.0" width="34.0" height="34.0" rx="6" fill="#2448FF" /><rect x="940.5" y="411.5" width="19.0" height="19.0" rx="3" fill="none" stroke="#9CADFF" stroke-width="1.6" /><path d="M939.8,397.0 L939.8,404.0" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M939.8,438.0 L939.8,445.0" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M926.0,410.8 L933.0,410.8" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M967.0,410.8 L974.0,410.8" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M946.6,397.0 L946.6,404.0" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M946.6,438.0 L946.6,445.0" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M926.0,417.6 L933.0,417.6" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M967.0,417.6 L974.0,417.6" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M953.4,397.0 L953.4,404.0" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M953.4,438.0 L953.4,445.0" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M926.0,424.4 L933.0,424.4" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M967.0,424.4 L974.0,424.4" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M960.2,397.0 L960.2,404.0" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M960.2,438.0 L960.2,445.0" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M926.0,431.2 L933.0,431.2" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M967.0,431.2 L974.0,431.2" fill="none" stroke="#2448FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><text x="996.0" y="415.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#071329" text-anchor="start" >GPU · FP16</text><text x="996.0" y="442.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#475569" text-anchor="start" >TensorRT</text><text x="1290.0" y="412.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#475569" text-anchor="start" >memoria del chip</text><rect x="1290.0" y="424.0" width="186.0" height="18.0" rx="4" fill="#FFFFFF" stroke="#071329" stroke-width="1.6" /><rect x="1293.0" y="427.0" width="82.8" height="12.0" rx="2" fill="#2448FF" /><path d="M796.0,421.0 L840.0,421.0 L840.0,517.0 L884.0,517.0" fill="none" stroke="#071329" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /><polygon points="884.0,517.0 875.9,520.9 875.9,513.1" fill="#071329"/><rect x="900.0" y="476.0" width="604.0" height="82.0" rx="10" fill="#FFFFFF" stroke="#D5DEEA" stroke-width="1.5" /><rect x="933.0" y="500.0" width="34.0" height="34.0" rx="6" fill="#00BCEB" /><rect x="940.5" y="507.5" width="19.0" height="19.0" rx="3" fill="none" stroke="#8CE1F6" stroke-width="1.6" /><path d="M939.8,493.0 L939.8,500.0" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M939.8,534.0 L939.8,541.0" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M926.0,506.8 L933.0,506.8" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M967.0,506.8 L974.0,506.8" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M946.6,493.0 L946.6,500.0" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M946.6,534.0 L946.6,541.0" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M926.0,513.6 L933.0,513.6" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M967.0,513.6 L974.0,513.6" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M953.4,493.0 L953.4,500.0" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M953.4,534.0 L953.4,541.0" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M926.0,520.4 L933.0,520.4" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M967.0,520.4 L974.0,520.4" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M960.2,493.0 L960.2,500.0" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M960.2,534.0 L960.2,541.0" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M926.0,527.2 L933.0,527.2" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M967.0,527.2 L974.0,527.2" fill="none" stroke="#00BCEB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" /><text x="996.0" y="511.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="24" font-weight="700" fill="#071329" text-anchor="start" >CPU · INT8</text><text x="996.0" y="538.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#475569" text-anchor="start" >ONNX Runtime · OpenVINO</text><text x="1290.0" y="508.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#475569" text-anchor="start" >memoria del chip</text><rect x="1290.0" y="520.0" width="186.0" height="18.0" rx="4" fill="#FFFFFF" stroke="#071329" stroke-width="1.6" /><rect x="1293.0" y="523.0" width="61.2" height="12.0" rx="2" fill="#00BCEB" /></g><g data-on="3"><rect x="96.0" y="586.0" width="1408.0" height="116.0" rx="10" fill="#FFFFFF" stroke="#6D28D9" stroke-width="2" /><text x="126.0" y="630.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#6D28D9" text-anchor="start" letter-spacing="1.5">LA BOMBA, MEDIDA</text><text x="126.0" y="674.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="32" text-anchor="start"><tspan fill="#071329" font-weight="700">FP32 </tspan><tspan fill="#5C7290" font-weight="400">→ </tspan><tspan fill="#6D28D9" font-weight="700">INT8</tspan></text><path d="M422.0,608.0 L422.0,680.0" fill="none" stroke="#D5DEEA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /><text x="446.0" y="630.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#475569" text-anchor="start" >Tamaño del archivo</text><text x="446.0" y="674.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="30" text-anchor="start"><tspan fill="#071329" font-weight="700">464 KB</tspan><tspan fill="#5C7290" font-weight="400"> → </tspan><tspan fill="#6D28D9" font-weight="700">127 KB</tspan><tspan fill="#071329" font-weight="400"></tspan></text><path d="M778.0,608.0 L778.0,680.0" fill="none" stroke="#D5DEEA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /><text x="802.0" y="630.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#475569" text-anchor="start" >Latencia por clip, en el equipo (x86)</text><text x="802.0" y="674.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="30" text-anchor="start"><tspan fill="#071329" font-weight="700">14,4 ms</tspan><tspan fill="#5C7290" font-weight="400"> → </tspan><tspan fill="#6D28D9" font-weight="700">12,7 ms</tspan><tspan fill="#071329" font-weight="400"></tspan></text><path d="M1134.0,608.0 L1134.0,680.0" fill="none" stroke="#D5DEEA" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /><text x="1158.0" y="630.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#475569" text-anchor="start" >Misma decisión</text><text x="1158.0" y="674.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="30" text-anchor="start"><tspan fill="#6D28D9" font-weight="700">98 %</tspan><tspan fill="#071329" font-weight="400"> de los clips</tspan></text></g></svg></div>
@@ -1502,19 +1494,17 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 1:00 · 4 clics · *una anotación por clic*
 
-'Paso tres. Un componente es la forma en que IoT Greengrass empaca software para el equipo. Esta es la receta de la demo, recortada.'
+'Paso tres. En IoT Greengrass, el software se empaca como un componente, y esta es la receta de la demo, un poco recortada.'
 
-▶ CLIC 'Los artefactos vienen de S3. La receta no trae el digest: Greengrass lo calcula al crear la versión del componente y lo verifica en el equipo antes de instalar.'
+▶ CLIC 'Los archivos vienen de S3. Ojo que la receta no trae el digest: Greengrass lo calcula cuando uno publica la versión y lo verifica en el equipo antes de instalar.'
 
-▶ CLIC 'El ciclo de vida no instala nada: las dependencias ya vienen en el equipo. Si tu componente baja librerías al arrancar, en una vereda sin red no arranca.'
+▶ CLIC 'Cuando arranca, no instala nada. Las dependencias ya vienen en el equipo. Si su componente baja librerías de internet al arrancar… en una vereda sin señal, no arranca.'
 
-▶ CLIC 'El umbral es configuración: se cambia con un despliegue, sin reentrenar ni publicar otra versión.'
+▶ CLIC 'El umbral es configuración. Si hay que moverlo, se manda un despliegue; no hay que reentrenar.'
 
-▶ CLIC 'Y los permisos: el componente solo puede publicar en un tema, station/events.'
+▶ CLIC 'Y los permisos: este componente solo puede publicar en un tema, station/events. Nada más.'
 
-'Una versión publicada no se toca. Si cambias un archivo en S3 sin cambiar la versión, el digest ya no coincide y el despliegue falla.'
-
-*La bomba:* 'El umbral es configuración: se cambia sin reentrenar.'
+'Y una regla que aprendí a las malas: una versión publicada no se toca. Si uno cambia un archivo en S3 sin cambiar la versión, el digest ya no cuadra y el despliegue falla.'
 
 *Fuente del digest: referencia de recetas de Greengrass, campo Digest de Artifacts. https://docs.aws.amazon.com/greengrass/v2/developerguide/component-recipe-reference.html*">
   <div class="kick">Los seis pasos</div>
@@ -1529,19 +1519,17 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 1:05 · 3 clics
 
-'Paso cuatro. ¿Cómo llega a mil equipos sin romperlos todos un martes? Con despliegues de IoT Greengrass, un thing group por ring.'
+'Paso cuatro. ¿Cómo le llega una versión nueva a mil equipos sin dañarlos todos un martes por la tarde? Con despliegues de Greengrass, por rings: cada ring es un thing group.'
 
-'Ring 0: una estación, el canary. Recibe la versión nueva primero.'
+'El ring 0 es una sola estación, el canary. Es la que recibe la versión nueva primero.'
 
-▶ CLIC 'Si pasa el gate, ring 1: el resto de la flota, en waves que crecen.'
+▶ CLIC 'Si pasa el gate, sigue el ring 1, el resto de la flota, y no de golpe: por waves que van creciendo.'
 
-▶ CLIC 'El despliegue trae dos protecciones: si fallan demasiados equipos, se cancela; y si un equipo no arranca la versión nueva, vuelve a la que tenía.'
+▶ CLIC 'Y el despliegue ya trae dos protecciones: si fallan muchos equipos, se cancela; y si un equipo no logra arrancar la versión nueva, vuelve solito a la que tenía.'
 
-▶ CLIC 'Y el rollback: la alarma ve fallas que nadie oyó y despliega la última versión buena. El ring 1 nunca recibe la versión mala.'
+▶ CLIC 'Y el rollback que armé yo: una alarma ve fallas que nadie oyó y vuelve a poner la última versión buena. El ring 1 nunca recibe la mala.'
 
-'Seguro alguien está pensando: 'Greengrass ya hace rollback'. Sí, de despliegues que fallan. Para Greengrass, un modelo que se instala bien y no oye es un despliegue exitoso.'
-
-*La bomba:* 'Una estación como canary.'
+'Seguro alguno está pensando: 'pero si Greengrass ya hace rollback'. Sí… pero de despliegues que fallan. Un modelo que se instala perfecto y oye mal, para Greengrass, es un despliegue exitoso.'
 
 *Fuentes: failureHandlingPolicy = ROLLBACK por defecto, https://docs.aws.amazon.com/greengrass/v2/APIReference/API_DeploymentPolicies.html · abortConfig y jobExecutionsRolloutConfig, https://docs.aws.amazon.com/cli/latest/reference/greengrassv2/create-deployment.html*">
   <div class="kick">Los seis pasos</div>
@@ -1556,15 +1544,15 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 0:50 · 2 clics
 
-'Paso cinco. ¿Qué sigue funcionando sin red?'
+'Paso cinco: ¿qué pasa cuando se va la señal?'
 
-'En un equipo pequeño, IoT Greengrass: el nucleus guarda los eventos en una cola local hasta que vuelve la red, por defecto en memoria, de 2,5 megas. Y si el equipo tiene poca memoria, existe el nucleus lite, escrito en C.'
+'En un equipo pequeño, Greengrass guarda los eventos en una cola local hasta que vuelve la red. Y si el equipo tiene muy poca memoria, existe una versión liviana del agente, escrita en C.'
 
-▶ CLIC 'Si la estación es una planta grande, Outposts con EKS local: el plano de control corre en el sitio y sigue sin la región.'
+▶ CLIC 'Si la estación es más bien una planta grande, está Outposts con EKS local: el plano de control corre ahí mismo y sigue funcionando sin la región.'
 
-▶ CLIC *La bomba, en el recuadro:* 'Sin red, la estación sigue escuchando y alertando: lo que necesita para decidir ya está adentro.'
+▶ CLIC 'En los dos casos, la estación sigue escuchando y alertando. Lo que necesita para decidir ya lo tiene adentro.'
 
-'Ojo con una cosa: cuando la cola se llena, el nucleus rechaza los mensajes nuevos. Si la red se va por horas, la cola va a disco.'
+'Ahora, un ojo con la cola: cuando se llena, empieza a rechazar mensajes. Si la red se va por horas, esa cola tiene que ir a disco.'
 
 *Fuentes: cola mqtt.spooler de 2,5 MB en memoria, https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html · cola en disco, https://docs.aws.amazon.com/greengrass/v2/developerguide/disk-spooler-component.html · nucleus lite (5 MB de almacenamiento, menos de 15 MB de RAM), https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-lite-component.html · EKS local sin red, https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-network-disconnects.html*">
   <div class="kick">Los seis pasos</div>
@@ -1579,23 +1567,21 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 1:05 · 5 clics · *un tramo de la tubería por clic*
 
-'Paso seis. Desde la nube ves lo que el modelo te cuenta: un evento por clip, de unos cientos de bytes, que llega a IoT Core.'
+'Y el paso seis: desde la nube no vemos el audio, vemos lo que el modelo nos cuenta. Un mensajito por cada clip, de unos cientos de bytes, que llega a IoT Core.'
 
-▶ CLIC 'Una regla de IoT lo toma y le suma la hora en que llegó. Llegada menos decisión: el tiempo que la estación estuvo sin red.'
+▶ CLIC 'Una regla de IoT lo recibe y le pega la hora de llegada. La diferencia entre la hora en que la bomba decidió y la hora en que llegó es justo el tiempo que estuvo sin red.'
 
-▶ CLIC 'La regla lo deja en CloudWatch Logs.'
+▶ CLIC 'Eso cae en CloudWatch Logs.'
 
-▶ CLIC 'Un filtro de métrica cuenta lo que importa. En la demo: la bomba fallaba y el modelo no avisó. MissedFaults, fallas que nadie oyó.'
+▶ CLIC 'Un filtro cuenta lo que nos importa. En la demo es este: la bomba estaba fallando y el modelo no avisó. Fallas que nadie oyó.'
 
-▶ CLIC 'Una alarma mira esa métrica.'
+▶ CLIC 'Una alarma vigila ese número.'
 
-▶ CLIC 'Y la alarma invoca la Lambda, que despliega la última versión buena al ring 0.'
+▶ CLIC 'Y cuando salta, llama a la Lambda, que devuelve el ring 0 a la última versión buena.'
 
-'El error típico: poner la alarma sobre CPU y errores. Ya vimos que eso se queda en verde. El gate mira al modelo.'
+'Aquí está el error de siempre: poner la alarma sobre CPU y errores. Ya vimos que eso se queda en verde. El gate tiene que mirar al modelo.'
 
-'En producción no sabes en el momento si la bomba fallaba: esa verdad solo existe en la demo. La etiqueta llega tarde, con la orden de mantenimiento, y mientras tanto comparas el canary contra el resto.'
-
-*La bomba:* 'Las señales de la bomba: alertas, score, entrada y versión.'">
+*Si alguien pregunta cómo se sabe en producción si la bomba fallaba: ese campo solo existe en la demo. En producción la confirmación llega tarde, con la orden de mantenimiento, y mientras tanto se compara el canary contra el resto.*">
   <div class="kick">Los seis pasos</div>
   <div class="ttl wide"><i class="pn">Paso 6 ·</i> Monitorear <b>lo que decide el modelo</b></div>
   <div class="fig"><svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" class="iso"><g data-on="0"><svg x="140" y="266" width="64" height="64" viewBox="0 0 80 80" ><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g fill="#7AA116"> <rect x="0" y="0" width="80" height="80"></rect> </g> <path d="M57.4230047,47.906119 C57.4230047,46.7966471 56.5260469,45.8943839 55.4230988,45.8943839 C54.3201507,45.8943839 53.4231929,46.7966471 53.4231929,47.906119 C53.4231929,49.0155909 54.3201507,49.9178541 55.4230988,49.9178541 C56.5260469,49.9178541 57.4230047,49.0155909 57.4230047,47.906119 M54.0631628,51.6740989 C52.8372204,51.2244761 51.8972646,50.1954736 51.5662802,48.9119866 L49.423381,48.9119866 L49.423381,56.9830679 C51.3622898,55.8182733 53.0952083,53.8507963 54.0631628,51.6740989 M47.423475,57.8772842 L47.423475,47.906119 C47.423475,47.3508801 47.870454,46.9002515 48.423428,46.9002515 L51.5662802,46.9002515 C51.8982646,45.6137469 52.8412202,44.5837385 54.0691625,44.1361274 C52.9622145,41.595306 50.6913213,39.3099749 48.1724398,38.2015088 C47.7274607,39.4387259 46.702509,40.387259 45.4235691,40.7222129 L45.4235691,58.2766136 C46.1095368,58.2102263 46.7805053,58.0724225 47.423475,57.8772842 M43.4236632,58.2756077 L43.4236632,40.7222129 C42.1467232,40.3882649 41.1227714,39.4407376 40.6767924,38.2055323 C38.1529111,39.3280805 35.8830178,41.6113998 34.7780698,44.1361274 C36.007012,44.5847443 36.9489677,45.6137469 37.2809521,46.9002515 L40.4238043,46.9002515 C40.9767782,46.9002515 41.4237572,47.3508801 41.4237572,47.906119 L41.4237572,57.8541492 C42.0807263,58.0643755 42.7436951,58.2082146 43.4236632,58.2756077 M39.4238513,56.9418273 L39.4238513,48.9119866 L37.2809521,48.9119866 C36.9499676,50.1954736 36.0110118,51.2234702 34.7860694,51.6740989 C35.7460243,53.8176027 37.4769429,55.7639564 39.4238513,56.9418273 M33.4241335,49.9178541 C34.5270816,49.9178541 35.4240394,49.0155909 35.4240394,47.906119 C35.4240394,46.7966471 34.5270816,45.8943839 33.4241335,45.8943839 C32.3211853,45.8943839 31.4242275,46.7966471 31.4242275,47.906119 C31.4242275,49.0155909 32.3211853,49.9178541 33.4241335,49.9178541 M42.4237102,36.8415759 C42.4237102,37.9510478 43.320668,38.853311 44.4236161,38.853311 C45.5265643,38.853311 46.4235221,37.9510478 46.4235221,36.8415759 C46.4235221,35.7321039 45.5265643,34.8298407 44.4236161,34.8298407 C43.320668,34.8298407 42.4237102,35.7321039 42.4237102,36.8415759 M59.4229107,47.906119 C59.4229107,49.8796312 58.0009776,51.5181894 56.1340654,51.8571668 C54.9171226,55.0578374 52.3372439,57.8994132 49.423381,59.2472758 L49.423381,64 L47.423475,64 L47.423475,59.9584241 C46.7725057,60.1223806 46.1025372,60.2370495 45.4235691,60.2923722 L45.4235691,64 L43.4236632,64 L43.4236632,60.2923722 C42.746695,60.2360436 42.0797264,60.1163453 41.4237572,59.9453479 L41.4237572,64 L39.4238513,64 L39.4238513,59.2130763 C36.4969889,57.8390612 33.9201101,55.0176027 32.7141669,51.8571668 C30.8472547,51.5181894 29.4243216,49.8796312 29.4243216,47.906119 C29.4243216,45.9336127 30.8442548,44.2960604 32.7091671,43.9550712 C33.9851071,40.4958927 37.0409634,37.4209556 40.4958009,36.1243923 C40.833785,34.2484493 42.4617084,32.8181056 44.4236161,32.8181056 C46.3845239,32.8181056 48.0114474,34.2464376 48.3514314,36.1203688 C51.8002692,37.3998324 54.8591253,40.4747695 56.1380652,43.9550712 C58.0029775,44.2970662 59.4229107,45.9346186 59.4229107,47.906119 M64.9986484,38.4740989 C65.0436463,41.2110645 63.9626972,43.8665549 62.1077844,45.6217938 L60.7378488,44.1552389 C62.1897805,42.7832355 63.0337409,40.6880134 62.9977425,38.5515507 C62.9987425,34.4284996 59.9888841,31.0950545 55.9980718,30.7208718 C55.461097,30.6695725 55.0601159,30.1998324 55.0931143,29.6576697 L55.1011139,29.5389774 C55.1061137,29.4705784 55.1111135,29.4021794 55.1111135,29.3307628 C55.1111135,26.6893546 52.9882133,24.5408215 50.3783361,24.5408215 C49.1573935,24.5408215 47.998448,25.0125733 47.1134896,25.8685666 C46.8705011,26.1029338 46.5235174,26.1964795 46.1985327,26.124057 C45.8705481,26.0496228 45.6025607,25.8132439 45.4845662,25.4953898 C43.8196445,21.0192791 39.5348461,18.0117351 34.8220677,18.0117351 C28.5373633,18.0117351 23.4246038,23.184912 23.4246038,29.5450126 C23.4246038,29.9795474 23.1466168,30.3708298 22.7356362,30.506622 C19.3047975,31.6341995 16.9999059,34.8449288 16.9999059,38.4952221 C16.9999059,43.129254 20.7257307,46.9002515 25.3055153,46.9002515 L25.4245097,46.9002515 L25.4245097,48.9119866 L25.3055153,48.9119866 C19.6227826,48.9119866 15,44.2387259 15,38.4952221 C15,34.2142498 17.5618795,30.4211232 21.4436969,28.8409053 C21.8096797,21.6952221 27.6704041,16 34.8220677,16 C39.9178281,16 44.5876084,18.9864208 46.8255032,23.5550712 C47.8844534,22.8871752 49.1083958,22.5290863 50.3783361,22.5290863 C53.9291691,22.5290863 56.8470318,25.3203688 57.0950202,28.8459346 C61.6598055,29.7069573 64.9986484,33.696228 64.9986484,38.4740989" fill="#FFFFFF"></path> </g></svg><text x="172.0" y="364.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#071329" text-anchor="middle" >IoT Core</text><text x="172.0" y="392.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#475569" text-anchor="middle" letter-spacing="-0.6">station/events</text></g><g data-on="1"><path d="M218.0,298.0 L374.0,298.0" fill="none" stroke="#071329" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /><polygon points="374.0,298.0 365.0,302.3 365.0,293.7" fill="#071329"/><svg x="388" y="266" width="64" height="64" viewBox="0 0 48 48" ><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <path d="M33.0811,9.1075 C31.6731,9.1075 30.5271,7.9615 30.5271,6.5535 C30.5271,5.1455 31.6731,4.0005 33.0811,4.0005 C34.4891,4.0005 35.6351,5.1455 35.6351,6.5535 C35.6351,7.9615 34.4891,9.1075 33.0811,9.1075 L33.0811,9.1075 Z M13.0001,8.1835 L17.1191,8.1835 L17.1191,4.0635 L13.0001,4.0635 L13.0001,8.1835 Z M33.0811,2.0005 C30.5701,2.0005 28.5271,4.0435 28.5271,6.5535 C28.5271,7.3635 28.7581,8.1135 29.1301,8.7735 L24.2491,12.0825 L19.1191,8.6055 L19.1191,3.0635 C19.1191,2.5105 18.6721,2.0635 18.1191,2.0635 L12.0001,2.0635 C11.4471,2.0635 11.0001,2.5105 11.0001,3.0635 L11.0001,9.1835 C11.0001,9.7365 11.4471,10.1835 12.0001,10.1835 L17.8841,10.1835 L23.3251,13.8715 L23.3251,16.2745 L25.3251,16.2745 L25.3251,13.7685 L30.4761,10.2785 C31.2161,10.7965 32.1111,11.1075 33.0811,11.1075 C35.5921,11.1075 37.6351,9.0645 37.6351,6.5535 C37.6351,4.0435 35.5921,2.0005 33.0811,2.0005 L33.0811,2.0005 Z M24.3411,44.2595 C18.3111,44.2595 14.9351,42.7435 14.8201,42.1005 L14.8211,26.3645 C17.0381,27.5125 20.7721,28.0565 24.3411,28.0565 C27.9091,28.0565 31.6441,27.5125 33.8611,26.3645 L33.8611,42.0965 C33.7451,42.7435 30.3661,44.2595 24.3411,44.2595 L24.3411,44.2595 Z M35.8441,23.8815 C35.8351,23.7365 35.8231,23.5875 35.7841,23.4605 C35.4921,22.4295 34.4361,21.6155 32.5561,20.9695 L31.9071,22.8625 C33.2341,23.3175 33.7151,23.7555 33.8321,23.9475 C33.5301,24.6285 30.2001,26.0565 24.3411,26.0565 C18.4741,26.0565 15.1471,24.6285 14.8501,23.9495 C14.9631,23.7595 15.4411,23.3195 16.7741,22.8625 L16.1261,20.9695 C14.2451,21.6155 13.1891,22.4295 12.8971,23.4585 C12.8581,23.5945 12.8471,23.7405 12.8381,23.8815 L12.8201,23.8815 C12.8201,23.9045 12.8281,23.9235 12.8291,23.9455 C12.8281,23.9645 12.8201,23.9855 12.8201,24.0045 L12.8201,42.1005 C12.8201,44.9585 18.7921,46.2595 24.3411,46.2595 C29.8901,46.2595 35.8611,44.9585 35.8611,42.1005 L35.8611,24.0045 C35.8611,23.9845 35.8531,23.9655 35.8521,23.9455 C35.8531,23.9235 35.8611,23.9045 35.8611,23.8815 L35.8441,23.8815 Z M24.3411,22.1335 L20.9551,18.9635 L27.7271,18.9635 L24.3411,22.1335 Z M31.3971,24.2145 L31.3971,17.9635 C31.3971,17.4115 30.9501,16.9635 30.3971,16.9635 L18.2531,16.9635 C17.7001,16.9635 17.2531,17.4115 17.2531,17.9635 L17.2531,24.2145 L19.2531,24.2145 L19.2531,20.1115 L23.6571,24.2335 C23.8501,24.4145 24.0951,24.5035 24.3411,24.5035 C24.5861,24.5035 24.8321,24.4145 25.0241,24.2345 L29.3971,20.1405 L29.3971,24.2145 L31.3971,24.2145 Z" fill="#7AA116"></path> </g></svg><text x="420.0" y="364.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#071329" text-anchor="middle" >Regla de IoT</text><text x="420.0" y="392.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#475569" text-anchor="middle" letter-spacing="-0.6">station_events</text></g><g data-on="2"><path d="M466.0,298.0 L622.0,298.0" fill="none" stroke="#071329" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /><polygon points="622.0,298.0 613.0,302.3 613.0,293.7" fill="#071329"/><svg x="636" y="266" width="64" height="64" viewBox="0 0 48 48" ><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <path d="M29.4998,17.0004 C26.2418,17.0004 23.4708,19.0924 22.4378,22.0004 L24.6068,22.0004 C25.5198,20.2224 27.3678,19.0004 29.4998,19.0004 C32.5318,19.0004 34.9998,21.4674 34.9998,24.5004 C34.9998,27.5324 32.5318,30.0004 29.4998,30.0004 C27.7958,30.0004 26.2708,29.2214 25.2608,28.0004 L22.8718,28.0004 C24.1318,30.3764 26.6288,32.0004 29.4998,32.0004 C33.6358,32.0004 36.9998,28.6364 36.9998,24.5004 C36.9998,20.3644 33.6358,17.0004 29.4998,17.0004 L29.4998,17.0004 Z M1.9998,33.0004 L14.9998,33.0004 L14.9998,31.0004 L1.9998,31.0004 L1.9998,33.0004 Z M1.9998,18.0004 L14.9998,18.0004 L14.9998,16.0004 L1.9998,16.0004 L1.9998,18.0004 Z M1.9998,26.0004 L28.9998,26.0004 L28.9998,24.0004 L1.9998,24.0004 L1.9998,26.0004 Z M43.8428,35.7384 L38.8178,31.2134 C38.3998,31.7924 37.9318,32.3304 37.4148,32.8214 L42.4118,37.3294 C42.8478,37.7224 43.5278,37.6874 43.9228,37.2494 C44.3148,36.8124 44.2798,36.1344 43.8428,35.7384 L43.8428,35.7384 Z M45.4088,38.5884 C44.8028,39.2594 43.9658,39.6004 43.1248,39.6004 C42.3938,39.6004 41.6588,39.3414 41.0738,38.8154 L35.8338,34.0894 C34.0168,35.2934 31.8398,36.0004 29.4998,36.0004 C24.3798,36.0004 20.0328,32.6344 18.5488,28.0004 L20.6768,28.0004 C22.0738,31.5094 25.4988,34.0004 29.4998,34.0004 C34.7378,34.0004 38.9998,29.7384 38.9998,24.5004 C38.9998,19.2624 34.7378,15.0004 29.4998,15.0004 C25.1278,15.0004 21.4458,17.9734 20.3448,22.0004 L18.2818,22.0004 C19.4278,16.8574 24.0188,13.0004 29.4998,13.0004 C35.8408,13.0004 40.9998,18.1584 40.9998,24.5004 C40.9998,26.2774 40.5828,27.9554 39.8588,29.4604 L45.1828,34.2544 C46.4368,35.3884 46.5378,37.3314 45.4088,38.5884 L45.4088,38.5884 Z M1.9998,41.0004 L20.9998,41.0004 L20.9998,39.0004 L1.9998,39.0004 L1.9998,41.0004 Z M1.9998,10.0004 L22.9998,10.0004 L22.9998,8.0004 L1.9998,8.0004 L1.9998,10.0004 Z" fill="#E7157B"></path> </g></svg><text x="668.0" y="364.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#071329" text-anchor="middle" >CloudWatch Logs</text><text x="668.0" y="392.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#475569" text-anchor="middle" letter-spacing="-0.6">/station/events</text></g><g data-on="3"><path d="M714.0,298.0 L870.0,298.0" fill="none" stroke="#071329" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /><polygon points="870.0,298.0 861.0,302.3 861.0,293.7" fill="#071329"/><svg x="884" y="266" width="64" height="64" viewBox="0 0 80 80" ><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g fill="#E7157B"> <rect x="0" y="0" width="80" height="80"></rect> </g> <path d="M55.0592315,46.7773707 C55.0592315,42.8680281 51.8575588,39.6876305 47.9220646,39.6876305 C43.9865705,39.6876305 40.785903,42.8680281 40.785903,46.7773707 C40.785903,50.6867133 43.9865705,53.8671108 47.9220646,53.8671108 C51.8575588,53.8671108 55.0592315,50.6867133 55.0592315,46.7773707 M57.0697011,46.7773707 C57.0697011,51.7881194 52.9663327,55.8642207 47.9220646,55.8642207 C42.8788018,55.8642207 38.7754334,51.7881194 38.7754334,46.7773707 C38.7754334,41.7666219 42.8788018,37.6905206 47.9220646,37.6905206 C52.9663327,37.6905206 57.0697011,41.7666219 57.0697011,46.7773707 M65.5096522,60.4735504 L58.5011554,54.2026253 C57.9352082,54.9944794 57.2808004,55.7174332 56.5540156,56.3634982 L63.5524601,62.6334248 C64.1495696,63.1686502 65.0784065,63.1187225 65.6182176,62.5255808 C66.155013,61.9324392 66.1067617,61.010773 65.5096522,60.4735504 M47.9220646,57.6616197 C53.9645309,57.6616197 58.8801289,52.7786859 58.8801289,46.7773707 C58.8801289,40.7750569 53.9645309,35.8931217 47.9220646,35.8931217 C41.8806036,35.8931217 36.9650056,40.7750569 36.9650056,46.7773707 C36.9650056,52.7786859 41.8806036,57.6616197 47.9220646,57.6616197 M67.1119965,63.8626459 C66.4264264,64.6165549 65.47849,65 64.5285431,65 C63.7002296,65 62.8699057,64.708422 62.207456,64.1172774 L54.9305615,57.5987107 C52.9070239,58.8968321 50.505518,59.6587296 47.9220646,59.6587296 C40.7718297,59.6587296 34.9545361,53.8800921 34.9545361,46.7773707 C34.9545361,39.6746493 40.7718297,33.8960118 47.9220646,33.8960118 C55.0733048,33.8960118 60.8905985,39.6746493 60.8905985,46.7773707 C60.8905985,48.8154213 60.3990387,50.7366411 59.5465996,52.4511599 L66.8556616,58.9906963 C68.2750531,60.265851 68.3896499,62.4496907 67.1119965,63.8626459 M21.2803274,29.392529 C21.2803274,29.9117776 21.3124949,30.429029 21.3738143,30.9293051 C21.4089975,31.2138932 21.3205368,31.4984814 21.1295422,31.7131707 C20.9777518,31.8839236 20.7736891,31.9967603 20.550527,32.0347054 C18.0786547,32.6687878 14.0104695,34.5880104 14.0104695,40.3456782 C14.0104695,44.6933865 16.4240382,47.0929141 18.4495863,48.3411077 C19.1411878,48.7744806 19.9594489,49.0051468 20.8229456,49.0141338 L32.9450717,49.0251179 L32.9430613,51.0222278 L20.811888,51.0112437 C19.5664021,50.9982625 18.384246,50.6607509 17.3840374,50.0346569 C15.3765836,48.7974474 12,45.8896553 12,40.3456782 C12,33.66235 16.5999543,31.191925 19.3000149,30.319188 C19.2799102,30.0116331 19.2698579,29.702081 19.2698579,29.392529 C19.2698579,23.9324305 22.9982737,18.2696254 27.9420183,16.2215892 C33.7241287,13.8150717 39.8500294,15.0083449 44.3263399,19.4109737 C45.7135638,20.7749998 46.8545053,22.4316024 47.7300648,24.3478294 C48.9061895,23.3802296 50.355738,22.8460027 51.8836949,22.8460027 C54.8863312,22.8460027 58.2659305,25.1097268 58.8680661,30.0605622 C61.6797078,30.7046302 67.6206453,32.9553731 67.6206453,40.422567 C67.6206453,43.4042521 66.6797455,45.8666886 64.8230769,47.7419748 L63.3896121,46.3410022 C64.8632863,44.8531553 65.6101757,42.8620367 65.6101757,40.422567 C65.6101757,33.891019 60.1055101,32.2663701 57.737177,31.8719409 C57.4677741,31.827006 57.2295334,31.6752256 57.0757325,31.4515493 C56.9259525,31.2358614 56.8686541,30.9712444 56.9138897,30.7146157 C56.5851779,26.6604826 54.1605516,24.8431126 51.8836949,24.8431126 C50.4472144,24.8431126 49.1001998,25.5381069 48.1874466,26.7503526 C47.9652897,27.0439277 47.6044105,27.193711 47.2344841,27.139789 C46.8695838,27.085867 46.5629872,26.8362283 46.4373329,26.4917268 C45.6140456,24.2260057 44.4278686,22.3207628 42.9119745,20.8309188 C39.0327735,17.0154404 33.7281496,15.9809374 28.7170543,18.0649216 C24.5463352,19.7924217 21.2803274,24.7672224 21.2803274,29.392529" fill="#FFFFFF"></path> </g></svg><text x="916.0" y="364.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#071329" text-anchor="middle" >Filtro de métrica</text><text x="916.0" y="392.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#6D28D9" text-anchor="middle" letter-spacing="-0.6">MissedFaults</text></g><g data-on="4"><path d="M962.0,298.0 L1118.0,298.0" fill="none" stroke="#6D28D9" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /><polygon points="1118.0,298.0 1109.0,302.3 1109.0,293.7" fill="#6D28D9"/><svg x="1132" y="266" width="64" height="64" viewBox="0 0 48 48" ><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <path d="M41.4246,40.6675 L34.6366,40.6675 L34.6366,19.8305 C36.8216,20.5265 39.2386,20.5265 41.4246,19.8305 L41.4246,40.6675 Z M41.9946,17.4595 C39.4996,18.6475 36.5596,18.6465 34.0666,17.4595 C33.7586,17.3125 33.3946,17.3335 33.1026,17.5165 C32.8126,17.6995 32.6366,18.0185 32.6366,18.3615 L32.6366,41.6675 C32.6366,42.2205 33.0836,42.6675 33.6366,42.6675 L42.4246,42.6675 C42.9776,42.6675 43.4246,42.2205 43.4246,41.6675 L43.4246,18.3615 C43.4246,18.0185 43.2486,17.6995 42.9586,17.5165 C42.6676,17.3335 42.3036,17.3115 41.9946,17.4595 L41.9946,17.4595 Z M38.0306,4.0005 C40.8716,4.0005 43.1826,6.3115 43.1826,9.1515 C43.1826,11.9925 40.8716,14.3035 38.0306,14.3035 C35.1906,14.3035 32.8796,11.9925 32.8796,9.1515 C32.8796,6.3115 35.1906,4.0005 38.0306,4.0005 L38.0306,4.0005 Z M38.0306,16.3035 C41.9746,16.3035 45.1826,13.0955 45.1826,9.1515 C45.1826,5.2085 41.9746,2.0005 38.0306,2.0005 C34.0876,2.0005 30.8796,5.2085 30.8796,9.1515 C30.8796,13.0955 34.0876,16.3035 38.0306,16.3035 L38.0306,16.3035 Z M2.0006,46.1835 L45.9406,46.1835 L45.9406,44.1835 L2.0006,44.1835 L2.0006,46.1835 Z M20.5756,40.6675 L27.3636,40.6675 L27.3636,27.7285 L20.5756,27.7285 L20.5756,40.6675 Z M19.5756,42.6675 L28.3636,42.6675 C28.9166,42.6675 29.3636,42.2205 29.3636,41.6675 L29.3636,26.7285 C29.3636,26.1755 28.9166,25.7285 28.3636,25.7285 L19.5756,25.7285 C19.0236,25.7285 18.5756,26.1755 18.5756,26.7285 L18.5756,41.6675 C18.5756,42.2205 19.0236,42.6675 19.5756,42.6675 L19.5756,42.6675 Z M6.5156,40.6675 L13.3036,40.6675 L13.3036,23.3345 L6.5156,23.3345 L6.5156,40.6675 Z M5.5156,42.6675 L14.3036,42.6675 C14.8566,42.6675 15.3036,42.2205 15.3036,41.6675 L15.3036,22.3345 C15.3036,21.7815 14.8566,21.3345 14.3036,21.3345 L5.5156,21.3345 C4.9626,21.3345 4.5156,21.7815 4.5156,22.3345 L4.5156,41.6675 C4.5156,42.2205 4.9626,42.6675 5.5156,42.6675 L5.5156,42.6675 Z" fill="#E7157B"></path> </g></svg><text x="1164.0" y="364.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#071329" text-anchor="middle" >Alarma</text><text x="1164.0" y="392.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#6D28D9" text-anchor="middle" letter-spacing="-0.6">station-missed-faults</text></g><g data-on="5"><path d="M1210.0,298.0 L1366.0,298.0" fill="none" stroke="#6D28D9" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" /><polygon points="1366.0,298.0 1357.0,302.3 1357.0,293.7" fill="#6D28D9"/><svg x="1380" y="266" width="64" height="64" viewBox="0 0 80 80" ><g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"> <g fill="#ED7100"> <rect x="0" y="0" width="80" height="80"></rect> </g> <path d="M28.0075352,66 L15.5907274,66 L29.3235885,37.296 L35.5460249,50.106 L28.0075352,66 Z M30.2196674,34.553 C30.0512768,34.208 29.7004629,33.989 29.3175745,33.989 L29.3145676,33.989 C28.9286723,33.99 28.5778583,34.211 28.4124746,34.558 L13.097944,66.569 C12.9495999,66.879 12.9706487,67.243 13.1550766,67.534 C13.3374998,67.824 13.6582439,68 14.0020416,68 L28.6420072,68 C29.0299071,68 29.3817234,67.777 29.5481094,67.428 L37.563706,50.528 C37.693006,50.254 37.6920037,49.937 37.5586944,49.665 L30.2196674,34.553 Z M64.9953491,66 L52.6587274,66 L32.866809,24.57 C32.7014253,24.222 32.3486067,24 31.9617091,24 L23.8899822,24 L23.8990031,14 L39.7197081,14 L59.4204149,55.429 C59.5857986,55.777 59.9386172,56 60.3255148,56 L64.9953491,56 L64.9953491,66 Z M65.9976745,54 L60.9599868,54 L41.25928,12.571 C41.0938963,12.223 40.7410777,12 40.3531778,12 L22.89768,12 C22.3453987,12 21.8963569,12.447 21.8953545,12.999 L21.884329,24.999 C21.884329,25.265 21.9885708,25.519 22.1780103,25.707 C22.3654452,25.895 22.6200358,26 22.8866544,26 L31.3292417,26 L51.1221625,67.43 C51.2885485,67.778 51.6393624,68 52.02626,68 L65.9976745,68 C66.5519605,68 67,67.552 67,67 L67,55 C67,54.448 66.5519605,54 65.9976745,54 L65.9976745,54 Z" fill="#FFFFFF"></path> </g></svg><text x="1412.0" y="364.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="21" font-weight="700" fill="#071329" text-anchor="middle" >Lambda</text><text x="1412.0" y="392.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#6D28D9" text-anchor="middle" letter-spacing="-0.6">station-rollback</text></g><g data-on="1"><path d="M420.0,404.0 L420.0,438.0" fill="none" stroke="#94A3B8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4" /><rect x="96.0" y="438.0" width="680.0" height="178.0" rx="10" fill="#F4F7FC" stroke="#D5DEEA" stroke-width="1.5" /><text x="124.0" y="474.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#5C7290" text-anchor="start" letter-spacing="1.5">LA REGLA · SQL</text><text x="124.0" y="514.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#071329" text-anchor="start" xml:space="preserve">SELECT *, timestamp() AS arrived_ts</text><text x="124.0" y="544.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#071329" text-anchor="start" xml:space="preserve">FROM &#x27;station/events&#x27;</text><text x="124.0" y="598.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#475569" text-anchor="start" >arrived_ts: cuándo llegó · ts: cuándo decidió la bomba</text></g><g data-on="3"><path d="M916.0,404.0 L916.0,438.0" fill="none" stroke="#94A3B8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="4 4" /><rect x="824.0" y="438.0" width="680.0" height="178.0" rx="10" fill="#F4F7FC" stroke="#D5DEEA" stroke-width="1.5" /><text x="852.0" y="474.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="18" font-weight="700" fill="#5C7290" text-anchor="start" letter-spacing="1.5">EL FILTRO DE MÉTRICA</text><text x="852.0" y="520.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#071329" text-anchor="start" xml:space="preserve">{ ($.truth = &quot;anomaly&quot;) &amp;&amp; ($.alert IS FALSE) }</text><text x="852.0" y="562.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="19" font-weight="400" fill="#475569" text-anchor="start" >crea la métrica</text><text x="988.0" y="562.0" font-family="'Courier New', ui-monospace, Menlo, Consolas, monospace" font-size="20" font-weight="700" fill="#6D28D9" text-anchor="start" >MissedFaults</text><text x="852.0" y="598.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="400" fill="#475569" text-anchor="start" >la bomba fallaba y el modelo no avisó</text></g><g data-on="5"><rect x="96.0" y="640.0" width="1408.0" height="62.0" rx="10" fill="#FFFFFF" stroke="#6D28D9" stroke-width="2" /><text x="126.0" y="679.0" font-family="Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="23" text-anchor="start"><tspan fill="#6D28D9" font-weight="700">La alarma invoca la Lambda: </tspan><tspan fill="#071329" font-weight="400">lee la última versión buena y la despliega al ring 0.</tspan></text></g></svg></div>
@@ -1608,11 +1594,9 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 0:35 · 1 clic · *la barra cuenta cinco segundos*
 
-'Última pregunta. ¿Qué versión corre en cada equipo?' *(manos)* 'Ahora bajen la mano los que tuvieron que pensarlo.' *(risas)*
+'Una pregunta antes de la demo: ¿ustedes saben qué versión del modelo está corriendo en cada uno de sus equipos?' *(espera manos)* 'Ahora bajen la mano los que tuvieron que pensarlo.' *(risas)*
 
-▶ CLIC 'Esta es la respuesta, y no hay que entrar a ningún equipo: el estado del despliegue, por thing group. StationRing0, la bomba 1, com.station.Listener 1.0.0, activo. StationRing1, de la 2 a la 5, la misma versión.'
-
-'La pregunta se responde en la nube, no en el equipo.'
+▶ CLIC 'Aquí la respuesta sale de la nube, sin entrar a ningún equipo: el ring 0, la bomba 1, versión 1.0.0, activo. El ring 1, de la 2 a la 5, la misma.'
 
 *Así lo devolvió aws greengrassv2 list-deployments en el ensayo: un despliegue a un thing group queda ACTIVE. Detalle de un equipo, si lo piden: aws greengrassv2 list-installed-components --core-device-thing-name pump-01. Antes de subir, confirma que la flota está así.*">
   <div class="kick">A mano alzada</div>
@@ -1635,7 +1619,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 0:05 · *divisor* · *reloj: 16:25*
 
-'Suficiente teoría. Vamos a la estación.'">
+'Bueno, suficiente teoría. Vamos para la estación.'">
   <div class="sq"></div>
   <div class="n" a="1">04</div>
   <div class="t" a="2">Demostración</div>
@@ -1648,11 +1632,11 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 0:40 · sin clics
 
-'Esto es lo que monté. No traje bombas al escenario: cada bomba es un contenedor en una EC2, con el nucleus real de IoT Greengrass adentro. Cinco bombas: la 1 es el ring 0, el canary; de la 2 a la 5, el ring 1.'
+'Les cuento qué monté, porque no me traje bombas en la maleta.' *(risas)* 'Cada bomba es un contenedor en una EC2, con el agente real de Greengrass adentro. Son cinco: la 1 es el ring 0, el canary, y de la 2 a la 5 son el ring 1.'
 
-'Lo que suena es audio real de MIMII DUE. Y todo lo demás es AWS de verdad: EC2, IoT Greengrass, IoT Core, S3, CloudWatch, Lambda y Parameter Store. Todo sale de Terraform, con GitHub Actions.'
+'El audio es real, y todo lo demás es AWS de verdad, montado con Terraform desde GitHub Actions.'
 
-'Lo único simulado es el equipo físico. Y la fábrica: el modelo lo entrena un script en mi portátil, no SageMaker AI.'
+'Lo único de mentiras es el equipo físico… y la fábrica del modelo, que es un script en mi portátil y no SageMaker.'
 
 *Si preguntan: las cinco bombas salen de tres secciones de MIMII DUE; la 1 y la 4 comparten sección, y la 2 y la 5 también, con clips distintos. Cada nucleus es una JVM: en el ensayo, unos 220 MB por bomba.*">
   <div class="kick">Demostración</div>
@@ -1832,65 +1816,65 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <!-- ═══════════════ 29 · THE DEMO · THE THREE ACTS ═══════════════ -->
 <section class="s" data-id="demo" data-sec="7" data-notes="26 · DEMOSTRACIÓN EN TRES ACTOS
 
-6:00 · 2 clics en la lámina, después las terminales · *la lámina es el mapa; lo real está en la terminal*
+6:00 · 2 clics en la lámina, después las terminales · *la lámina es el mapa; lo de verdad está en la terminal*
 
-*En la lámina (0:20).* 'Tres actos. Uno: escuchar. La bomba 3 va a sonar como la B del principio.'
+*En la lámina (0:20).* 'Van a ser tres actos. En el primero, la bomba 3 va a sonar como la B del principio.'
 
-▶ CLIC 'Dos: sin red. La 3 se queda sin señal.'
+▶ CLIC 'En el segundo, la dejamos sin señal.'
 
-▶ CLIC 'Tres: ring deployment y rollback.' *(señala la frase de abajo)* 'Y esa frase es el final de la película. No la lean todavía.' *(risas)*
+▶ CLIC 'Y en el tercero, mandamos una versión nueva por rings… y vemos qué pasa.' *(señala la frase de abajo)* 'Esa frase de abajo es el final de la película, así que no la lean todavía.' *(risas)*
 
-*Cambia a las terminales: ./demo/watch.sh a la izquierda; a la derecha arriba, el dashboard station; a la derecha abajo, la terminal de Session Manager en la EC2. Letra grande.*
+*Cambia a las terminales: ./demo/watch.sh a la izquierda; arriba a la derecha, el dashboard station; abajo a la derecha, la terminal de Session Manager en la EC2. Letra grande.*
 
-'Esto es la estación en vivo. Cada línea es un clip que una bomba escuchó y decidió: la hora, qué bomba, qué versión, si alertó, el score contra el umbral, cómo era la entrada y en cuántos milisegundos. Esas son las golden signals de un modelo. El audio no está ahí. Nunca sale.'
+'Esto que ven aquí es la estación en vivo. Cada línea es un clip que una bomba escuchó y decidió: qué bomba, qué versión, si alertó, el score contra el umbral, cómo venía el audio y cuánto se demoró. Esas son las golden signals de un modelo. Y fíjense que el audio no aparece por ningún lado.'
 
 Acto 1 · Escuchar (1:00)
 
-*Escribe* ./demo/fault.sh pump-03 — 'Le digo a la bomba 3 que suene como la B.'
+*Escribe* ./demo/fault.sh pump-03 — 'Le voy a decir a la bomba 3 que suene como la B.'
 
-*Cuando aparezca pump-03 v1.0.0 ALERT (en el ensayo, al siguiente clip, unos 4 s):* 'Ahí está. ALERT: el score pasó el umbral.'
+*Cuando aparezca pump-03 v1.0.0 ALERT (en el ensayo salió al siguiente clip):* '¡Ahí está! Alerta: el score pasó el umbral.'
 
-'Y esta es la respuesta del principio: la bomba B era la que estaba fallando. ¿Quién votó B?' *(manos)* 'Oído de mecánico. Los de la A, tranquilos: para eso está el modelo.'
+'Y aquí está la respuesta de la pregunta del principio: la que estaba fallando era la B. ¿Quién votó por la B?' *(manos)* 'Ustedes tienen oído de mecánico. Los de la A, tranquilos, para eso está el modelo.' *(risas)*
 
-'El audio no salió de la estación. Salió esta línea.'
+'Y ojo: el audio no salió de la estación. Lo único que salió fue esta línea.'
 
 *No apagues la falla de la 3: en el acto 2, lo que llega tarde tienen que ser alertas.*
 
 Acto 2 · Sin red (1:20)
 
-*Escribe* ./demo/network.sh off pump-03 — 'Le quito la red a la estación 3, como cuando se va la señal en la vereda.'
+*Escribe* ./demo/network.sh off pump-03 — 'Ahora le quito la red a la bomba 3. Como cuando se va la señal en la vereda.'
 
-*Mientras esperas, lanza el despliegue del acto 3:* ./demo/deploy.sh 2.0.0 ring-0 — 'Y mientras la 3 está sin señal, aprovecho: mando una versión nueva a una sola estación. Ya volvemos a eso.'
+*Mientras esperas, lanza el despliegue del acto 3:* ./demo/deploy.sh 2.0.0 ring-0 — 'Y mientras tanto, aprovecho y le mando una versión nueva a una sola estación. Ya volvemos a eso.'
 
-*A los 40 o 50 s:* 'La 3 se calló. Las otras cuatro siguen. ¿Se rompió? No. Sigue escuchando, sigue alertando y guarda cada evento en la cola del nucleus. La nube no sabe nada. La estación, sí.'
+*A los 40 o 50 s:* 'Miren: la 3 se calló, y las otras cuatro siguen como si nada. ¿Se dañó? No. Sigue escuchando, sigue alertando, y va guardando todo en su cola. La nube no sabe nada; la estación sí.'
 
-*Escribe* ./demo/network.sh on pump-03 — *en el ensayo, la bomba se reconectó en unos 5 s.* 'Ahí están: llegaron tarde, pero llegaron. Ese 'arrived late' es la diferencia entre cuándo decidió la bomba y cuándo llegó a la nube. No se perdió ninguna alerta.'
+*Escribe* ./demo/network.sh on pump-03 — *en el ensayo se reconectó en unos 5 s.* 'Y ahí llegan, de golpe. Llegaron tarde, pero llegaron todas: ese 'arrived late' es el tiempo que la bomba estuvo sin señal. No se perdió ninguna alerta.'
 
 *Escribe* ./demo/fault.sh pump-03 off
 
 Acto 3 · Ring deployment y rollback (3:05)
 
-*Señala la bomba 1, que ya corre v2.0.0 (en el ensayo llegó en 13 a 15 s); de la 2 a la 5 siguen en v1.0.0.* 'La versión nueva se reentrenó con más audio. Más datos, mejor modelo… ¿cierto? Y da menos alertas: en operación están felices. Va solo al ring 0, el canary. Sin errores, misma latencia. Para Greengrass, despliegue exitoso.'
+*Señala la bomba 1, que ya corre v2.0.0 (en el ensayo llegó en 13 a 20 s); de la 2 a la 5 siguen en v1.0.0.* 'La versión nueva se entrenó con más audio. Y más datos es mejor modelo, ¿cierto?' *(pausa)* 'Además da menos alertas, en operación están felices. Llegó solo al ring 0, sin errores, con la misma latencia. Para Greengrass, todo perfecto.'
 
-*Escribe* ./demo/fault.sh pump-01 — 'Ahora la 1 suena con falla.'
+*Escribe* ./demo/fault.sh pump-01 — 'Ahora pongamos a fallar la bomba 1.'
 
-*Cuando aparezca pump-01 v2.0.0 normal … · missed fault:* 'La bomba está fallando… y la v2 dice normal. Falla no oída.' *(pausa)*
+*Cuando aparezca pump-01 v2.0.0 normal … · missed fault:* 'La bomba está fallando… y la versión nueva dice 'normal'. Una falla que nadie oyó.' *(pausa)*
 
-'¿Qué pasó? El audio extra de la v2 incluía la semana en que una bomba ya estaba fallando. Nadie lo limpió. El modelo aprendió que fallar es normal. Corre sin errores, da menos alertas… y no oye las fallas.'
+'¿Qué pasó? Ese audio extra incluía la semana en que una bomba ya venía fallando, y nadie lo revisó. El modelo aprendió que fallar es lo normal. No da errores, da menos alertas… y no oye las fallas.'
 
-*Mientras la alarma junta datos:* 'Ahora no voy a tocar nada. El gate trabaja solo.' *Cambia al deck: tecla A y una flecha a la derecha te llevan al anexo A2. Cuenta la secuencia con la nota de A2 (un minuto). M te devuelve aquí.*
+*Mientras la alarma junta datos:* 'Y ahora no voy a tocar nada. Dejemos que el gate haga su trabajo.' *Cambia al deck: tecla A y una flecha a la derecha te llevan al anexo A2. Cuenta la secuencia con la nota de A2 (un minuto). M te devuelve aquí.*
 
-*Vuelve a watch.sh. Cuando la 1 salga en v1.0.0 con ALERT:* 'Volvió. v1.0.0, ALERT otra vez: la falla se oye. Nadie entró al equipo. Y el ring 1 nunca recibió la v2.'
+*Vuelve a watch.sh. Cuando la 1 salga en v1.0.0 con ALERT:* 'Ahí volvió: versión 1.0.0, y alerta otra vez. Nadie entró al equipo, y el ring 1 nunca recibió la versión mala.'
 
 *Escribe* ./demo/fault.sh pump-01 off
 
-*Vuelve a esta lámina y dilo mirando a la sala:* 'Greengrass revierte despliegues fallidos, no modelos equivocados. Ese gate lo pones tú.'
+*Vuelve a esta lámina y dilo mirando a la sala, despacio:* 'Greengrass revierte despliegues fallidos, pero no modelos equivocados. Ese gate lo tiene que poner uno.'
 
-*Tiempos medidos en los ensayos del 12 de octubre: de fault.sh pump-01 a la v1 otra vez, entre 1:40 y 2:15 (la alarma salta entre 1:30 y 2:00; la Lambda despliega 1 s después; la bomba vuelve unos 13 s más tarde). Depende de en qué segundo del minuto cae la falla. Tope: si a los tres minutos de fault.sh pump-01 la 1 no ha vuelto, no esperes más: «La alarma va a su ritmo; para no robarles tiempo, les muestro cómo termina», y pon el video desde el rollback.*
+*Tiempos medidos en los ensayos del 12 de octubre: de fault.sh pump-01 a la v1 otra vez, entre 90 y 135 s. Depende de en qué segundo del minuto cae la falla. Si a los tres minutos la 1 no ha vuelto, no esperes más: «La alarma va a su ritmo; para no robarles tiempo, les muestro cómo termina», y pon el video desde el rollback.*
 
-*Plan B, si la red del evento falla (watch.sh sin líneas en 30 s o la EC2 no responde): pon el video de respaldo, cortado por actos, y dilo con naturalidad: «La red de un evento es el peor lugar del mundo para depender de MQTT. Por eso traje la grabación: es la misma demo, grabada en el ensayo.» Narra encima con este mismo guion.*
+*Plan B, si la red del evento falla (watch.sh sin líneas en 30 s o la EC2 no responde): pon el video de respaldo y dilo con humor: «El wifi de un evento es el peor lugar del mundo para depender de MQTT. Por eso traje la grabación del ensayo.» Narra encima con este mismo guion.*
 
-*Si preguntan si la v2 es mala en general o solo en la demo: en todo el set de prueba, con fallas que la v2 no vio al entrenar, la v1 detecta 21 % de las fallas y la v2 16 %; la v1 alerta en 13 % de los clips y la v2 en 10 %. Los clips de la flota se eligen para que la demo sea repetible.*">
+*Si preguntan si la v2 es mala en general o solo en la demo: en todo el set de prueba, con fallas que no vio al entrenar, la v1 detecta el 21 % de las fallas y la v2 el 16 %; la v1 alerta en el 13 % de los clips y la v2 en el 10 %. Los clips de la flota se eligen para que la demo sea repetible.*">
   <div class="kick">Demostración</div>
   <div class="ttl wide">Demostración <b>en tres actos</b></div>
   <div class="acts">
@@ -1919,19 +1903,19 @@ Acto 3 · Ring deployment y rollback (3:05)
 
 1:05 · 4 clics · *reloj: 23:10 al entrar*
 
-'Les dejo cinco cosas que funcionan. La mayoría no las va a hacer el lunes. Los que las hagan van a dormir mejor.'
+'Me quedan unos minutos, así que les dejo cinco cosas. Y les advierto: casi nadie las hace el lunes. Pero los que las hacen duermen más tranquilos.'
 
-'Uno: el modelo es un artefacto más: versión, digest y receta.'
+'La primera: traten el modelo como cualquier otro artefacto, con versión, digest y receta.'
 
-▶ CLIC 'Dos: optimiza por chip y mide en el chip.'
+▶ CLIC 'La segunda: optimicen para cada chip, y midan en el chip de verdad.'
 
-▶ CLIC 'Tres: despliega por rings, con un gate que mire al modelo y no solo al proceso.'
+▶ CLIC 'La tercera: desplieguen por rings, con un gate que mire al modelo, no solo al proceso.'
 
-▶ CLIC 'Cuatro: diseña para estar sin red: cola local y decisiones locales.'
+▶ CLIC 'La cuarta: diseñen pensando en que no va a haber red. Cola local y decisiones locales.'
 
-▶ CLIC 'Y cinco: que el modelo cuente qué decide; el dato crudo se queda en el equipo.'
+▶ CLIC 'Y la quinta: que el modelo les cuente lo que decide, pero que el dato crudo se quede en el equipo.'
 
-*Si el reloj marca 23:35 o menos al llegar aquí (+0:25), cuenta lo que pasó en el primer ensayo, que es real: «La primera vez que monté esto en AWS, ninguna bomba arrancaba. El instalador de Greengrass decide el formato del archivo de configuración por la extensión, y mi archivo no tenía extensión. Una línea. Por eso se ensaya en el equipo de verdad.»*">
+*Si el reloj marca 23:35 o menos al llegar aquí (+0:25), cuenta lo que pasó en el primer ensayo, que es real: «¿Saben qué fue lo primero que se me dañó? La primera vez que monté esto en AWS, ninguna bomba arrancaba. Horas buscando, y era que el instalador de Greengrass decide el formato del archivo de configuración por la extensión… y mi archivo no tenía extensión. Una línea. Por eso se ensaya en el equipo de verdad.»*">
   <div class="kick">Conclusiones</div>
   <div class="ttl wide">Cinco <b>recomendaciones</b></div>
   <div class="rows solo five">
@@ -1947,19 +1931,19 @@ Acto 3 · Ring deployment y rollback (3:05)
 <!-- ═══════════════ 32 · THE FINAL LINE (the audios come back) ═══════════════ -->
 <section class="s" data-id="final" data-sec="0" data-notes="28 · LA FRASE FINAL: ¿ESTA BOMBA ESTÁ FALLANDO?
 
-0:45 · 2 clics · *cierre circular: vuelve a los audios del inicio*
+0:45 · 2 clics · *cierre circular: vuelven los audios del principio*
 
-'Al principio les pregunté:' *(señala)* '¿esta bomba está fallando?'
+'¿Se acuerdan de la pregunta del principio?' *(señala)* '¿Esta bomba está fallando?'
 
-*(dale ▶ a la bomba B; tres o cuatro segundos y detenla)*
+*(▶ bomba B, tres o cuatro segundos, la detienes)*
 
-'Ustedes la oyeron. Desde la nube, nadie la oyó. Y no hacía falta.'
+'Ustedes la oyeron. Desde la nube, nadie la oyó… y no hacía falta.'
 
-▶ CLIC 'Esto es lo único que salió de la estación: la bomba 3, versión 1.0.0, alerta, el score sobre el umbral. Unos cientos de bytes. El audio se quedó allá.'
+▶ CLIC 'Esto fue lo único que salió de la estación: la bomba 3, versión 1.0.0, alerta, con el score por encima del umbral. Unos cientos de bytes. El audio se quedó allá.'
 
-▶ CLIC 'No necesitas ver el modelo. Necesitas que te cuente.' *(pausa)*
+▶ CLIC 'Porque uno no necesita ver el modelo. Necesita que el modelo le cuente.' *(pausa)*
 
-'Así que les dejo una pregunta. Si mañana uno de sus modelos deja de oír… ¿quién se entera primero: ustedes, o la vereda que se quedó sin agua?'
+'Y les dejo una última pregunta. Si mañana uno de sus modelos deja de oír… ¿quién se va a enterar primero? ¿Ustedes… o la vereda que se quedó sin agua?' *(pausa larga antes de pasar)*
 
 *La línea de la lámina es la que imprimió la terminal en el ensayo: score 0.42 contra un umbral de 0.34.*">
   <div class="fq" a="1">¿Esta bomba está <b>fallando</b>?</div>
@@ -1981,7 +1965,7 @@ Acto 3 · Ring deployment y rollback (3:05)
 
 0:15 · sin clics
 
-'Todo está en el repo de ese QR: la demo con el paso a paso, las láminas y el guion.'
+'Todo lo que vieron está en el repo de ese QR: la demo con el paso a paso, las láminas y este guion. Tómenle foto.'
 
 *El QR lleva a https://github.com/alejandro945/mlops-a-ciegas (público desde el 12 de octubre; verificado leyendo el QR de la lámina). Si lo necesitas suelto, está en talk/assets/qr-repo.png y qr-repo.svg.*">
   <div class="kick">Recursos</div>
@@ -2001,7 +1985,7 @@ Acto 3 · Ring deployment y rollback (3:05)
 
 0:15 · sin clics
 
-'Muchas gracias.' *(espera el aplauso)* 'Con gusto respondo sus preguntas.'
+'Muchas gracias.' *(espera el aplauso)* 'Con todo gusto respondo sus preguntas.'
 
 *Anexos: la tecla A abre A1; las flechas los recorren; M o Esc te devuelven. A1 el evento, A2 el rollback paso a paso, A3 qué revierte Greengrass solo, A4 permisos y costo, A5 de la demo a producción, A6 qué método de drift, A7 regulación, A8 fuentes, A9 golden signals, A10 audio crudo contra eventos. Más respuestas en «Preguntas difíciles», al final de este archivo.*">
   <div class="pn" aria-hidden="true"></div>
@@ -2025,9 +2009,9 @@ Acto 3 · Ring deployment y rollback (3:05)
 
 *Si preguntan qué lleva exactamente el evento. M para volver.*
 
-'Quién decidió, con qué versión y la huella exacta del modelo. El número de evento y cuándo decidió la bomba. Qué audio escuchó y de qué dominio venía. El score, el umbral de esa versión y la decisión. La entrada, resumida: la distancia media a la huella del sonido normal, en desviaciones estándar. La latencia. Y la verdad del clip, que solo existe en la demo.'
+'Cada mensaje dice qué bomba decidió, con qué versión del modelo y la huella exacta de ese modelo. Trae un número de secuencia y la hora en que decidió. Qué audio escuchó, el score, el umbral de esa versión y si alertó o no. Un resumen de cómo venía la entrada, la latencia… y la verdad del clip, que solo existe en la demo.'
 
-'La hora de llegada la pone la regla de IoT. Llegada menos decisión es lo que la estación estuvo sin red.'">
+'La hora de llegada la pone la regla de IoT. Si le restan la hora de la decisión, sale lo que la estación estuvo sin red.'">
   <div class="kick">Anexo</div><div class="anx">A · ANEXOS  ·  M · VOLVER</div>
   <div class="ttl wide">El evento de la demo, <b>campo por campo</b></div>
   <div class="tbl md"><table>
@@ -2048,17 +2032,17 @@ Acto 3 · Ring deployment y rollback (3:05)
 
 *Úsalo mientras esperas la alarma del acto 3. Dura un minuto. M te devuelve a la demo.*
 
-'Esto es lo que está pasando ahora mismo, sin que yo toque nada.'
+'Mientras esperamos, les cuento qué está pasando ahora mismo, sin que yo toque nada.'
 
-'Desplegué la 2.0.0 al thing group StationRing0. La bomba 1 trajo su desired state, bajó los archivos de S3, verificó el digest e instaló. Para Greengrass, éxito: la v2 corre sin errores.'
+'Yo mandé la 2.0.0 al ring 0. La bomba 1 se trajo su desired state, bajó los archivos de S3, revisó el digest e instaló. Para Greengrass, todo salió bien.'
 
-'La bomba suena con falla y la v2 no avisa. Cada evento pasa por la regla, llega a CloudWatch Logs, y el filtro cuenta una falla no oída.'
+'Pero la bomba suena con falla y la versión nueva no avisa. Cada uno de esos mensajes pasa por la regla, cae en CloudWatch, y el filtro va contando: una falla que nadie oyó, otra, otra…'
 
-'Cuando en un minuto se juntan ocho o más, la alarma station-missed-faults pasa a ALARM e invoca la Lambda. La Lambda le pregunta a Parameter Store cuál es la última versión buena. Responde 1.0.0. Y crea un despliegue de la 1.0.0, solo al ring 0.'
+'Cuando en un minuto se juntan ocho, salta la alarma y llama a la Lambda. La Lambda le pregunta a Parameter Store cuál fue la última versión buena, le responde 1.0.0, y la vuelve a desplegar solo en el ring 0.'
 
-'La bomba 1 vuelve a la v1, y la falla se oye otra vez. Yo solo aparezco en el primer paso. Del quinto en adelante, nadie toca nada.'
+'Fíjense que yo solo aparezco en el primer paso. De ahí en adelante, nadie toca nada.'
 
-*El umbral de la alarma (fallas no oídas por minuto) es la variable de Terraform alarm_threshold, que en Actions viene de la variable del repo ALARM_THRESHOLD (8 por defecto). Con estos clips, la v2 deja pasar unas 12 por minuto. La acción de la alarma solo corre cuando cambia de estado: antes de subir, la alarma tiene que estar en OK.*">
+*El umbral de la alarma (fallas no oídas por minuto) es la variable de Terraform alarm_threshold, que en Actions viene de la variable del repo ALARM_THRESHOLD (8 por defecto). Con estos clips, la v2 deja pasar unas 12 por minuto. La alarma solo actúa cuando cambia de estado: antes de subir, tiene que estar en OK.*">
   <div class="kick">Anexo</div><div class="anx">A · ANEXOS  ·  M · VOLVER</div>
   <div class="ttl wide">El rollback automático, <b>paso a paso</b></div>
   <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" class="iso seq">
@@ -2132,9 +2116,9 @@ Acto 3 · Ring deployment y rollback (3:05)
 
 *Si preguntan por qué hace falta el gate si Greengrass ya revierte.*
 
-'Tres cosas sí. Si el artefacto en S3 cambió, el digest no coincide y el despliegue falla. Si el componente no instala o no arranca, failureHandlingPolicy en ROLLBACK, que viene por defecto, vuelve a la versión anterior. Y si fallan muchos equipos del ring, abortConfig cancela el despliegue.'
+'Greengrass sí se devuelve solo en tres casos: si alguien cambió un archivo en S3 y el digest no cuadra; si el componente no instala o no arranca, porque por defecto hace rollback; y si fallan muchos equipos del ring, porque cancela el despliegue.'
 
-'Y una no: un modelo que corre bien y decide mal. Para Greengrass, eso salió bien. Lo ven los eventos del modelo y una alarma que los mire.'
+'Pero hay un caso que no ve: un modelo que corre perfecto y decide mal. Para Greengrass eso salió bien. Ese caso solo lo ven los eventos del modelo y una alarma que los mire.'
 
 *Fuentes: https://docs.aws.amazon.com/greengrass/v2/developerguide/component-recipe-reference.html (Digest) · https://docs.aws.amazon.com/greengrass/v2/APIReference/API_DeploymentPolicies.html (ROLLBACK por defecto) · https://docs.aws.amazon.com/cli/latest/reference/greengrassv2/create-deployment.html (abortConfig).*">
   <div class="kick">Anexo</div><div class="anx">A · ANEXOS  ·  M · VOLVER</div>
@@ -2153,9 +2137,9 @@ Acto 3 · Ring deployment y rollback (3:05)
 
 *Si preguntan por permisos o por cuánto cuesta.*
 
-'El equipo baja artefactos con el rol de token exchange, que solo puede leer el bucket. Habla MQTT con una política de IoT que solo lo deja conectarse como su bomba y publicar en station/events. La regla solo escribe en su grupo de logs. Y la Lambda solo puede crear el despliegue y leer el parámetro.'
+'Cada pieza tiene lo mínimo. La bomba solo puede leer su bucket y solo puede publicar en su tema, con su propia identidad. La regla solo escribe en sus logs. Y la Lambda solo puede crear el despliegue y leer el parámetro.'
 
-'¿Cuánto cuesta? Lo que cobra es la EC2 que hospeda las cinco bombas, los mensajes de IoT Core, los core devices de Greengrass, CloudWatch y Lambda. La cifra exacta sale de Cost Explorer después del ensayo. Para dejar de pagar, el workflow de Terraform tiene un destroy.'">
+'¿Y cuánto cuesta? Lo que más pesa es la EC2 que hospeda las cinco bombas; después vienen los mensajes de IoT Core, Greengrass, CloudWatch y Lambda. La cifra exacta la saco de Cost Explorer. Y para no pagar de más, todo se baja con un destroy desde GitHub Actions.'">
   <div class="kick">Anexo</div><div class="anx">A · ANEXOS  ·  M · VOLVER</div>
   <div class="ttl wide">Permisos <b>y costo</b></div>
   <div class="tbl sm"><table>
@@ -2171,9 +2155,9 @@ Acto 3 · Ring deployment y rollback (3:05)
 
 <section class="s" data-id="a5" data-annex="1" data-notes="A5 · DE LA DEMO A PRODUCCIÓN
 
-*Si preguntan qué cambia para una flota real de estaciones.*
+*Si preguntan qué cambia para una flota real.*
 
-'Cinco cambios. Un evento por clip pasa a un resumen por minuto, y el detalle solo cuando algo cambia. La cola en memoria pasa a disco, con tope y prioridad. El nucleus en un contenedor pasa a nucleus lite en el equipo pequeño. El ring de una estación pasa a un gate que compara el canary contra el ring. Y la respuesta conocida de la demo pasa a etiquetas tardías: la orden de mantenimiento dice cuándo fue falla.'">
+'Cambiarían cinco cosas. En vez de un mensaje por clip, un resumen por minuto, y el detalle solo cuando algo cambia. La cola se va a disco. El agente pasa a la versión liviana en los equipos pequeños. El canary deja de ser una sola estación y se compara contra el ring. Y la verdad del clip, que aquí ya la sabemos, en producción llega tarde, con la orden de mantenimiento.'">
   <div class="kick">Anexo</div><div class="anx">A · ANEXOS  ·  M · VOLVER</div>
   <div class="ttl wide">De la demo <b>a producción</b></div>
   <div class="pairs" style="top:236px">
@@ -2191,9 +2175,9 @@ Acto 3 · Ring deployment y rollback (3:05)
 
 *Si preguntan cómo medir el drift.*
 
-'Depende de la variable. PSI, para rangos o categorías; sus umbrales son costumbre, no estadística. Kolmogorov-Smirnov, para muestras pequeñas: con muchos datos da falsas alarmas. Wasserstein, para saber cuánto se movió en muestras grandes. Y Jensen-Shannon, acotada entre cero y uno.'
+'Depende del dato. PSI sirve para rangos o categorías, pero sus umbrales son más costumbre que estadística. Kolmogorov-Smirnov sirve con pocas muestras; con muchas, da falsas alarmas. Wasserstein dice cuánto se movió la distribución. Y Jensen-Shannon queda siempre entre cero y uno, que es cómodo para alertar.'
 
-'En la demo uso algo más simple: la distancia media de cada clip a la huella de stats.json. Con la otra velocidad, en el set de prueba, pasa de 0,76 a 1,07.'
+'En la demo uso algo más sencillo: qué tan lejos está cada clip de la huella del sonido normal. Con la otra velocidad, en el set de prueba, pasa de 0,76 a 1,07.'
 
 *En el ensayo, con ./demo/domain.sh pump-05 shifted, la entrada de la bomba 5 subió de ~0,8 a entre 1,6 y 2,2 desde el primer clip, y aparecieron alertas falsas. En el dashboard, el widget de la entrada muestra el promedio de la flota y la peor bomba: la deriva de una sola bomba se ve en la segunda serie.*">
   <div class="kick">Anexo</div><div class="anx">A · ANEXOS  ·  M · VOLVER</div>
@@ -2213,13 +2197,13 @@ Acto 3 · Ring deployment y rollback (3:05)
 
 3 clics · *si preguntan quién más va a pedir cuentas*
 
-'En Europa, el AI Act pide que los sistemas de alto riesgo registren eventos solos durante toda su vida. Esos registros se guardan al menos seis meses, y hay monitoreo después de salir al mercado. Para alto riesgo aplica desde diciembre de 2027 o agosto de 2028, según el anexo.'
+'En Europa, el AI Act les pide a los sistemas de alto riesgo que registren eventos solos durante toda su vida, que los guarden al menos seis meses y que los sigan monitoreando después de salir al mercado. Para alto riesgo aplica desde diciembre de 2027 o agosto de 2028, según el caso.'
 
-▶ CLIC 'En Estados Unidos, el marco de riesgo de IA del NIST: gobernar, mapear, medir y gestionar. Es voluntario, pero se volvió el idioma común.'
+▶ CLIC 'En Estados Unidos está el marco de riesgo de IA del NIST. Es voluntario, pero se volvió el idioma común.'
 
-▶ CLIC 'E ISO/IEC 42001: un sistema de gestión de IA, certificable, con la lógica de ISO 27001.'
+▶ CLIC 'Y la ISO 42001, que es como la 27001 pero para IA, y se puede certificar.'
 
-▶ CLIC 'Piden lo mismo que necesitas para operar: qué corre, qué decidió y cómo volver.'
+▶ CLIC 'Y si se fijan, todos piden lo mismo que uno necesita para operar: saber qué corre, qué decidió y cómo devolverse.'
 
 *Si preguntan por Colombia: el AI Act se aplica a lo que se pone en el mercado de la UE, se fabrique donde se fabrique. Verifica en EUR-Lex el número y las fechas del Reglamento (UE) 2026/1744 antes de subir.*">
   <div class="kick">Anexo</div><div class="anx">A · ANEXOS  ·  M · VOLVER</div>
@@ -2241,7 +2225,7 @@ Acto 3 · Ring deployment y rollback (3:05)
 
 <section class="s" data-id="a8" data-annex="1" data-notes="A8 · FUENTES
 
-*Si piden los papers y los datos. Los audios y las cifras medidas salen de MIMII DUE (Tanabe et al., Hitachi, 2021), bombas, licencia CC BY-NC-SA 4.0. Las fuentes de AWS no van en láminas: están en este guion y en el README de la PoC.*
+*Si piden los papers y los datos. Los audios y las cifras salen de MIMII DUE (Tanabe et al., Hitachi, 2021), bombas, licencia CC BY-NC-SA 4.0. Las fuentes de AWS no van en láminas: están en este guion y en el README de la PoC.*
 
 'Todo está aquí y en el repo. Los audios son de MIMII DUE, de Hitachi, con licencia abierta no comercial.'">
   <div class="kick">Anexo</div><div class="anx">A · ANEXOS  ·  M · VOLVER</div>
@@ -2260,9 +2244,9 @@ Acto 3 · Ring deployment y rollback (3:05)
 <!-- ═══════════════ 28 · THE GOLDEN SIGNALS ═══════════════ -->
 <section class="s" data-id="senales" data-annex="1" data-notes="A9 · LAS GOLDEN SIGNALS DE UN MODELO
 
-*Si preguntan qué mirar en el dashboard. En la demo las nombras sobre las columnas de watch.sh.*
+*Si preguntan qué mirar en el dashboard.*
 
-'Los que venimos de SRE conocemos las golden signals de un servicio: latencia, tráfico, errores y saturación. Las de un modelo, con la bomba: ¿qué decide? Alertas por bomba. ¿Con cuánta seguridad? El score contra el umbral. ¿Se parece a lo que aprendió? El nivel de la entrada. ¿Qué corre dónde? La versión por equipo. Ninguna sola alcanza.'">
+'Los que venimos de SRE conocemos las golden signals de un servicio: latencia, tráfico, errores y saturación. Las de un modelo, con la bomba, serían: ¿qué está decidiendo? ¿Con cuánta seguridad? ¿Lo que le llega se parece a lo que aprendió? ¿Y qué versión corre dónde? Ninguna sola alcanza; hay que mirarlas juntas.'">
   <div class="kick">Anexo</div><div class="anx">A · ANEXOS  ·  M · VOLVER</div>
   <div class="ttl wide">Las golden signals <b>de un modelo</b></div>
   <div class="sre" a="2">Las de un servicio ya las conocemos: latencia · tráfico · errores · saturación</div>
@@ -2366,11 +2350,11 @@ Acto 3 · Ring deployment y rollback (3:05)
 
 2 clics · *si preguntan por qué no mandar el audio a la nube*
 
-'Si mandaras el audio crudo de mil bombas: 2,76 terabytes al día.'
+'Si mandáramos el audio crudo de mil bombas, serían 2,76 terabytes al día.'
 
-▶ CLIC 'Un evento cada 10 segundos por bomba: 8,64 millones de mensajes al día.'
+▶ CLIC 'Un mensaje cada 10 segundos por bomba: 8,64 millones de mensajes al día.'
 
-▶ CLIC 'Un resumen por minuto: 1,44 millones. El audio se queda en la estación.'
+▶ CLIC 'Y un resumen por minuto: 1,44 millones. Y el audio, quietico en la estación.'
 
 *La PoC manda un evento por clip, cada 3 s, porque son cinco bombas. Las cuentas están al pie de la lámina.*">
   <div class="kick">Anexo</div><div class="anx">A · ANEXOS  ·  M · VOLVER</div>
