@@ -740,7 +740,14 @@ def b_whoami(s, sec, tm):
         for k, img in enumerate(imgs):
             picture(s, os.path.join(BADGES, img.get("data-file")), x + k * 102, 460 + dy, 92, 92, name=img.get("alt"))
         x += len(imgs) * 102 - 10 + 34
-    textbox(s, 552, 590 + dy, 900, 30, [plain(q(me, ".hd"))], size=20, color=LINK, fnt=MONO)
+    y = 590 + dy
+    hb = me.cssselect("p.hb")
+    if hb:                                     # hobbies, one or two lines, under the badges
+        runs = runs_of(hb[0], NAVY)
+        nl = n_lines("".join(t for t, _ in runs), 900, 21)
+        textbox(s, 552, y, 900, nl * 21 * 1.4 + 6, [runs], size=21, color=SLATE, lh=1.4, name="Fuera del trabajo")
+        y += round(nl * 21 * 1.4) + 22
+    textbox(s, 552, y, 900, 30, [plain(q(me, ".hd"))], size=20, color=LINK, fnt=MONO)
 
 
 def b_canvas(s, sec, tm):

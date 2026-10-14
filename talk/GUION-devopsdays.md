@@ -1,6 +1,6 @@
 # Guion · MLOps a ciegas · DevOpsDays Bogotá 2026
 
-**Duración:** 25:25 de contenido, dentro de los 25 minutos más 5 de preguntas que promete el CFP. Cronométralo en el ensayo; el acto 3 depende de la alarma. **Láminas:** 30 más 10 anexos; cuatro son divisores y pasan en segundos. Plantilla oficial de DevOpsDays Bogotá 2026.
+**Duración:** 25:30 de contenido, dentro de los 25 minutos más 5 de preguntas que promete el CFP. Cronométralo en el ensayo; el acto 3 depende de la alarma. **Láminas:** 30 más 10 anexos; cuatro son divisores y pasan en segundos. Plantilla oficial de DevOpsDays Bogotá 2026.
 
 **De qué va:** cómo gobernar un modelo de IA que corre donde no llega el plano de control. El hilo es una estación de bombeo: un modelo que escucha bombas en una vereda con red intermitente. Las láminas nombran y dibujan servicios de AWS, pero ninguna cita a AWS: los datos de la documentación se dicen en voz alta y su enlace queda en la nota.
 
@@ -103,11 +103,13 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ## 5 · Sobre mí
 <!-- id: quien -->
-**0:30** · sin clics
+**0:35** · sin clics
 
 "Soy Alejandro Varela, Senior Cloud Engineer en EPAM. Llevo modelos de IA de la nube a equipos en campo: inferencia en el edge e IoT industrial."
 
 "Tengo cinco certificaciones de AWS y tres de Kubernetes, pero lo que van a ver hoy no sale de un examen: lo monté, lo rompí y lo arreglé esta semana. Todo está en AWS, con servicios que pueden usar el lunes."
+
+"Y fuera del trabajo me encuentran en cualquier deporte de raqueta (tenis de mesa, tenis, pádel), aprendiendo algo nuevo o de viaje."
 
 *La foto sale de talk/assets/photo.jpeg (recortada en cuadrado). El LinkedIn sale de la variable LINKEDIN al generar el deck.*
 
@@ -192,7 +194,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ## 12 · 02 · El patrón
 <!-- id: div2 -->
-**0:05** · *divisor* · *reloj: 6:35*
+**0:05** · *divisor* · *reloj: 6:40*
 
 "¿Qué hace falta para gobernarlo? Primero, abramos el equipo."
 
@@ -246,7 +248,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ## 16 · 03 · Los seis pasos
 <!-- id: div3 -->
-**0:10** · *divisor con la espina* · *reloj: 9:25*
+**0:10** · *divisor con la espina* · *reloj: 9:30*
 
 "Seis pasos: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear. En cada uno, una línea de la bomba."
 
@@ -394,7 +396,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ## 24 · 04 · Demostración
 <!-- id: div4 -->
-**0:05** · *divisor* · *reloj: 16:20*
+**0:05** · *divisor* · *reloj: 16:25*
 
 "Suficiente teoría. Vamos a la estación."
 
@@ -480,7 +482,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 ## 27 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 23:05 al entrar*
+**1:05** · 4 clics · *reloj: 23:10 al entrar*
 
 "Les dejo cinco cosas que funcionan. La mayoría no las va a hacer el lunes. Los que las hagan van a dormir mejor."
 
@@ -494,7 +496,7 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 **[CLIC]** "Y cinco: que el modelo cuente qué decide; el dato crudo se queda en el equipo."
 
-*Si el reloj marca 23:30 o menos al llegar aquí (+0:25), cuenta lo que pasó en el primer ensayo, que es real: «La primera vez que monté esto en AWS, ninguna bomba arrancaba. El instalador de Greengrass decide el formato del archivo de configuración por la extensión, y mi archivo no tenía extensión. Una línea. Por eso se ensaya en el equipo de verdad.»*
+*Si el reloj marca 23:35 o menos al llegar aquí (+0:25), cuenta lo que pasó en el primer ensayo, que es real: «La primera vez que monté esto en AWS, ninguna bomba arrancaba. El instalador de Greengrass decide el formato del archivo de configuración por la extensión, y mi archivo no tenía extensión. Una línea. Por eso se ensaya en el equipo de verdad.»*
 
 ---
 
@@ -658,13 +660,13 @@ Los sonidos son reales (MIMII DUE, Hitachi, CC BY-NC-SA 4.0). La empresa, las ve
 
 | Bloque | Láminas | Duración | Reloj al terminar |
 |---|---|---|---|
-| Apertura | 1–6 | 3:35 | 3:35 |
-| 01 · El problema | 7–11 | 3:00 | 6:35 |
-| 02 · El patrón | 12–15 | 2:50 | 9:25 |
-| 03 · Los seis pasos | 16–23 | 6:55 | 16:20 |
-| 04 · Demostración | 24–26 | 6:45 | 23:05 |
-| Cierre | 27–30 | 2:20 | 25:25 |
-| **Total** | | **25:25** | |
+| Apertura | 1–6 | 3:40 | 3:40 |
+| 01 · El problema | 7–11 | 3:00 | 6:40 |
+| 02 · El patrón | 12–15 | 2:50 | 9:30 |
+| 03 · Los seis pasos | 16–23 | 6:55 | 16:25 |
+| 04 · Demostración | 24–26 | 6:45 | 23:10 |
+| Cierre | 27–30 | 2:20 | 25:30 |
+| **Total** | | **25:30** | |
 
 Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 1:20 (con el despliegue de la v2 lanzado durante la espera), acto 3 2:45 y remate 0:15. El acto 3 es lo único que no controlas: si en el ensayo el rollback pasa de 2:30, lleva el tope y el video listos. La anécdota de la lámina 27 solo entra si vas adelantado.
 
