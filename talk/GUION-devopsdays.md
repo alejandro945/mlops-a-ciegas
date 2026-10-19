@@ -18,11 +18,9 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: quien -->
 **0:25** · sin clics
 
-"Buenos días. Soy Alejandro Varela, Senior Cloud Engineer en EPAM. Diseño cómo llegan y se gobiernan modelos de IA en equipos de campo, donde no hay nadie cerca."
+"Buenos días. Soy Alejandro Varela, Senior Cloud Engineer en EPAM. Mi trabajo es diseñar cómo se despliegan y se operan modelos de IA en equipos de campo: lugares sin conectividad estable y sin nadie que los atienda."
 
-"Lo que van a ver hoy no salió de un examen: lo monté, lo rompí y lo arreglé esta misma semana."
-
-"Pero no vine a hablar de mí. Vine a ponerles un audio."
+"Todo lo que van a ver hoy lo construí y lo ejecuté en AWS para esta charla. Pero antes de la arquitectura, quiero que escuchen algo."
 
 ---
 
@@ -30,17 +28,17 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: suena -->
 **1:10** · 1 clic
 
-"Esta es la bomba A." *(▶ A, cinco segundos)* "Y esta es la bomba B." *(▶ B, cinco segundos)*
+"Bomba A." *(▶ A, cinco segundos)* "Bomba B." *(▶ B, cinco segundos)*
 
 "¿Alguna de las dos está fallando?"
 
-**[CLIC]** "Levanten la mano. ¿La A?" *(cuenta en voz alta)* "¿La B?" *(cuenta)* "¿Las dos?" *(cuenta)* "Interesante. No les voy a decir todavía."
+**[CLIC]** "Levanten la mano: ¿la A?" *(cuenta)* "¿La B?" *(cuenta)* "¿Las dos?" *(cuenta)* "La respuesta la vamos a ver con datos más adelante."
 
-"Los sonidos son reales: los grabó Hitachi en una planta. Lo que me inventé es la empresa: un acueducto con estaciones de bombeo en veredas, donde la señal va y viene y no hay nadie cerca. En cada estación, un equipito escucha las bombas y un modelo avisa cuando una empieza a sonar raro."
+"Los audios son reales, del dataset MIMII DUE de Hitachi. El escenario es ficticio: un acueducto con estaciones de bombeo en zonas rurales, con conectividad intermitente y sin personal en sitio. En cada estación, un equipo de borde escucha las bombas y un modelo detecta cuándo una empieza a sonar distinto."
 
-"Lo que ustedes acaban de hacer es justo lo que hace ese modelo: oír y decidir. La diferencia es que ustedes estaban aquí. Desde la nube, nadie oyó nada." *(pausa)*
+"Ustedes acaban de hacer exactamente lo que hace ese modelo: escuchar y decidir. La diferencia es que ustedes estaban aquí. Desde la nube, nadie escuchó nada." *(pausa)*
 
-"Por eso esta charla se llama «MLOps a ciegas»: cómo se maneja un modelo que corre donde uno no lo ve. Cómo le llega una versión nueva, cómo se devuelve si sale mala y cómo nos cuenta lo que decide. Sin que el audio salga nunca de la estación."
+"De eso se trata «MLOps a ciegas»: cómo se opera un modelo que corre donde no lo vemos. Cómo le llega una versión nueva, cómo se revierte cuando falla y cómo reporta lo que decide, sin que el audio salga de la estación."
 
 ---
 
@@ -48,29 +46,29 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: cien -->
 **0:25** · 2 clics
 
-"¿Y a mí qué me importa un modelo en una bomba? Que los modelos se están bajando de la nube a los dispositivos. Un ejemplo de Gartner: en 2024, de cada cien PC nuevos, dieciséis traían un chip para IA."
+"Esto no es un caso aislado: la inferencia se está moviendo de la nube al dispositivo. Según Gartner, en 2024, 16 de cada 100 PC nuevos traían hardware dedicado para IA."
 
-**[CLIC]** "En 2025, treinta y uno."
+**[CLIC]** "En 2025, 31."
 
-**[CLIC]** "Y para este año, cincuenta y cinco. Más de la mitad. Y lo mismo pasa con el celular, los carros y los equipos de una planta."
+**[CLIC]** "Y la proyección para este año es 55: más de la mitad. La misma tendencia se ve en teléfonos, vehículos y equipos industriales."
 
 ---
 
 ## 5 · Por qué el modelo baja al dispositivo
 <!-- id: memes -->
-**0:55** · 2 clics · *deja que se rían antes de seguir*
+**0:55** · 2 clics
 
-"¿Y por qué se baja? Se los explico como explicamos todo los ingenieros: con memes."
+"Hay tres razones para ejecutar el modelo en el dispositivo, y las tres se ven mejor con un caso concreto."
 
-"El carro autónomo, frente a un cono: «dame un segundo, que le pregunto al modelo en la nube»." *(risas)* "Cuando hay que frenar ya, la ida y vuelta no alcanza."
+"Latencia: un vehículo autónomo frente a un obstáculo no puede esperar la respuesta de un modelo remoto. La ida y vuelta a la nube no cabe en el tiempo de frenado."
 
-**[CLIC]** "El técnico a las tres de la mañana: «¿cómo cambio este rodamiento?». Y el asistente: «Sin conexión, intente más tarde»." *(risas)* "En una vereda sin señal pasa exactamente lo mismo."
+**[CLIC]** "Disponibilidad: un técnico en planta, de madrugada, consulta un asistente cuyo modelo vive en la nube, y la respuesta es «sin conexión». En una estación rural, ese es el estado normal."
 
-**[CLIC]** "Y mi favorito: ustedes desbloqueando el teléfono, y el teléfono: «un momentico, le mando tu cara al modelo en la nube»." *(risas)* "Face ID no funciona así. El modelo corre en el teléfono, y tu cara queda cifrada en un chip aparte, el Secure Enclave. Nunca sale. Lo único que sale es un sí o un no."
+**[CLIC]** "Privacidad: Face ID. El modelo corre en el teléfono y los datos biométricos quedan cifrados en el Secure Enclave; nunca salen del dispositivo. Lo único que sale es una decisión: sí o no."
 
-"Y si te dejas crecer la barba, Face ID se adapta solo, ahí mismo en el teléfono: los datos cambiaron y el modelo se ajustó sin ir a la nube. Guárdenme esa idea."
+"Y un detalle relevante para esta charla: Face ID se adapta a los cambios de apariencia en el propio dispositivo. Los datos cambian y el modelo se ajusta sin ir a la nube. Vamos a volver sobre esa idea."
 
-"Ahora la bomba: un micrófono son ciento quince megas por hora. Por bomba. Por la red de una vereda. No cabe… y no tiene por qué salir de ahí."
+"En nuestro caso, un micrófono genera 115 MB por hora, por bomba, sobre la red de una zona rural. No cabe, y tampoco debería salir de la estación."
 
 ---
 
@@ -78,7 +76,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: div1 -->
 **0:08** · *reloj: 3:05*
 
-"Vamos en cuatro partes: el problema, el patrón, seis pasos y lo que pasó cuando lo corrí en AWS. Arranquemos por el problema."
+"La charla tiene cuatro partes: el problema, el patrón de arquitectura, la implementación en seis pasos y la evidencia de una ejecución real en AWS. Empecemos por el problema."
 
 ---
 
@@ -86,9 +84,9 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: nube -->
 **0:20** · sin clics
 
-"Cuando el modelo vive en la nube, esto está bastante resuelto. Todo pasa por un endpoint: uno guarda las peticiones, las compara con lo que el modelo vio al entrenar, si algo cambia salta una alerta y se reentrena."
+"Cuando el modelo vive en la nube, el ciclo está resuelto. Todas las inferencias pasan por un endpoint: se registran, se comparan contra la línea base del entrenamiento, se alerta cuando la distribución cambia y se reentrena."
 
-"¿Por qué funciona tan bien? Porque todo pasa por ahí. Uno lo ve todo."
+"Funciona por una razón: todo pasa por un punto que controlamos."
 
 ---
 
@@ -96,41 +94,39 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: edge -->
 **1:00** · 5 clics
 
-"Ahora bajemos ese modelo a la estación. Mismo loop… pero ya no hay un endpoint por donde pase todo."
+"Al llevar el modelo a la estación, ese punto de control desaparece. Aparecen cinco restricciones."
 
-**[CLIC]** "Uno: los recursos. Poca memoria, y chips distintos: una estación tiene ARM, otra un x86 con sus años, la nueva trae NPU."
+**[CLIC]** "Primera, recursos: memoria limitada y hardware heterogéneo. Una estación tiene ARM, otra un x86 de varias generaciones atrás, la más nueva una NPU."
 
-**[CLIC]** "Dos: la red. Se va la señal y se apaga todo el loop de la nube."
+**[CLIC]** "Segunda, conectividad: cuando cae el enlace, cae todo el ciclo de la nube."
 
-**[CLIC]** "Tres: el audio no puede salir. Ni cabe, ni debe."
+**[CLIC]** "Tercera, el dato crudo no puede salir: por volumen y por política."
 
-**[CLIC]** "Cuatro, y esta casi nadie la mide: la latencia depende de la energía. Con la batería baja o el equipo caliente, el chip se pone lento. El mismo modelo tarda más."
+**[CLIC]** "Cuarta, y la menos medida: la latencia depende de la energía. Con batería baja o temperatura alta, el procesador reduce su frecuencia y el mismo modelo tarda más."
 
-**[CLIC]** "Y cinco: los datos. Fallas hay pocas para aprender, y lo normal cambia: el micrófono envejece, cambia la velocidad de la bomba. Eso es el drift. Conseguir buenos datos es la mitad del trabajo… en el acto 3 van a ver qué pasa cuando no."
+**[CLIC]** "Quinta, los datos: hay pocos ejemplos de falla y la distribución de lo normal cambia con el tiempo; el sensor envejece, la bomba cambia de régimen. Eso es drift. Y la calidad de los datos de entrenamiento define todo lo demás; en el acto 3 vamos a ver qué pasa cuando falla."
 
-"Todo lo que hacíamos en la nube asume que las cosas pasan por uno. Aquí no pasa nada por uno."
+"Todas las prácticas de MLOps en la nube asumen que las inferencias pasan por nosotros. En el borde, ese supuesto no se cumple."
 
 ---
 
 ## 9 · Un panel en verde no mide el modelo
 <!-- id: tablero -->
-**1:15** · 3 clics · *el mito central: ve despacio*
+**1:15** · 3 clics · *la idea central: ve despacio*
 
-"Entonces, ¿cómo sabe uno si el modelo de la estación está bien? Lo de siempre: abrimos el panel."
+"La pregunta operativa es: ¿cómo sabemos si el modelo de la estación está funcionando? La respuesta habitual es el panel de infraestructura."
 
-**[CLIC]** "Servicio arriba. CPU normal. Memoria normal. Todo en verde."
+**[CLIC]** "Servicio arriba, CPU normal, memoria normal. Todo en verde. Desde operaciones, el sistema está sano."
 
-*(cambia la voz)* "Y llega el jefe: «¿y el modelo cómo va?». «Todo verde, jefe»." *(risas)*
+**[CLIC]** "Pero la pregunta correcta es otra: ¿el modelo todavía distingue una bomba sana de una que falla? Eso lo mide el AUC: 1 es separación perfecta, 0,5 es azar."
 
-**[CLIC]** "Pero la pregunta de verdad es otra: ¿el modelo todavía distingue una bomba sana de una que falla? Eso se mide con el AUC: uno es perfecto, cero coma cinco es lanzar una moneda."
+"Con las condiciones de entrenamiento, este modelo tiene un AUC de 0,69. Cambiamos la velocidad de operación de la bomba y cae a 0,57." *(pausa)* "Prácticamente azar. Y las falsas alarmas pasan del 6 al 18 por ciento."
 
-"Con la velocidad con la que se entrenó, este modelo da cero coma sesenta y nueve. Alguien le cambia la velocidad a la bomba… y baja a cero coma cincuenta y siete." *(pausa)* "Casi una moneda. Y las falsas alarmas pasan de 6 a 18 por ciento."
+**[CLIC]** "Sin un solo error en los logs. La infraestructura está sana; el modelo dejó de discriminar." *(pausa)*
 
-**[CLIC]** "Y ni un error. El equipo está sano. El modelo casi no distingue." *(pausa larga)*
+"Esto está medido con los mismos audios que escucharon al principio. Un servicio caído genera alertas. Un modelo degradado sigue respondiendo a tiempo, con un 200 OK."
 
-"Lo medí con el mismo audio que oyeron al principio. Un servicio caído hace ruido. Un modelo que dejó de oír sigue respondiendo a tiempo, con un 200 OK."
-
-"Monitorear la infraestructura no es monitorear el modelo. En el paso seis les muestro qué preguntarle."
+"Monitorear la infraestructura no es monitorear el modelo. En el paso seis vamos a ver qué hay que medir."
 
 ---
 
@@ -138,7 +134,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: div2 -->
 **0:05** · *reloj: 5:48*
 
-"¿Y cómo se gobierna esto? Abramos el equipo."
+"Veamos cómo se gobierna esto, empezando por el equipo."
 
 ---
 
@@ -146,13 +142,13 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: equipo -->
 **0:45** · 3 clics
 
-"Abajo, el micrófono sobre la bomba y el modelo con su runtime. Decide en milisegundos, haya red o no. El audio entra… y ahí se queda."
+"En la base: el micrófono sobre la bomba y el modelo con su runtime. La inferencia ocurre localmente, en milisegundos, con o sin red. El audio entra y no sale."
 
-**[CLIC]** "Encima, el modelo no llega como un archivo suelto: llega como un artefacto con versión y huella. Si alguien lo toca, no se instala."
+**[CLIC]** "Encima, el modelo no se distribuye como un archivo suelto: es un artefacto versionado y con huella criptográfica. Si se altera, no se instala."
 
-**[CLIC]** "Después, un agente. A la estación nadie le empuja nada: el agente, cuando hay red, va y pregunta qué debería tener."
+**[CLIC]** "Luego, un agente. Nadie empuja cambios a la estación: el agente consulta, cuando hay conectividad, cuál es el estado deseado."
 
-**[CLIC]** "Y arriba, lo que casi nadie pone: una cola de eventos. Cada decisión se guarda hasta que vuelve la señal."
+**[CLIC]** "Y arriba, una cola de eventos persistente. Cada decisión queda registrada hasta que se restablece el enlace."
 
 ---
 
@@ -160,17 +156,17 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: seguridad -->
 **0:50** · 4 clics
 
-"Una pregunta incómoda: esta estación está en una vereda. ¿Quién la cuida?" *(pausa)* "Nadie. Cualquiera abre el gabinete."
+"Un punto que suele quedar fuera de las discusiones de MLOps: estos equipos están físicamente expuestos. Cualquiera puede abrir el gabinete de una estación rural."
 
-"Por eso, antes de preocuparse por que alguien engañe al modelo, van cuatro cosas del equipo. Uno: arranque seguro. Solo arranca software firmado."
+"Antes de hablar de ataques al modelo, hay cuatro controles del equipo que son prerrequisito. Primero, arranque seguro: el equipo solo ejecuta software firmado."
 
-**[CLIC]** "Dos: la llave. La identidad del equipo es la llave de su certificado. Si está en la tarjeta SD, cualquiera se la lleva y se hace pasar por la bomba. Va en un TPM."
+**[CLIC]** "Segundo, protección de la identidad: la llave privada del certificado no puede vivir en la tarjeta SD, porque quien la copie suplanta al dispositivo. Va en un TPM o un elemento seguro."
 
-**[CLIC]** "Tres: updates verificados. Solo instala lo que trae la huella correcta, por un canal cifrado."
+**[CLIC]** "Tercero, actualizaciones autenticadas: solo se instala lo que trae la huella esperada, por un canal cifrado."
 
-**[CLIC]** "Cuatro: los datos. El audio no sale, y en el disco va cifrado."
+**[CLIC]** "Cuarto, privacidad del dato: el audio no sale y se cifra en reposo."
 
-**[CLIC]** "Porque sin esto, nadie necesita engañar a su modelo… le basta con reemplazarlo."
+**[CLIC]** "Sin estos controles, nadie necesita engañar al modelo. Basta con reemplazarlo."
 
 ---
 
@@ -178,31 +174,31 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: flujo -->
 **1:05** · 6 clics
 
-"Seamos sinceros: así se despliegan modelos en muchos lados. Uno copia el archivo al equipo… y cruza los dedos." *(cruza los dedos)* "Yo lo he hecho." *(risas)*
+"Este es el punto de partida en muchas organizaciones: se copia el modelo al equipo y se asume que funciona. No hay versión, no hay trazabilidad, no hay forma de revertir."
 
-**[CLIC]** "Primera pieza: optimizar para cada chip. Se entrena una vez y se prepara para cada hardware."
+**[CLIC]** "El patrón tiene cinco piezas. Primera: optimización por hardware. Se entrena una vez y se compila para cada tipo de chip."
 
-**[CLIC]** "Segunda: un artefacto verificable. Cada versión con su huella, en un registro donde nada se sobrescribe."
+**[CLIC]** "Segunda: un artefacto verificable, con versión y huella, en un registro inmutable."
 
-**[CLIC]** "Tercera: el desired state. La central dice qué debería tener cada equipo, y el equipo lo trae cuando puede."
+**[CLIC]** "Tercera: estado deseado. El plano de control declara qué debe tener cada equipo y el equipo converge cuando hay conectividad."
 
-**[CLIC]** "Cuarta: el modelo deja constancia de cada decisión. Sin red, se encola."
+**[CLIC]** "Cuarta: eventos de inferencia. Cada decisión se registra; sin red, se encola."
 
-**[CLIC]** "Y quinta, el gate: algo que mira esas decisiones y resuelve solo si seguimos o nos devolvemos. El loop rápido, de minutos."
+**[CLIC]** "Quinta: un gate que evalúa esos eventos y decide automáticamente si se avanza o se revierte. Es el ciclo rápido, de minutos."
 
-**[CLIC]** "Con esas decisiones se reentrena: el loop lento, de días. Y por debajo, lo de siempre: identidad, mínimo privilegio, cifrado y auditoría. Nada de esto depende de una nube."
+**[CLIC]** "Esos mismos eventos alimentan el reentrenamiento: el ciclo lento, de días. Y de forma transversal, identidad, mínimo privilegio, cifrado y auditoría. El patrón no depende de ningún proveedor de nube."
 
 ---
 
 ## 14 · El mismo patrón en AWS
 <!-- id: aws -->
-**0:30** · 5 clics · *ve rápido*
+**0:30** · 5 clics · *ritmo ágil*
 
-"El mismo dibujo en AWS: cada casilla ya tiene nombre."
+"La misma arquitectura, con servicios de AWS."
 
-**[CLIC]** "SageMaker AI entrena." **[CLIC]** "S3 guarda cada versión e IoT Greengrass la empaca." **[CLIC]** "El desired state es un despliegue de Greengrass que llega por IoT Core, con certificado por equipo."
+**[CLIC]** "SageMaker AI entrena." **[CLIC]** "S3 almacena cada versión e IoT Greengrass la empaqueta como componente." **[CLIC]** "El estado deseado es un despliegue de Greengrass, que llega por IoT Core con un certificado por dispositivo."
 
-**[CLIC]** "Cada decisión vuelve por IoT Core y una regla la deja en CloudWatch." **[CLIC]** "Y el gate es una alarma que llama a una Lambda, que vuelve a poner la última versión buena."
+**[CLIC]** "Los eventos regresan por IoT Core y una regla los envía a CloudWatch." **[CLIC]** "Y el gate es una alarma de CloudWatch que invoca una Lambda, que restaura la última versión aprobada."
 
 ---
 
@@ -210,7 +206,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: div3 -->
 **0:10** · *reloj: 9:03*
 
-"Paso por paso: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear. Y en cada paso, la bomba."
+"La implementación, en seis pasos: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear."
 
 ---
 
@@ -218,13 +214,13 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: entrenar -->
 **0:50** · 3 clics
 
-"Paso uno. Un detalle bonito: este modelo se entrena solo con bombas sanas."
+"Paso uno: el modelo se entrena únicamente con audio de bombas sanas."
 
-**[CLIC]** "Es un autoencoder: aprende a reconstruir el sonido normal. Cuando no puede, es porque algo cambió. Como el mecánico que de tanto oír el motor sano nota cualquier ruido raro."
+**[CLIC]** "Es un autoencoder: aprende a reconstruir el sonido normal, y el error de reconstrucción es el score de anomalía. Si no puede reconstruir lo que escucha, algo cambió."
 
-**[CLIC]** "Lo que sale va a S3: el modelo en ONNX, el umbral y también el preprocesamiento del audio. Porque el error más común es entrenar con un preprocesamiento y servir con otro. No explota nada: el modelo simplemente oye distinto."
+**[CLIC]** "El resultado se publica en S3: el modelo en ONNX, el umbral y el código de preprocesamiento. El preprocesamiento viaja con el modelo porque la causa más común de degradación silenciosa es entrenar con una transformación y servir con otra."
 
-**[CLIC]** "Y así se ve en la consola: una carpeta por versión, la 1.0.0 y la 2.0.0. Versión nueva, carpeta nueva."
+**[CLIC]** "En la consola: un prefijo por versión, 1.0.0 y 2.0.0. Una versión publicada nunca se sobrescribe."
 
 ---
 
@@ -232,15 +228,15 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: optimizar -->
 **1:00** · 3 clics
 
-"Paso dos. Uno entrena una vez, en 32 bits, y sale un ONNX."
+"Paso dos: el modelo se entrena en 32 bits y se exporta a ONNX."
 
-**[CLIC]** "Para que quepa en un equipo pequeño se cuantiza a 8 bits, se simplifica y se compila para el chip, con la herramienta de cada fabricante."
+**[CLIC]** "Para el equipo de borde se cuantiza a 8 bits, se simplifica el grafo y se compila con el toolchain de cada fabricante."
 
-**[CLIC]** "La trampa: no sale un artefacto, sale uno por tipo de chip. Y manda la memoria: si no cabe, no corre."
+**[CLIC]** "La consecuencia operativa: no hay un artefacto, hay uno por tipo de hardware. Y la restricción que manda es la memoria."
 
-**[CLIC]** "Medido en la EC2 del ensayo: de 32 a 8 bits, el archivo baja de 464 a 127 kilobytes, cada clip de 14,4 a 12,7 milisegundos, y decide igual en el 98 por ciento de los casos."
+**[CLIC]** "Medido en el equipo del ensayo: de 32 a 8 bits, el modelo pasa de 464 a 127 KB, la latencia por clip de 14,4 a 12,7 milisegundos, y la decisión coincide en el 98 % de los casos."
 
-"Ojo: en mi portátil la mejora era casi el doble. En el equipo, el tiempo se va preparando el audio. Por eso se mide en el chip de verdad… con la batería baja y a las tres de la tarde en una vereda."
+"En mi portátil, la mejora era casi del doble. En el equipo real, el cuello de botella es el preprocesamiento del audio, no el modelo. Por eso se mide en el hardware de destino, y en condiciones reales: batería baja y temperatura alta."
 
 ---
 
@@ -248,17 +244,17 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: componente -->
 **1:00** · 5 clics
 
-"Paso tres. En Greengrass, el software se empaca como un componente. Esta es la receta, un poco recortada."
+"Paso tres: en IoT Greengrass, el modelo se empaqueta como componente. Esta es la receta, resumida."
 
-**[CLIC]** "Los archivos vienen de S3, y Greengrass verifica la huella de cada uno antes de instalar."
+**[CLIC]** "Los artefactos vienen de S3, y Greengrass verifica la huella de cada uno antes de instalar."
 
-**[CLIC]** "Al arrancar no instala nada: las dependencias ya vienen. Si su componente baja librerías de internet al arrancar… en una vereda, no arranca."
+**[CLIC]** "El arranque no descarga nada: las dependencias ya están en el equipo. Un componente que instala librerías al iniciar no arranca sin conectividad."
 
-**[CLIC]** "El umbral es configuración: si hay que moverlo, se despliega, no se reentrena."
+**[CLIC]** "El umbral es configuración: se ajusta con un despliegue, sin reentrenar."
 
-**[CLIC]** "Y los permisos: solo puede publicar en un tema, station/events. Nada más."
+**[CLIC]** "Y los permisos son mínimos: el componente solo puede publicar en un tópico, station/events."
 
-**[CLIC]** "En la consola: el componente con sus dos versiones. Una regla que aprendí a las malas: una versión publicada no se toca. Si cambias un archivo sin cambiar la versión, la huella no cuadra y el despliegue falla."
+**[CLIC]** "En la consola: el componente con sus dos versiones. Una regla operativa: una versión publicada es inmutable. Si se modifica un artefacto sin cambiar la versión, la huella no coincide y el despliegue falla."
 
 ---
 
@@ -266,17 +262,17 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: anillos -->
 **1:05** · 4 clics
 
-"Paso cuatro. ¿Cómo le llega una versión nueva a mil equipos sin dañarlos todos un martes por la tarde? Por rings: cada ring es un thing group. El ring 0 es una sola estación, el canary."
+"Paso cuatro: cómo llevar una versión nueva a mil equipos sin afectarlos a todos a la vez. Despliegue por rings, donde cada ring es un thing group. El ring 0 es una sola estación: el canary."
 
-**[CLIC]** "Si pasa el gate, sigue el ring 1, el resto de la flota, por waves que van creciendo."
+**[CLIC]** "Si el canary pasa el gate, continúa el ring 1, en olas de tamaño creciente."
 
-**[CLIC]** "El despliegue ya trae dos protecciones: si fallan muchos equipos, se cancela; y si un equipo no arranca la versión nueva, vuelve solito a la anterior."
+**[CLIC]** "Greengrass incluye dos protecciones: cancela el despliegue si fallan demasiados equipos, y revierte en el equipo que no logra iniciar la versión nueva."
 
-**[CLIC]** "Y el rollback que armé yo: una alarma ve fallas que nadie oyó y vuelve a poner la última versión buena."
+**[CLIC]** "Lo que Greengrass no trae es el gate sobre el modelo: una alarma sobre las fallas no detectadas que restaura la última versión aprobada. Ese lo construí."
 
-"«Pero si Greengrass ya hace rollback.» Sí… de despliegues que fallan. Un modelo que se instala perfecto y oye mal, para Greengrass, es un éxito."
+"La distinción es importante: Greengrass revierte despliegues que fallan. Un modelo que se instala correctamente y decide mal es, para Greengrass, un despliegue exitoso."
 
-**[CLIC]** "Así quedó la consola después del ensayo: un despliegue por ring. Fíjense en el nombre del ring 0. Se los explico en el acto 3."
+**[CLIC]** "Este es el estado en la consola al terminar el ensayo: un despliegue activo por ring. Observen el nombre del despliegue del ring 0; lo explico en el acto 3."
 
 ---
 
@@ -284,11 +280,11 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: sinred -->
 **0:40** · 2 clics
 
-"Paso cinco: ¿qué pasa cuando se va la señal? En cada equipo, Greengrass guarda los eventos en una cola local hasta que vuelve la red. Y para equipos con muy poca memoria hay una versión liviana del agente, escrita en C."
+"Paso cinco: operación desconectada. Greengrass encola los eventos localmente hasta que vuelve la conectividad. Para equipos con muy poca memoria existe una versión ligera del agente, escrita en C."
 
-**[CLIC]** "La estación sigue escuchando y alertando: lo que necesita para decidir ya lo tiene adentro. Un ojo: esa cola vive en memoria y, si se llena, rechaza mensajes. Para horas sin red, va a disco."
+**[CLIC]** "La estación sigue decidiendo y alertando sin red, porque todo lo necesario está en el equipo. Un detalle de diseño: la cola por defecto vive en memoria y descarta mensajes al llenarse. Para desconexiones largas, debe ir a disco."
 
-**[CLIC]** "Desde la consola: cinco core devices, todos sanos. Qué pasa cuando uno pierde la red lo ven en el acto 2."
+**[CLIC]** "En la consola: cinco core devices, todos en estado Healthy. El comportamiento sin red lo vemos en el acto 2."
 
 ---
 
@@ -296,19 +292,19 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: monitoreo -->
 **1:25** · 5 clics
 
-"Paso seis. Desde la nube no vemos el audio: vemos lo que el modelo nos cuenta. Un mensajito por clip, de unos cientos de bytes: IoT Core, una regla, CloudWatch, y una alarma que puede llamar a la Lambda."
+"Paso seis: desde la nube no vemos el audio, vemos los eventos del modelo. Unos cientos de bytes por inferencia, que pasan por IoT Core, una regla, CloudWatch y una alarma conectada al rollback."
 
-"¿Qué hay que vigilar? Tres cosas."
+"La pregunta es qué medir. Propongo tres señales."
 
-**[CLIC]** "Uno: la entrada. ¿El micrófono dice la verdad? Si sube despacio durante semanas, el sensor envejece. Si salta de un clip al otro, se dañó… o alguien lo está tocando."
+**[CLIC]** "Primera, la entrada: ¿el sensor sigue entregando datos confiables? Un aumento gradual indica envejecimiento; un salto abrupto indica falla o manipulación. La velocidad del cambio distingue un caso del otro."
 
-**[CLIC]** "Dos: la salida. ¿Cambió lo que decide? Se compara la distribución de los scores de esta hora contra la de la semana, con algo como el PSI."
+**[CLIC]** "Segunda, la salida: ¿cambió la distribución de las decisiones? Se compara la distribución de scores de la última hora contra la de referencia, con una métrica como PSI."
 
-**[CLIC]** "Y tres, la que casi nadie mira: la autenticidad. ¿Es el modelo que mandamos? Cada evento trae la huella del modelo." *(pausa)* "Ojo: esa huella la reporta el equipo, y un equipo comprometido puede mentir. Por eso la seguridad iba primero."
+**[CLIC]** "Tercera, la autenticidad: ¿el modelo en ejecución es el que desplegamos? Cada evento incluye la versión y la huella del modelo." *(pausa)* "Esa huella la reporta el propio equipo, y un equipo comprometido puede reportar lo que quiera. Por eso los controles del equipo van primero."
 
-**[CLIC]** "En el ensayo, el gate sabe si la bomba fallaba porque yo sé qué audio suena. En producción eso llega tarde, con la orden de mantenimiento. Estas tres señales no lo necesitan."
+**[CLIC]** "En el ensayo, el gate usa la verdad de cada clip, porque sé qué audio está sonando. En producción esa etiqueta llega tarde, con la orden de mantenimiento. Las tres señales no la necesitan: funcionan desde el primer día."
 
-**[CLIC]** "Y este es el dashboard, ordenado por esas tres señales. En un momento lo ven en acción."
+**[CLIC]** "Este es el dashboard, organizado por esas tres señales. Lo vamos a ver con datos reales en un momento."
 
 ---
 
@@ -316,9 +312,9 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: reflexion3 -->
 **0:30** · 1 clic
 
-"Antes del ensayo, una pregunta: ¿ustedes saben qué versión del modelo corre en cada uno de sus equipos?" *(espera manos)* "Ahora bajen la mano los que tuvieron que pensarlo." *(risas)*
+"Antes de la evidencia, una pregunta: ¿quiénes saben con certeza qué versión de modelo corre en cada uno de sus equipos?" *(espera)* "Ahora, que bajen la mano quienes tuvieron que pensarlo." *(pausa)*
 
-**[CLIC]** "Aquí la respuesta sale de la nube, sin entrar a ningún equipo: ring 0, la bomba 1, versión 1.0.0, activo. Ring 1, de la 2 a la 5, la misma."
+**[CLIC]** "En esta arquitectura, la respuesta sale del plano de control, sin acceder a ningún equipo: ring 0, versión 1.0.0, activo; ring 1, versión 1.0.0, activo."
 
 ---
 
@@ -326,7 +322,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: div4 -->
 **0:05** · *reloj: 15:43*
 
-"Suficiente teoría. Les muestro lo que pasó cuando lo corrí de verdad."
+"Pasemos a la evidencia: una ejecución completa en AWS."
 
 ---
 
@@ -334,9 +330,9 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: poc -->
 **0:30** · sin clics
 
-"No me traje bombas en la maleta." *(risas)* "Cada bomba es un contenedor en una EC2, con el agente real de Greengrass. Cinco: la 1 es el canary, de la 2 a la 5 el ring 1. Audio real y AWS de verdad, montado con Terraform desde GitHub Actions."
+"El entorno: cinco bombas simuladas, cada una un contenedor con el agente real de Greengrass sobre una instancia EC2. La bomba 1 es el canary; de la 2 a la 5, el ring 1. El audio es real y la infraestructura se despliega con Terraform desde GitHub Actions."
 
-"Lo corrí completo el 18 de octubre, y lo que van a ver son las líneas y las gráficas de ese día."
+"Lo que sigue son los eventos y las métricas de la ejecución del 18 de octubre, sin editar."
 
 ---
 
@@ -344,13 +340,13 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: acto1 -->
 **0:50** · sin clics · *deja que lean primero*
 
-"Esto es lo que ve uno desde la nube: cada línea es un clip que la bomba 3 escuchó y decidió."
+"Esto es lo que se ve desde la nube: cada línea es una inferencia de la bomba 3, con versión, decisión, score y nivel de entrada."
 
-"Normal, normal, normal… y ahí le digo a la bomba 3 que suene como la B. En ese mismo clip: alerta."
+"Decisiones normales, hasta que inyecto el audio de falla. En ese mismo clip, el score supera el umbral y el modelo emite una alerta."
 
-"Y esa es la respuesta del principio: la que fallaba era la B. ¿Quién votó por la B?" *(manos)* "Oído de mecánico. Los de la A, tranquilos: para eso está el modelo." *(risas)*
+"Esa es la respuesta a la pregunta inicial: la bomba B era la que fallaba." *(pausa)*
 
-"Y el audio no salió de la estación. Salió esta línea."
+"Y lo único que salió de la estación fue esta línea, no el audio."
 
 ---
 
@@ -358,29 +354,29 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: acto2 -->
 **1:00** · sin clics
 
-"Segundo acto: a la bomba 3 le quito la red." *(señala la izquierda)* "La 3 desaparece, y las otras cuatro siguen como si nada."
+"Segundo acto: desconecto la bomba 3 de la red. A la izquierda, sus eventos dejan de llegar mientras las otras cuatro siguen reportando."
 
-"45 segundos después le devuelvo la red… y llegan de golpe: «arrived 41 seconds late», 32, 29, 20. Tarde, pero todas. La bomba siguió decidiendo sin red, y su cola entregó todo al volver."
+"Cuarenta y cinco segundos después restablezco la conexión, y los eventos encolados llegan con su retraso registrado: 41, 32, 29, 20 segundos. Ninguno se perdió. La bomba siguió decidiendo sin red."
 
-*(señala la gráfica)* "Y a la bomba 5 le cambié la velocidad. ¿Errores? Ninguno. Pero la entrada salta de 0,8 a 1,8. La primera señal del paso seis… en diferido." *(risas)*
+"A la derecha, otra prueba: cambio el régimen de la bomba 5. No hay un solo error, pero la señal de entrada salta de 0,8 a 1,8 desviaciones estándar. Es exactamente el tipo de deriva que el panel de infraestructura no ve."
 
 ---
 
 ## 27 · Acto 3 · Ring deployment y rollback
 <!-- id: acto3 -->
-**1:20** · 2 clics · *el clímax: ve despacio*
+**1:20** · 2 clics · *el punto culminante: ve despacio*
 
-"Tercer acto. Mando la versión 2.0.0, solo al ring 0. Se entrenó con más audio. Y más datos es mejor modelo, ¿cierto?" *(pausa)* "Llegó en 17 segundos, sin errores. Para Greengrass, perfecto."
+"Tercer acto: despliego la versión 2.0.0 solo en el ring 0. Esta versión se entrenó con más datos." *(pausa)* "Llega en 17 segundos, sin errores. Para Greengrass, un despliegue exitoso."
 
-"Pongo a fallar la bomba 1… «normal», «missed fault», «normal», «missed fault». La bomba falla y la versión nueva no avisa."
+"Ahora inyecto una falla en la bomba 1. La versión nueva responde «normal» con la bomba fallando: fallas no detectadas."
 
-"¿Qué pasó? ¿Se acuerdan de los datos? Ese audio extra traía una semana en que una bomba ya venía fallando, y nadie lo revisó. El modelo aprendió que fallar es lo normal. No es un bug de código: es un bug de datos."
+"La causa: el audio adicional incluía un periodo en que una bomba ya estaba fallando, y nadie lo validó. El modelo aprendió la falla como comportamiento normal. No es un error de código; es un error de datos."
 
-"Y ahora nadie toca nada. La alarma pasa a ALARM, la Lambda devuelve la 1.0.0, y la bomba 1 vuelve a alertar. Ochenta y ocho segundos. Nadie entró al equipo, y el ring 1 nunca recibió la versión mala." *(pausa)* "Ese era el nombre del ring 0 en la consola: rollback."
+"Nadie interviene. La alarma pasa a ALARM, la Lambda restaura la versión 1.0.0 y la bomba 1 vuelve a alertar. Ochenta y ocho segundos desde la falla, sin acceso al equipo, y el ring 1 nunca recibió la versión defectuosa." *(pausa)* "Ese es el nombre que vieron en la consola: rollback."
 
-**[CLIC]** "Así se vio la alarma: las fallas que nadie oyó pasan de 8, y esa franja roja es el momento en ALARM."
+**[CLIC]** "La alarma en CloudWatch: las fallas no detectadas superan el umbral de 8 por minuto, y la franja roja marca el periodo en ALARM."
 
-**[CLIC]** *(mirando a la sala, despacio)* "Greengrass revierte despliegues fallidos, pero no modelos equivocados. Ese gate lo tiene que poner uno."
+**[CLIC]** *(mirando a la sala)* "Greengrass revierte despliegues fallidos, no modelos equivocados. Ese gate es responsabilidad nuestra."
 
 ---
 
@@ -388,35 +384,35 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: llevo -->
 **1:05** · 4 clics · *reloj: 19:28 al entrar*
 
-"Les dejo cinco cosas. Casi nadie las hace el lunes… pero los que las hacen duermen más tranquilos."
+"Cinco recomendaciones para aplicar desde el lunes."
 
-"Una: el modelo es un artefacto, con versión, huella y firma, sobre un equipo que arranca seguro."
+"Primera: traten el modelo como cualquier artefacto de software: versión, huella y firma, sobre un equipo con arranque seguro."
 
-**[CLIC]** "Dos: midan en el chip de verdad, con batería baja y con calor."
+**[CLIC]** "Segunda: midan en el hardware de destino, en condiciones reales de energía y temperatura."
 
-**[CLIC]** "Tres: desplieguen por rings, con un gate que mire al modelo, no solo al proceso."
+**[CLIC]** "Tercera: desplieguen por rings, con un gate que evalúe al modelo, no solo al proceso."
 
-**[CLIC]** "Cuatro: diseñen para estar sin red. Cola local, decisiones locales."
+**[CLIC]** "Cuarta: diseñen para operar sin conectividad: cola local y decisiones locales."
 
-**[CLIC]** "Y cinco: vigilen tres señales: entrada, salida y autenticidad. El audio, que se quede en el equipo."
+**[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad. Y mantengan el dato crudo en el equipo."
 
-*(Si el reloj marca 19:50 o menos: «¿Saben qué fue lo primero que se me dañó? La primera vez que monté esto, ninguna bomba arrancaba. Horas buscando, y era que el instalador decide el formato del archivo por la extensión… y mi archivo no tenía extensión. Una línea. Por eso se ensaya en el equipo de verdad.»)*
+*(Si el reloj marca 19:50 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
 
 ---
 
 ## 29 · La frase final: ¿esta bomba está fallando?
 <!-- id: final -->
-**0:45** · 2 clics · *cierre circular*
+**0:45** · 2 clics
 
-"¿Se acuerdan de la pregunta del principio? ¿Esta bomba está fallando?" *(▶ B, tres segundos)*
+"Volvamos a la pregunta inicial: ¿esta bomba está fallando?" *(▶ B, tres segundos)*
 
-"Ustedes la oyeron. Desde la nube, nadie la oyó… y no hacía falta."
+"Ustedes la escucharon. La nube no, y no necesitaba hacerlo."
 
-**[CLIC]** "Esto fue lo único que salió de la estación: la bomba 3, versión 1.0.0, alerta. Unos cientos de bytes."
+**[CLIC]** "Esto es todo lo que salió de la estación: bomba 3, versión 1.0.0, alerta. Unos cientos de bytes."
 
-**[CLIC]** "Porque uno no necesita ver el modelo. Necesita que el modelo le cuente." *(pausa)*
+**[CLIC]** "No necesitamos ver el modelo. Necesitamos que el modelo nos cuente qué decide." *(pausa)*
 
-"Y una última pregunta: si mañana uno de sus modelos deja de oír… ¿quién se va a enterar primero? ¿Ustedes… o la vereda que se quedó sin agua?" *(pausa larga)*
+"Les dejo una pregunta: si mañana uno de sus modelos deja de detectar lo que debe, ¿quién se va a enterar primero: ustedes, o la comunidad que se quedó sin agua?" *(pausa larga)*
 
 ---
 
@@ -424,7 +420,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: recursos -->
 **0:15** · sin clics
 
-"Todo está en el repo de ese QR: el código, las láminas y este guion. Tómenle foto."
+"El código, la infraestructura y estas láminas están en el repositorio del código QR."
 
 ---
 
@@ -432,7 +428,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: cierre -->
 **0:15** · sin clics
 
-"Muchas gracias." *(espera el aplauso)* "Con todo gusto respondo sus preguntas."
+"Muchas gracias. Con gusto respondo sus preguntas."
 
 *Anexos: la tecla A abre A1; las flechas los recorren; M o Esc te devuelven. A1 evento · A2 rollback · A3 qué revierte Greengrass · A4 permisos y costo · A5 a producción · A6 drift · A7 regulación · A8 fuentes · A9 golden signals · A10 audio contra eventos.*
 
@@ -440,37 +436,37 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ## A1 · El evento, campo por campo
 <!-- id: a1 -->
-"Cada mensaje dice qué bomba decidió, con qué versión y la huella exacta del modelo; un número de secuencia y la hora de la decisión; el score, el umbral y si alertó; cómo venía la entrada y la latencia. La hora de llegada la pone la regla de IoT: la diferencia es lo que la estación estuvo sin red."
+"Cada evento identifica el dispositivo, la versión y la huella del modelo; incluye un número de secuencia y la marca de tiempo de la decisión; el score, el umbral y la decisión; un resumen de la entrada y la latencia. La regla de IoT agrega la hora de llegada: la diferencia es el tiempo que el equipo estuvo desconectado."
 
 ---
 
 ## A2 · El rollback automático, paso a paso
 <!-- id: a2 -->
-"Yo solo mandé la 2.0.0 al ring 0. La bomba 1 trajo su desired state, bajó de S3, verificó la huella e instaló: para Greengrass, todo bien. Pero la versión nueva no avisaba las fallas. Cada mensaje pasa por la regla, cae en CloudWatch, y un filtro cuenta las fallas que nadie oyó. Con ocho en un minuto salta la alarma, llama a la Lambda, la Lambda pregunta en Parameter Store cuál fue la última versión buena y la despliega solo en el ring 0. De ahí en adelante, nadie toca nada."
+"La única acción manual es el despliegue de la 2.0.0 al ring 0. El equipo obtiene su estado deseado, descarga de S3, verifica la huella e instala: para Greengrass, todo correcto. Pero la versión nueva no detecta las fallas. Cada evento pasa por la regla de IoT, llega a CloudWatch y un filtro de métrica cuenta las fallas no detectadas. Con ocho en un minuto, la alarma invoca la Lambda, que consulta en Parameter Store la última versión aprobada y la despliega solo en el ring 0."
 
 ---
 
 ## A3 · ¿Qué revierte Greengrass solo?
 <!-- id: a3 -->
-"Tres casos: si un archivo cambió y la huella no cuadra; si el componente no instala o no arranca; y si fallan muchos equipos del ring. Lo que no ve: un modelo que corre perfecto y decide mal. Eso solo lo ven los eventos del modelo y una alarma que los mire."
+"Greengrass revierte en tres casos: si la huella de un artefacto no coincide, si el componente no instala o no inicia, y si fallan demasiados equipos del ring. No detecta un modelo que se ejecuta correctamente y decide mal. Eso solo lo detectan los eventos del modelo y una alarma sobre ellos."
 
 ---
 
 ## A4 · Permisos y costo
 <!-- id: a4 -->
-"Cada pieza tiene lo mínimo: la bomba lee su bucket y publica en su tema, con su identidad; la regla escribe en sus logs; la Lambda crea el despliegue y lee un parámetro. El costo lo pone sobre todo la EC2, y todo se baja con un destroy desde GitHub Actions."
+"Cada componente tiene el mínimo privilegio: el equipo lee su bucket y publica en su tópico, con identidad propia; la regla escribe en su log group; la Lambda crea el despliegue y lee un parámetro. El costo lo domina la instancia EC2, y todo se elimina con un destroy desde GitHub Actions."
 
 ---
 
 ## A5 · De la demo a producción
 <!-- id: a5 -->
-"Cambian cinco cosas: un resumen por minuto en vez de un mensaje por clip; la cola a disco; el agente liviano en equipos pequeños; el canary comparado contra el ring; y la verdad de la falla llega tarde, con la orden de mantenimiento."
+"Para una flota real cambian cinco cosas: un resumen por minuto en lugar de un evento por inferencia; la cola en disco; el agente ligero en equipos pequeños; el canary comparado contra el resto del ring; y la verdad de la falla llega tarde, con la orden de mantenimiento."
 
 ---
 
 ## A6 · ¿Qué método de drift uso?
 <!-- id: a6 -->
-"Depende del dato. PSI para rangos o categorías, con umbrales que son más costumbre que estadística. Kolmogorov-Smirnov con pocas muestras. Wasserstein para saber cuánto se movió. Jensen-Shannon, entre cero y uno, cómodo para alertar. En la PoC uso la distancia de cada clip a la huella de lo normal."
+"Depende del tipo de dato. PSI para variables discretizadas, con umbrales más convencionales que estadísticos. Kolmogorov-Smirnov para muestras pequeñas. Wasserstein para cuantificar el desplazamiento. Jensen-Shannon, acotada entre 0 y 1, conveniente para alertar. En la PoC uso la distancia de cada clip a la huella de lo normal."
 
 ---
 
@@ -478,25 +474,25 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: a7 -->
 **3 clics**
 
-"En Europa, el AI Act pide a los sistemas de alto riesgo registrar eventos durante toda su vida, guardarlos seis meses y monitorearlos en el mercado."
+"En Europa, el AI Act exige a los sistemas de alto riesgo registro automático de eventos durante todo su ciclo de vida, retención mínima de seis meses y monitoreo posterior a la comercialización."
 
-**[CLIC]** "En Estados Unidos, el marco de riesgo del NIST: voluntario, pero el idioma común."
+**[CLIC]** "En Estados Unidos, el AI Risk Management Framework del NIST: voluntario, pero se convirtió en el vocabulario común."
 
-**[CLIC]** "Y la ISO 42001: la 27001 para IA, certificable."
+**[CLIC]** "Y la ISO/IEC 42001: un sistema de gestión de IA, certificable, con la lógica de la 27001."
 
-**[CLIC]** "Todos piden lo mismo que uno necesita para operar: qué corre, qué decidió y cómo devolverse."
+**[CLIC]** "Los tres exigen lo mismo que necesitamos para operar: qué se ejecuta, qué decidió y cómo revertirlo."
 
 ---
 
 ## A8 · Fuentes
 <!-- id: a8 -->
-"Todo está aquí y en el repo. Los audios son de MIMII DUE, de Hitachi, con licencia abierta no comercial."
+"Las fuentes están aquí y en el repositorio. Los audios son de MIMII DUE, de Hitachi, bajo licencia CC BY-NC-SA."
 
 ---
 
 ## A9 · Las golden signals de un modelo
 <!-- id: senales -->
-"Las de un servicio las conocemos: latencia, tráfico, errores y saturación. Las de un modelo: qué decide, con cuánta seguridad, si lo que le llega se parece a lo que aprendió, y qué versión corre dónde. Ninguna sola alcanza."
+"Para un servicio, las golden signals son latencia, tráfico, errores y saturación. Para un modelo: qué decide, con qué confianza, si la entrada se parece a la del entrenamiento y qué versión corre en cada equipo. Ninguna es suficiente por sí sola."
 
 ---
 
@@ -504,8 +500,8 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: costo -->
 **2 clics**
 
-"El audio crudo de mil bombas: 2,76 terabytes al día."
+"Enviar el audio crudo de mil bombas: 2,76 terabytes al día."
 
-**[CLIC]** "Un mensaje cada 10 segundos: 8,64 millones al día."
+**[CLIC]** "Un evento cada 10 segundos: 8,64 millones de mensajes al día."
 
-**[CLIC]** "Un resumen por minuto: 1,44 millones. Y el audio, quietico en la estación."
+**[CLIC]** "Un resumen por minuto: 1,44 millones. Y el audio permanece en la estación."
