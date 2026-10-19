@@ -8,7 +8,7 @@ The state lives in S3 and is shared by your laptop and GitHub Actions. The usual
 |---|---|
 | `main.tf` | Artifacts bucket (private, encrypted) and the `/station/last_good_version` parameter |
 | `iot.tf` | Thing groups `StationRing0` and `StationRing1`, the token exchange role and its alias, the pumps' IoT policy and, with `manage_identity = true`, the five things with their certificates (stored in Parameter Store as SecureString) |
-| `observability.tf` | Log group `/station/events`, IoT rule `station_events` with `arrived_ts`, the seven metric filters (namespace `Station`), the `station` dashboard, the `station-rollback` Lambda and the `station-missed-faults` alarm that invokes it |
+| `observability.tf` | Log group `/station/events`, IoT rule `station_events` with `arrived_ts`, the eight metric filters (namespace `Station`), the `station` dashboard, the `station-rollback` Lambda and the `station-missed-faults` alarm that invokes it |
 | `host.tf` | The pumps' Linux EC2: Amazon Linux 2023 with Docker, no inbound ports (access through Session Manager only), IMDSv2 with a single hop so the containers cannot use the EC2 role |
 | `backend.tf` | The state in S3, encrypted and locked (`use_lockfile`). The bucket and the region come through `-backend-config` |
 | `github/` | Applied once from your laptop: the state bucket, GitHub's OIDC provider and the roles `github-station-plan` (read only) and `github-station-apply` (everything except IAM; in IAM, only the PoC's roles) |
@@ -88,6 +88,6 @@ Then, from the `poc-devopsdays/` folder:
 ## What was verified and what was not
 
 - `terraform fmt`, `init` and `validate` pass in `infra/` and in `infra/github/` (Terraform 1.12.2, AWS provider 5.100.0). The lock file has hashes for Linux and macOS.
-- `tests/test_infra_terraform.py` checks that the names, the rule, the seven filter patterns, the alarm and the pumps' policy are the same as in `cloud/setup.sh`, and runs `fleet/up.sh` and the entrypoint with `IDENTITY=terraform` against a fake `aws` and `docker`: they fetch the identity, mount it only during the install, install the nucleus with `--init-config`, and no AWS credential gets into the container.
+- `tests/test_infra_terraform.py` checks that the names, the rule, the eight filter patterns, the alarm and the pumps' policy are the same as in `cloud/setup.sh`, and runs `fleet/up.sh` and the entrypoint with `IDENTITY=terraform` against a fake `aws` and `docker`: they fetch the identity, mount it only during the install, install the nucleus with `--init-config`, and no AWS credential gets into the container.
 - **`plan` and `apply` against AWS are not covered by the tests.** The first `plan` in Actions is the test of the GitHub roles' permissions.
 - The riskiest part is installing the nucleus with an identity from outside (`--init-config`): if it fails, `docker logs pump-01` and `fleet/logs/pump-01/greengrass.log` say why.

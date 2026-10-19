@@ -160,6 +160,7 @@ metric_filter threshold      Threshold     '{ ($.threshold = *) && ($.model_vers
 metric_filter inferences     Inferences    '{ $.model_version = * }'                              1             '{"Version":"$.model_version"}'  -
 # does it look like what it learned?
 metric_filter input          InputZ        '{ $.input_z = * }'                                    '$.input_z'   -                                -
+metric_filter input_by_device InputZ       '{ ($.input_z = *) && ($.device = *) }'                '$.input_z'   '{"Device":"$.device"}'          -
 # how fast?
 metric_filter latency        LatencyMs     '{ $.latency_ms = * }'                                 '$.latency_ms' -                               -
 # what triggers the rollback: the pump sounded faulty (truth only exists in the demo) and did not alert

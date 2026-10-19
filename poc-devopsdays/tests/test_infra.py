@@ -264,8 +264,20 @@ class Dashboard(unittest.TestCase):
         text = (ROOT / "cloud" / "dashboard.json").read_text()
         d = json.loads(text)
         used = set()
+        kinds = set()
         for w in d["widgets"]:
+            kinds.add(w["type"])
+            if w["type"] == "text":                       # section headers: no region, no metrics
+                self.assertTrue(w["properties"]["markdown"].strip())
+                continue
             self.assertEqual(w["properties"]["region"], "__REGION__")
+            if w["type"] == "alarm":                      # the gate's status
+                self.assertEqual(w["properties"]["alarms"],
+                                 ["arn:aws:cloudwatch:__REGION__:__ACCOUNT__:alarm:station-missed-faults"])
+                continue
+            if w["type"] == "log":                        # Logs Insights over the raw events
+                self.assertTrue(w["properties"]["query"].startswith("SOURCE '/station/events' |"))
+                continue
             if "alarms" in w["properties"].get("annotations", {}):
                 # CloudWatch rejects an alarm widget with "metrics": the series comes from the alarm
                 self.assertNotIn("metrics", w["properties"])
@@ -278,6 +290,7 @@ class Dashboard(unittest.TestCase):
                     self.assertEqual(row[0], "__NS__")
                     used.add(row[1])
         self.assertEqual(used, METRICS)
+        self.assertEqual(kinds, {"text", "alarm", "metric", "log"})
         # with the placeholders filled it is still JSON
         filled = text.replace("__REGION__", "us-east-1").replace("__NS__", "Station").replace("__ACCOUNT__", "123456789012")
         self.assertNotIn("__", filled)
@@ -904,14 +917,15 @@ class Setup(unittest.TestCase):
         rule = json.loads(list(e.aws("iot", "create-topic-rule" if e.aws("iot", "create-topic-rule") else "replace-topic-rule")[0]["files"].values())[0])
         self.assertEqual(rule["sql"], "SELECT *, timestamp() AS arrived_ts FROM 'station/events'")
         self.assertEqual(rule["actions"][0]["cloudwatchLogs"]["logGroupName"], "/station/events")
-        # metric filters: seven, in the Station namespace, MissedFaults with a default value and no dimensions
+        # metric filters: eight, in the Station namespace, MissedFaults with a default value and no dimensions
         filters = {c["args"][c["args"].index("--filter-name") + 1]:
                    json.loads(c["args"][c["args"].index("--metric-transformations") + 1])[0] for c in e.aws("logs", "put-metric-filter")}
-        self.assertEqual(len(filters), 7)
+        self.assertEqual(len(filters), 8)
         self.assertEqual({f["metricNamespace"] for f in filters.values()}, {"Station"})
         self.assertEqual({f["metricName"] for f in filters.values()}, METRICS)
         self.assertEqual(filters["alerts"]["dimensions"], {"Device": "$.device"})
         self.assertEqual(filters["score"]["dimensions"], {"Version": "$.model_version"})
+        self.assertEqual(filters["input_by_device"]["dimensions"], {"Device": "$.device"})
         self.assertEqual(filters["missed_faults"]["defaultValue"], 0)
         self.assertNotIn("dimensions", filters["missed_faults"])
         for f in filters.values():

@@ -5,7 +5,7 @@ Tests for infra/ (Terraform) and for the fleet's IDENTITY=terraform path. No AWS
 
 What it covers:
   · the .tf files parse as HCL (if python-hcl2 is installed; otherwise those tests are skipped)
-  · Terraform and cloud/setup.sh create the same things: names, rule, the seven filters, alarm, pump policy
+  · Terraform and cloud/setup.sh create the same things: names, rule, the eight filters, alarm, pump policy
   · no SSH anywhere: access to the host is Session Manager only
   · fleet/up.sh with IDENTITY=terraform fetches the identity from Parameter Store, mounts it only for
     the installation and asks for no credentials; the entrypoint installs the nucleus with --init-config
@@ -129,12 +129,12 @@ class SameAsSetup(unittest.TestCase):
         self.assertIn("SELECT *, timestamp() AS arrived_ts FROM '${local.topic}'", tf_text())
         self.assertRegex((INFRA / "main.tf").read_text(), r'\btopic\s*=\s*"station/events"')
 
-    def test_the_seven_filters(self):
+    def test_the_eight_filters(self):
         setup = {}
         for m in re.finditer(r"^metric_filter\s+(\w+)\s+(\w+)\s+'([^']+)'\s+(\S+)\s+(\S+)\s+(\S+)\s*$", SETUP, re.M):
             name, metric, pattern, value, dims, default = m.groups()
             setup[name] = (metric, pattern, value.strip("'"), dims.strip("'"), default)
-        self.assertEqual(len(setup), 7)
+        self.assertEqual(len(setup), 8)
         tf = (INFRA / "observability.tf").read_text()
         for name, (metric, pattern, value, dims, default) in setup.items():
             m = re.search(rf'^\s*{name}\s*=\s*\{{\s*metric = "(\w+)", pattern = "((?:[^"\\]|\\.)*)", value = "([^"]*)", '

@@ -71,6 +71,8 @@ locals {
     inferences = { metric = "Inferences", pattern = "{ $.model_version = * }", value = "1", dim = "Version", dim_value = "$.model_version", default = "" }
     # does it look like what it learned?
     input = { metric = "InputZ", pattern = "{ $.input_z = * }", value = "$.input_z", dim = "", dim_value = "", default = "" }
+    # … per pump, so a single drifting (or tampered) sensor does not hide in the fleet average
+    input_by_device = { metric = "InputZ", pattern = "{ ($.input_z = *) && ($.device = *) }", value = "$.input_z", dim = "Device", dim_value = "$.device", default = "" }
     # how fast?
     latency = { metric = "LatencyMs", pattern = "{ $.latency_ms = * }", value = "$.latency_ms", dim = "", dim_value = "", default = "" }
     # what triggers the rollback: the pump sounded faulty (truth only exists in the demo) and did not alert

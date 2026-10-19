@@ -134,7 +134,7 @@ With Terraform, the pumps never get any AWS credentials: each one boots with its
 REGION=us-east-1 ./cloud/setup.sh
 ```
 
-It creates the bucket, the two thing groups, the token exchange role (allowed to read only this bucket) and its alias, the pumps' minimal IoT policy, the `station_events` rule, the seven metric filters, the dashboard, the Lambda, the alarm and the last-good-version parameter. It is idempotent: you can run it again.
+It creates the bucket, the two thing groups, the token exchange role (allowed to read only this bucket) and its alias, the pumps' minimal IoT policy, the `station_events` rule, the eight metric filters, the dashboard, the Lambda, the alarm and the last-good-version parameter. It is idempotent: you can run it again.
 
 ### 2 · The model and the audio
 
