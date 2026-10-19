@@ -48,11 +48,11 @@ PENDING_SHOTS = []
 SCREENS = os.path.join(ASSETS, "screens")      # AWS evidence of the PoC, one per step (see assets/screens/README.md)
 # name → what it shows (Spanish: it shows on the slide while the file is missing). Same list in assets/screens/README.md.
 SHOTS = {
-    "s3-versiones":   "publish.sh sube cada versión a su carpeta de S3: station/1.0.0/ y station/2.0.0/",
-    "gg-componente":  "publish.sh crea com.station.Listener 1.0.0 y 2.0.0 en IoT Greengrass",
+    "s3-versiones":   "aws s3 ls: cada versión en su carpeta, station/1.0.0/ y station/2.0.0/",
+    "gg-componente":  "list-component-versions: com.station.Listener 1.0.0 y 2.0.0",
     "gg-despliegues": "list-deployments de StationRing0 y StationRing1 después del rollback",
     "gg-equipos":     "list-core-devices (las cinco HEALTHY) y los eventos que llegaron tarde al volver la red",
-    "cw-dashboard":   "los seis widgets del dashboard station durante el ensayo",
+    "cw-dashboard":   "el dashboard station por señal: entrada, salida, autenticidad y el gate",
     "cw-alarma":      "la métrica MissedFaults cruzando el umbral, la alarma, la Lambda y pump-01 de vuelta en v1",
 }
 

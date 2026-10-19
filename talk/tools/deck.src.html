@@ -563,7 +563,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide"><i class="pn">Paso 1 ·</i> Entrenar <b>con sonido normal</b></div>
   <div class="fig">{{FIG:entrenar}}</div>
   <div class="spine">{{FIG:espina_1}}</div>
-  <div class="shot" data-on="3"><div class="win"><div class="wb"><i></i><i></i><i></i><span>./demo/publish.sh · <b>S3</b>, una carpeta por versión · ensayo del 12 oct</span></div>{{SHOT:s3-versiones}}</div></div>
+  <div class="shot" data-on="3"><div class="win"><div class="wb"><i></i><i></i><i></i><span>aws s3 ls · <b>S3</b>, una carpeta por versión · ensayo del 18 oct</span></div>{{SHOT:s3-versiones}}</div></div>
   <div class="foot"></div>
 </section>
 
@@ -582,7 +582,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide"><i class="pn">Paso 3 ·</i> Empaquetar <b>como componente</b></div>
   <div class="fig">{{FIG:receta}}</div>
   <div class="spine">{{FIG:espina_3}}</div>
-  <div class="shot" data-on="5"><div class="win"><div class="wb"><i></i><i></i><i></i><span>./demo/publish.sh · <b>IoT Greengrass</b> crea el componente · ensayo del 12 oct</span></div>{{SHOT:gg-componente}}</div></div>
+  <div class="shot" data-on="5"><div class="win"><div class="wb"><i></i><i></i><i></i><span>list-component-versions · <b>com.station.Listener</b> · ensayo del 18 oct</span></div>{{SHOT:gg-componente}}</div></div>
   <div class="foot"></div>
 </section>
 
@@ -592,7 +592,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide"><i class="pn">Paso 4 ·</i> Desplegar <b>por rings</b></div>
   <div class="fig">{{FIG:anillos}}</div>
   <div class="spine">{{FIG:espina_4}}</div>
-  <div class="shot" data-on="4"><div class="win"><div class="wb"><i></i><i></i><i></i><span>aws greengrassv2 list-deployments · <b>un despliegue por ring</b> · ensayo del 12 oct</span></div>{{SHOT:gg-despliegues}}</div></div>
+  <div class="shot" data-on="4"><div class="win"><div class="wb"><i></i><i></i><i></i><span>aws greengrassv2 list-deployments · <b>un despliegue por ring</b> · ensayo del 18 oct</span></div>{{SHOT:gg-despliegues}}</div></div>
   <div class="foot"></div>
 </section>
 
@@ -602,7 +602,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide"><i class="pn">Paso 5 ·</i> Operar <b>sin red</b></div>
   <div class="fig">{{FIG:sinred}}</div>
   <div class="spine">{{FIG:espina_5}}</div>
-  <div class="shot" data-on="2"><div class="win"><div class="wb"><i></i><i></i><i></i><span><b>core devices</b> y lo que llegó tarde al volver la red · ensayo del 12 oct</span></div>{{SHOT:gg-equipos}}</div></div>
+  <div class="shot" data-on="2"><div class="win"><div class="wb"><i></i><i></i><i></i><span><b>core devices</b> y lo que llegó tarde al volver la red · ensayo del 18 oct</span></div>{{SHOT:gg-equipos}}</div></div>
   <div class="foot"></div>
 </section>
 
@@ -612,7 +612,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide"><i class="pn">Paso 6 ·</i> Monitorear <b>lo que decide el modelo</b></div>
   <div class="fig">{{FIG:monitoreo}}</div>
   <div class="spine">{{FIG:espina_6}}</div>
-  <div class="shot" data-on="5"><div class="win"><div class="wb"><i></i><i></i><i></i><span>CloudWatch · dashboard <b>station</b> · ensayo del 12 oct</span></div>{{SHOT:cw-dashboard}}</div></div>
+  <div class="shot" data-on="5"><div class="win"><div class="wb"><i></i><i></i><i></i><span>CloudWatch · dashboard <b>station</b>, por señal · ensayo del 18 oct</span></div>{{SHOT:cw-dashboard}}</div></div>
   <div class="foot"></div>
 </section>
 
@@ -672,7 +672,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
     </div>
   </div>
   <div class="say" data-on="2" style="top:684px;font-size:28px">Greengrass revierte despliegues fallidos, <b>no modelos equivocados</b>: ese gate lo pones tú.</div>
-  <div class="shot" data-on="3"><div class="win"><div class="wb"><i></i><i></i><i></i><span>CloudWatch · <b>station-missed-faults</b> → Lambda → v1 · ensayo del 12 oct</span></div>{{SHOT:cw-alarma}}</div></div>
+  <div class="shot" data-on="3"><div class="win"><div class="wb"><i></i><i></i><i></i><span>CloudWatch · <b>station-missed-faults</b> → Lambda → v1 · ensayo del 18 oct</span></div>{{SHOT:cw-alarma}}</div></div>
   <div class="foot"></div>
 </section>
 
