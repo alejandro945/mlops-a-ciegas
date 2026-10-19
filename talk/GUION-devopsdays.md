@@ -1,6 +1,6 @@
 # Guion · MLOps a ciegas · DevOpsDays Bogotá 2026
 
-**Duración:** 24:40 de contenido, dentro de los 25 minutos más 5 de preguntas del CFP. Cronométralo en el ensayo; el acto 3 depende de la alarma. **Láminas:** 29 más 10 anexos; cuatro son divisores y pasan en segundos. **Evidencia de AWS:** seis imágenes del ensayo del 18 de octubre en `talk/assets/screens/` (cómo se hicieron, en el README de esa carpeta); salen en el último clic de los pasos 1, 3, 4, 5 y 6 y de la demo.
+**Duración:** 24:40 de contenido, dentro de los 25 minutos más 5 de preguntas del CFP. Cronométralo en el ensayo; el acto 3 depende de la alarma. **Láminas:** 29 más 10 anexos; cuatro son divisores y pasan en segundos. **Evidencia de AWS:** seis capturas de la consola de AWS del ensayo del 18 de octubre en `talk/assets/screens/` (cómo se hicieron, en el README de esa carpeta); salen en el último clic de los pasos 1, 3, 4, 5 y 6 y de la demo.
 
 **De qué va:** cómo gobernar un modelo de IA que corre donde no llega el plano de control, contado con una estación de bombeo inventada: un modelo que escucha bombas en una vereda donde la señal va y viene.
 
@@ -261,7 +261,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ## 16 · Paso 1 · Entrenar con sonido normal
 <!-- id: entrenar -->
-**0:50** · 3 clics · *el último clic es la evidencia de S3*
+**0:50** · 3 clics · *el último clic es la captura de la consola de S3*
 
 "Paso uno, entrenar. Y aquí hay un detalle bonito: este modelo se entrena solo con bombas sanas."
 
@@ -269,9 +269,9 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 **[CLIC]** "Lo que sale va a S3, cada versión en su propia carpeta: el modelo en ONNX, el umbral y también el preprocesamiento del audio. ¿Por qué el preprocesamiento? Porque el error más común es entrenar con uno y servir con otro. No explota nada; el modelo simplemente oye distinto."
 
-**[CLIC]** "Y así quedó en S3 en el ensayo: cada versión en su propia carpeta, la 1.0.0 y la 2.0.0. Versión nueva, carpeta nueva; nunca se pisa la anterior."
+**[CLIC]** "Y así se ve en la consola de S3: cada versión en su propia carpeta, la 1.0.0 y la 2.0.0. Versión nueva, carpeta nueva; nunca se pisa la anterior."
 
-*En la PoC la fábrica es model/train.py en mi portátil, no SageMaker AI. Lo dices en la lámina 24. La imagen es el aws s3 ls real del ensayo del 18 de octubre (talk/assets/screens/s3-versiones.png).*
+*En la PoC la fábrica es model/train.py en mi portátil, no SageMaker AI. Lo dices en la lámina 24. La imagen es la consola de S3 del ensayo del 18 de octubre (talk/assets/screens/s3-versiones.png).*
 
 ---
 
@@ -295,7 +295,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ## 18 · Paso 3 · Empaquetar como componente
 <!-- id: componente -->
-**1:00** · 5 clics · *una anotación por clic; el último es la evidencia del ensayo*
+**1:00** · 5 clics · *una anotación por clic; el último es la captura de la consola*
 
 "Paso tres. En IoT Greengrass, el software se empaca como un componente, y esta es la receta de la demo, un poco recortada."
 
@@ -307,7 +307,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 **[CLIC]** "Y los permisos: este componente solo puede publicar en un tema, station/events. Nada más."
 
-**[CLIC]** "Y así queda en Greengrass: el componente con sus dos versiones, y el umbral como configuración. Una regla que aprendí a las malas: una versión publicada no se toca. Si uno cambia un archivo en S3 sin cambiar la versión, el digest ya no cuadra y el despliegue falla."
+**[CLIC]** "Y así queda en la consola de Greengrass: el componente con sus dos versiones, y abajo el umbral como configuración. Una regla que aprendí a las malas: una versión publicada no se toca. Si uno cambia un archivo en S3 sin cambiar la versión, el digest ya no cuadra y el despliegue falla."
 
 *Fuente del digest: referencia de recetas de Greengrass, campo Digest de Artifacts. https://docs.aws.amazon.com/greengrass/v2/developerguide/component-recipe-reference.html*
 
@@ -315,7 +315,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ## 19 · Paso 4 · Desplegar por rings
 <!-- id: anillos -->
-**1:05** · 4 clics · *el último es la evidencia del ensayo*
+**1:05** · 4 clics · *el último es la captura de la consola*
 
 "Paso cuatro. ¿Cómo le llega una versión nueva a mil equipos sin dañarlos todos un martes por la tarde? Con despliegues de Greengrass, por rings: cada ring es un thing group."
 
@@ -329,7 +329,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 "Seguro alguno está pensando: 'pero si Greengrass ya hace rollback'. Sí… pero de despliegues que fallan. Un modelo que se instala perfecto y oye mal, para Greengrass, es un despliegue exitoso."
 
-**[CLIC]** "Y esto es lo que devolvió AWS en el ensayo: un despliegue por thing group. En el ring 0 se ve la historia completa: la 1.0.0, la 2.0.0 y el rollback, que es el activo. El ring 1 solo tuvo la 1.0.0."
+**[CLIC]** "Y esta es la consola después del ensayo: un despliegue activo por thing group. El del ring 0 se llama rollback-to-1.0.0: lo creó la Lambda, no yo. El del ring 1 es el mismo 1.0.0 del principio: nunca recibió la 2.0.0."
 
 *Fuentes: failureHandlingPolicy = ROLLBACK por defecto, https://docs.aws.amazon.com/greengrass/v2/APIReference/API_DeploymentPolicies.html · abortConfig y jobExecutionsRolloutConfig, https://docs.aws.amazon.com/cli/latest/reference/greengrassv2/create-deployment.html*
 
@@ -337,7 +337,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ## 20 · Paso 5 · Operar sin red
 <!-- id: sinred -->
-**0:40** · 2 clics · *el último es la evidencia del ensayo*
+**0:40** · 2 clics · *el último es la captura de la consola*
 
 "Paso cinco: ¿qué pasa cuando se va la señal?"
 
@@ -345,7 +345,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 **[CLIC]** "La estación sigue escuchando y alertando. Lo que necesita para decidir ya lo tiene adentro. Un ojo: esa cola vive en memoria; cuando se llena, rechaza mensajes. Si la red se va por horas, la cola tiene que ir a disco."
 
-**[CLIC]** "Y esto pasó en el ensayo: las cinco bombas sanas, y cuando a la 3 le volvió la red, sus alertas llegaron 20, 30, 40 segundos tarde. Pero llegaron todas."
+**[CLIC]** "Y así se ven desde la consola: cinco core devices, todos sanos. En el ensayo, a la bomba 3 le quité la red 45 segundos; cuando volvió, sus alertas llegaron 20, 30, 40 segundos tarde. Pero llegaron todas."
 
 *Si preguntan por una planta grande: Outposts con EKS local (ver «Preguntas difíciles»). Fuentes: cola mqtt.spooler de 2,5 MB en memoria, https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html · cola en disco, https://docs.aws.amazon.com/greengrass/v2/developerguide/disk-spooler-component.html · nucleus lite (5 MB de almacenamiento, menos de 15 MB de RAM), https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-lite-component.html*
 
@@ -353,7 +353,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ## 21 · Paso 6 · Monitorear lo que decide el modelo
 <!-- id: monitoreo -->
-**1:25** · 5 clics · *la tubería sale entera; después una señal por clic; el último es la evidencia del ensayo*
+**1:25** · 5 clics · *la tubería sale entera; después una señal por clic; el último es la captura de la consola*
 
 "Paso seis. Desde la nube no vemos el audio: vemos lo que el modelo nos cuenta. Un mensajito por clip, de unos cientos de bytes. Llega a IoT Core, una regla le pega la hora de llegada, cae en CloudWatch, y una alarma lo vigila y puede llamar a la Lambda del rollback."
 
@@ -367,9 +367,9 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 **[CLIC]** "Y algo importante: en la demo, el gate sabe si la bomba fallaba, porque yo sé qué audio suena. En producción eso llega tarde, con la orden de mantenimiento. Estas tres señales no lo necesitan: sirven desde el primer día."
 
-**[CLIC]** "Y este es el dashboard del ensayo, ordenado por las mismas tres señales. Miren la entrada por bomba: ese pico morado es la bomba 5 cuando le cambié la velocidad; en el promedio de la flota no se veía. Y abajo a la derecha, la autenticidad: las cinco bombas con la misma versión y la misma huella."
+**[CLIC]** "Y este es el dashboard en la consola, ordenado por las mismas tres señales. Arriba, los totales: casi todo en la 1.0.0, 40 clips en la 2.0.0, 17 fallas que nadie oyó. Y miren la entrada por bomba: ese pico morado es la bomba 5 cuando le cambié la velocidad; en el promedio de la flota no se veía."
 
-*Si preguntan por umbrales del PSI: 0,1 y 0,25 son costumbre, no estadística (A6). Fíjate que el filtro MissedFaults de la tubería usa el campo truth, que solo existe en la demo: lo dice el clic 4. La imagen son los gráficos reales del dashboard en el ensayo del 18 de octubre (talk/assets/screens/cw-dashboard.png).*
+*Si preguntan por umbrales del PSI: 0,1 y 0,25 son costumbre, no estadística (A6). Fíjate que el filtro MissedFaults de la tubería usa el campo truth, que solo existe en la demo: lo dice el clic 4. La imagen es el dashboard en la consola de CloudWatch, ensayo del 18 de octubre (talk/assets/screens/cw-dashboard.png).*
 
 ---
 
@@ -463,7 +463,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 *Vuelve a esta lámina y dilo mirando a la sala, despacio:* "Greengrass revierte despliegues fallidos, pero no modelos equivocados. Ese gate lo tiene que poner uno."
 
-**[CLIC]** "Y así quedó en el ensayo: las fallas no oídas pasan el umbral de 8, la alarma salta, la Lambda devuelve la 1.0.0 en un segundo, y la bomba 1 vuelve a alertar." *Si la demo en vivo falló, esta lámina es la prueba de que funciona; cuéntala con calma. En el ensayo del 18 de octubre, de la falla a la v1 otra vez: 109 s.*
+**[CLIC]** "Y así quedó la alarma en la consola: las fallas no oídas pasan el umbral de 8, esa franja roja es el momento en ALARM, la Lambda devuelve la 1.0.0 en un segundo, y la bomba 1 vuelve a alertar." *Si la demo en vivo falló, esta lámina es la prueba de que funciona; cuéntala con calma. En el ensayo del 18 de octubre, de la falla a la v1 otra vez: 109 s.*
 
 *Tiempos medidos en los ensayos del 12 de octubre: de `fault.sh pump-01` a la v1 otra vez, entre 90 y 135 s. Depende de en qué segundo del minuto cae la falla. Si a los tres minutos la 1 no ha vuelto, no esperes más: «La alarma va a su ritmo; para no robarles tiempo, les muestro cómo termina», y pon el video desde el rollback.*
 
@@ -710,7 +710,6 @@ Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 
 
 - La infraestructura está abajo desde el 12 de octubre (destroy). El día anterior: Actions → infra → Run workflow → apply; en la EC2, `fetch-poc`, `./fleet/build.sh` y `./fleet/up.sh`; desde el portátil, `./demo/publish.sh 1.0.0`, `2.0.0` y `./demo/deploy.sh 1.0.0 all`. En el ensayo todo eso tomó unos 15 minutos.
 - Grabar el video de respaldo, cortado por actos.
-- Opcional: si quieres capturas de la consola en vez de la evidencia del ensayo, tómalas con la infraestructura arriba y reemplaza los archivos de `talk/assets/screens/` con los mismos nombres (instrucciones en su README).
 - Cronometrar la charla completa en un ensayo con la EC2 y ajustar donde haga falta.
 
 ## Fuentes de lo que dices en voz alta
