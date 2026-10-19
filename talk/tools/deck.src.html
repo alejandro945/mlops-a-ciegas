@@ -8,7 +8,7 @@
   Deck source. Do NOT edit talk/devopsdays.html by hand:
   it is generated with  AWS_ICONS=~/Downloads/Icon-package_07312026 python3 talk/tools/build_deck.py
   Design: official DevOpsDays Bogotá 2026 template (navy #071329 · purple #6D28D9 · blue #2448FF · cyan #00BCEB, Calibri).
-  Slide order and ids: this file (31 slides + 10 annexes); the speaker notes come from GUION-devopsdays.md by id. Placeholders (in double braces, see build_deck.py):
+  Slide order and ids: this file (32 slides + 10 annexes); the speaker notes come from GUION-devopsdays.md by id. Placeholders (in double braces, see build_deck.py):
   FIG:name · M:key · AUDIO:a and AUDIO:b · ARCH_GENERIC · PHOTO · QR · REPO · LINKEDIN · IMG:file · FONT:file ·
   SHOT:name (an AWS console screenshot from talk/assets/screens/name.png; the list is SHOTS in build_deck.py).
   Click steps: data-on="n" (shows up at click n) · data-off="n" (goes away) · data-prog (architecture) · canvas.anim with ANIM[name].
@@ -361,6 +361,8 @@ tr.hot td.k,tr.hot td b{color:var(--acc)}
 [data-p].hid{opacity:0}
 svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800px 196px}
 
+#blk{position:fixed;inset:0;background:#000;z-index:90}
+#blk[hidden]{display:none}
 #bar{position:fixed;left:0;bottom:0;height:3px;background:var(--acc);width:0;transition:width .45s var(--e);z-index:60}
 #notes{position:fixed;left:0;right:0;bottom:0;max-height:42vh;overflow:auto;background:#FFFFFF;border-top:3px solid var(--acc);
   padding:22px 40px;transform:translateY(101%);transition:transform .3s var(--e);z-index:70}
@@ -426,7 +428,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 2 · IS THIS PUMP FAILING? (two real audios) ═══════════════ -->
-<section class="s" data-id="suena" data-sec="0" data-notes="">
+<section class="s" data-id="suena" data-sec="0" data-play='{"1":"a","2":"b"}' data-notes="">
   <div class="kick">Escucha</div>
   <div class="ttl wide">¿Esta bomba está <b>fallando</b>?</div>
   <div class="snd2">
@@ -443,7 +445,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
       <audio id="snd-b" preload="auto" src="{{AUDIO:b}}"></audio>
     </div>
   </div>
-  <div class="ask" data-on="1">Levanten la mano: ¿<b>A</b>, <b>B</b> o <b>las dos</b>?</div>
+  <div class="ask" data-on="3">Levanten la mano: ¿<b>A</b>, <b>B</b> o <b>las dos</b>?</div>
   <div class="foot" data-src="Sonidos reales de bombas industriales · MIMII DUE, Hitachi · CC BY-NC-SA 4.0"></div>
 </section>
 
@@ -460,6 +462,19 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="kick">Contexto</div>
   <div class="ttl wide">Por qué el modelo <b>baja al dispositivo</b></div>
   <div class="chart" style="left:84px;right:84px;top:206px;bottom:136px"><canvas class="anim" data-anim="memes"></canvas></div>
+  <div class="foot"></div>
+</section>
+
+<!-- ═══════════════ 6 · AGENDA ═══════════════ -->
+<section class="s" data-id="agenda" data-sec="0" data-notes="">
+  <div class="kick">Agenda</div>
+  <div class="ttl">Contenido <b>de la sesión</b></div>
+  <div class="agenda">
+    <div class="r" a="1"><div class="n">01</div><div class="t">El problema</div><div class="d">Operar un modelo fuera de la nube: sin red y sin acceso al equipo.</div></div>
+    <div class="r" a="2"><div class="n">02</div><div class="t">El patrón</div><div class="d">Las piezas para gobernarlo, primero en general y después en AWS.</div></div>
+    <div class="r" a="3"><div class="n">03</div><div class="t">Los seis pasos</div><div class="d">Entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear.</div></div>
+    <div class="r" a="4"><div class="n">04</div><div class="t">La evidencia en AWS</div><div class="d">Una ejecución real: una falla, un corte de red y un rollback automático.</div></div>
+  </div>
   <div class="foot"></div>
 </section>
 
@@ -640,14 +655,14 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <section class="s dv" data-id="div4" data-sec="0" data-notes="">
   <div class="sq"></div>
   <div class="n" a="1">04</div>
-  <div class="t" a="2">El ensayo</div>
+  <div class="t" a="2">La evidencia en AWS</div>
   <div class="d" a="3">Cinco bombas en AWS, el 18 de octubre: una falla, un corte de red y una versión mala.</div>
   <div class="foot"></div>
 </section>
 
 <!-- ═══════════════ 27 · THE PoC ═══════════════ -->
 <section class="s" data-id="poc" data-sec="6" data-notes="">
-  <div class="kick">El ensayo</div>
+  <div class="kick">La evidencia</div>
   <div class="ttl wide">Lo que <b>monté y corrí</b></div>
   <div class="fig">{{FIG:arq_poc}}</div>
   <div class="foot"></div>
@@ -655,7 +670,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 <!-- ═══════════════ 25-27 · THE RUN, ONE ACT PER SLIDE (real evidence of the October 18 run) ═══════════════ -->
 <section class="s" data-id="acto1" data-sec="7" data-notes="">
-  <div class="kick">El ensayo · 18 oct</div>
+  <div class="kick">La evidencia · 18 oct</div>
   <div class="ttl wide"><i class="pn">Acto 1 ·</i> Escuchar</div>
   <div class="sre">La bomba 3 suena como la B del principio. En el clip siguiente, alerta.</div>
   <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>./demo/watch.sh pump-03 · <b>de normal a ALERT</b> · ensayo del 18 oct</span></div>{{SHOT:acto1}}</div></div>
@@ -663,7 +678,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <section class="s" data-id="acto2" data-sec="7" data-notes="">
-  <div class="kick">El ensayo · 18 oct</div>
+  <div class="kick">La evidencia · 18 oct</div>
   <div class="ttl wide"><i class="pn">Acto 2 ·</i> Sin red, y una deriva</div>
   <div class="sre">La 3 se queda sin red 45 s y las otras siguen; al volver, todo llega tarde y nada se pierde.</div>
   <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>./demo/watch.sh y el dashboard · <b>sin red y deriva</b> · ensayo del 18 oct</span></div>{{SHOT:acto2}}</div></div>
@@ -671,7 +686,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <section class="s" data-id="acto3" data-sec="7" data-notes="">
-  <div class="kick">El ensayo · 18 oct</div>
+  <div class="kick">La evidencia · 18 oct</div>
   <div class="ttl wide"><i class="pn">Acto 3 ·</i> Ring deployment <b>y rollback</b></div>
   <div class="sre">La v2 llega solo al ring 0, no oye la falla, y el gate la devuelve solo.</div>
   <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la línea de tiempo · <b>de la v2 al rollback</b> · ensayo del 18 oct</span></div>{{SHOT:acto3}}</div></div>
@@ -695,18 +710,18 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 32 · THE FINAL LINE (the audios come back) ═══════════════ -->
-<section class="s" data-id="final" data-sec="0" data-notes="">
+<section class="s" data-id="final" data-sec="0" data-play='{"1":"b"}' data-notes="">
   <div class="fq" a="1">¿Esta bomba está <b>fallando</b>?</div>
   <div class="fplay" a="2">
     <button class="play sm" type="button" data-snd="a" aria-label="Reproducir la bomba A"><i class="ic"></i><span class="lb">Bomba A</span></button>
     <button class="play sm" type="button" data-snd="b" aria-label="Reproducir la bomba B"><i class="ic"></i><span class="lb">Bomba B</span></button>
   </div>
-  <div class="evt" data-on="1">
+  <div class="evt" data-on="2">
     <div class="eh">Lo que sale de la estación · bomba B</div>
     <div class="el"><span>pump-03</span><i>·</i><span>v1.0.0</span><i>·</i><b>ALERT</b><i>·</i><span>score 0.42 (threshold 0.34)</span><i>·</i><span>input 0.7</span></div>
     <div class="ef">Unos cientos de bytes. El audio se quedó en la estación.</div>
   </div>
-  <div class="fz" data-on="2">No necesitas <b>ver</b> el modelo.<br>Necesitas que <b>te cuente</b>.</div>
+  <div class="fz" data-on="3">No necesitas <b>ver</b> el modelo.<br>Necesitas que <b>te cuente</b>.</div>
   <div class="foot"></div>
 </section>
 
@@ -881,6 +896,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 </div>
 <div id="bar"></div>
+<div id="blk" hidden></div>
 <div id="notes"><h5>NOTAS</h5><p></p></div>
 
 <script>
@@ -891,7 +907,7 @@ const deck=document.getElementById('deck'), slides=[...document.querySelectorAll
 const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
 const INK='#071329', ACC='#6D28D9', INK_SOFT='#B8C4D6';
 const ink=a=>'rgba(7,19,41,'+a+')', acc=a=>'rgba(109,40,217,'+a+')';
-let i=0, nOn=false;
+let i=0, nOn=false, RM_PRINT=false;
 
 function fit(){ const k=Math.min(innerWidth/1600, innerHeight/900);
   deck.style.transform='translate(-50%,-50%) scale('+k+')'; }
@@ -1122,6 +1138,7 @@ slides.forEach((sl,k)=>{
   if(sl.dataset.prog){ sl._prog=JSON.parse(sl.dataset.prog); n=Math.max(n,sl._prog.length); }
   sl.querySelectorAll('[data-on]').forEach(e=>{ n=Math.max(n,+e.dataset.on+1); });
   sl.querySelectorAll('[data-off]').forEach(e=>{ n=Math.max(n,+e.dataset.off+1); });
+  if(sl.dataset.play) n=Math.max(n,...Object.keys(JSON.parse(sl.dataset.play)).map(x=>+x+1));
   if(sl.dataset.steps) n=+sl.dataset.steps;
   S[k]={step:0,n};
   const f=sl.querySelector('.foot');
@@ -1170,7 +1187,9 @@ function applySvg(sl,st){
 }
 
 function setStep(k,st){
-  const sl=slides[k]; S[k].step=st;
+  const sl=slides[k], fwd=st===S[k].step+1; S[k].step=st;
+  const pl=sl.dataset.play&&JSON.parse(sl.dataset.play)[st];
+  if(pl&&fwd&&!RM_PRINT) playSnd(pl);                      /* data-play: the clicker plays the pump's audio */
   sl.querySelectorAll('[data-on]').forEach(e=>{ const n=+e.dataset.on; e.classList.toggle('vis',st>=n); e.classList.toggle('cur',st===n); });
   sl.querySelectorAll('[data-off]').forEach(e=>e.classList.toggle('gone',st>=+e.dataset.off));
   sl.querySelectorAll('[data-hot]').forEach(e=>e.classList.toggle('hot',st>=+e.dataset.hot));
@@ -1191,7 +1210,7 @@ function loop(now){
   requestAnimationFrame(loop);
 }
 
-/* ── audio (slides 2 and 32): one <audio> per pump and one button per place where it plays ── */
+/* ── audio (slides 3 and 29): one <audio> per pump and one button per place where it plays ── */
 const SND={}; document.querySelectorAll('audio[id^="snd-"]').forEach(au=>{ SND[au.id.slice(4)]=au; });
 const PLAY=[...document.querySelectorAll('.play[data-snd]')];
 const sndOn=au=>!!au&&!au.paused&&!au.ended;
@@ -1201,6 +1220,8 @@ function sndSync(){
     b.classList.toggle('on',on); b.setAttribute('aria-pressed',on?'true':'false'); if(lb) lb.textContent=on?'Detener':b.dataset.lb;
     const card=b.closest('.snd'); if(card) card.classList.toggle('live',on); });
 }
+function playSnd(key){ const au=SND[key]; if(!au||!au.getAttribute('src')) return;
+  stopSnd(au); try{ au.currentTime=0; }catch(_){} const pr=au.play(); if(pr&&pr.catch) pr.catch(()=>{}); sndSync(); }
 function stopSnd(except){
   Object.keys(SND).forEach(k=>{ const au=SND[k]; if(au===except) return;
     if(!au.paused) au.pause(); if(au.currentTime){ try{ au.currentTime=0; }catch(e){} } });
@@ -1250,6 +1271,7 @@ addEventListener('keydown',e=>{
   else if(k==='m'){e.preventDefault(); toMain();}
   else if(k>='1'&&k<='9'&&(e.altKey||e.metaKey)){e.preventDefault(); toAnx(+k-1);}
   else if(k==='r'){ setStep(i,0); }
+  else if(k==='b'||k==='.'){ const bk=document.getElementById('blk'); bk.hidden=!bk.hidden; }
   else if(k==='n'){ nOn=!nOn; notes.classList.toggle('on',nOn); }
   else if(k==='f'){ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }
 });
@@ -1260,8 +1282,8 @@ addEventListener('click',e=>{
   (e.clientX<innerWidth*.25?prev():next()); });
 
 /* print / PDF: every slide at its last step */
-addEventListener('beforeprint',()=>{ slides.forEach((sl,k)=>{ sl.classList.add('on'); setStep(k,S[k].n-1); }); });
-addEventListener('afterprint',()=>show(i,true));
+addEventListener('beforeprint',()=>{ RM_PRINT=true; slides.forEach((sl,k)=>{ sl.classList.add('on'); setStep(k,S[k].n-1); }); });
+addEventListener('afterprint',()=>{ show(i,true); RM_PRINT=false; });
 
 const h=decodeURIComponent(location.hash.slice(1)), start=slides.findIndex(sl=>sl.dataset.num===h);
 show(start>=0?start:0);

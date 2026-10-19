@@ -2,7 +2,7 @@
 
 Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo demás en cursiva es para ti. Lo que va entre comillas no se memoriza palabra por palabra, salvo la apertura, las cifras y el cierre. Cómo estudiarlo: `talk/private/ESTUDIO.md` (no se sube al repo). Fuentes y datos de respaldo: `NOTAS-de-apoyo.md`. Las notas del deck (tecla **N**) salen de este archivo.
 
-**21:48** de contenido para un espacio de 25 min + 5 de preguntas. Reloj al entrar a cada divisor: 3:05 · 5:48 · 9:03 · 15:43.
+**22:00** de contenido para un espacio de 25 min + 5 de preguntas. Reloj al entrar a cada divisor: 3:20 · 6:00 · 9:15 · 15:55.
 
 ---
 
@@ -26,13 +26,13 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ## 3 · ¿Esta bomba está fallando?
 <!-- id: suena -->
-**1:10** · 1 clic
+**1:10** · 3 clics · *el control reproduce los audios (10 s cada uno); un clic mientras suena lo detiene sin avanzar*
 
-"Bomba A." *(▶ A, cinco segundos)* "Bomba B." *(▶ B, cinco segundos)*
+"Bomba A." **[CLIC]** *(suena A)*
 
-"¿Alguna de las dos está fallando?"
+"Bomba B." **[CLIC]** *(suena B)*
 
-**[CLIC]** "Levanten la mano: ¿la A?" *(cuenta)* "¿La B?" *(cuenta)* "¿Las dos?" *(cuenta)* "La respuesta la vamos a ver con datos más adelante."
+**[CLIC]** "¿Alguna de las dos está fallando? Levanten la mano: ¿la A?" *(cuenta)* "¿La B?" *(cuenta)* "¿Las dos?" *(cuenta)* "La respuesta la vamos a ver con datos más adelante."
 
 "Los audios son reales, del dataset MIMII DUE de Hitachi. Este es el caso: un acueducto con estaciones de bombeo en zonas rurales, con conectividad intermitente y sin personal en sitio. En cada estación, un equipo de borde escucha las bombas y un modelo detecta cuándo una empieza a sonar distinto."
 
@@ -72,15 +72,23 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 6 · 01 · El problema
-<!-- id: div1 -->
-**0:08** · *reloj: 3:05*
+## 6 · Contenido de la sesión
+<!-- id: agenda -->
+**0:15** · sin clics
 
-"La charla tiene cuatro partes: el problema, el patrón de arquitectura, la implementación en seis pasos y la evidencia de una ejecución real en AWS. Empecemos por el problema."
+"La charla tiene cuatro partes: el problema, el patrón de arquitectura, la implementación en seis pasos y la evidencia de una ejecución real en AWS."
 
 ---
 
-## 7 · MLOps en la nube: un loop cerrado
+## 7 · 01 · El problema
+<!-- id: div1 -->
+**0:05** · *reloj: 3:20*
+
+"Empecemos por el problema."
+
+---
+
+## 8 · MLOps en la nube: un loop cerrado
 <!-- id: nube -->
 **0:20** · sin clics
 
@@ -90,7 +98,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 8 · Las restricciones de la estación
+## 9 · Las restricciones de la estación
 <!-- id: edge -->
 **1:00** · 5 clics
 
@@ -110,7 +118,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 9 · Un panel en verde no mide el modelo
+## 10 · Un panel en verde no mide el modelo
 <!-- id: tablero -->
 **1:15** · 3 clics · *la idea central: ve despacio*
 
@@ -130,15 +138,15 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 10 · 02 · El patrón
+## 11 · 02 · El patrón
 <!-- id: div2 -->
-**0:05** · *reloj: 5:48*
+**0:05** · *reloj: 6:00*
 
 "Veamos cómo se gobierna esto, empezando por el equipo."
 
 ---
 
-## 11 · Arquitectura del equipo en la estación
+## 12 · Arquitectura del equipo en la estación
 <!-- id: equipo -->
 **0:45** · 3 clics
 
@@ -152,7 +160,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 12 · Antes de proteger el modelo, protege el equipo
+## 13 · Antes de proteger el modelo, protege el equipo
 <!-- id: seguridad -->
 **0:50** · 4 clics
 
@@ -170,7 +178,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 13 · Cinco piezas para gobernarlo
+## 14 · Cinco piezas para gobernarlo
 <!-- id: flujo -->
 **1:05** · 6 clics
 
@@ -190,7 +198,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 14 · El mismo patrón en AWS
+## 15 · El mismo patrón en AWS
 <!-- id: aws -->
 **0:30** · 5 clics · *ritmo ágil*
 
@@ -202,15 +210,15 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 15 · 03 · Los seis pasos
+## 16 · 03 · Los seis pasos
 <!-- id: div3 -->
-**0:10** · *reloj: 9:03*
+**0:10** · *reloj: 9:15*
 
 "La implementación, en seis pasos: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear."
 
 ---
 
-## 16 · Paso 1 · Entrenar con sonido normal
+## 17 · Paso 1 · Entrenar con sonido normal
 <!-- id: entrenar -->
 **0:50** · 3 clics
 
@@ -224,7 +232,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 17 · Paso 2 · Optimizar para cada chip
+## 18 · Paso 2 · Optimizar para cada chip
 <!-- id: optimizar -->
 **1:00** · 3 clics
 
@@ -240,7 +248,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 18 · Paso 3 · Empaquetar como componente
+## 19 · Paso 3 · Empaquetar como componente
 <!-- id: componente -->
 **1:00** · 5 clics
 
@@ -258,7 +266,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 19 · Paso 4 · Desplegar por rings
+## 20 · Paso 4 · Desplegar por rings
 <!-- id: anillos -->
 **1:05** · 4 clics
 
@@ -276,7 +284,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 20 · Paso 5 · Operar sin red
+## 21 · Paso 5 · Operar sin red
 <!-- id: sinred -->
 **0:40** · 2 clics
 
@@ -288,7 +296,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 21 · Paso 6 · Monitorear lo que decide el modelo
+## 22 · Paso 6 · Monitorear lo que decide el modelo
 <!-- id: monitoreo -->
 **1:25** · 5 clics
 
@@ -308,7 +316,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 22 · A mano alzada
+## 23 · A mano alzada
 <!-- id: reflexion3 -->
 **0:30** · 1 clic
 
@@ -318,15 +326,15 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 23 · 04 · El ensayo
+## 24 · 04 · La evidencia en AWS
 <!-- id: div4 -->
-**0:05** · *reloj: 15:43*
+**0:05** · *reloj: 15:55*
 
 "Pasemos a la evidencia: una ejecución completa en AWS."
 
 ---
 
-## 24 · Lo que monté y corrí
+## 25 · Lo que monté y corrí
 <!-- id: poc -->
 **0:30** · sin clics
 
@@ -336,7 +344,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 25 · Acto 1 · Escuchar
+## 26 · Acto 1 · Escuchar
 <!-- id: acto1 -->
 **0:50** · sin clics · *deja que lean primero*
 
@@ -350,7 +358,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 26 · Acto 2 · Sin red, y una deriva
+## 27 · Acto 2 · Sin red, y una deriva
 <!-- id: acto2 -->
 **1:00** · sin clics
 
@@ -362,7 +370,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 27 · Acto 3 · Ring deployment y rollback
+## 28 · Acto 3 · Ring deployment y rollback
 <!-- id: acto3 -->
 **1:20** · 2 clics · *el punto culminante: ve despacio*
 
@@ -380,9 +388,9 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 28 · Cinco recomendaciones
+## 29 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 19:28 al entrar*
+**1:05** · 4 clics · *reloj: 19:40 al entrar*
 
 "Cinco recomendaciones para aplicar desde el lunes."
 
@@ -396,15 +404,15 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 **[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad. Y mantengan el dato crudo en el equipo."
 
-*(Si el reloj marca 19:50 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
+*(Si el reloj marca 20:00 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
 
 ---
 
-## 29 · La frase final: ¿esta bomba está fallando?
+## 30 · La frase final: ¿esta bomba está fallando?
 <!-- id: final -->
-**0:45** · 2 clics
+**0:45** · 3 clics · *el primer clic reproduce la bomba B*
 
-"Volvamos a la pregunta inicial: ¿esta bomba está fallando?" *(▶ B, tres segundos)*
+"Volvamos a la pregunta inicial: ¿esta bomba está fallando?" **[CLIC]** *(suena B; córtala con otro clic a los tres segundos)*
 
 "Ustedes la escucharon. La nube no, y no necesitaba hacerlo."
 
@@ -416,7 +424,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 30 · Recursos y contacto
+## 31 · Recursos y contacto
 <!-- id: recursos -->
 **0:15** · sin clics
 
@@ -424,7 +432,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 31 · Gracias
+## 32 · Gracias
 <!-- id: cierre -->
 **0:15** · sin clics
 

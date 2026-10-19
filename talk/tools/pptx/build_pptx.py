@@ -1,7 +1,7 @@
 """
 Builds talk/MLOps-a-ciegas-DevOpsDays-Bogota-2026.pptx on top of the official
 DevOpsDays Bogotá 2026 template, with the same content as talk/devopsdays.html
-(31 slides + 10 annexes, same order and ids as deck.src.html).
+(32 slides + 10 annexes, same order and ids as deck.src.html).
 Slide text, speaker notes, shape names and section names stay in Spanish (the talk is in Spanish).
 
 - Titles, kickers, text, tables, cards, the spine bar and the speaker notes:
@@ -1504,7 +1504,7 @@ BUILDERS = {
 }
 
 SECTIONS = [("Apertura", "portada"), ("01 · El problema", "div1"), ("02 · El patrón", "div2"),
-            ("03 · Los seis pasos", "div3"), ("04 · El ensayo", "div4"), ("Cierre", "llevo"), ("Anexos", "a1")]
+            ("03 · Los seis pasos", "div3"), ("04 · La evidencia en AWS", "div4"), ("Cierre", "llevo"), ("Anexos", "a1")]
 
 # The notes come from the speaker script (via the HTML). Some sentences talk about HTML keys and buttons; for PowerPoint
 # they say how it is done there. If the script changes those sentences, the replacement finds nothing and the note stays as is.
