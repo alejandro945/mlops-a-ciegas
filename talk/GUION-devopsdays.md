@@ -18,11 +18,11 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: gancho -->
 **0:40** · 2 clics · *antes de presentarte; sin saludar todavía*
 
-"El 20 de octubre del año pasado, hace casi exactamente un año, se cayó us-east-1. Muchos de ustedes lo vivieron desde operaciones: horas de servicios detenidos." *(señala el meme)* "Y nos recordó algo que ya sabíamos: buena parte de internet se apoya en una sola región." *(pausa)*
+"Hace un año, casi exacto, se cayó us-east-1. Muchos de ustedes lo vivieron desde operaciones: horas de servicios detenidos." *(señala el meme)* "Y nos recordó algo que ya sabíamos: buena parte de internet se apoya en una sola región." *(pausa)*
 
 **[CLIC]** "Pero hubo una víctima que nadie esperaba: una marca de camas inteligentes, de unos dos mil dólares, que controlaba la temperatura y la inclinación desde la nube. Cuando la región cayó, las camas se quedaron en su último estado: calientes, inclinadas, en plena noche, con sus dueños encima." *(pausa)*
 
-**[CLIC]** "La solución que publicaron fue un modo sin conexión: llevar la decisión al dispositivo. Eso es edge. Y no fue una falla de AWS: fue una decisión de arquitectura. Cada vez más, esa decisión va a ser nuestra."
+**[CLIC]** "Su solución de emergencia fue un modo sin conexión: control manual por Bluetooth, sin la inteligencia." *(pausa)* "La cama sabía detectar en qué etapa del sueño estabas, pero esa decisión vivía en la nube. Cuando la nube cayó, la cama dejó de pensar. Llevar esa decisión al dispositivo: eso es edge."
 
 ---
 
@@ -30,7 +30,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: quien -->
 **0:25** · sin clics
 
-"Buenos días. Soy Alejandro Varela, Senior Cloud Engineer en EPAM, y esa decisión es justamente mi trabajo: diseñar cómo se despliegan y se operan modelos de IA en equipos de campo, lugares sin conectividad estable y sin nadie que los atienda."
+"Buenos días. Soy Alejandro Varela, Senior Cloud Engineer en EPAM, y eso es justamente mi trabajo: diseñar cómo se despliegan y se operan modelos de IA en equipos de campo, lugares sin conectividad estable y sin nadie que los atienda."
 
 "Hoy les voy a mostrar el patrón que uso para eso, con una implementación completa en AWS. Pero antes de la arquitectura, quiero que escuchen algo."
 
