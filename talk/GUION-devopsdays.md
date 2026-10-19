@@ -1,6 +1,6 @@
 # Guion · MLOps a ciegas · DevOpsDays Bogotá 2026
 
-**Duración:** 24:40 de contenido, dentro de los 25 minutos más 5 de preguntas del CFP. Cronométralo en el ensayo; el acto 3 depende de la alarma. **Láminas:** 29 más 10 anexos; cuatro son divisores y pasan en segundos. **Evidencia de AWS:** seis capturas de la consola de AWS del ensayo del 18 de octubre en `talk/assets/screens/` (cómo se hicieron, en el README de esa carpeta); salen en el último clic de los pasos 1, 3, 4, 5 y 6 y de la demo.
+**Duración:** 21:48 de contenido, dentro de los 25 minutos más 5 de preguntas del CFP. No hay demo en vivo: el bloque 04 muestra lo que pasó en el ensayo del 18 de octubre. **Láminas:** 31 más 10 anexos; cuatro son divisores y pasan en segundos. **Evidencia de AWS:** seis capturas de la consola de AWS del ensayo del 18 de octubre en `talk/assets/screens/` (cómo se hicieron, en el README de esa carpeta); salen en el último clic de los pasos 1, 3, 4, 5 y 6 y en el acto 3; los tres actos muestran las líneas y gráficas reales de ese ensayo.
 
 **De qué va:** cómo gobernar un modelo de IA que corre donde no llega el plano de control, contado con una estación de bombeo inventada: un modelo que escucha bombas en una vereda donde la señal va y viene.
 
@@ -23,12 +23,12 @@ AWS_ICONS=<ruta al paquete de íconos> REPO_URL=… LINKEDIN=… python3 talk/to
 Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 1. **Arranca con una experiencia, no con un currículum.** Te presentas en 25 segundos (lámina 2) y lo siguiente que oye la sala es una bomba (lámina 3).
-2. **Deja una pregunta abierta.** «¿Cuál bomba está fallando?» no se responde hasta la demo. La gente se queda esperando la respuesta.
+2. **Deja una pregunta abierta.** «¿Cuál bomba está fallando?» no se responde hasta el acto 1. La gente se queda esperando la respuesta.
 3. **Haz que la sala haga algo.** Levantar la mano dos veces (láminas 3 y 22) vale más que diez láminas de contexto. Espera de verdad las manos y comenta lo que ves.
 4. **Pon personajes con voz.** El jefe que pregunta «¿y el modelo cómo va?», el técnico a las 3 a. m. Cambia un poco la voz y la postura cuando hablas por ellos.
 5. **Baja los números a escala humana.** No «32 000 bytes por segundo»: «115 megas por hora, por bomba, por la red de una vereda».
 6. **Cuenta lo que te pasó.** Lo que se rompió en el ensayo (la bomba que no arrancaba por una extensión de archivo) engancha más que cualquier diagrama.
-7. **Muestra antes de explicar.** En la demo, primero que vean la línea en la terminal y después la explicas.
+7. **Muestra antes de explicar.** En cada acto, primero que lean la línea y después la explicas.
 8. **Pon ejemplos que todos tienen en el bolsillo.** Face ID (lámina 5): el modelo en el teléfono, la cara que nunca sale y el modelo que se adapta solo.
 9. **Cierra donde empezaste.** Los audios del principio vuelven al final, con la respuesta. Y terminas con una pregunta que se lleven a la casa.
 10. **Usa las pausas.** Después de una cifra que importa (0,57), cállate dos segundos. El silencio hace que la sala la registre.
@@ -67,7 +67,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 "Pregunta: ¿alguna de las dos está fallando?"
 
-**[CLIC]** "Levanten la mano. ¿La A?" *(cuenta en voz alta: «unos cinco…»)* "¿La B?" *(cuenta)* "¿Las dos?" *(cuenta)* "Interesante. No les voy a decir todavía; eso lo vemos en vivo."
+**[CLIC]** "Levanten la mano. ¿La A?" *(cuenta en voz alta: «unos cinco…»)* "¿La B?" *(cuenta)* "¿Las dos?" *(cuenta)* "Interesante. No les voy a decir todavía; la respuesta la vemos al final, con lo que pasó en AWS."
 
 "Los sonidos son reales, los grabó Hitachi en una planta. Lo que sí me inventé es la empresa: un acueducto con estaciones de bombeo en veredas, donde la señal va y viene y no hay nadie cerca. En cada estación hay un equipito que escucha las bombas, y un modelo que avisa cuando una empieza a sonar raro."
 
@@ -119,7 +119,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 <!-- id: div1 -->
 **0:08** · *divisor: no lo leas* · *reloj: 3:05*
 
-"Vamos en cuatro partes: el problema, el patrón para resolverlo, seis pasos y la demo en vivo. Arranquemos por el problema."
+"Vamos en cuatro partes: el problema, el patrón para resolverlo, seis pasos y lo que pasó cuando lo corrí en AWS. Arranquemos por el problema."
 
 ---
 
@@ -147,7 +147,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 **[CLIC]** "Cuatro, y esta casi nadie la mide: la latencia depende de la energía. Con la batería baja o con el equipo caliente, el chip se pone lento para ahorrar o para enfriarse. El mismo modelo tarda más."
 
-**[CLIC]** "Y cinco: los datos. Fallas hay pocas para aprender, y lo normal cambia con el tiempo: el micrófono envejece, cambia la velocidad de la bomba. Eso es el drift. Y conseguir buenos datos es la mitad del trabajo; en la demo van a ver qué pasa cuando no."
+**[CLIC]** "Y cinco: los datos. Fallas hay pocas para aprender, y lo normal cambia con el tiempo: el micrófono envejece, cambia la velocidad de la bomba. Eso es el drift. Y conseguir buenos datos es la mitad del trabajo; en el acto 3 van a ver qué pasa cuando no."
 
 "O sea: todo lo que uno hacía en la nube asume que las cosas pasan por uno. Aquí no pasa nada por uno."
 
@@ -377,105 +377,85 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 <!-- id: reflexion3 -->
 **0:30** · 1 clic · *la barra cuenta cinco segundos*
 
-"Una pregunta antes de la demo: ¿ustedes saben qué versión del modelo está corriendo en cada uno de sus equipos?" *(espera manos)* "Ahora bajen la mano los que tuvieron que pensarlo." *(risas)*
+"Una pregunta antes de mostrarles el ensayo: ¿ustedes saben qué versión del modelo está corriendo en cada uno de sus equipos?" *(espera manos)* "Ahora bajen la mano los que tuvieron que pensarlo." *(risas)*
 
 **[CLIC]** "Aquí la respuesta sale de la nube, sin entrar a ningún equipo: el ring 0, la bomba 1, versión 1.0.0, activo. El ring 1, de la 2 a la 5, la misma."
 
-*Así lo devolvió `aws greengrassv2 list-deployments` en el ensayo: un despliegue a un thing group queda ACTIVE. Detalle de un equipo, si lo piden: `aws greengrassv2 list-installed-components --core-device-thing-name pump-01`. Antes de subir, confirma que la flota está así.*
+*Así lo devolvió `aws greengrassv2 list-deployments` en el ensayo: un despliegue a un thing group queda ACTIVE. Detalle de un equipo, si lo piden: `aws greengrassv2 list-installed-components --core-device-thing-name pump-01`.*
 
 ---
 
-## 23 · 04 · Demostración
+## 23 · 04 · El ensayo
 <!-- id: div4 -->
 **0:05** · *divisor* · *reloj: 15:43*
 
-"Bueno, suficiente teoría. Vamos para la estación."
+"Bueno, suficiente teoría. Les muestro lo que pasó cuando lo corrí de verdad."
 
 ---
 
-## 24 · Arquitectura de la demostración
+## 24 · Lo que monté y corrí
 <!-- id: poc -->
 **0:30** · sin clics
 
-"Les cuento qué monté, porque no me traje bombas en la maleta." *(risas)* "Cada bomba es un contenedor en una EC2, con el agente real de Greengrass adentro. Son cinco: la 1 es el ring 0, el canary, y de la 2 a la 5 son el ring 1."
+"No me traje bombas en la maleta." *(risas)* "Cada bomba es un contenedor en una EC2, con el agente real de Greengrass adentro. Son cinco: la 1 es el ring 0, el canary, y de la 2 a la 5 son el ring 1. El audio es real, y todo lo demás es AWS de verdad, montado con Terraform desde GitHub Actions."
 
-"El audio es real, y todo lo demás es AWS de verdad, montado con Terraform desde GitHub Actions."
+"Lo corrí completo el 18 de octubre, y lo que van a ver son las líneas y las gráficas que salieron ese día. Lo único de mentiras es el equipo físico… y la fábrica del modelo, que es un script en mi portátil y no SageMaker."
 
-"Lo único de mentiras es el equipo físico… y la fábrica del modelo, que es un script en mi portátil y no SageMaker."
-
-*La fábrica del modelo es la de la lámina 16. Si preguntan: las cinco bombas salen de tres secciones de MIMII DUE; la 1 y la 4 comparten sección, y la 2 y la 5 también, con clips distintos. Cada nucleus es una JVM: en el ensayo, unos 220 MB por bomba.*
+*La fábrica del modelo es la de la lámina 16. Si preguntan: las cinco bombas salen de tres secciones de MIMII DUE; la 1 y la 4 comparten sección, y la 2 y la 5 también, con clips distintos. Cada nucleus es una JVM: en el ensayo, unos 220 MB por bomba. Si preguntan por qué no en vivo: «el wifi de un evento es el peor lugar del mundo para depender de MQTT; y así ven exactamente lo que pasó, sin trucos».*
 
 ---
 
-## 25 · Demostración en tres actos
-<!-- id: demo -->
-**6:00** · 3 clics en la lámina, después las terminales · *la lámina es el mapa; lo de verdad está en la terminal*
+## 25 · Acto 1 · Escuchar
+<!-- id: acto1 -->
+**0:50** · sin clics · *primero que lean la línea; después explícala*
 
-*En la lámina (0:20).* "Van a ser tres actos. En el primero, la bomba 3 va a sonar como la B del principio."
+"Esto es lo que ve uno desde la nube: cada línea es un clip que la bomba 3 escuchó y decidió. Qué bomba, qué versión, si alertó, el score y cómo venía la entrada." *(pausa)*
 
-**[CLIC]** "En el segundo, la dejamos sin señal."
-
-**[CLIC]** "Y en el tercero, mandamos una versión nueva por rings… y vemos qué pasa." *(señala la frase de abajo)* "Esa frase de abajo es el final de la película, así que no la lean todavía." *(risas)*
-
-*Cambia a las terminales: `./demo/watch.sh` a la izquierda; arriba a la derecha, el dashboard `station`; abajo a la derecha, la terminal de Session Manager en la EC2. Letra grande.*
-
-"Esto que ven aquí es la estación en vivo. Cada línea es un clip que una bomba escuchó y decidió: qué bomba, qué versión, si alertó, el score contra el umbral, cómo venía la entrada y cuánto se demoró. Ahí están las tres señales del paso seis: la entrada, la salida y la versión. Y fíjense que el audio no aparece por ningún lado."
-
-**Acto 1 · Escuchar (1:00)**
-
-*Escribe* `./demo/fault.sh pump-03` — "Le voy a decir a la bomba 3 que suene como la B."
-
-*Cuando aparezca pump-03 v1.0.0 ALERT (en el ensayo salió al siguiente clip):* "¡Ahí está! Alerta: el score pasó el umbral."
+"Normal, normal, normal… y a las 7:58 y 36 segundos le digo a la bomba 3 que suene como la B. En ese mismo clip: alerta. El score pasó el umbral."
 
 "Y aquí está la respuesta de la pregunta del principio: la que estaba fallando era la B. ¿Quién votó por la B?" *(manos)* "Ustedes tienen oído de mecánico. Los de la A, tranquilos, para eso está el modelo." *(risas)*
 
 "Y ojo: el audio no salió de la estación. Lo único que salió fue esta línea."
 
-*No apagues la falla de la 3: en el acto 2, lo que llega tarde tienen que ser alertas.*
+---
 
-**Acto 2 · Sin red (1:20)**
+## 26 · Acto 2 · Sin red, y una deriva
+<!-- id: acto2 -->
+**1:00** · sin clics
 
-*Escribe* `./demo/network.sh off pump-03` — "Ahora le quito la red a la bomba 3. Como cuando se va la señal en la vereda."
+"Segundo acto. A la bomba 3 le quito la red, como cuando se va la señal en la vereda." *(señala la izquierda)* "Miren: la 3 desaparece, y la 1, la 2, la 4 y la 5 siguen como si nada."
 
-*Mientras esperas, lanza el despliegue del acto 3:* `./demo/deploy.sh 2.0.0 ring-0` — "Y mientras tanto, aprovecho y le mando una versión nueva a una sola estación. Ya volvemos a eso."
+"45 segundos después le devuelvo la red… y ahí llegan, de golpe: 'arrived 41 seconds late', 32, 29, 20. Llegaron tarde, pero llegaron todas. La bomba siguió escuchando y alertando sin red, y su cola entregó todo al volver."
 
-*A los 40 o 50 s:* "Miren: la 3 se calló, y las otras cuatro siguen como si nada. ¿Se dañó? No. Sigue escuchando, sigue alertando, y va guardando todo en su cola. La nube no sabe nada; la estación sí."
+*(señala la gráfica)* "Y algo más: a la bomba 5 le cambié la velocidad. ¿Errores? Ninguno. Pero miren la entrada por bomba: ese pico morado salta de 0,8 a 1,8. Esa es la primera señal del paso seis, en vivo… bueno, en diferido." *(risas)*
 
-*Escribe* `./demo/network.sh on pump-03` — *en el ensayo se reconectó en unos 5 s.* "Y ahí llegan, de golpe. Llegaron tarde, pero llegaron todas: ese 'arrived late' es el tiempo que la bomba estuvo sin señal. No se perdió ninguna alerta."
-
-*Escribe* `./demo/fault.sh pump-03 off`
-
-**Acto 3 · Ring deployment y rollback (3:05)**
-
-*Señala la bomba 1, que ya corre v2.0.0 (en el ensayo llegó en 13 a 20 s); de la 2 a la 5 siguen en v1.0.0.* "La versión nueva se entrenó con más audio. Y más datos es mejor modelo, ¿cierto?" *(pausa)* "Además da menos alertas, en operación están felices. Llegó solo al ring 0, sin errores, con la misma latencia. Para Greengrass, todo perfecto."
-
-*Escribe* `./demo/fault.sh pump-01` — "Ahora pongamos a fallar la bomba 1."
-
-*Cuando aparezca pump-01 v2.0.0 normal … · missed fault:* "La bomba está fallando… y la versión nueva dice 'normal'. Una falla que nadie oyó." *(pausa)*
-
-"¿Qué pasó? ¿Se acuerdan del punto cinco, los datos? Ese audio extra incluía la semana en que una bomba ya venía fallando, y nadie lo revisó. El modelo aprendió que fallar es lo normal. No da errores, da menos alertas… y no oye las fallas. No es un bug de código: es un bug de datos."
-
-*Mientras la alarma junta datos:* "Y ahora no voy a tocar nada. Dejemos que el gate haga su trabajo." *Cambia al deck: tecla A y una flecha a la derecha te llevan al anexo A2. Cuenta la secuencia con la nota de A2 (un minuto). M te devuelve aquí.*
-
-*Vuelve a watch.sh. Cuando la 1 salga en v1.0.0 con ALERT:* "Ahí volvió: versión 1.0.0, y alerta otra vez. Nadie entró al equipo, y el ring 1 nunca recibió la versión mala."
-
-*Escribe* `./demo/fault.sh pump-01 off`
-
-*Vuelve a esta lámina y dilo mirando a la sala, despacio:* "Greengrass revierte despliegues fallidos, pero no modelos equivocados. Ese gate lo tiene que poner uno."
-
-**[CLIC]** "Y así quedó la alarma en la consola: las fallas no oídas pasan el umbral de 8, esa franja roja es el momento en ALARM, la Lambda devuelve la 1.0.0 en un segundo, y la bomba 1 vuelve a alertar." *Si la demo en vivo falló, esta lámina es la prueba de que funciona; cuéntala con calma. En el ensayo del 18 de octubre, de la falla a la v1 otra vez: 109 s.*
-
-*Tiempos medidos en los ensayos del 12 de octubre: de `fault.sh pump-01` a la v1 otra vez, entre 90 y 135 s. Depende de en qué segundo del minuto cae la falla. Si a los tres minutos la 1 no ha vuelto, no esperes más: «La alarma va a su ritmo; para no robarles tiempo, les muestro cómo termina», y pon el video desde el rollback.*
-
-*Plan B, si la red del evento falla (watch.sh sin líneas en 30 s o la EC2 no responde): pon el video de respaldo y dilo con humor: «El wifi de un evento es el peor lugar del mundo para depender de MQTT. Por eso traje la grabación del ensayo.» Narra encima con este mismo guion.*
-
-*Si preguntan si la v2 es mala en general o solo en la demo: en todo el set de prueba, con fallas que no vio al entrenar, la v1 detecta el 21 % de las fallas y la v2 el 16 %; la v1 alerta en el 13 % de los clips y la v2 en el 10 %. Los clips de la flota se eligen para que la demo sea repetible.*
+*Datos del ensayo: 45 s sin red; 14 eventos llegaron tarde, entre 11 y 50 s; ninguno se perdió.*
 
 ---
 
-## 26 · Cinco recomendaciones
+## 27 · Acto 3 · Ring deployment y rollback
+<!-- id: acto3 -->
+**1:20** · 2 clics · *el clímax: ve despacio*
+
+"Tercer acto. Mando la versión 2.0.0, solo al ring 0, a la bomba 1. Se entrenó con más audio. Y más datos es mejor modelo, ¿cierto?" *(pausa)* "Llegó en menos de 20 segundos, sin errores, con la misma latencia. Para Greengrass, todo perfecto."
+
+"Ahora pongo a fallar la bomba 1… y miren: 'normal', 'missed fault', 'normal', 'missed fault'. La bomba está fallando y la versión nueva no avisa."
+
+"¿Qué pasó? ¿Se acuerdan del punto cinco, los datos? Ese audio extra incluía la semana en que una bomba ya venía fallando, y nadie lo revisó. El modelo aprendió que fallar es lo normal. No es un bug de código: es un bug de datos."
+
+"Y ahora nadie toca nada. A las 8:15 y 14 la alarma pasa a ALARM, dos segundos después la Lambda devuelve la 1.0.0, y a las 8:15 y 22 la bomba 1 vuelve a alertar. Ochenta y ocho segundos, sin que nadie entrara al equipo. Y el ring 1 nunca recibió la versión mala."
+
+**[CLIC]** "Así se veía la alarma en la consola: las fallas que nadie oyó pasan el umbral de 8, y esa franja roja es el momento en ALARM."
+
+**[CLIC]** *Dilo mirando a la sala, despacio:* "Greengrass revierte despliegues fallidos, pero no modelos equivocados. Ese gate lo tiene que poner uno."
+
+*Si preguntan si la v2 es mala en general o solo en el ensayo: en todo el set de prueba, con fallas que no vio al entrenar, la v1 detecta el 21 % de las fallas y la v2 el 16 %; la v1 alerta en el 13 % de los clips y la v2 en el 10 %. Los clips de la flota se eligen para que el ensayo sea repetible. El paso a paso del rollback está en el anexo A2.*
+
+---
+
+## 28 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 22:18 al entrar*
+**1:05** · 4 clics · *reloj: 19:28 al entrar*
 
 "Me quedan unos minutos, así que les dejo cinco cosas. Y les advierto: casi nadie las hace el lunes. Pero los que las hacen duermen más tranquilos."
 
@@ -489,11 +469,11 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 **[CLIC]** "Y la quinta: vigilen tres señales, la entrada, la salida y la autenticidad. Y el audio, que se quede en el equipo."
 
-*Si el reloj marca 22:40 o menos al llegar aquí, cuenta lo que pasó en el primer ensayo, que es real: «¿Saben qué fue lo primero que se me dañó? La primera vez que monté esto en AWS, ninguna bomba arrancaba. Horas buscando, y era que el instalador de Greengrass decide el formato del archivo de configuración por la extensión… y mi archivo no tenía extensión. Una línea. Por eso se ensaya en el equipo de verdad.»*
+*Si el reloj marca 19:50 o menos al llegar aquí, cuenta lo que pasó en el primer ensayo, que es real: «¿Saben qué fue lo primero que se me dañó? La primera vez que monté esto en AWS, ninguna bomba arrancaba. Horas buscando, y era que el instalador de Greengrass decide el formato del archivo de configuración por la extensión… y mi archivo no tenía extensión. Una línea. Por eso se ensaya en el equipo de verdad.»*
 
 ---
 
-## 27 · La frase final: ¿esta bomba está fallando?
+## 29 · La frase final: ¿esta bomba está fallando?
 <!-- id: final -->
 **0:45** · 2 clics · *cierre circular: vuelven los audios del principio*
 
@@ -513,7 +493,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ---
 
-## 28 · Recursos y contacto
+## 30 · Recursos y contacto
 <!-- id: recursos -->
 **0:15** · sin clics
 
@@ -523,7 +503,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ---
 
-## 29 · Gracias
+## 31 · Gracias
 <!-- id: cierre -->
 **0:15** · sin clics
 
@@ -545,9 +525,9 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ## A2 · El rollback automático, paso a paso
 <!-- id: a2 -->
-*Úsalo mientras esperas la alarma del acto 3. Dura un minuto. M te devuelve a la demo.*
+*Si preguntan cómo funciona el rollback por dentro. Dura un minuto. M te devuelve a donde estabas.*
 
-"Mientras esperamos, les cuento qué está pasando ahora mismo, sin que yo toque nada."
+"Les cuento qué pasó por dentro, sin que yo tocara nada."
 
 "Yo mandé la 2.0.0 al ring 0. La bomba 1 se trajo su desired state, bajó los archivos de S3, revisó el digest e instaló. Para Greengrass, todo salió bien."
 
@@ -657,25 +637,14 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 | 01 · El problema | 6–9 | 2:43 | 5:48 |
 | 02 · El patrón | 10–14 | 3:15 | 9:03 |
 | 03 · Los seis pasos | 15–22 | 6:40 | 15:43 |
-| 04 · Demostración | 23–25 | 6:35 | 22:18 |
-| Cierre | 26–29 | 2:20 | 24:38 |
-| **Total** | | **24:38** | |
+| 04 · El ensayo | 23–27 | 3:45 | 19:28 |
+| Cierre | 28–31 | 2:20 | 21:48 |
+| **Total** | | **21:48** | |
 
-Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 1:20 (con el despliegue de la v2 lanzado durante la espera), acto 3 2:45 y remate 0:15. El acto 3 es lo único que no controlas: si en el ensayo el rollback pasa de 2:30, lleva el tope y el video listos. La anécdota de la lámina 26 solo entra si vas adelantado. Te sobran 20 segundos: son para las risas y las manos, no para agregar contenido.
+Sin demo en vivo, el tiempo ya no depende de la alarma: te sobran unos 3 minutos. Úsalos para las risas, las manos y las preguntas, no para agregar contenido. La anécdota de la lámina 28 entra si vas adelantado.
 
 ## Antes de subir
 
-**Una hora antes**
-- EC2 encendida y las cinco bombas *Healthy*: `aws greengrassv2 list-core-devices --query 'coreDevices[].[coreDeviceThingName,status]' --output table`.
-- Toda la flota en 1.0.0: los dos thing groups con su despliegue en ACTIVE (la lámina 22 lo muestra así).
-- `/station/last_good_version` = 1.0.0.
-- Las cinco bombas suenan normal: `./demo/fault.sh pump-0N off` y `./demo/domain.sh pump-0N normal`.
-- Las cinco conectadas a la red `station` (`docker network inspect station`).
-- La alarma `station-missed-faults` en OK. Si quedó en ALARM del ensayo, no va a disparar otra vez: solo actúa cuando cambia de estado.
-
-**En el escenario**
-- `./demo/watch.sh` corriendo con letra grande; el dashboard `station` abierto (15 minutos, refresco de 10 s); la terminal de Session Manager en la EC2 limpia, con los comandos de la demo a mano.
-- El video de respaldo abierto, cortado por actos y en pausa.
 - Los dos botones de audio probados con el sonido de la sala.
 - El deck en pantalla completa (F); las notas (N) en tu pantalla, no en la proyectada.
 - Un reloj visible y agua.
@@ -703,14 +672,14 @@ Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 
 - **«¿Cómo firmas el modelo?»** "Greengrass verifica el digest de cada archivo. Para firma y procedencia hay un estándar abierto, OpenSSF Model Signing, sobre Sigstore."
 - **«¿Cuántas bombas aguanta la PoC?»** "Cada bomba usó unos 220 MB, y las cinco juntas 1,4 GB. Lo que limita es la memoria, porque cada agente es una JVM."
 - **«¿Seguro que el audio no sale?»** "El componente lee el audio en modo solo lectura, y sus permisos solo le dejan publicar en un tema."
-- **«¿Por qué un evento cada 3 s si la cuenta dice 10?»** "Porque en la demo necesito que pasen cosas rápido. La cuenta es para mil bombas."
-- **«¿Por qué no SageMaker AI en la demo?»** "En vivo, entrenar es lo menos interesante. Un script en el portátil hace lo mismo y cabe en una semana."
+- **«¿Por qué un evento cada 3 s si la cuenta dice 10?»** "Porque en el ensayo necesitaba que pasaran cosas rápido. La cuenta es para mil bombas."
+- **«¿Por qué no lo mostraste en vivo?»** "Porque el wifi de un evento es el peor lugar para depender de MQTT, y porque así ven exactamente lo que pasó, con la hora real de cada línea. El repo trae todo para que lo corran ustedes."
+- **«¿Por qué no SageMaker AI en la demo?»** "En una charla, entrenar es lo menos interesante. Un script en el portátil hace lo mismo y cabe en una semana."
 
 ## Pendientes antes de la charla
 
-- La infraestructura está abajo desde el 12 de octubre (destroy). El día anterior: Actions → infra → Run workflow → apply; en la EC2, `fetch-poc`, `./fleet/build.sh` y `./fleet/up.sh`; desde el portátil, `./demo/publish.sh 1.0.0`, `2.0.0` y `./demo/deploy.sh 1.0.0 all`. En el ensayo todo eso tomó unos 15 minutos.
-- Grabar el video de respaldo, cortado por actos.
-- Cronometrar la charla completa en un ensayo con la EC2 y ajustar donde haga falta.
+- Cronometrar la charla completa en voz alta y ajustar donde haga falta.
+- La infraestructura está abajo (destroy del 18 de octubre, componentes y despliegues borrados; queda solo el bucket del estado de Terraform). Para volver a correr la PoC: `poc-devopsdays/README.md`.
 
 ## Fuentes de lo que dices en voz alta
 

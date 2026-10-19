@@ -8,7 +8,7 @@
   Deck source. Do NOT edit talk/devopsdays.html by hand:
   it is generated with  AWS_ICONS=~/Downloads/Icon-package_07312026 python3 talk/tools/build_deck.py
   Design: official DevOpsDays Bogotá 2026 template (navy #071329 · purple #6D28D9 · blue #2448FF · cyan #00BCEB, Calibri).
-  Slide order and ids: this file (29 slides + 10 annexes); the speaker notes come from GUION-devopsdays.md by id. Placeholders (in double braces, see build_deck.py):
+  Slide order and ids: this file (31 slides + 10 annexes); the speaker notes come from GUION-devopsdays.md by id. Placeholders (in double braces, see build_deck.py):
   FIG:name · M:key · AUDIO:a and AUDIO:b · ARCH_GENERIC · PHOTO · QR · REPO · LINKEDIN · IMG:file · FONT:file ·
   SHOT:name (an AWS console screenshot from talk/assets/screens/name.png; the list is SHOTS in build_deck.py).
   Click steps: data-on="n" (shows up at click n) · data-off="n" (goes away) · data-prog (architecture) · canvas.anim with ANIM[name].
@@ -239,6 +239,9 @@ tr.hot td.k,tr.hot td b{color:var(--acc)}
 .shot .wb span{margin-left:12px}
 .shot .wb b{color:var(--acc);font-weight:700}
 .shot img{display:block;max-width:1429px;max-height:490px;width:auto;height:auto}
+.shot.ev{top:246px;height:470px;background:none}
+.shot.ev img{max-height:428px}
+.shot.ev .spend{height:380px}
 .shot .spend{width:1100px;height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;
   background:var(--light);color:var(--muted);font-size:24px;font-weight:700;padding:0 60px}
 .shot .spend code{font-size:18px;color:var(--link)}
@@ -637,42 +640,43 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <section class="s dv" data-id="div4" data-sec="0" data-notes="">
   <div class="sq"></div>
   <div class="n" a="1">04</div>
-  <div class="t" a="2">Demostración</div>
-  <div class="d" a="3">Cinco bombas simuladas, una falla, un corte de red y una versión mala.</div>
+  <div class="t" a="2">El ensayo</div>
+  <div class="d" a="3">Cinco bombas en AWS, el 18 de octubre: una falla, un corte de red y una versión mala.</div>
   <div class="foot"></div>
 </section>
 
 <!-- ═══════════════ 27 · THE PoC ═══════════════ -->
 <section class="s" data-id="poc" data-sec="6" data-notes="">
-  <div class="kick">Demostración</div>
-  <div class="ttl wide">Arquitectura <b>de la demostración</b></div>
+  <div class="kick">El ensayo</div>
+  <div class="ttl wide">Lo que <b>monté y corrí</b></div>
   <div class="fig">{{FIG:arq_poc}}</div>
   <div class="foot"></div>
 </section>
 
-<!-- ═══════════════ 29 · THE DEMO · THE THREE ACTS ═══════════════ -->
-<section class="s" data-id="demo" data-sec="7" data-notes="">
-  <div class="kick">Demostración</div>
-  <div class="ttl wide">Demostración <b>en tres actos</b></div>
-  <div class="acts">
-    <div class="act" data-on="0">
-      <div class="an">1</div>
-      <div class="at"><h3>Escuchar</h3><p>La bomba 3 suena como la B del inicio y aparece la alerta.</p></div>
-      <div class="ac"><code>./demo/fault.sh pump-03</code></div>
-    </div>
-    <div class="act" data-on="1">
-      <div class="an">2</div>
-      <div class="at"><h3>Sin red</h3><p>La 3 se calla y las otras cuatro siguen. Al volver la red, sus alertas llegan tarde y no se pierde ninguna.</p></div>
-      <div class="ac"><code>./demo/network.sh off pump-03</code><code>./demo/network.sh on pump-03</code></div>
-    </div>
-    <div class="act hot" data-on="2">
-      <div class="an">3</div>
-      <div class="at"><h3>Ring deployment y rollback</h3><p>La 1 pasa a la v2 y no oye la falla. La alarma dispara la Lambda y la 1 vuelve a la v1. El ring 1 nunca recibió la v2.</p></div>
-      <div class="ac"><code>./demo/deploy.sh 2.0.0 ring-0</code><code>./demo/fault.sh pump-01</code></div>
-    </div>
-  </div>
-  <div class="say" data-on="2" style="top:684px;font-size:28px">Greengrass revierte despliegues fallidos, <b>no modelos equivocados</b>: ese gate lo pones tú.</div>
-  <div class="shot" data-on="3"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · alarma <b>station-missed-faults</b> · ensayo del 18 oct</span></div>{{SHOT:cw-alarma}}</div></div>
+<!-- ═══════════════ 25-27 · THE RUN, ONE ACT PER SLIDE (real evidence of the October 18 run) ═══════════════ -->
+<section class="s" data-id="acto1" data-sec="7" data-notes="">
+  <div class="kick">El ensayo · 18 oct</div>
+  <div class="ttl wide"><i class="pn">Acto 1 ·</i> Escuchar</div>
+  <div class="sre">La bomba 3 suena como la B del principio. En el clip siguiente, alerta.</div>
+  <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>./demo/watch.sh pump-03 · <b>de normal a ALERT</b> · ensayo del 18 oct</span></div>{{SHOT:acto1}}</div></div>
+  <div class="foot"></div>
+</section>
+
+<section class="s" data-id="acto2" data-sec="7" data-notes="">
+  <div class="kick">El ensayo · 18 oct</div>
+  <div class="ttl wide"><i class="pn">Acto 2 ·</i> Sin red, y una deriva</div>
+  <div class="sre">La 3 se queda sin red 45 s y las otras siguen; al volver, todo llega tarde y nada se pierde.</div>
+  <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>./demo/watch.sh y el dashboard · <b>sin red y deriva</b> · ensayo del 18 oct</span></div>{{SHOT:acto2}}</div></div>
+  <div class="foot"></div>
+</section>
+
+<section class="s" data-id="acto3" data-sec="7" data-notes="">
+  <div class="kick">El ensayo · 18 oct</div>
+  <div class="ttl wide"><i class="pn">Acto 3 ·</i> Ring deployment <b>y rollback</b></div>
+  <div class="sre">La v2 llega solo al ring 0, no oye la falla, y el gate la devuelve solo.</div>
+  <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la línea de tiempo · <b>de la v2 al rollback</b> · ensayo del 18 oct</span></div>{{SHOT:acto3}}</div></div>
+  <div class="shot " data-on="1"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · alarma <b>station-missed-faults</b> · ensayo del 18 oct</span></div>{{SHOT:cw-alarma}}</div></div>
+  <div class="say" data-on="2" style="top:728px;font-size:28px;z-index:5">Greengrass revierte despliegues fallidos, <b>no modelos equivocados</b>: ese gate lo pones tú.</div>
   <div class="foot"></div>
 </section>
 

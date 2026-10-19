@@ -1,7 +1,7 @@
 """
 Builds talk/MLOps-a-ciegas-DevOpsDays-Bogota-2026.pptx on top of the official
 DevOpsDays Bogotá 2026 template, with the same content as talk/devopsdays.html
-(29 slides + 10 annexes, same order and ids as deck.src.html).
+(31 slides + 10 annexes, same order and ids as deck.src.html).
 Slide text, speaker notes, shape names and section names stay in Spanish (the talk is in Spanish).
 
 - Titles, kickers, text, tables, cards, the spine bar and the speaker notes:
@@ -1249,28 +1249,34 @@ def b_cards4(s, sec, tm):
 
 
 def shot_block(s, sec, tm):
-    """The AWS console screenshot (.shot): a window with its bar that comes in on its click, over the figure.
-    Missing screenshot: the same window with «captura pendiente» and what to capture."""
-    el = q(sec, ".shot")
-    if el is None:
-        return
+    """Every AWS window (.shot) of the slide, in order: one with data-on="0" (the act slides) is there from the start,
+    in the evidence area below the subtitle; the others come in on their click, over the figure."""
+    for el in sec.cssselect(".shot"):
+        shot_window(s, sec, tm, el)
+
+
+def shot_window(s, sec, tm, el):
+    """One window with its bar. Missing screenshot: the same window with «captura pendiente» and what to capture."""
     import base64, io
+    static = el.get("data-on") == "0"
+    top, area = (246, 470) if static else (190, 532)
     img = q(el, "img")
     bw, bh = 1432, 38                                    # window bar
     if img is not None:
         raw = base64.b64decode(img.get("src").split(",", 1)[1])
         im = Image.open(io.BytesIO(raw))
-        k = min(1429 / (im.width / 2), 490 / (im.height / 2), 1.0)    # the HTML shows it at 1x of a 2x capture at most
+        k = min(1429 / (im.width / 2), (area - 42) / (im.height / 2), 1.0)    # the HTML shows it at 1x of a 2x capture at most
         w, h = im.width / 2 * k, im.height / 2 * k
-        path = os.path.join(BUILD, "img", f"shot_{sec.get('data-id')}.jpg")
+        path = os.path.join(BUILD, "img", f"shot_{sec.get('data-id')}_{el.get('data-on')}.jpg")
         im.convert("RGB").save(path, quality=90)
     else:
         w, h, path = 1100, 420, None
     ww = max(w, 600)
-    x, y = 800 - ww / 2, 190 + (532 - (h + bh)) / 2
+    x, y = 800 - ww / 2, top + (area - (h + bh)) / 2
     g = s.shapes.add_group_shape()
     g.name = "Captura de AWS"
-    rect(g, 0, 190, 1600, 532, fill="FFFFFF", name="Velo")
+    if not static:
+        rect(g, 0, 190, 1600, 532, fill="FFFFFF", name="Velo")
     rect(g, x, y, ww, h + bh, fill="FFFFFF", line=LINE, lw=1.5, radius=12, name="Ventana")
     rect(g, x + 1, y + 1, ww - 2, bh - 1, fill=LIGHT, name="Barra")
     for j in range(3):
@@ -1286,7 +1292,21 @@ def shot_block(s, sec, tm):
                 ["captura pendiente", [(plain(q(sp, "code")), {"font": MONO, "color": LINK, "size": 18})],
                  [(plain(q(sp, "small")), {"bold": False, "color": SLATE, "size": 19})]],
                 size=24, bold=True, color=MUTED, align=PP_ALIGN.CENTER, name="Qué capturar")
-    tm.click((g, "in"))
+    if not static:
+        tm.click((g, "in"))
+
+
+def b_acto(s, sec, tm):
+    """Slides 25-27 (the run, one act each): title, subtitle, the evidence window; on acto3 the console alarm and the
+    closing sentence come in on clicks, in that order."""
+    header(s, sec)
+    textbox(s, 84, 206, 1432, 32, [plain(q(sec, ".sre"))], size=24, color=SLATE, name="Subtítulo")
+    shot_block(s, sec, tm)
+    say = q(sec, ".say")
+    if say is not None:
+        top = int(re.search(r"top:\s*(\d+)px", say.get("style") or "").group(1))
+        tb = textbox(s, 84, top, 1432, 28 * NAT + 4, [runs_of(say, PURPLE)], size=28, name="Remate")
+        tm.click((tb, "in"))
 
 
 def b_seq(s, sec, tm):
@@ -1474,7 +1494,8 @@ BUILDERS = {
     "entrenar": ("CONTENIDO", b_iso), "optimizar": ("CONTENIDO", b_iso), "componente": ("CONTENIDO", b_iso),
     "anillos": ("CONTENIDO", b_iso), "reflexion2": ("CONTENIDO", b_refl), "sinred": ("CONTENIDO", b_iso),
     "monitoreo": ("CONTENIDO", b_iso), "reflexion3": ("CONTENIDO", b_refl3), "div4": ("DIVISOR", b_div),
-    "poc": ("CONTENIDO", b_htmlsteps), "senales": ("CONTENIDO", b_iso), "demo": ("CONTENIDO", b_acts),
+    "poc": ("CONTENIDO", b_htmlsteps), "acto1": ("CONTENIDO", b_acto), "acto2": ("CONTENIDO", b_acto),
+    "acto3": ("CONTENIDO", b_acto), "senales": ("CONTENIDO", b_iso), "demo": ("CONTENIDO", b_acts),
     "costo": ("CONTENIDO", b_cost), "llevo": ("CONTENIDO", b_rows), "final": ("SIMPLE", b_final),
     "recursos": ("CONTENIDO", b_res), "cierre": ("CIERRE", b_closing),
     "a1": ("CONTENIDO", b_table), "a2": ("CONTENIDO", b_seq), "a3": ("CONTENIDO", b_table),
@@ -1483,7 +1504,7 @@ BUILDERS = {
 }
 
 SECTIONS = [("Apertura", "portada"), ("01 · El problema", "div1"), ("02 · El patrón", "div2"),
-            ("03 · Los seis pasos", "div3"), ("04 · Demostración", "div4"), ("Cierre", "llevo"), ("Anexos", "a1")]
+            ("03 · Los seis pasos", "div3"), ("04 · El ensayo", "div4"), ("Cierre", "llevo"), ("Anexos", "a1")]
 
 # The notes come from the speaker script (via the HTML). Some sentences talk about HTML keys and buttons; for PowerPoint
 # they say how it is done there. If the script changes those sentences, the replacement finds nothing and the note stays as is.
@@ -1497,7 +1518,7 @@ def note_fixes():
              "el PowerPoint: ponlos y vuelve a generarlo."),
             ("Cambia al deck: tecla A y una flecha a la derecha te llevan al anexo A2.",
              f"Salta al anexo A2: escribe {n['a2']} y Enter."),
-            ("M te devuelve aquí.", f"Para volver aquí, escribe {n['demo']} y Enter."),
+            ("M te devuelve aquí.", f"Para volver aquí, escribe {n['acto3']} y Enter."),
             ("*Anexos: la tecla A abre A1; las flechas los recorren; M o Esc te devuelven.",
              f"*Anexos: en PowerPoint escribe el número de la lámina y Enter (A1 = {n['a1']} … A8 = {n['a8']}); para volver, "
              "el de la lámina donde estabas.")]
@@ -1533,7 +1554,8 @@ def main():
         s = new_slide(layout)
         tm = Timing()
         fn(s, sec, tm)
-        shot_block(s, sec, tm)                     # the AWS screenshot is always the slide's last click
+        if fn is not b_acto:                       # (the act slides place their own windows)
+            shot_block(s, sec, tm)                 # the AWS screenshot is always the slide's last click
         tm.apply(s)
         nt = notes_text(sec)
         if nt:

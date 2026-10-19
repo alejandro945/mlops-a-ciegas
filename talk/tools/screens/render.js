@@ -5,6 +5,7 @@
 // and its Logs Insights results (q-*.json).
 // Needs playwright-core and Google Chrome:
 //   npm i playwright-core && node talk/tools/screens/render.js evidencia-e2e/2026-10-18 talk/assets/screens
+// ONLY=acto1,acto2,acto3 renders just those (the step slides use console screenshots).
 const {chromium}=require('playwright-core'); const fs=require('fs'); const path=require('path');
 const [,,EV,OUT]=process.argv;
 const rd=f=>fs.readFileSync(path.join(EV,f),'utf8');
@@ -71,11 +72,45 @@ const SHOTS={
     cmd('./demo/watch.sh   # pump-01')+[...missed,back].map(l=>L(short(l),'hot')).join('')+`</div></div>`},
 };
 
+// the walkthrough of the run (slides 25–27): one image per act, from the formatted events of that run
+const at=(a,b,dev)=>watch.filter(l=>{const t=l.slice(0,8);return t>=a&&t<=b&&(!dev||l.split(/\s+/)[1]===dev);});
+const mark=(t,s)=>`<div class="l mk">${esc(t)}  ▶ ${esc(s)}</div>`;
+const firstV2=watch.find(l=>/pump-01\s+v2\.0\.0/.test(l));
+const v1back=watch.find(l=>/pump-01\s+v1\.0\.0\s+ALERT/.test(l)&&l.slice(0,8)>'20:15');
+Object.assign(SHOTS,{
+  'acto1': {w:1180, body:
+    cmd('./demo/watch.sh pump-03')+
+    at('19:58:24','19:58:33','pump-03').map(l=>L(short(l))).join('')+
+    mark('19:58:36','./demo/fault.sh pump-03   · la bomba 3 suena como la B')+
+    at('19:58:36','19:58:48','pump-03').map(l=>L(short(l),'hot')).join('')+gap+
+    note('En el clip siguiente, alerta: el score pasa el umbral. Lo único que salió de la estación fue esta línea.')},
+  'acto2': {w:1420, body:
+    `<div class="cols a2"><div>`+
+    mark('19:59:26','./demo/network.sh off pump-03')+
+    at('19:59:40','19:59:44').map(l=>L(short(l))).join('')+
+    L('                     … la 3 calla; las otras cuatro siguen')+
+    mark('20:00:11','./demo/network.sh on pump-03   · 45 s sin red')+
+    late.slice(0,4).map(l=>L(short(l),'hot')).join('')+
+    `</div><div><img class="chart2" src="${w('input-level-per-pump')}">`+
+    note('Y la deriva: a la bomba 5 le cambié la velocidad a las 20:01. Ni un error; la entrada por bomba salta de 0,8 a 1,8.')+`</div></div>`},
+  'acto3': {w:1240, body:
+    mark('20:13:06','./demo/deploy.sh 2.0.0 ring-0')+
+    L(short(firstV2),'')+
+    mark('20:13:54','./demo/fault.sh pump-01')+
+    missed.map(l=>L(short(l),'hot')).join('')+
+    L(alarm.replace(/^\S+T(\d\d:\d\d:\d\d)\.\d+-05:00\s+/,'$1  alarma · '),'hot')+
+    L('20:15:16  lambda · '+lambda.trim().replace(/,\s*"deploymentId".*$/,'}'),'hot')+
+    L(short(v1back),'hot')+gap+
+    note('De la falla a la primera alerta de la v1: 88 s, sin que nadie tocara nada. El ring 1 nunca recibió la v2.')},
+});
+const ONLY=(process.env.ONLY||'').split(',').filter(Boolean);
+
 const CSS=`*{margin:0;padding:0;box-sizing:border-box}
 body{background:#fff;font-family:"Courier New",Menlo,monospace;color:#071329}
 .wrap{padding:22px 26px}
 .l{font-size:17px;line-height:1.55;white-space:pre}
 .l.cmd{color:#1F6C93;font-weight:700;margin-bottom:4px}
+.l.mk{color:#1F6C93;font-weight:700;margin:6px 0 4px}
 .l.hot{background:rgba(109,40,217,.07);border-left:3px solid #6D28D9;padding-left:8px;margin-left:-11px}
 b.al{color:#6D28D9} b.mf{color:#C2410C} b.lt{color:#C2410C} b.ok{color:#16825D}
 .gap{height:14px}
@@ -85,6 +120,9 @@ b.al{color:#6D28D9} b.mf{color:#C2410C} b.lt{color:#C2410C} b.ok{color:#16825D}
 .cols.al2{grid-template-columns:560px 1fr;align-items:center}
 .cols.al2 .l{font-size:16px}
 .chart{width:560px;display:block}
+.cols.a2{grid-template-columns:auto 470px;gap:24px;align-items:center}
+.cols.a2 .l{font-size:15px}
+.chart2{width:470px;display:block}
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 figure{position:relative;border:1px solid #D5DEEA;border-radius:6px;overflow:hidden}
 figure span{position:absolute;right:8px;top:6px;font:700 12px Calibri,Carlito,Helvetica,sans-serif;letter-spacing:.06em;
@@ -100,6 +138,7 @@ td{padding:4px 6px;border-top:1px solid #E5EAF2;white-space:nowrap}`;
   const b=await chromium.launch({executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
   const p=await b.newPage({deviceScaleFactor:2,viewport:{width:1600,height:900}});
   for(const [name,s] of Object.entries(SHOTS)){
+    if(ONLY.length&&!ONLY.includes(name)) continue;
     await p.setContent(`<style>${CSS}</style><div class="wrap" id="w" style="width:${s.w}px;${s.pad!=null?'padding:'+s.pad+'px':''}">${s.body}</div>`);
     await p.waitForTimeout(150);
     const el=await p.$('#w'); await el.screenshot({path:path.join(OUT,name+'.png')});
