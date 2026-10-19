@@ -286,6 +286,9 @@ class Dashboard(unittest.TestCase):
                 used.add("MissedFaults")
                 continue
             for row in w["properties"]["metrics"]:
+                if isinstance(row[0], dict):              # metric math (e.g. the alerts total)
+                    self.assertIn("expression", row[0])
+                    continue
                 if row[0] != "...":
                     self.assertEqual(row[0], "__NS__")
                     used.add(row[1])
