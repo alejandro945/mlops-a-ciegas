@@ -20,7 +20,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 "Buenos días. Soy Alejandro Varela, Senior Cloud Engineer en EPAM. Mi trabajo es diseñar cómo se despliegan y se operan modelos de IA en equipos de campo: lugares sin conectividad estable y sin nadie que los atienda."
 
-"Todo lo que van a ver hoy lo construí y lo ejecuté en AWS para esta charla. Pero antes de la arquitectura, quiero que escuchen algo."
+"Hoy les voy a mostrar el patrón que uso para eso, con una implementación completa en AWS. Pero antes de la arquitectura, quiero que escuchen algo."
 
 ---
 
@@ -34,9 +34,9 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 **[CLIC]** "Levanten la mano: ¿la A?" *(cuenta)* "¿La B?" *(cuenta)* "¿Las dos?" *(cuenta)* "La respuesta la vamos a ver con datos más adelante."
 
-"Los audios son reales, del dataset MIMII DUE de Hitachi. El escenario es ficticio: un acueducto con estaciones de bombeo en zonas rurales, con conectividad intermitente y sin personal en sitio. En cada estación, un equipo de borde escucha las bombas y un modelo detecta cuándo una empieza a sonar distinto."
+"Los audios son reales, del dataset MIMII DUE de Hitachi. Este es el caso: un acueducto con estaciones de bombeo en zonas rurales, con conectividad intermitente y sin personal en sitio. En cada estación, un equipo de borde escucha las bombas y un modelo detecta cuándo una empieza a sonar distinto."
 
-"Ustedes acaban de hacer exactamente lo que hace ese modelo: escuchar y decidir. La diferencia es que ustedes estaban aquí. Desde la nube, nadie escuchó nada." *(pausa)*
+"Ustedes acaban de hacer exactamente lo que hace ese modelo: decidieron ahí mismo, con lo que ya saben y su experiencia, sin preguntarle a ChatGPT." *(pausa)* "Eso es inferencia en el borde: el conocimiento vive donde está el dato, y la decisión no depende de la red."
 
 "De eso se trata «MLOps a ciegas»: cómo se opera un modelo que corre donde no lo vemos. Cómo le llega una versión nueva, cómo se revierte cuando falla y cómo reporta lo que decide, sin que el audio salga de la estación."
 
