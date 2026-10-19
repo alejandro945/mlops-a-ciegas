@@ -52,7 +52,7 @@
      "properties": {"background": "transparent", "markdown": "### 3 · Authenticity · is it the model we shipped? Every event carries its version and the sha256 of model.onnx: one hash per version, and it must match the registry."}},
     {"type": "log", "x": 0, "y": 21, "width": 12, "height": 6,
      "properties": {"title": "The fleet now: version and fingerprint per pump", "region": "__REGION__", "view": "table",
-       "query": "SOURCE '/station/events' | fields substr(sha256, 0, 12) as sha | stats latest(model_version) as version, latest(sha) as sha256, count(*) as clips, max(input_z) as max_input, latest(@timestamp) as last_seen by device | sort device asc"}},
+       "query": "SOURCE '/station/events' | stats latest(model_version) as version, latest(substr(sha256, 0, 12)) as fingerprint, count(*) as clips, max(input_z) as max_input, max(arrived_ts) as last_ms by device | fields fromMillis(last_ms) as last_seen | display device, version, fingerprint, clips, max_input, last_seen | sort device asc"}},
     {"type": "log", "x": 12, "y": 21, "width": 4, "height": 6,
      "properties": {"title": "Hashes per version (must be 1)", "region": "__REGION__", "view": "table",
        "query": "SOURCE '/station/events' | stats count_distinct(sha256) as hashes, count(*) as clips by model_version | sort model_version asc"}},
