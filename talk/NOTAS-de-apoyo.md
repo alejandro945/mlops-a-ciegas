@@ -4,19 +4,20 @@ Lo que no se dice en voz alta pero conviene saber: datos de respaldo por lámina
 
 ## Por lámina
 
-- **3 y 30 · Audios.** El control los reproduce: en la 3, el clic 1 suena la bomba A y el clic 2 la B; en la 30, el clic 1 suena la B. Cada audio dura 10 s; un clic mientras suena lo detiene sin cambiar de lámina. Los botones «Escuchar» también funcionan con el mouse. La tecla B (o el botón de pantalla negra del control) pone la pantalla en negro. Si los botones dicen «audio pendiente», faltan `talk/assets/audio/pump-a.wav` y `pump-b.wav`. La atribución de MIMII DUE va al pie.
-- **4 · Gartner.** 15,6 % (2024), 31 % (2025), 54,7 % (2026, proyección), 28 de agosto de 2025. La cifra es solo de PC; lo demás va sin números. Si ya salió la cifra real de 2026, úsala.
-- **5 · Cuenta del audio.** 16 000 muestras/s × 2 bytes ≈ 115 MB por hora. Face ID: los datos no salen del equipo ni van a iCloud, los protege el Secure Enclave, y se adapta a cambios de apariencia (Apple, «About Face ID advanced technology»).
-- **10 · Por qué AUC.** Con la otra velocidad todos los scores suben, y la detección puede subir junto con las falsas alarmas. La AUC mide si el modelo separa una bomba sana de una que falla, sin depender del umbral.
-- **13 · Seguridad.** Secure boot en x86 es UEFI Secure Boot; en ARM depende del fabricante (HAB en NXP, por ejemplo). Greengrass guarda la llave y el certificado en un HSM o TPM con el componente PKCS#11. Firma del modelo: OpenSSF Model Signing, sobre Sigstore. La PoC corre en contenedores y no tiene nada de esto físico.
-- **17 · Fábrica.** En la PoC la fábrica es `model/train.py` en el portátil, no SageMaker AI.
-- **18 · Optimizar.** Portátil (M3 Pro): 2,6 → 2,0 ms. Pérdida de AUC del INT8: −0,001. Herramientas: LiteRT y Qualcomm QNN para NPU, TensorRT para GPU de NVIDIA, ONNX Runtime y OpenVINO para CPU.
-- **19 · Digest.** La receta no trae el digest: Greengrass lo calcula al crear la versión y lo verifica en el equipo antes de instalar.
-- **20 · Rings.** `failureHandlingPolicy = ROLLBACK` por defecto; `abortConfig` cancela si fallan muchos; `jobExecutionsRolloutConfig` hace las waves.
-- **21 · Sin red.** La cola `mqtt.spooler` es de 2,5 MB en memoria por defecto; para horas sin red, DiskSpooler. Nucleus lite: 5 MB de disco, menos de 15 MB de RAM. Una planta grande: Outposts con EKS local.
-- **22 · Señales.** Los umbrales del PSI (0,1 y 0,25) son costumbre, no estadística (A6). El filtro `MissedFaults` usa el campo `truth`, que solo existe en la PoC.
-- **23 · Versiones.** Detalle de un equipo: `aws greengrassv2 list-installed-components --core-device-thing-name pump-01`.
-- **25 · PoC.** Las cinco bombas salen de tres secciones de MIMII DUE (la 1 y la 4 comparten sección, la 2 y la 5 también, con clips distintos). Cada nucleus es una JVM: unos 220 MB por bomba.
+- **2 · Gancho.** La caída de AWS fue el 20 de octubre de 2025, en us-east-1, desde la madrugada (hora del Este de EE. UU.). Las camas Pod de Eight Sleep (unos US$2.000) dependían de la nube para la temperatura y la inclinación; quedaron en su último estado, algunas sobrecalentadas y otras inclinadas. El CEO, Matteo Franceschetti, prometió un «outage mode», y la empresa agregó al app un modo para operar sin la nube. No hace falta nombrar la marca en voz alta. La captura de la lámina es de la prensa en español; la imagen del producto es de Eight Sleep.
+- **4 y 31 · Audios.** El control los reproduce: en la 4, el clic 1 suena la bomba A y el clic 2 la B; en la 31, el clic 1 suena la B. Cada audio dura 10 s; un clic mientras suena lo detiene sin cambiar de lámina. Los botones «Escuchar» también funcionan con el mouse. La tecla B (o el botón de pantalla negra del control) pone la pantalla en negro. Si los botones dicen «audio pendiente», faltan `talk/assets/audio/pump-a.wav` y `pump-b.wav`. La atribución de MIMII DUE va al pie.
+- **5 · Gartner.** 15,6 % (2024), 31 % (2025), 54,7 % (2026, proyección), 28 de agosto de 2025. La cifra es solo de PC; lo demás va sin números. Si ya salió la cifra real de 2026, úsala.
+- **6 · Cuenta del audio.** 16 000 muestras/s × 2 bytes ≈ 115 MB por hora. Face ID: los datos no salen del equipo ni van a iCloud, los protege el Secure Enclave, y se adapta a cambios de apariencia (Apple, «About Face ID advanced technology»).
+- **11 · Por qué AUC.** Con la otra velocidad todos los scores suben, y la detección puede subir junto con las falsas alarmas. La AUC mide si el modelo separa una bomba sana de una que falla, sin depender del umbral.
+- **14 · Seguridad.** Secure boot en x86 es UEFI Secure Boot; en ARM depende del fabricante (HAB en NXP, por ejemplo). Greengrass guarda la llave y el certificado en un HSM o TPM con el componente PKCS#11. Firma del modelo: OpenSSF Model Signing, sobre Sigstore. La PoC corre en contenedores y no tiene nada de esto físico.
+- **18 · Fábrica.** En la PoC la fábrica es `model/train.py` en el portátil, no SageMaker AI.
+- **19 · Optimizar.** Portátil (M3 Pro): 2,6 → 2,0 ms. Pérdida de AUC del INT8: −0,001. Herramientas: LiteRT y Qualcomm QNN para NPU, TensorRT para GPU de NVIDIA, ONNX Runtime y OpenVINO para CPU.
+- **20 · Digest.** La receta no trae el digest: Greengrass lo calcula al crear la versión y lo verifica en el equipo antes de instalar.
+- **21 · Rings.** `failureHandlingPolicy = ROLLBACK` por defecto; `abortConfig` cancela si fallan muchos; `jobExecutionsRolloutConfig` hace las waves.
+- **22 · Sin red.** La cola `mqtt.spooler` es de 2,5 MB en memoria por defecto; para horas sin red, DiskSpooler. Nucleus lite: 5 MB de disco, menos de 15 MB de RAM. Una planta grande: Outposts con EKS local.
+- **23 · Señales.** Los umbrales del PSI (0,1 y 0,25) son costumbre, no estadística (A6). El filtro `MissedFaults` usa el campo `truth`, que solo existe en la PoC.
+- **24 · Versiones.** Detalle de un equipo: `aws greengrassv2 list-installed-components --core-device-thing-name pump-01`.
+- **26 · PoC.** Las cinco bombas salen de tres secciones de MIMII DUE (la 1 y la 4 comparten sección, la 2 y la 5 también, con clips distintos). Cada nucleus es una JVM: unos 220 MB por bomba.
 
 ## El ensayo del 18 de octubre (lo que muestran los actos)
 
@@ -37,6 +38,7 @@ La infraestructura está abajo desde el 18 de octubre (destroy; componentes y de
 
 ## Fuentes
 
+- La caída de AWS y las camas Eight Sleep: https://www.pcworld.com/article/2948826/these-smart-beds-began-roasting-their-owners-during-aws-outage.html · https://www.mactrast.com/2025/10/aws-outage-caused-2000-smart-beds-to-overheat-and-get-stuck-in-the-upright-position/
 - Gartner, 28 ago 2025: PC con IA 15,6 % (2024), 31 % (2025), 54,7 % (2026, proyección).
 - MIMII DUE: Tanabe et al., Hitachi (2021), arXiv:2105.02702, doi:10.5281/zenodo.4740355. Bombas, `dev_data_pump`, CC BY-NC-SA 4.0.
 - Cuentas: 16 000 muestras/s × 2 B = 32 000 B/s ≈ 115 MB por hora ≈ 2,76 GB al día por bomba; × 1 000 = 2,76 TB al día. Un evento cada 10 s = 8 640 por bomba al día; × 1 000 ≈ 8,64 M. Un resumen por minuto = 1 440 por bomba al día; × 1 000 ≈ 1,44 M.

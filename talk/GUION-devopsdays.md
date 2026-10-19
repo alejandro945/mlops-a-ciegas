@@ -2,7 +2,7 @@
 
 Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo demás en cursiva es para ti. Lo que va entre comillas no se memoriza palabra por palabra, salvo la apertura, las cifras y el cierre. Cómo estudiarlo: `talk/private/ESTUDIO.md` (no se sube al repo). Fuentes y datos de respaldo: `NOTAS-de-apoyo.md`. Las notas del deck (tecla **N**) salen de este archivo.
 
-**22:00** de contenido para un espacio de 25 min + 5 de preguntas. Reloj al entrar a cada divisor: 3:20 · 6:00 · 9:15 · 15:55.
+**22:35** de contenido para un espacio de 25 min + 5 de preguntas. Reloj al entrar a cada divisor: 3:55 · 6:35 · 9:50 · 16:30.
 
 ---
 
@@ -10,21 +10,33 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 <!-- id: portada -->
 **0:10** · sin clics
 
-*(En pantalla mientras te presentan. Cuando te den la palabra, pasa a la 2.)*
+*(En pantalla mientras te presentan. Cuando te den la palabra, pasa a la 2 y arranca con el gancho, sin saludar.)*
 
 ---
 
-## 2 · Sobre mí
+## 2 · Hace un año: se cae us-east-1
+<!-- id: gancho -->
+**0:35** · 1 clic · *antes de presentarte; sin saludar todavía*
+
+"El 20 de octubre del año pasado, hace casi exactamente un año, se cayó us-east-1. Muchos de ustedes lo vivieron desde operaciones: horas de servicios detenidos." *(pausa)*
+
+"Pero hubo una víctima que nadie esperaba: una marca de camas inteligentes, de unos dos mil dólares, que controlaba la temperatura y la inclinación desde la nube. Cuando la región cayó, las camas se quedaron en su último estado: calientes, inclinadas, en plena noche, con sus dueños encima." *(pausa)*
+
+**[CLIC]** "La solución que publicaron fue un modo sin conexión: llevar la decisión al dispositivo. Eso es edge. Y no fue una falla de AWS: fue una decisión de arquitectura. Cada vez más, esa decisión va a ser nuestra."
+
+---
+
+## 3 · Sobre mí
 <!-- id: quien -->
 **0:25** · sin clics
 
-"Buenos días. Soy Alejandro Varela, Senior Cloud Engineer en EPAM. Mi trabajo es diseñar cómo se despliegan y se operan modelos de IA en equipos de campo: lugares sin conectividad estable y sin nadie que los atienda."
+"Buenos días. Soy Alejandro Varela, Senior Cloud Engineer en EPAM, y esa decisión es justamente mi trabajo: diseñar cómo se despliegan y se operan modelos de IA en equipos de campo, lugares sin conectividad estable y sin nadie que los atienda."
 
 "Hoy les voy a mostrar el patrón que uso para eso, con una implementación completa en AWS. Pero antes de la arquitectura, quiero que escuchen algo."
 
 ---
 
-## 3 · ¿Esta bomba está fallando?
+## 4 · ¿Esta bomba está fallando?
 <!-- id: suena -->
 **1:10** · 3 clics · *el control reproduce los audios (10 s cada uno); un clic mientras suena lo detiene sin avanzar*
 
@@ -42,7 +54,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 4 · La IA ya corre en el dispositivo
+## 5 · La IA ya corre en el dispositivo
 <!-- id: cien -->
 **0:25** · 2 clics
 
@@ -54,7 +66,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 5 · Por qué el modelo baja al dispositivo
+## 6 · Por qué el modelo baja al dispositivo
 <!-- id: memes -->
 **0:55** · 2 clics
 
@@ -72,7 +84,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 6 · Contenido de la sesión
+## 7 · Contenido de la sesión
 <!-- id: agenda -->
 **0:15** · sin clics
 
@@ -80,15 +92,15 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 7 · 01 · El problema
+## 8 · 01 · El problema
 <!-- id: div1 -->
-**0:05** · *reloj: 3:20*
+**0:05** · *reloj: 3:55*
 
 "Empecemos por el problema."
 
 ---
 
-## 8 · MLOps en la nube: un loop cerrado
+## 9 · MLOps en la nube: un loop cerrado
 <!-- id: nube -->
 **0:20** · sin clics
 
@@ -98,7 +110,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 9 · Las restricciones de la estación
+## 10 · Las restricciones de la estación
 <!-- id: edge -->
 **1:00** · 5 clics
 
@@ -118,7 +130,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 10 · Un panel en verde no mide el modelo
+## 11 · Un panel en verde no mide el modelo
 <!-- id: tablero -->
 **1:15** · 3 clics · *la idea central: ve despacio*
 
@@ -138,15 +150,15 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 11 · 02 · El patrón
+## 12 · 02 · El patrón
 <!-- id: div2 -->
-**0:05** · *reloj: 6:00*
+**0:05** · *reloj: 6:35*
 
 "Veamos cómo se gobierna esto, empezando por el equipo."
 
 ---
 
-## 12 · Arquitectura del equipo en la estación
+## 13 · Arquitectura del equipo en la estación
 <!-- id: equipo -->
 **0:45** · 3 clics
 
@@ -160,7 +172,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 13 · Antes de proteger el modelo, protege el equipo
+## 14 · Antes de proteger el modelo, protege el equipo
 <!-- id: seguridad -->
 **0:50** · 4 clics
 
@@ -178,7 +190,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 14 · Cinco piezas para gobernarlo
+## 15 · Cinco piezas para gobernarlo
 <!-- id: flujo -->
 **1:05** · 6 clics
 
@@ -198,7 +210,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 15 · El mismo patrón en AWS
+## 16 · El mismo patrón en AWS
 <!-- id: aws -->
 **0:30** · 5 clics · *ritmo ágil*
 
@@ -210,15 +222,15 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 16 · 03 · Los seis pasos
+## 17 · 03 · Los seis pasos
 <!-- id: div3 -->
-**0:10** · *reloj: 9:15*
+**0:10** · *reloj: 9:50*
 
 "La implementación, en seis pasos: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear."
 
 ---
 
-## 17 · Paso 1 · Entrenar con sonido normal
+## 18 · Paso 1 · Entrenar con sonido normal
 <!-- id: entrenar -->
 **0:50** · 3 clics
 
@@ -232,7 +244,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 18 · Paso 2 · Optimizar para cada chip
+## 19 · Paso 2 · Optimizar para cada chip
 <!-- id: optimizar -->
 **1:00** · 3 clics
 
@@ -248,7 +260,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 19 · Paso 3 · Empaquetar como componente
+## 20 · Paso 3 · Empaquetar como componente
 <!-- id: componente -->
 **1:00** · 5 clics
 
@@ -266,7 +278,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 20 · Paso 4 · Desplegar por rings
+## 21 · Paso 4 · Desplegar por rings
 <!-- id: anillos -->
 **1:05** · 4 clics
 
@@ -284,7 +296,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 21 · Paso 5 · Operar sin red
+## 22 · Paso 5 · Operar sin red
 <!-- id: sinred -->
 **0:40** · 2 clics
 
@@ -296,7 +308,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 22 · Paso 6 · Monitorear lo que decide el modelo
+## 23 · Paso 6 · Monitorear lo que decide el modelo
 <!-- id: monitoreo -->
 **1:25** · 5 clics
 
@@ -316,7 +328,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 23 · A mano alzada
+## 24 · A mano alzada
 <!-- id: reflexion3 -->
 **0:30** · 1 clic
 
@@ -326,15 +338,15 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 24 · 04 · La evidencia en AWS
+## 25 · 04 · La evidencia en AWS
 <!-- id: div4 -->
-**0:05** · *reloj: 15:55*
+**0:05** · *reloj: 16:30*
 
 "Pasemos a la evidencia: una ejecución completa en AWS."
 
 ---
 
-## 25 · Lo que monté y corrí
+## 26 · Lo que monté y corrí
 <!-- id: poc -->
 **0:30** · sin clics
 
@@ -344,7 +356,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 26 · Acto 1 · Escuchar
+## 27 · Acto 1 · Escuchar
 <!-- id: acto1 -->
 **0:50** · sin clics · *deja que lean primero*
 
@@ -358,7 +370,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 27 · Acto 2 · Sin red, y una deriva
+## 28 · Acto 2 · Sin red, y una deriva
 <!-- id: acto2 -->
 **1:00** · sin clics
 
@@ -370,7 +382,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 28 · Acto 3 · Ring deployment y rollback
+## 29 · Acto 3 · Ring deployment y rollback
 <!-- id: acto3 -->
 **1:20** · 2 clics · *el punto culminante: ve despacio*
 
@@ -388,9 +400,9 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 29 · Cinco recomendaciones
+## 30 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 19:40 al entrar*
+**1:05** · 4 clics · *reloj: 20:15 al entrar*
 
 "Cinco recomendaciones para aplicar desde el lunes."
 
@@ -404,11 +416,11 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 **[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad. Y mantengan el dato crudo en el equipo."
 
-*(Si el reloj marca 20:00 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
+*(Si el reloj marca 20:35 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
 
 ---
 
-## 30 · La frase final: ¿esta bomba está fallando?
+## 31 · La frase final: ¿esta bomba está fallando?
 <!-- id: final -->
 **0:45** · 3 clics · *el primer clic reproduce la bomba B*
 
@@ -424,7 +436,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 31 · Recursos y contacto
+## 32 · Recursos y contacto
 <!-- id: recursos -->
 **0:15** · sin clics
 
@@ -432,7 +444,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 32 · Gracias
+## 33 · Gracias
 <!-- id: cierre -->
 **0:15** · sin clics
 

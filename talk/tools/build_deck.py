@@ -53,6 +53,7 @@ SHOTS = {
     "gg-despliegues": "consola de IoT Greengrass › Deployments: StationRing0 (rollback, activo) y StationRing1",
     "gg-equipos":     "consola de IoT Greengrass › Core devices: pump-01 a pump-05, Healthy",
     "cw-dashboard":   "consola de CloudWatch: el dashboard station, con los totales y la entrada por bomba",
+    "gancho-camas":   "la noticia de la caída de AWS del 20 de octubre de 2025 y las camas inteligentes",
     "acto1":          "watch.sh: la bomba 3 pasa de normal a ALERT en el clip siguiente",
     "acto2":          "watch.sh: la 3 sin red, las otras siguen, los eventos llegan tarde; y la entrada por bomba",
     "acto3":          "la línea de tiempo del acto 3: v2, fallas no oídas, alarma, Lambda, v1",
