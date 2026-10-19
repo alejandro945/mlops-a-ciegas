@@ -1296,6 +1296,41 @@ def shot_window(s, sec, tm, el):
         tm.click((g, "in"))
 
 
+def b_hook(s, sec, tm):
+    """Slide 2 (the hook): the us-east-1 meme, the news of the smart beds on click 1, the punchline on click 2."""
+    import base64, io
+    header(s, sec)
+    figs = sec.cssselect(".hook .hi")
+    ims = []
+    for k, fg in enumerate(figs):
+        img = q(fg, "img")
+        if img is None:
+            continue
+        raw = base64.b64decode(img.get("src").split(",", 1)[1])
+        im = Image.open(io.BytesIO(raw)).convert("RGB")
+        path = os.path.join(BUILD, "img", f"hook_{k}.jpg")
+        im.save(path, quality=90)
+        mh = 470 if k == 0 else 440
+        h = mh; w = im.width * h / im.height
+        if k and w > 720:
+            w = 720; h = im.height * w / im.width
+        ims.append((fg, path, w, h))
+    total = sum(w for _, _, w, _ in ims) + 44 * (len(ims) - 1)
+    x = 800 - total / 2
+    for fg, path, w, h in ims:
+        g = s.shapes.add_group_shape()
+        g.name = "Imagen del gancho"
+        picture(g, path, x, 206, w, h, name="Imagen")
+        textbox(g, x, 206 + h + 8, w, 20, [plain(q(fg, "figcaption"))], size=15, color=MUTED, align=PP_ALIGN.CENTER,
+                name="Crédito")
+        if fg.get("data-on") not in (None, "0"):
+            tm.click((g, "in"))
+        x += w + 44
+    say = q(sec, ".say")
+    top = int(re.search(r"top:\s*(\d+)px", say.get("style") or "").group(1))
+    tm.click((textbox(s, 84, top, 1432, 30 * NAT + 4, [runs_of(say, PURPLE)], size=30, name="Remate"), "in"))
+
+
 def b_acto(s, sec, tm):
     """Slides 25-27 (the run, one act each): title, subtitle, the evidence window; on acto3 the console alarm and the
     closing sentence come in on clicks, in that order."""
@@ -1494,7 +1529,7 @@ BUILDERS = {
     "entrenar": ("CONTENIDO", b_iso), "optimizar": ("CONTENIDO", b_iso), "componente": ("CONTENIDO", b_iso),
     "anillos": ("CONTENIDO", b_iso), "reflexion2": ("CONTENIDO", b_refl), "sinred": ("CONTENIDO", b_iso),
     "monitoreo": ("CONTENIDO", b_iso), "reflexion3": ("CONTENIDO", b_refl3), "div4": ("DIVISOR", b_div),
-    "poc": ("CONTENIDO", b_htmlsteps), "gancho": ("CONTENIDO", b_acto), "acto1": ("CONTENIDO", b_acto), "acto2": ("CONTENIDO", b_acto),
+    "poc": ("CONTENIDO", b_htmlsteps), "gancho": ("CONTENIDO", b_hook), "acto1": ("CONTENIDO", b_acto), "acto2": ("CONTENIDO", b_acto),
     "acto3": ("CONTENIDO", b_acto), "senales": ("CONTENIDO", b_iso), "demo": ("CONTENIDO", b_acts),
     "costo": ("CONTENIDO", b_cost), "llevo": ("CONTENIDO", b_rows), "final": ("SIMPLE", b_final),
     "recursos": ("CONTENIDO", b_res), "cierre": ("CIERRE", b_closing),
@@ -1554,7 +1589,7 @@ def main():
         s = new_slide(layout)
         tm = Timing()
         fn(s, sec, tm)
-        if fn is not b_acto:                       # (the act slides place their own windows)
+        if fn not in (b_acto, b_hook):             # (the act slides and the hook place their own images)
             shot_block(s, sec, tm)                 # the AWS screenshot is always the slide's last click
         tm.apply(s)
         nt = notes_text(sec)

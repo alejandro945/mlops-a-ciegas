@@ -2,7 +2,7 @@
 
 Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo demás en cursiva es para ti. Lo que va entre comillas no se memoriza palabra por palabra, salvo la apertura, las cifras y el cierre. Cómo estudiarlo: `talk/private/ESTUDIO.md` (no se sube al repo). Fuentes y datos de respaldo: `NOTAS-de-apoyo.md`. Las notas del deck (tecla **N**) salen de este archivo.
 
-**22:35** de contenido para un espacio de 25 min + 5 de preguntas. Reloj al entrar a cada divisor: 3:55 · 6:35 · 9:50 · 16:30.
+**22:40** de contenido para un espacio de 25 min + 5 de preguntas. Reloj al entrar a cada divisor: 4:00 · 6:40 · 9:55 · 16:35.
 
 ---
 
@@ -16,11 +16,11 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ## 2 · Hace un año: se cae us-east-1
 <!-- id: gancho -->
-**0:35** · 1 clic · *antes de presentarte; sin saludar todavía*
+**0:40** · 2 clics · *antes de presentarte; sin saludar todavía*
 
-"El 20 de octubre del año pasado, hace casi exactamente un año, se cayó us-east-1. Muchos de ustedes lo vivieron desde operaciones: horas de servicios detenidos." *(pausa)*
+"El 20 de octubre del año pasado, hace casi exactamente un año, se cayó us-east-1. Muchos de ustedes lo vivieron desde operaciones: horas de servicios detenidos." *(señala el meme)* "Y nos recordó algo que ya sabíamos: buena parte de internet se apoya en una sola región." *(pausa)*
 
-"Pero hubo una víctima que nadie esperaba: una marca de camas inteligentes, de unos dos mil dólares, que controlaba la temperatura y la inclinación desde la nube. Cuando la región cayó, las camas se quedaron en su último estado: calientes, inclinadas, en plena noche, con sus dueños encima." *(pausa)*
+**[CLIC]** "Pero hubo una víctima que nadie esperaba: una marca de camas inteligentes, de unos dos mil dólares, que controlaba la temperatura y la inclinación desde la nube. Cuando la región cayó, las camas se quedaron en su último estado: calientes, inclinadas, en plena noche, con sus dueños encima." *(pausa)*
 
 **[CLIC]** "La solución que publicaron fue un modo sin conexión: llevar la decisión al dispositivo. Eso es edge. Y no fue una falla de AWS: fue una decisión de arquitectura. Cada vez más, esa decisión va a ser nuestra."
 
@@ -94,7 +94,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ## 8 · 01 · El problema
 <!-- id: div1 -->
-**0:05** · *reloj: 3:55*
+**0:05** · *reloj: 4:00*
 
 "Empecemos por el problema."
 
@@ -152,7 +152,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ## 12 · 02 · El patrón
 <!-- id: div2 -->
-**0:05** · *reloj: 6:35*
+**0:05** · *reloj: 6:40*
 
 "Veamos cómo se gobierna esto, empezando por el equipo."
 
@@ -224,7 +224,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ## 17 · 03 · Los seis pasos
 <!-- id: div3 -->
-**0:10** · *reloj: 9:50*
+**0:10** · *reloj: 9:55*
 
 "La implementación, en seis pasos: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear."
 
@@ -340,7 +340,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ## 25 · 04 · La evidencia en AWS
 <!-- id: div4 -->
-**0:05** · *reloj: 16:30*
+**0:05** · *reloj: 16:35*
 
 "Pasemos a la evidencia: una ejecución completa en AWS."
 
@@ -402,7 +402,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ## 30 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 20:15 al entrar*
+**1:05** · 4 clics · *reloj: 20:20 al entrar*
 
 "Cinco recomendaciones para aplicar desde el lunes."
 
@@ -416,7 +416,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 **[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad. Y mantengan el dato crudo en el equipo."
 
-*(Si el reloj marca 20:35 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
+*(Si el reloj marca 20:40 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
 
 ---
 

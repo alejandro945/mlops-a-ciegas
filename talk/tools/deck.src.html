@@ -239,6 +239,11 @@ tr.hot td.k,tr.hot td b{color:var(--acc)}
 .shot .wb span{margin-left:12px}
 .shot .wb b{color:var(--acc);font-weight:700}
 .shot img{display:block;max-width:1429px;max-height:490px;width:auto;height:auto}
+.hook{position:absolute;left:84px;right:84px;top:206px;height:500px;display:flex;gap:44px;justify-content:center;align-items:flex-start;z-index:3}
+.hook .hi{display:flex;flex-direction:column;align-items:center;gap:8px}
+.hook .hi img{display:block;max-height:470px;width:auto;border:1.5px solid var(--line);border-radius:8px;box-shadow:0 12px 36px rgba(7,19,41,.14)}
+.hook .hi:nth-child(2) img{max-height:440px;max-width:720px}
+.hook figcaption{font-size:15px;color:var(--muted)}
 .shot.ev{top:246px;height:470px;background:none}
 .shot.ev img{max-height:428px}
 .shot.ev .spend{height:380px}
@@ -398,13 +403,15 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="tag" a="4">#DevOpsDaysBogota</div>
 </section>
 
-<!-- ═══════════════ 2 · THE HOOK: us-east-1, October 20, 2025 ═══════════════ -->
+<!-- ═══════════════ 2 · THE HOOK: us-east-1, October 20, 2025 (the meme, then the news, then the punchline) ═══════════════ -->
 <section class="s" data-id="gancho" data-sec="0" data-notes="">
   <div class="kick">Hace un año</div>
   <div class="ttl wide">20 de octubre de 2025: <b>se cae us-east-1</b></div>
-  <div class="sre">Una marca de camas inteligentes controlaba la temperatura y la inclinación desde la nube.</div>
-  <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>prensa · octubre de 2025 · imagen: <b>Eight Sleep</b></span></div>{{SHOT:gancho-camas}}</div></div>
-  <div class="say" data-on="1" style="top:728px;font-size:30px;z-index:5">La solución fue decidir en el dispositivo. <b>Eso es edge.</b></div>
+  <div class="hook">
+    <figure class="hi" data-on="0">{{SHOT:gancho-internet}}<figcaption>Basado en xkcd 2347 · CC BY-NC 2.5</figcaption></figure>
+    <figure class="hi" data-on="1">{{SHOT:gancho-camas}}<figcaption>Prensa, octubre de 2025 · imagen: Eight Sleep</figcaption></figure>
+  </div>
+  <div class="say" data-on="2" style="top:722px;font-size:30px;z-index:5">La solución fue decidir en el dispositivo. <b>Eso es edge.</b></div>
   <div class="foot"></div>
 </section>
 
