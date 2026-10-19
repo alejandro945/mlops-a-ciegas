@@ -1,7 +1,7 @@
 """
 Builds talk/MLOps-a-ciegas-DevOpsDays-Bogota-2026.pptx on top of the official
 DevOpsDays Bogotá 2026 template, with the same content as talk/devopsdays.html
-(31 slides + 10 annexes, same order and ids as deck.src.html).
+(29 slides + 10 annexes, same order and ids as deck.src.html).
 Slide text, speaker notes, shape names and section names stay in Spanish (the talk is in Spanish).
 
 - Titles, kickers, text, tables, cards, the spine bar and the speaker notes:
@@ -9,6 +9,8 @@ Slide text, speaker notes, shape names and section names stay in Spanish (the ta
 - Isometric figures: PNG layers that come in with each click (native animations).
 - Architectures (flujo, aws, poc), sequence (a2) and canvas charts: one image per step.
 - Memes: animated GIFs.
+- AWS console screenshots (talk/assets/screens): a window that comes in on the slide's last click,
+  as in the HTML; while one is missing, a «captura pendiente» box.
 - Slide 2 (and the buttons on 32): if talk/assets/audio/pump-a.wav and
   pump-b.wav exist (or the ones in STATION_AUDIO_DIR), each one goes in as an mp4 video
   (the still wave + the audio, made with ffmpeg) that plays on click; otherwise the card
@@ -1224,6 +1226,69 @@ def b_cards(s, sec, tm):
     footsrc(s, sec)
 
 
+def b_cards4(s, sec, tm):
+    """Slide 12 (device security): four cards, one per click, and the closing sentence."""
+    header(s, sec)
+    pl = Plan()
+    cw, ch, y = (1432 - 3 * 28) / 4, 300, 236
+    for k, c in enumerate(sec.cssselect(".cards4 .cd")):
+        x = 84 + k * (cw + 28)
+        hot = "hot" in (c.get("class") or "")
+        g = [rect(s, x, y, cw, ch, fill="FFFFFF", line=PURPLE if hot else LINE, lw=1.5, radius=12)]
+        g.append(textbox(s, x + 26, y + 26, cw - 52, 44, [plain(q(c, ".cn"))], size=40, bold=True,
+                         color=PURPLE if hot else BLUE, fnt=MONO))
+        g.append(textbox(s, x + 26, y + 84, cw - 52, 38, [plain(q(c, ".ch"))], size=30, bold=True))
+        t = plain(q(c, ".cl"))
+        g.append(textbox(s, x + 26, y + 136, cw - 52, n_lines(t, cw - 52, 22) * 31, [t], size=22, color=SLATE, lh=1.4))
+        g.append(textbox(s, x + 26, y + ch - 44, cw - 52, 22, [plain(q(c, ".cf"))], size=15, color=LINK, fnt=MONO))
+        pl.add(c.get("data-on"), g)
+    say = q(sec, ".say")
+    top = int(re.search(r"top:\s*(\d+)px", say.get("style") or "").group(1))
+    pl.add(say.get("data-on"), textbox(s, 84, top, 1432, 34 * NAT + 4, [runs_of(say, PURPLE)], size=34, name="Remate"))
+    pl.flush(tm)
+
+
+def shot_block(s, sec, tm):
+    """The AWS console screenshot (.shot): a window with its bar that comes in on its click, over the figure.
+    Missing screenshot: the same window with «captura pendiente» and what to capture."""
+    el = q(sec, ".shot")
+    if el is None:
+        return
+    import base64, io
+    img = q(el, "img")
+    bw, bh = 1432, 38                                    # window bar
+    if img is not None:
+        raw = base64.b64decode(img.get("src").split(",", 1)[1])
+        im = Image.open(io.BytesIO(raw))
+        k = min(1429 / (im.width / 2), 490 / (im.height / 2), 1.0)    # the HTML shows it at 1x of a 2x capture at most
+        w, h = im.width / 2 * k, im.height / 2 * k
+        path = os.path.join(BUILD, "img", f"shot_{sec.get('data-id')}.jpg")
+        im.convert("RGB").save(path, quality=90)
+    else:
+        w, h, path = 1100, 420, None
+    ww = max(w, 600)
+    x, y = 800 - ww / 2, 190 + (532 - (h + bh)) / 2
+    g = s.shapes.add_group_shape()
+    g.name = "Captura de AWS"
+    rect(g, 0, 190, 1600, 532, fill="FFFFFF", name="Velo")
+    rect(g, x, y, ww, h + bh, fill="FFFFFF", line=LINE, lw=1.5, radius=12, name="Ventana")
+    rect(g, x + 1, y + 1, ww - 2, bh - 1, fill=LIGHT, name="Barra")
+    for j in range(3):
+        rect(g, x + 16 + j * 19, y + bh / 2 - 5.5, 11, 11, fill="D5DEEA", radius=5.5, name="Punto")
+    textbox(g, x + 86, y, ww - 100, bh, [runs_of(q(el, ".wb span"), PURPLE)], size=16, color=SLATE, fnt=MONO,
+            anchor=MSO_ANCHOR.MIDDLE, name="Ruta")
+    if path:
+        picture(g, path, x + (ww - w) / 2, y + bh, w, h, name="Captura")
+    else:
+        sp = q(el, ".spend")
+        rect(g, x + 1, y + bh, ww - 2, h - 1, fill=LIGHT, name="Pendiente")
+        textbox(g, x + 40, y + bh + h / 2 - 70, ww - 80, 140,
+                ["captura pendiente", [(plain(q(sp, "code")), {"font": MONO, "color": LINK, "size": 18})],
+                 [(plain(q(sp, "small")), {"bold": False, "color": SLATE, "size": 19})]],
+                size=24, bold=True, color=MUTED, align=PP_ALIGN.CENTER, name="Qué capturar")
+    tm.click((g, "in"))
+
+
 def b_seq(s, sec, tm):
     b_htmlsteps(s, sec, tm, box=(0, 190, 1600, 772))
 
@@ -1404,7 +1469,7 @@ BUILDERS = {
     "agenda": ("CONTENIDO", b_agenda), "div1": ("DIVISOR", b_div),
     "nube": ("CONTENIDO", b_iso), "edge": ("CONTENIDO", b_iso), "tablero": ("CONTENIDO", b_canvas),
     "preguntas": ("CONTENIDO", b_table), "reflexion1": ("CONTENIDO", b_refl), "div2": ("DIVISOR", b_div),
-    "equipo": ("CONTENIDO", b_iso), "flujo": ("CONTENIDO", b_htmlsteps), "aws": ("CONTENIDO", b_htmlsteps),
+    "equipo": ("CONTENIDO", b_iso), "seguridad": ("CONTENIDO", b_cards4), "flujo": ("CONTENIDO", b_htmlsteps), "aws": ("CONTENIDO", b_htmlsteps),
     "div3": ("DIVISOR", b_div3),
     "entrenar": ("CONTENIDO", b_iso), "optimizar": ("CONTENIDO", b_iso), "componente": ("CONTENIDO", b_iso),
     "anillos": ("CONTENIDO", b_iso), "reflexion2": ("CONTENIDO", b_refl), "sinred": ("CONTENIDO", b_iso),
@@ -1468,6 +1533,7 @@ def main():
         s = new_slide(layout)
         tm = Timing()
         fn(s, sec, tm)
+        shot_block(s, sec, tm)                     # the AWS screenshot is always the slide's last click
         tm.apply(s)
         nt = notes_text(sec)
         if nt:

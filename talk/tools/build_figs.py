@@ -480,8 +480,10 @@ def _wave(x, y, w, amp, seed, color=NAVY, sw=2):
 
 
 def fig_train(static=False):
+    """Step 1 · normal sound → SageMaker AI trains the autoencoder → S3, one prefix per version (one box per click)."""
     o = []
-    Y0, Y1 = 250, 466
+    Y0, Y1 = 320, 536
+    MY = (Y0 + Y1) / 2
     # A · the normal sound
     b = [R(96, Y0, 380, Y1 - Y0, fill=LIGHT, stroke=LINE)]
     b.append(T(124, Y0 + 40, "SONIDO NORMAL", 18, PURPLE, 700, family=MONO, extra='letter-spacing="2"'))
@@ -491,7 +493,7 @@ def fig_train(static=False):
     b.append(T(124, Y0 + 204, "solo clips normales: las fallas son raras", 18, SLATE))
     o.append(G(0, "".join(b)))
     # B · SageMaker AI trains the autoencoder
-    b = [L([(480, 358), (528, 358)], NAVY, 2.4, head=10)]
+    b = [L([(480, MY), (528, MY)], NAVY, 2.4, head=10)]
     b.append(R(536, Y0, 470, Y1 - Y0, fill=WHITE, stroke=PURPLE, sw=2))
     b.append(icon("sagemaker", 564, Y0 + 24, 52))
     b.append(T(630, Y0 + 50, "SageMaker AI", 24, NAVY, 700))
@@ -506,7 +508,7 @@ def fig_train(static=False):
     b.append(T(566, Y1 - 24, "score = error de reconstrucción", 19, PURPLE, 700, family=MONO))
     o.append(G(1, "".join(b)))
     # C · S3, one prefix per version
-    b = [L([(1010, 358), (1058, 358)], NAVY, 2.4, head=10)]
+    b = [L([(1010, MY), (1058, MY)], NAVY, 2.4, head=10)]
     b.append(R(1066, Y0, 438, Y1 - Y0, fill=WHITE, stroke=LINE, sw=1.6))
     b.append(icon("s3", 1094, Y0 + 24, 52))
     b.append(T(1160, Y0 + 50, "S3", 24, NAVY, 700))
@@ -515,20 +517,6 @@ def fig_train(static=False):
     b.append(T(1094, Y0 + 178, "inmutable: una versión nueva", 18, SLATE))
     b.append(T(1094, Y0 + 202, "es otro prefijo, nunca el mismo", 18, SLATE))
     o.append(G(2, "".join(b)))
-    # D · what comes out of the cloud: the build/1.0.0/ tree
-    b = [R(96, 500, 1408, 204, fill=WHITE, stroke=PURPLE, sw=2)]
-    b.append(T(126, 540, "build/1.0.0/", 21, NAVY, 700, family=MONO))
-    b.append(T(300, 540, "lo que sale de la nube: cuatro archivos y una versión", 19, SLATE))
-    files = [("model.onnx", "el modelo en ONNX: el contrato con el equipo"),
-             ("stats.json", "la huella del sonido normal y el umbral"),
-             ("features.py", "log-mel, igual que al entrenar"),
-             ("inference.py", "escucha, decide y cuenta")]
-    for k, (f, d) in enumerate(files):
-        x, y = 126 + (k % 2) * 700, 594 + (k // 2) * 62
-        b.append(f'<path d="M{x},{y - 22} h18 l8,8 v26 h-26 z" fill="{LIGHT}" stroke="{NAVY}" stroke-width="1.6" stroke-linejoin="round"/>')
-        b.append(T(x + 42, y, f, 21, PURPLE if k == 0 else NAVY, 700, family=MONO))
-        b.append(T(x + 42 + 13 * 12.6 + 18, y, d, 19, NAVY))
-    o.append(G(3, "".join(b)))
     return wrap("".join(o))
 
 
@@ -737,7 +725,7 @@ def fig_recipe(static=False):
 
 
 # ─────────────────────────────────────────────────────────────────────
-#  step 5 · what keeps working offline: the device and the site
+#  step 5 · what keeps working offline, on the device
 # ─────────────────────────────────────────────────────────────────────
 def _g_queue(x, y, s=52):
     o = [R(x, y + s * .55, s, s * .22, fill=S300, rx=3)]
@@ -746,56 +734,30 @@ def _g_queue(x, y, s=52):
     return "".join(o)
 
 
-def _g_cert(x, y, s=52):
-    o = [R(x + 2, y + 4, s - 8, s * .62, fill=WHITE, stroke=NAVY, sw=2, rx=4)]
-    for k in range(3):
-        o.append(L([(x + 9, y + 14 + k * 8), (x + s * .55, y + 14 + k * 8)], S400, 2))
-    cx, cy = x + s * .68, y + s * .62
-    o.append(f'<polygon points="{cx - 7},{cy + 6} {cx - 11},{cy + 20} {cx - 3},{cy + 15} {cx},{cy + 22} {cx + 2},{cy + 8}" fill="{PURPLE}"/>')
-    o.append(f'<polygon points="{cx + 7},{cy + 6} {cx + 11},{cy + 20} {cx + 3},{cy + 15} {cx},{cy + 22} {cx - 2},{cy + 8}" fill="{PURPLE}"/>')
-    o.append(f'<circle cx="{cx}" cy="{cy}" r="10" fill="{PURPLE}"/><circle cx="{cx}" cy="{cy}" r="5" fill="{WHITE}"/>')
-    return "".join(o)
-
-
-def _g_layers(x, y, s=52):
-    o = []
-    for k in range(3):
-        yy = y + 30 - k * 11
-        o.append(f'<polygon points="{x + 4},{yy + 8} {x + s / 2},{yy - 4} {x + s - 4},{yy + 8} {x + s / 2},{yy + 20}" '
-                 f'fill="{[NAVY, BLUE, CYAN][k]}" stroke="{WHITE}" stroke-width="1.5"/>')
-    return "".join(o)
-
-
 def fig_offline(static=False):
+    """Step 5 · one device keeps listening without network: the local queue, stream manager and nucleus lite.
+    (Outposts with local EKS, for a station that is a whole plant, left the slide: it is in the hard questions.)"""
     o = []
-    Y0, H = 240, 386
-    panes = [
-        (96, "UN EQUIPO", "greengrass", "IoT Greengrass", "en el equipo de cada bomba", [
-            (_g_queue, "Cola local", "el nucleus guarda los eventos hasta que vuelve la red"),
-            ("stream_manager", "Stream manager", "flujos locales que suben solos cuando hay red"),
-            ("gg_nucleus", "Nucleus lite", "el agente en C, para equipos con poca memoria")]),
-        (824, "UN SITIO", "outposts", "Outposts con EKS local", "cuando la estación es una planta grande", [
-            ("eks", "Plano de control local", "el clúster sigue operando sin la región"),
-            (_g_cert, "Entrada con x.509", "sin IAM a la mano, entras con certificado"),
-            (_g_layers, "Registro local de imágenes", "lo pones tú: así nada se baja de la región")]),
-    ]
-    for k, (x, kick, ic, title, sub, rows) in enumerate(panes):
-        W = 680
-        b = [R(x, Y0, W, H, fill=WHITE, stroke=PURPLE if k == 0 else LINE, sw=2 if k == 0 else 1.6, rx=12)]
-        b.append(T(x + 28, Y0 + 38, kick, 18, PURPLE if k == 0 else MUTED, 700, family=MONO, extra='letter-spacing="2"'))
-        b.append(icon(ic, x + 28, Y0 + 56, 56))
-        b.append(T(x + 100, Y0 + 82, title, 27, NAVY, 700))
-        b.append(T(x + 100, Y0 + 108, sub, 18, SLATE))
-        b.append(L([(x + 28, Y0 + 134), (x + W - 28, Y0 + 134)], LINE, 1.5))
-        for j, (g, t, d) in enumerate(rows):
-            yy = Y0 + 154 + j * 76
-            b.append(g(x + 34, yy, 52) if callable(g) else icon(g, x + 34, yy, 52))
-            b.append(T(x + 108, yy + 22, t, 23, NAVY, 700))
-            b.append(T(x + 108, yy + 49, d, 19, SLATE))
-        o.append(G(k, "".join(b)))
-    o.append(G(2, R(96, 642, 1408, 60, fill=LIGHT, stroke=PURPLE, sw=2) +
-               TR(126, 680, [("Sin red, la estación sigue escuchando y alertando: ", NAVY, 700),
-                             ("lo que necesita para decidir ya está adentro.", SLATE, 400)], 23)))
+    Y0, H, X, W = 268, 300, 96, 1408
+    rows = [(_g_queue, "Cola local", ["el nucleus guarda los eventos", "hasta que vuelve la red"]),
+            ("stream_manager", "Stream manager", ["flujos locales que suben", "solos cuando hay red"]),
+            ("gg_nucleus", "Nucleus lite", ["el agente en C, para equipos", "con muy poca memoria"])]
+    b = [R(X, Y0, W, H, fill=WHITE, stroke=PURPLE, sw=2, rx=12)]
+    b.append(icon("greengrass", X + 32, Y0 + 30, 60))
+    b.append(T(X + 110, Y0 + 60, "IoT Greengrass", 30, NAVY, 700))
+    b.append(T(X + 110, Y0 + 88, "en el equipo de cada bomba", 20, SLATE))
+    b.append(L([(X + 32, Y0 + 120), (X + W - 32, Y0 + 120)], LINE, 1.5))
+    cw = (W - 64) / 3
+    for j, (g, t, d) in enumerate(rows):
+        x = X + 32 + j * cw
+        b.append(g(x, Y0 + 150, 56) if callable(g) else icon(g, x, Y0 + 150, 56))
+        b.append(T(x + 76, Y0 + 176, t, 26, NAVY, 700))
+        for i, line in enumerate(d):
+            b.append(T(x + 76, Y0 + 210 + i * 28, line, 20, SLATE))
+    o.append(G(0, "".join(b)))
+    o.append(G(1, R(X, 606, W, 64, fill=LIGHT, stroke=PURPLE, sw=2) +
+               TR(X + 30, 647, [("Sin red, la estación sigue escuchando y alertando: ", NAVY, 700),
+                                ("lo que necesita para decidir ya está adentro.", SLATE, 400)], 25)))
     return wrap("".join(o))
 
 
@@ -837,21 +799,9 @@ def _cloud_facts():
     return f
 
 
-def _sql_lines(sql, maxw=44):
-    """Splits the SQL before FROM / WHERE so it fits."""
-    import re
-    parts = [p.strip() for p in re.split(r"\s(?=FROM\s|WHERE\s)", sql) if p.strip()]
-    out = []
-    for p in parts:
-        while len(p) > maxw:
-            cut = p.rfind(" ", 0, maxw)
-            cut = cut if cut > 10 else maxw
-            out.append(p[:cut]); p = "  " + p[cut:].strip()
-        out.append(p)
-    return out[:4]
-
-
 def fig_monitoring(static=False):
+    """Step 6 · the pipeline the event travels (all at once), then the three signals to watch, one per click:
+    input (input_z), output (score distribution, PSI) and authenticity (sha256). None of them needs labels."""
     f = _cloud_facts()
     nodes = [("iotcore", "IoT Core", f["TOPIC"]),
              ("iot_rule", "Regla de IoT", f["RULE"]),
@@ -860,40 +810,47 @@ def fig_monitoring(static=False):
              ("cw_alarm", "Alarma", f["ALARM"]),
              ("lambda", "Lambda", f["FN"])]
     X = [172 + k * 248 for k in range(6)]
-    YI = 298
-    o = []
+    YI = 262
+    o, b = [], []
     for k, (ic, t, sub) in enumerate(nodes):
-        b = []
         if k:
-            b.append(L([(X[k - 1] + 46, YI), (X[k] - 46, YI)], PURPLE if k >= 4 else NAVY, 2.4, head=10))
-        b.append(icon(ic, X[k] - 32, YI - 32, 64))
-        b.append(T(X[k], YI + 66, t, 21, NAVY, 700, "middle"))
-        b.append(T(X[k], YI + 94, sub, 18, PURPLE if k >= 3 else SLATE, 700, "middle", MONO,
+            b.append(L([(X[k - 1] + 40, YI), (X[k] - 40, YI)], PURPLE if k >= 4 else NAVY, 2.2, head=9))
+        b.append(icon(ic, X[k] - 26, YI - 26, 52))
+        b.append(T(X[k], YI + 54, t, 20, NAVY, 700, "middle"))
+        b.append(T(X[k], YI + 78, sub, 16, PURPLE if k >= 3 else SLATE, 700, "middle", MONO,
                    extra='letter-spacing="-0.6"'))
-        o.append(G(k, "".join(b)))
-    # the SQL rule, the real one
-    py = 438
-    b = [L([(X[1], YI + 106), (X[1], py)], S400, 1.6, "4 4")]
-    b.append(R(96, py, 680, 178, fill=LIGHT, stroke=LINE, sw=1.5))
-    b.append(T(124, py + 36, "LA REGLA · SQL", 18, MUTED, 700, family=MONO, extra='letter-spacing="1.5"'))
-    for j, line in enumerate(_sql_lines(f["sql"])):
-        b.append(T(124, py + 76 + j * 30, line, 20, NAVY, 700, family=MONO, extra='xml:space="preserve"'))
-    b.append(T(124, py + 160, "arrived_ts: cuándo llegó · ts: cuándo decidió la bomba", 18, SLATE))
-    o.append(G(1, "".join(b)))
-    # the metric filter, the real one
-    b = [L([(X[3], YI + 106), (X[3], py)], S400, 1.6, "4 4")]
-    b.append(R(824, py, 680, 178, fill=LIGHT, stroke=LINE, sw=1.5))
-    b.append(T(852, py + 36, "EL FILTRO DE MÉTRICA", 18, MUTED, 700, family=MONO, extra='letter-spacing="1.5"'))
-    flt = f["filter"] if len(f["filter"]) <= 50 else f["filter"][:49] + "…"
-    b.append(T(852, py + 82, flt, 20, NAVY, 700, family=MONO, extra='xml:space="preserve"'))
-    b.append(T(852, py + 124, "crea la métrica", 19, SLATE))
-    b.append(T(852 + 136, py + 124, "MissedFaults", 20, PURPLE, 700, family=MONO))
-    b.append(T(852, py + 160, "la bomba fallaba y el modelo no avisó", 18, SLATE))
-    o.append(G(3, "".join(b)))
-    # the rollback
-    o.append(G(5, R(96, 640, 1408, 62, fill=WHITE, stroke=PURPLE, sw=2) +
-               TR(126, 679, [("La alarma invoca la Lambda: ", PURPLE, 700),
-                             ("lee la última versión buena y la despliega al ring 0.", NAVY, 400)], 23)))
+    o.append(G(0, "".join(b)))
+
+    Y0, H, gap = 384, 214, 32
+    cw = (1408 - 2 * gap) / 3
+    cards = [("ENTRADA · input_z", "¿El sensor dice la verdad?",
+              ["Sube lento: el micrófono envejece.", "Salta de golpe: falla o alguien lo tocó."]),
+             ("SALIDA · score", "¿Cambió lo que decide?",
+              ["PSI de los scores: esta hora", "contra la semana. Si salta, algo pasa."]),
+             ("AUTENTICIDAD · sha256", "¿Es el modelo que enviamos?",
+              ["La huella que reporta el equipo,", "contra la del registro."])]
+    for k, (kick, head, lines) in enumerate(cards):
+        x = 96 + k * (cw + gap)
+        b = [R(x, Y0, cw, H, fill=WHITE, stroke=PURPLE if k == 2 else LINE, sw=2 if k == 2 else 1.6, rx=12)]
+        b.append(T(x + 26, Y0 + 38, kick, 17, PURPLE, 700, family=MONO, extra='letter-spacing="1"'))
+        b.append(T(x + 26, Y0 + 84, head, 27, NAVY, 700))
+        for j, ln in enumerate(lines):
+            b.append(T(x + 26, Y0 + 132 + j * 30, ln, 20, SLATE))
+        gx, gy = x + cw - 130, Y0 + 18                    # a small glyph, top right
+        if k == 0:                                          # slow drift, then a jump
+            pts = [(gx + i * 9, gy + 34 - i * 1.4) for i in range(9)] + [(gx + 80, gy + 22), (gx + 80, gy + 4), (gx + 104, gy + 4)]
+            b.append(L(pts, PURPLE, 2.6))
+        elif k == 1:                                        # two histograms: the week and this hour, shifted
+            for i, (h1, h2) in enumerate([(8, 4), (18, 8), (26, 16), (16, 26), (6, 18)]):
+                b.append(R(gx + i * 21, gy + 38 - h1, 8, h1, fill=S300, rx=1))
+                b.append(R(gx + i * 21 + 9, gy + 38 - h2, 8, h2, fill=PURPLE, rx=1))
+        else:                                               # the fingerprint matches: a seal with a check
+            b.append(f'<circle cx="{gx + 84}" cy="{gy + 20}" r="19" fill="none" stroke="{PURPLE}" stroke-width="2.6"/>')
+            b.append(check(gx + 84, gy + 20))
+        o.append(G(k + 1, "".join(b)))
+    o.append(G(4, R(96, 624, 1408, 62, fill=LIGHT, stroke=PURPLE, sw=2) +
+               TR(126, 664, [("En la demo, el gate sabe si la bomba fallaba. ", NAVY, 700),
+                             ("En producción no lo sabes: estas tres no lo necesitan.", PURPLE, 700)], 24)))
     return wrap("".join(o))
 
 

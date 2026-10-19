@@ -1,6 +1,6 @@
 # Guion · MLOps a ciegas · DevOpsDays Bogotá 2026
 
-**Duración:** 25:30 de contenido, dentro de los 25 minutos más 5 de preguntas del CFP. Cronométralo en el ensayo; el acto 3 depende de la alarma. **Láminas:** 30 más 10 anexos; cuatro son divisores y pasan en segundos.
+**Duración:** 24:40 de contenido, dentro de los 25 minutos más 5 de preguntas del CFP. Cronométralo en el ensayo; el acto 3 depende de la alarma. **Láminas:** 29 más 10 anexos; cuatro son divisores y pasan en segundos. **Evidencia de AWS:** seis imágenes del ensayo del 12 de octubre en `talk/assets/screens/` (cómo se hicieron, en el README de esa carpeta); salen en el último clic de los pasos 1, 3, 4, 5 y 6 y de la demo.
 
 **De qué va:** cómo gobernar un modelo de IA que corre donde no llega el plano de control, contado con una estación de bombeo inventada: un modelo que escucha bombas en una vereda donde la señal va y viene.
 
@@ -22,15 +22,16 @@ AWS_ICONS=<ruta al paquete de íconos> REPO_URL=… LINKEDIN=… python3 talk/to
 
 Lo que hacen los buenos speakers, y dónde está en esta charla:
 
-1. **Arranca con una experiencia, no con un saludo.** Lo primero que oye la sala es una bomba (lámina 2). El «buenos días» y la presentación van después, cuando ya los tienes.
+1. **Arranca con una experiencia, no con un currículum.** Te presentas en 25 segundos (lámina 2) y lo siguiente que oye la sala es una bomba (lámina 3).
 2. **Deja una pregunta abierta.** «¿Cuál bomba está fallando?» no se responde hasta la demo. La gente se queda esperando la respuesta.
-3. **Haz que la sala haga algo.** Levantar la mano dos veces (láminas 2 y 23) vale más que diez láminas de contexto. Espera de verdad las manos y comenta lo que ves.
+3. **Haz que la sala haga algo.** Levantar la mano dos veces (láminas 3 y 22) vale más que diez láminas de contexto. Espera de verdad las manos y comenta lo que ves.
 4. **Pon personajes con voz.** El jefe que pregunta «¿y el modelo cómo va?», el técnico a las 3 a. m. Cambia un poco la voz y la postura cuando hablas por ellos.
 5. **Baja los números a escala humana.** No «32 000 bytes por segundo»: «115 megas por hora, por bomba, por la red de una vereda».
 6. **Cuenta lo que te pasó.** Lo que se rompió en el ensayo (la bomba que no arrancaba por una extensión de archivo) engancha más que cualquier diagrama.
 7. **Muestra antes de explicar.** En la demo, primero que vean la línea en la terminal y después la explicas.
-8. **Cierra donde empezaste.** Los audios del principio vuelven al final, con la respuesta. Y terminas con una pregunta que se lleven a la casa.
-9. **Usa las pausas.** Después de una cifra que importa (0,57), cállate dos segundos. El silencio hace que la sala la registre.
+8. **Pon ejemplos que todos tienen en el bolsillo.** Face ID (lámina 5): el modelo en el teléfono, la cara que nunca sale y el modelo que se adapta solo.
+9. **Cierra donde empezaste.** Los audios del principio vuelven al final, con la respuesta. Y terminas con una pregunta que se lleven a la casa.
+10. **Usa las pausas.** Después de una cifra que importa (0,57), cállate dos segundos. El silencio hace que la sala la registre.
 
 ---
 
@@ -38,13 +39,27 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 <!-- id: portada -->
 **0:10** · sin clics
 
-*En pantalla mientras te presentan. Cuando te den la palabra, no saludes todavía: pasa a la lámina 2 y pon la bomba A. Antes de subir, prueba que el audio del deck sale por los parlantes de la sala.*
+*En pantalla mientras te presentan. Cuando te den la palabra, pasa a la lámina 2: te presentas en 25 segundos y vas directo a los audios. Antes de subir, prueba que el audio del deck sale por los parlantes de la sala.*
 
 ---
 
-## 2 · ¿Esta bomba está fallando?
+## 2 · Sobre mí
+<!-- id: quien -->
+**0:25** · sin clics · *corto: lo que engancha viene en la siguiente lámina*
+
+"Buenos días. Soy Alejandro Varela, Senior Cloud Engineer en EPAM. Diseño cómo llegan y se gobiernan modelos de IA en equipos de campo, donde no hay nadie cerca."
+
+"Tengo unas certificaciones por ahí, pero lo que van a ver hoy no salió de un examen: lo monté, lo rompí y lo arreglé esta misma semana. Y fuera del trabajo, me encuentran con una raqueta en la mano."
+
+"Pero no vine a hablar de mí. Vine a ponerles un audio."
+
+*La foto sale de talk/assets/photo.jpeg (recortada en cuadrado). El LinkedIn sale de la variable LINKEDIN al generar el deck.*
+
+---
+
+## 3 · ¿Esta bomba está fallando?
 <!-- id: suena -->
-**1:15** · 1 clic · *lo primero que oye la sala es una bomba*
+**1:10** · 1 clic · *la experiencia que abre la charla*
 
 "Les voy a poner dos audios. Esta es la bomba A." *(▶ A, cinco segundos, la detienes)*
 
@@ -64,25 +79,25 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ---
 
-## 3 · La IA ya corre en el dispositivo
+## 4 · La IA ya corre en el dispositivo
 <!-- id: cien -->
-**0:35** · 2 clics
+**0:25** · 2 clics
 
-"Y ustedes dirán: bueno, ¿y a mí qué me importa un modelo en una bomba? Les cuento por qué: los modelos se están bajando de la nube a los dispositivos. Un ejemplo con números de Gartner, los PC."
+"¿Y a mí qué me importa un modelo en una bomba? Que los modelos se están bajando de la nube a los dispositivos. Un ejemplo de Gartner, con los PC."
 
 "En 2024, de cada cien PC nuevos, dieciséis traían un chip para correr IA."
 
 **[CLIC]** "En 2025, treinta y uno."
 
-**[CLIC]** "Y para este año proyectaban cincuenta y cinco. Más de la mitad. Y no son solo los PC: el celular de ustedes, los carros, las cámaras, los equipos de una planta… todos ya traen hardware para correr modelos ahí mismo."
+**[CLIC]** "Y para este año proyectaban cincuenta y cinco. Más de la mitad. Y lo mismo pasa con el celular, los carros y los equipos de una planta."
 
 *Fuente: Gartner, 28 de agosto de 2025, «AI PCs»: 15,6 % (2024), 31 % (2025), 54,7 % (2026, proyección). La cifra es solo de PC; lo demás dilo sin números. Si ya salió la cifra real de 2026, úsala.*
 
 ---
 
-## 4 · Por qué el modelo baja al dispositivo
+## 5 · Por qué el modelo baja al dispositivo
 <!-- id: memes -->
-**0:50** · 2 clics · *deja que se rían antes de seguir. En cada meme, a la izquierda el modelo corre en la nube y a la derecha en el equipo*
+**0:55** · 2 clics · *deja que se rían antes de seguir. En cada meme, a la izquierda el modelo corre en la nube y a la derecha en el equipo*
 
 "¿Y por qué se baja? Se los explico como explicamos todo los ingenieros: con memes."
 
@@ -90,47 +105,27 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 **[CLIC]** *Meme 2.* "El técnico a las tres de la mañana en la planta: '¿cómo cambio este rodamiento?'. Y el asistente, que tiene el modelo en la nube: 'Sin conexión, intente más tarde'." *(risas)* "Con el modelo en el equipo, le responde igual. Y en una vereda, sin señal, pasa exactamente lo mismo."
 
-**[CLIC]** *Meme 3.* "Y mi favorito: el reloj mandándole tus latidos, cada segundo, a un modelo en la nube. Si el modelo corre en el reloj, lo único que sale es la alerta."
+**[CLIC]** *Meme 3.* "Y mi favorito: ustedes, desbloqueando el teléfono, y el teléfono diciendo 'un momentico, le mando tu cara al modelo en la nube'." *(risas)* "Face ID no funciona así. Su modelo corre en el teléfono, y los datos de tu cara quedan cifrados en un chip aparte, el Secure Enclave. Nunca salen: ni a Apple, ni a iCloud. Lo único que sale es un sí o un no."
+
+"Y fíjense en otra cosa: si te dejas crecer la barba, Face ID se adapta solo, ahí mismo en el teléfono. Los datos cambiaron y el modelo se ajustó sin ir a la nube. Guárdenme esa idea, que volvemos a ella."
 
 "Ahora piensen en la bomba. Un micrófono son ciento quince megas por hora. Por bomba. Por la red de una vereda. No cabe, y además es el sonido de una instalación de la empresa: no tiene por qué salir de ahí."
 
-*Cuenta: 16 000 muestras por segundo × 2 bytes ≈ 115 MB por hora.*
+*Cuenta: 16 000 muestras por segundo × 2 bytes ≈ 115 MB por hora. Face ID: «Face ID data doesn't leave your device… is never backed up to iCloud» y «automatically adapts to changes in your appearance», Apple, «About Face ID advanced technology», https://support.apple.com/102381 (está en A8).*
 
 ---
 
-## 5 · Sobre mí
-<!-- id: quien -->
-**0:35** · sin clics
-
-"Ahora sí, mucho gusto. Soy Alejandro Varela, Senior Cloud Engineer en EPAM. Mi trabajo es justamente este: llevar modelos de IA de la nube a equipos en campo."
-
-"Tengo unas certificaciones por ahí, pero les confieso algo: lo que van a ver hoy no salió de un examen. Lo monté, lo rompí y lo arreglé esta misma semana."
-
-"Y fuera del trabajo me encuentran con una raqueta en la mano, la que sea: tenis de mesa, tenis, pádel. O aprendiendo algo nuevo, o de viaje."
-
-*La foto sale de talk/assets/photo.jpeg (recortada en cuadrado). El LinkedIn sale de la variable LINKEDIN al generar el deck.*
-
----
-
-## 6 · Contenido de la sesión
-<!-- id: agenda -->
-**0:15** · sin clics
-
-"Vamos a ir en cuatro partes: primero el problema, después el patrón para resolverlo, luego los seis pasos, y al final lo vemos funcionando en vivo."
-
----
-
-## 7 · 01 · El problema
+## 6 · 01 · El problema
 <!-- id: div1 -->
-**0:05** · *divisor: no lo leas* · *reloj: 3:40*
+**0:08** · *divisor: no lo leas* · *reloj: 3:05*
 
-"Arranquemos por el problema."
+"Vamos en cuatro partes: el problema, el patrón para resolverlo, seis pasos y la demo en vivo. Arranquemos por el problema."
 
 ---
 
-## 8 · MLOps en la nube: un loop cerrado
+## 7 · MLOps en la nube: un loop cerrado
 <!-- id: nube -->
-**0:25** · sin clics · *los puntos recorren el loop*
+**0:20** · sin clics · *los puntos recorren el loop*
 
 "Cuando el modelo vive en la nube, la verdad, esto está bastante resuelto. Todas las peticiones pasan por un endpoint: uno las guarda, las compara con lo que vio el modelo al entrenar, si algo cambia salta una alerta y se reentrena."
 
@@ -138,23 +133,27 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ---
 
-## 9 · Las restricciones de la estación
+## 8 · Las restricciones de la estación
 <!-- id: edge -->
-**0:45** · 3 clics · *una restricción por clic*
+**1:00** · 5 clics · *una restricción por clic*
 
 "Ahora bajemos ese modelo a la estación, al lado de la bomba. Mismo loop… pero ya no hay un endpoint por donde pase todo."
 
-**[CLIC]** "Primero, los equipos no son iguales. Una estación tiene un equipo ARM, otra uno x86 que ya tiene sus años, y la nueva trae NPU. El mismo modelo no corre igual en los tres."
+**[CLIC]** "Uno: los recursos. Poca memoria, y chips distintos: una estación tiene ARM, otra un x86 con sus años, y la nueva trae NPU."
 
-**[CLIC]** "Segundo, la red. Se va la señal en la vereda y se apaga todo el loop de la nube."
+**[CLIC]** "Dos: la red. Se va la señal en la vereda y se apaga todo el loop de la nube."
 
-**[CLIC]** "Y tercero, el audio no puede salir de ahí. Ni cabe, ni debe."
+**[CLIC]** "Tres: el audio no puede salir de ahí. Ni cabe, ni debe."
+
+**[CLIC]** "Cuatro, y esta casi nadie la mide: la latencia depende de la energía. Con la batería baja o con el equipo caliente, el chip se pone lento para ahorrar o para enfriarse. El mismo modelo tarda más."
+
+**[CLIC]** "Y cinco: los datos. Fallas hay pocas para aprender, y lo normal cambia con el tiempo: el micrófono envejece, cambia la velocidad de la bomba. Eso es el drift. Y conseguir buenos datos es la mitad del trabajo; en la demo van a ver qué pasa cuando no."
 
 "O sea: todo lo que uno hacía en la nube asume que las cosas pasan por uno. Aquí no pasa nada por uno."
 
 ---
 
-## 10 · Un panel en verde no mide el modelo
+## 9 · Un panel en verde no mide el modelo
 <!-- id: tablero -->
 **1:15** · 3 clics · *el mito central de la charla: ve despacio*
 
@@ -172,31 +171,21 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 "Y esto no es teoría: lo medí con el mismo audio de las bombas que van a oír en un rato. Un servicio caído hace ruido. Un modelo que dejó de oír sigue respondiendo a tiempo, con un 200 OK."
 
+"Monitorear la infraestructura no es monitorear el modelo. Al modelo hay que preguntarle otras cosas, y en el paso seis les muestro cuáles."
+
 *Por qué AUC y no «fallas detectadas»: con la otra velocidad todos los scores suben, y la detección puede subir junto con las falsas alarmas. La AUC mide si el modelo separa una bomba sana de una que falla, sin depender del umbral.*
 
 ---
 
-## 11 · Monitorear la infraestructura no es monitorear el modelo
-<!-- id: preguntas -->
-**0:30** · sin clics
-
-"Las preguntas de siempre siguen sirviendo: ¿el servicio está arriba?, ¿cuánta CPU gasta?, ¿hay errores? Pero ninguna dice nada del modelo."
-
-"Al modelo hay que preguntarle otras cosas." *(señala, una por una)* "¿Sigue distinguiendo bien? ¿Le cambiaron los datos? ¿Se le dispararon los falsos positivos o los falsos negativos? Y la más difícil: ¿lo que predice todavía le sirve a alguien?"
-
-"Esa última solo la responde el negocio, cuando el de mantenimiento llega y dice si la alerta era real o no. Las otras tres, ya las van a ver en la demo."
-
----
-
-## 12 · 02 · El patrón
+## 10 · 02 · El patrón
 <!-- id: div2 -->
-**0:05** · *divisor* · *reloj: 6:40*
+**0:05** · *divisor* · *reloj: 5:48*
 
 "Bueno, ¿y cómo se gobierna esto? Abramos el equipo."
 
 ---
 
-## 13 · Arquitectura del equipo en la estación
+## 11 · Arquitectura del equipo en la estación
 <!-- id: equipo -->
 **0:45** · 3 clics · *una capa por clic*
 
@@ -210,9 +199,29 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ---
 
-## 14 · Cinco piezas para gobernarlo
+## 12 · Antes de proteger el modelo, protege el equipo
+<!-- id: seguridad -->
+**0:50** · 4 clics · *una tarjeta por clic; el remate con la última*
+
+"Antes de hablar de gobernar el modelo, una pregunta incómoda: esta estación está en una vereda. ¿Quién la cuida?" *(pausa)* "Nadie. Cualquiera puede abrir el gabinete."
+
+"Por eso, antes de preocuparse por que alguien engañe al modelo, hay cuatro cosas del equipo que van primero. Uno: arranque seguro. El equipo solo arranca software firmado; si alguien le cambia el sistema, no enciende."
+
+**[CLIC]** "Dos: la llave. La identidad del equipo es la llave de su certificado. Si está en la tarjeta SD, cualquiera se la lleva y se hace pasar por la bomba. Va en un TPM, y Greengrass la usa desde ahí."
+
+**[CLIC]** "Tres: updates verificados. El equipo solo instala lo que trae la huella correcta, y lo baja por un canal cifrado."
+
+**[CLIC]** "Y cuatro: los datos. El audio no sale, y en el disco va cifrado."
+
+**[CLIC]** "Porque sin esto, nadie necesita engañar a su modelo con ejemplos raros… le basta con reemplazarlo."
+
+*Si preguntan: secure boot en x86 es UEFI Secure Boot; en ARM depende del fabricante (HAB en NXP, por ejemplo). Greengrass soporta llaves en HSM o TPM con el componente PKCS#11. La firma del modelo: OpenSSF Model Signing, sobre Sigstore. La PoC corre en contenedores y no tiene nada de esto físico: dilo si te preguntan.*
+
+---
+
+## 13 · Cinco piezas para gobernarlo
 <!-- id: flujo -->
-**1:10** · 6 clics · *una pieza por clic; la leyenda se enciende con cada una*
+**1:05** · 6 clics · *una pieza por clic; la leyenda se enciende con cada una*
 
 *Paso 0, «copiar el modelo… y cruzar los dedos».* "Seamos sinceros: así se despliegan modelos en muchos lados. Uno copia el archivo al equipo… y cruza los dedos." *(cruza los dedos)* "Yo lo he hecho, no me da pena." *(risas)*
 
@@ -230,47 +239,45 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ---
 
-## 15 · El mismo patrón en AWS
+## 14 · El mismo patrón en AWS
 <!-- id: aws -->
-**0:50** · 6 clics · *misma geometría; ve a buen ritmo, los pasos que vienen abren cada casilla*
+**0:30** · 5 clics · *misma geometría; ve rápido, los pasos que vienen abren cada casilla*
 
 "Ahora el mismo dibujo, pero en AWS. Cada casilla ya tiene nombre."
 
 **[CLIC]** "SageMaker AI entrena." **[CLIC]** "S3 guarda cada versión e IoT Greengrass la empaca como componente." **[CLIC]** "El desired state es un despliegue de Greengrass, que le llega a cada equipo por IoT Core, con su propio certificado."
 
-**[CLIC]** "Cada decisión vuelve por IoT Core y una regla la deja en CloudWatch." **[CLIC]** "El gate es una alarma que llama a una Lambda, y la Lambda vuelve a poner la última versión buena." **[CLIC]** "Y abajo, IAM, certificados, KMS y CloudTrail."
+**[CLIC]** "Cada decisión vuelve por IoT Core y una regla la deja en CloudWatch." **[CLIC]** "Y el gate es una alarma que llama a una Lambda, que vuelve a poner la última versión buena."
 
 ---
 
-## 16 · 03 · Los seis pasos
+## 15 · 03 · Los seis pasos
 <!-- id: div3 -->
-**0:10** · *divisor con la espina* · *reloj: 9:30*
+**0:10** · *divisor con la espina* · *reloj: 9:03*
 
 "Vamos paso por paso: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear. Y en cada paso, la bomba."
 
 ---
 
-## 17 · Paso 1 · Entrenar con sonido normal
+## 16 · Paso 1 · Entrenar con sonido normal
 <!-- id: entrenar -->
-**1:00** · 3 clics
+**0:50** · 3 clics · *el último clic es la evidencia de S3*
 
 "Paso uno, entrenar. Y aquí hay un detalle bonito: este modelo se entrena solo con bombas sanas."
 
 **[CLIC]** "Es un autoencoder: una red que aprende a reconstruir el sonido normal. Cuando no lo puede reconstruir, es porque algo cambió. Es como el mecánico que de tanto oír el motor sano, nota cualquier ruido raro."
 
-**[CLIC]** "Lo que sale va a S3, cada versión en su propia carpeta. Versión nueva, carpeta nueva; nunca se pisa la anterior."
+**[CLIC]** "Lo que sale va a S3, cada versión en su propia carpeta: el modelo en ONNX, el umbral y también el preprocesamiento del audio. ¿Por qué el preprocesamiento? Porque el error más común es entrenar con uno y servir con otro. No explota nada; el modelo simplemente oye distinto."
 
-**[CLIC]** "¿Y qué sale exactamente? Cuatro archivos: el modelo en ONNX, que es como el contrato con el equipo; la huella del sonido normal con el umbral; el preprocesamiento del audio, y el código que escucha y decide."
+**[CLIC]** "Y así quedó en el ensayo: cada versión subió a su propia carpeta, la 1.0.0 y la 2.0.0. Versión nueva, carpeta nueva; nunca se pisa la anterior."
 
-"¿Y por qué mandar el preprocesamiento con el modelo? Porque el error más común es entrenar con un preprocesamiento y servir con otro. No explota nada. El modelo simplemente oye distinto, y nadie se entera."
-
-*En la PoC la fábrica es model/train.py en mi portátil, no SageMaker AI. Lo dices en la lámina 25.*
+*En la PoC la fábrica es model/train.py en mi portátil, no SageMaker AI. Lo dices en la lámina 24. La imagen es la salida real de publish.sh en el ensayo (talk/assets/screens/s3-versiones.png).*
 
 ---
 
-## 18 · Paso 2 · Optimizar para cada chip
+## 17 · Paso 2 · Optimizar para cada chip
 <!-- id: optimizar -->
-**1:10** · 3 clics
+**1:00** · 3 clics
 
 "Paso dos. Uno entrena una vez, en 32 bits, y sale un archivo ONNX."
 
@@ -280,15 +287,15 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 **[CLIC]** "Esta es la bomba, medida en el equipo de la demo. De 32 a 8 bits, el archivo baja de 464 a 127 kilobytes, cada clip pasa de 14,4 a 12,7 milisegundos, y toma la misma decisión en el 98 por ciento de los casos."
 
-"Ahora, un dato curioso: en mi portátil la mejora era casi el doble. En el equipo, la mayor parte del tiempo se va preparando el audio, no en el modelo. Por eso hay que medir en el chip de verdad, no en el computador de uno."
+"Ojo: en mi portátil la mejora era casi el doble. En el equipo, el tiempo se va preparando el audio, no en el modelo. Por eso se mide en el chip de verdad… y con la batería baja y el equipo caliente, que es como va a estar a las tres de la tarde en una vereda."
 
 *Portátil (M3 Pro): 2,6 → 2,0 ms. La pérdida de AUC del INT8 es de −0,001. Si preguntan por herramientas: LiteRT y Qualcomm QNN para NPU, TensorRT para GPU de NVIDIA, ONNX Runtime y OpenVINO para CPU. Sobre SageMaker Neo, ver «Preguntas difíciles».*
 
 ---
 
-## 19 · Paso 3 · Empaquetar como componente
+## 18 · Paso 3 · Empaquetar como componente
 <!-- id: componente -->
-**1:00** · 4 clics · *una anotación por clic*
+**1:00** · 5 clics · *una anotación por clic; el último es la evidencia del ensayo*
 
 "Paso tres. En IoT Greengrass, el software se empaca como un componente, y esta es la receta de la demo, un poco recortada."
 
@@ -300,15 +307,15 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 **[CLIC]** "Y los permisos: este componente solo puede publicar en un tema, station/events. Nada más."
 
-"Y una regla que aprendí a las malas: una versión publicada no se toca. Si uno cambia un archivo en S3 sin cambiar la versión, el digest ya no cuadra y el despliegue falla."
+**[CLIC]** "Y así queda en Greengrass: el componente con sus dos versiones, y el umbral como configuración. Una regla que aprendí a las malas: una versión publicada no se toca. Si uno cambia un archivo en S3 sin cambiar la versión, el digest ya no cuadra y el despliegue falla."
 
 *Fuente del digest: referencia de recetas de Greengrass, campo Digest de Artifacts. https://docs.aws.amazon.com/greengrass/v2/developerguide/component-recipe-reference.html*
 
 ---
 
-## 20 · Paso 4 · Desplegar por rings
+## 19 · Paso 4 · Desplegar por rings
 <!-- id: anillos -->
-**1:05** · 3 clics
+**1:05** · 4 clics · *el último es la evidencia del ensayo*
 
 "Paso cuatro. ¿Cómo le llega una versión nueva a mil equipos sin dañarlos todos un martes por la tarde? Con despliegues de Greengrass, por rings: cada ring es un thing group."
 
@@ -322,53 +329,53 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 "Seguro alguno está pensando: 'pero si Greengrass ya hace rollback'. Sí… pero de despliegues que fallan. Un modelo que se instala perfecto y oye mal, para Greengrass, es un despliegue exitoso."
 
+**[CLIC]** "Y esto es lo que devolvió AWS en el ensayo: un despliegue por thing group. En el ring 0 se ve la historia completa: la 1.0.0, la 2.0.0 y el rollback, que es el activo. El ring 1 solo tuvo la 1.0.0."
+
 *Fuentes: failureHandlingPolicy = ROLLBACK por defecto, https://docs.aws.amazon.com/greengrass/v2/APIReference/API_DeploymentPolicies.html · abortConfig y jobExecutionsRolloutConfig, https://docs.aws.amazon.com/cli/latest/reference/greengrassv2/create-deployment.html*
 
 ---
 
-## 21 · Paso 5 · Operar sin red
+## 20 · Paso 5 · Operar sin red
 <!-- id: sinred -->
-**0:50** · 2 clics
+**0:40** · 2 clics · *el último es la evidencia del ensayo*
 
 "Paso cinco: ¿qué pasa cuando se va la señal?"
 
-"En un equipo pequeño, Greengrass guarda los eventos en una cola local hasta que vuelve la red. Y si el equipo tiene muy poca memoria, existe una versión liviana del agente, escrita en C."
+"En cada equipo, Greengrass guarda los eventos en una cola local hasta que vuelve la red. Si los datos son más pesados, el stream manager los sube solo cuando hay conexión. Y si el equipo tiene muy poca memoria, existe una versión liviana del agente, escrita en C."
 
-**[CLIC]** "Si la estación es más bien una planta grande, está Outposts con EKS local: el plano de control corre ahí mismo y sigue funcionando sin la región."
+**[CLIC]** "La estación sigue escuchando y alertando. Lo que necesita para decidir ya lo tiene adentro. Un ojo: esa cola vive en memoria; cuando se llena, rechaza mensajes. Si la red se va por horas, la cola tiene que ir a disco."
 
-**[CLIC]** "En los dos casos, la estación sigue escuchando y alertando. Lo que necesita para decidir ya lo tiene adentro."
+**[CLIC]** "Y esto pasó en el ensayo: las cinco bombas sanas, y cuando a la 3 le volvió la red, sus alertas llegaron 30, 40, 55 segundos tarde. Pero llegaron todas."
 
-"Ahora, un ojo con la cola: cuando se llena, empieza a rechazar mensajes. Si la red se va por horas, esa cola tiene que ir a disco."
-
-*Fuentes: cola mqtt.spooler de 2,5 MB en memoria, https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html · cola en disco, https://docs.aws.amazon.com/greengrass/v2/developerguide/disk-spooler-component.html · nucleus lite (5 MB de almacenamiento, menos de 15 MB de RAM), https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-lite-component.html · EKS local sin red, https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-network-disconnects.html*
+*Si preguntan por una planta grande: Outposts con EKS local (ver «Preguntas difíciles»). Fuentes: cola mqtt.spooler de 2,5 MB en memoria, https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-component.html · cola en disco, https://docs.aws.amazon.com/greengrass/v2/developerguide/disk-spooler-component.html · nucleus lite (5 MB de almacenamiento, menos de 15 MB de RAM), https://docs.aws.amazon.com/greengrass/v2/developerguide/greengrass-nucleus-lite-component.html*
 
 ---
 
-## 22 · Paso 6 · Monitorear lo que decide el modelo
+## 21 · Paso 6 · Monitorear lo que decide el modelo
 <!-- id: monitoreo -->
-**1:05** · 5 clics · *un tramo de la tubería por clic*
+**1:25** · 5 clics · *la tubería sale entera; después una señal por clic; el último es la evidencia del ensayo*
 
-"Y el paso seis: desde la nube no vemos el audio, vemos lo que el modelo nos cuenta. Un mensajito por cada clip, de unos cientos de bytes, que llega a IoT Core."
+"Paso seis. Desde la nube no vemos el audio: vemos lo que el modelo nos cuenta. Un mensajito por clip, de unos cientos de bytes. Llega a IoT Core, una regla le pega la hora de llegada, cae en CloudWatch, y una alarma lo vigila y puede llamar a la Lambda del rollback."
 
-**[CLIC]** "Una regla de IoT lo recibe y le pega la hora de llegada. La diferencia entre la hora en que la bomba decidió y la hora en que llegó es justo el tiempo que estuvo sin red."
+"Pero, ¿qué hay que vigilar? Tres cosas."
 
-**[CLIC]** "Eso cae en CloudWatch Logs."
+**[CLIC]** "Uno: la entrada. ¿El micrófono todavía dice la verdad? Si el número sube despacio durante semanas, el sensor está envejeciendo. Si salta de un clip al otro, se dañó… o alguien lo está manipulando. La velocidad del cambio les dice cuál de las dos."
 
-**[CLIC]** "Un filtro cuenta lo que nos importa. En la demo es este: la bomba estaba fallando y el modelo no avisó. Fallas que nadie oyó."
+**[CLIC]** "Dos: la salida. Se compara la distribución de los scores de esta hora contra la de la semana, con algo como el PSI. Si el modelo de repente decide muy distinto, algo pasó, aunque nadie sepa todavía si la bomba fallaba."
 
-**[CLIC]** "Una alarma vigila ese número."
+**[CLIC]** "Y tres, la que casi nadie mira: la autenticidad. ¿Es el modelo que mandamos? Cada evento trae la versión y la huella del modelo, y se compara con la del registro." *(pausa)* "Ojo: esa huella la reporta el equipo. Un equipo comprometido puede mentir. Por eso la lámina de seguridad iba primero."
 
-**[CLIC]** "Y cuando salta, llama a la Lambda, que devuelve el ring 0 a la última versión buena."
+**[CLIC]** "Y algo importante: en la demo, el gate sabe si la bomba fallaba, porque yo sé qué audio suena. En producción eso llega tarde, con la orden de mantenimiento. Estas tres señales no lo necesitan: sirven desde el primer día."
 
-"Aquí está el error de siempre: poner la alarma sobre CPU y errores. Ya vimos que eso se queda en verde. El gate tiene que mirar al modelo."
+**[CLIC]** "Y este es el dashboard del ensayo: qué decide, con cuánta seguridad, la entrada, qué versión corre, la latencia y las fallas que nadie oyó."
 
-*Si alguien pregunta cómo se sabe en producción si la bomba fallaba: ese campo solo existe en la demo. En producción la confirmación llega tarde, con la orden de mantenimiento, y mientras tanto se compara el canary contra el resto.*
+*Si preguntan por umbrales del PSI: 0,1 y 0,25 son costumbre, no estadística (A6). Fíjate que el filtro MissedFaults de la tubería usa el campo truth, que solo existe en la demo: lo dice el clic 4. La imagen son los seis widgets reales del ensayo (talk/assets/screens/cw-dashboard.png).*
 
 ---
 
-## 23 · A mano alzada
+## 22 · A mano alzada
 <!-- id: reflexion3 -->
-**0:35** · 1 clic · *la barra cuenta cinco segundos*
+**0:30** · 1 clic · *la barra cuenta cinco segundos*
 
 "Una pregunta antes de la demo: ¿ustedes saben qué versión del modelo está corriendo en cada uno de sus equipos?" *(espera manos)* "Ahora bajen la mano los que tuvieron que pensarlo." *(risas)*
 
@@ -378,17 +385,17 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ---
 
-## 24 · 04 · Demostración
+## 23 · 04 · Demostración
 <!-- id: div4 -->
-**0:05** · *divisor* · *reloj: 16:25*
+**0:05** · *divisor* · *reloj: 15:43*
 
 "Bueno, suficiente teoría. Vamos para la estación."
 
 ---
 
-## 25 · Arquitectura de la demostración
+## 24 · Arquitectura de la demostración
 <!-- id: poc -->
-**0:40** · sin clics
+**0:30** · sin clics
 
 "Les cuento qué monté, porque no me traje bombas en la maleta." *(risas)* "Cada bomba es un contenedor en una EC2, con el agente real de Greengrass adentro. Son cinco: la 1 es el ring 0, el canary, y de la 2 a la 5 son el ring 1."
 
@@ -396,13 +403,13 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 "Lo único de mentiras es el equipo físico… y la fábrica del modelo, que es un script en mi portátil y no SageMaker."
 
-*Si preguntan: las cinco bombas salen de tres secciones de MIMII DUE; la 1 y la 4 comparten sección, y la 2 y la 5 también, con clips distintos. Cada nucleus es una JVM: en el ensayo, unos 220 MB por bomba.*
+*La fábrica del modelo es la de la lámina 16. Si preguntan: las cinco bombas salen de tres secciones de MIMII DUE; la 1 y la 4 comparten sección, y la 2 y la 5 también, con clips distintos. Cada nucleus es una JVM: en el ensayo, unos 220 MB por bomba.*
 
 ---
 
-## 26 · Demostración en tres actos
+## 25 · Demostración en tres actos
 <!-- id: demo -->
-**6:00** · 2 clics en la lámina, después las terminales · *la lámina es el mapa; lo de verdad está en la terminal*
+**6:00** · 3 clics en la lámina, después las terminales · *la lámina es el mapa; lo de verdad está en la terminal*
 
 *En la lámina (0:20).* "Van a ser tres actos. En el primero, la bomba 3 va a sonar como la B del principio."
 
@@ -412,7 +419,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 *Cambia a las terminales: `./demo/watch.sh` a la izquierda; arriba a la derecha, el dashboard `station`; abajo a la derecha, la terminal de Session Manager en la EC2. Letra grande.*
 
-"Esto que ven aquí es la estación en vivo. Cada línea es un clip que una bomba escuchó y decidió: qué bomba, qué versión, si alertó, el score contra el umbral, cómo venía el audio y cuánto se demoró. Esas son las golden signals de un modelo. Y fíjense que el audio no aparece por ningún lado."
+"Esto que ven aquí es la estación en vivo. Cada línea es un clip que una bomba escuchó y decidió: qué bomba, qué versión, si alertó, el score contra el umbral, cómo venía la entrada y cuánto se demoró. Ahí están las tres señales del paso seis: la entrada, la salida y la versión. Y fíjense que el audio no aparece por ningún lado."
 
 **Acto 1 · Escuchar (1:00)**
 
@@ -446,7 +453,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 *Cuando aparezca pump-01 v2.0.0 normal … · missed fault:* "La bomba está fallando… y la versión nueva dice 'normal'. Una falla que nadie oyó." *(pausa)*
 
-"¿Qué pasó? Ese audio extra incluía la semana en que una bomba ya venía fallando, y nadie lo revisó. El modelo aprendió que fallar es lo normal. No da errores, da menos alertas… y no oye las fallas."
+"¿Qué pasó? ¿Se acuerdan del punto cinco, los datos? Ese audio extra incluía la semana en que una bomba ya venía fallando, y nadie lo revisó. El modelo aprendió que fallar es lo normal. No da errores, da menos alertas… y no oye las fallas. No es un bug de código: es un bug de datos."
 
 *Mientras la alarma junta datos:* "Y ahora no voy a tocar nada. Dejemos que el gate haga su trabajo." *Cambia al deck: tecla A y una flecha a la derecha te llevan al anexo A2. Cuenta la secuencia con la nota de A2 (un minuto). M te devuelve aquí.*
 
@@ -456,6 +463,8 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 *Vuelve a esta lámina y dilo mirando a la sala, despacio:* "Greengrass revierte despliegues fallidos, pero no modelos equivocados. Ese gate lo tiene que poner uno."
 
+**[CLIC]** "Y así quedó en el ensayo: las fallas no oídas pasan el umbral de 8, la alarma salta, la Lambda devuelve la 1.0.0 en un segundo, y la bomba 1 vuelve a alertar." *Si la demo en vivo falló, esta lámina es la prueba de que funciona; cuéntala con calma.*
+
 *Tiempos medidos en los ensayos del 12 de octubre: de `fault.sh pump-01` a la v1 otra vez, entre 90 y 135 s. Depende de en qué segundo del minuto cae la falla. Si a los tres minutos la 1 no ha vuelto, no esperes más: «La alarma va a su ritmo; para no robarles tiempo, les muestro cómo termina», y pon el video desde el rollback.*
 
 *Plan B, si la red del evento falla (watch.sh sin líneas en 30 s o la EC2 no responde): pon el video de respaldo y dilo con humor: «El wifi de un evento es el peor lugar del mundo para depender de MQTT. Por eso traje la grabación del ensayo.» Narra encima con este mismo guion.*
@@ -464,27 +473,27 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ---
 
-## 27 · Cinco recomendaciones
+## 26 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 23:10 al entrar*
+**1:05** · 4 clics · *reloj: 22:18 al entrar*
 
 "Me quedan unos minutos, así que les dejo cinco cosas. Y les advierto: casi nadie las hace el lunes. Pero los que las hacen duermen más tranquilos."
 
-"La primera: traten el modelo como cualquier otro artefacto, con versión, digest y receta."
+"La primera: el modelo es un artefacto más, con versión, huella y firma… y sobre un equipo que arranca seguro."
 
-**[CLIC]** "La segunda: optimicen para cada chip, y midan en el chip de verdad."
+**[CLIC]** "La segunda: midan en el chip de verdad, con la batería baja y con calor, no en su portátil."
 
 **[CLIC]** "La tercera: desplieguen por rings, con un gate que mire al modelo, no solo al proceso."
 
 **[CLIC]** "La cuarta: diseñen pensando en que no va a haber red. Cola local y decisiones locales."
 
-**[CLIC]** "Y la quinta: que el modelo les cuente lo que decide, pero que el dato crudo se quede en el equipo."
+**[CLIC]** "Y la quinta: vigilen tres señales, la entrada, la salida y la autenticidad. Y el audio, que se quede en el equipo."
 
-*Si el reloj marca 23:35 o menos al llegar aquí (+0:25), cuenta lo que pasó en el primer ensayo, que es real: «¿Saben qué fue lo primero que se me dañó? La primera vez que monté esto en AWS, ninguna bomba arrancaba. Horas buscando, y era que el instalador de Greengrass decide el formato del archivo de configuración por la extensión… y mi archivo no tenía extensión. Una línea. Por eso se ensaya en el equipo de verdad.»*
+*Si el reloj marca 22:40 o menos al llegar aquí, cuenta lo que pasó en el primer ensayo, que es real: «¿Saben qué fue lo primero que se me dañó? La primera vez que monté esto en AWS, ninguna bomba arrancaba. Horas buscando, y era que el instalador de Greengrass decide el formato del archivo de configuración por la extensión… y mi archivo no tenía extensión. Una línea. Por eso se ensaya en el equipo de verdad.»*
 
 ---
 
-## 28 · La frase final: ¿esta bomba está fallando?
+## 27 · La frase final: ¿esta bomba está fallando?
 <!-- id: final -->
 **0:45** · 2 clics · *cierre circular: vuelven los audios del principio*
 
@@ -504,7 +513,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ---
 
-## 29 · Recursos y contacto
+## 28 · Recursos y contacto
 <!-- id: recursos -->
 **0:15** · sin clics
 
@@ -514,7 +523,7 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 ---
 
-## 30 · Gracias
+## 29 · Gracias
 <!-- id: cierre -->
 **0:15** · sin clics
 
@@ -644,21 +653,21 @@ Lo que hacen los buenos speakers, y dónde está en esta charla:
 
 | Bloque | Láminas | Duración | Reloj al terminar |
 |---|---|---|---|
-| Apertura | 1–6 | 3:40 | 3:40 |
-| 01 · El problema | 7–11 | 3:00 | 6:40 |
-| 02 · El patrón | 12–15 | 2:50 | 9:30 |
-| 03 · Los seis pasos | 16–23 | 6:55 | 16:25 |
-| 04 · Demostración | 24–26 | 6:45 | 23:10 |
-| Cierre | 27–30 | 2:20 | 25:30 |
-| **Total** | | **25:30** | |
+| Apertura | 1–5 | 3:05 | 3:05 |
+| 01 · El problema | 6–9 | 2:43 | 5:48 |
+| 02 · El patrón | 10–14 | 3:15 | 9:03 |
+| 03 · Los seis pasos | 15–22 | 6:40 | 15:43 |
+| 04 · Demostración | 23–25 | 6:35 | 22:18 |
+| Cierre | 26–29 | 2:20 | 24:38 |
+| **Total** | | **24:38** | |
 
-Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 1:20 (con el despliegue de la v2 lanzado durante la espera), acto 3 2:45 y remate 0:15. El acto 3 es lo único que no controlas: si en el ensayo el rollback pasa de 2:30, lleva el tope y el video listos. La anécdota de la lámina 27 solo entra si vas adelantado.
+Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 1:20 (con el despliegue de la v2 lanzado durante la espera), acto 3 2:45 y remate 0:15. El acto 3 es lo único que no controlas: si en el ensayo el rollback pasa de 2:30, lleva el tope y el video listos. La anécdota de la lámina 26 solo entra si vas adelantado. Te sobran 20 segundos: son para las risas y las manos, no para agregar contenido.
 
 ## Antes de subir
 
 **Una hora antes**
 - EC2 encendida y las cinco bombas *Healthy*: `aws greengrassv2 list-core-devices --query 'coreDevices[].[coreDeviceThingName,status]' --output table`.
-- Toda la flota en 1.0.0: los dos thing groups con su despliegue en ACTIVE (la lámina 23 lo muestra así).
+- Toda la flota en 1.0.0: los dos thing groups con su despliegue en ACTIVE (la lámina 22 lo muestra así).
 - `/station/last_good_version` = 1.0.0.
 - Las cinco bombas suenan normal: `./demo/fault.sh pump-0N off` y `./demo/domain.sh pump-0N normal`.
 - Las cinco conectadas a la red `station` (`docker network inspect station`).
@@ -678,7 +687,10 @@ Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 
 - **«¿Y SageMaker Neo? ¿No es eso lo de compilar por chip?»** "Lo probé con este modelo y no compiló tal cual: no soporta uno de los operadores que trae scikit-learn. Cuando lo reescribí, sí compiló, pero el resultado necesita su propio runtime, DLR, que no se actualiza desde 2021. Y cuando AWS cerró Edge Manager en 2024, su recomendación fue justo ONNX Runtime en el equipo y Greengrass para desplegar. Eso es lo que vieron."
 - **«¿Por qué no despliegas el INT8?»** "En la CPU de la demo ahorra poco: el clip pasa de 14,4 a 12,7 milisegundos, porque el tiempo se va preparando el audio. En un equipo con NPU sí valdría la pena, con un artefacto por cada tipo de chip."
 - **«¿Y AWS Wavelength?»** "Wavelength acerca el cómputo a la red 5G del operador, pero sigue necesitando señal, y hoy no hay zonas en Latinoamérica. Para una estación sin red, el modelo tiene que estar en el equipo."
-- **«¿Por qué no Kubernetes en cada estación?»** "En un equipo pequeño, un agente que baja componentes alcanza y pesa mucho menos. Si la estación es una planta grande, ahí sí: Outposts con EKS local."
+- **«¿Por qué no Kubernetes en cada estación?»** "En un equipo pequeño, un agente que baja componentes alcanza y pesa mucho menos. Si la estación es una planta grande, ahí sí: Outposts con EKS local, donde el plano de control corre en el sitio y sigue funcionando sin la región."
+- **«¿Y si el reloj del equipo está mal?»** "Buena pregunta: el tiempo sin red sale de restar la hora del equipo a la de llegada, y sin red el equipo no sincroniza la hora. Por eso cada evento trae además un número de secuencia: el orden no depende del reloj. En producción, el equipo corrige la hora al reconectar y se marca el desfase."
+- **«¿La demo tiene secure boot y TPM?»** "No: las bombas son contenedores en una EC2. La lámina de seguridad es lo que pondría en un equipo de verdad; la PoC muestra el resto."
+- **«¿Por qué la autenticidad, si Greengrass ya verifica el digest?»** "Greengrass lo verifica al instalar. La señal mira que lo que corre hoy sigue siendo eso, y que nadie lo cambió por fuera del despliegue."
 - **«En producción no sabes si la bomba fallaba.»** "Cierto, esa verdad solo existe en la demo. En producción se compara el canary contra el resto de la flota, y la confirmación llega después, con la orden de mantenimiento."
 - **«¿Por qué AUC y no exactitud?»** "Porque cuando cambia la velocidad todos los scores suben, y la detección puede subir junto con las falsas alarmas. La AUC mide si el modelo separa una bomba sana de una que falla, sin depender del umbral."
 - **«¿Por qué un autoencoder y no un clasificador?»** "Porque las fallas son raras y no tienes ejemplos de todas. Es más fácil aprender cómo suena lo normal y avisar cuando algo suena distinto."
@@ -687,7 +699,7 @@ Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 
 - **«¿Cuánto cuesta la PoC?»** "Lo que más pesa es la EC2; la cifra exacta la saco de Cost Explorer." (A4)
 - **«¿Qué pasa si la cola se llena?»** "Empieza a rechazar mensajes nuevos. Para horas o días sin red, la cola tiene que ir a disco."
 - **«¿Por qué CloudWatch Logs y no una base de series de tiempo?»** "Para el gate, un filtro de métrica alcanza. Si quieres análisis, otra regla de IoT puede mandar los mismos eventos a S3."
-- **«¿Esto sirve con otra nube?»** "El patrón de la lámina 14 no depende de ninguna nube. Lo de AWS es una forma de construirlo."
+- **«¿Esto sirve con otra nube?»** "El patrón de la lámina 13 no depende de ninguna nube. Lo de AWS es una forma de construirlo. En Azure, las mismas piezas serían IoT Edge con sus módulos y sus despliegues por etiquetas."
 - **«¿Cómo firmas el modelo?»** "Greengrass verifica el digest de cada archivo. Para firma y procedencia hay un estándar abierto, OpenSSF Model Signing, sobre Sigstore."
 - **«¿Cuántas bombas aguanta la PoC?»** "Cada bomba usó unos 220 MB, y las cinco juntas 1,4 GB. Lo que limita es la memoria, porque cada agente es una JVM."
 - **«¿Seguro que el audio no sale?»** "El componente lee el audio en modo solo lectura, y sus permisos solo le dejan publicar en un tema."
@@ -698,6 +710,7 @@ Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 
 
 - La infraestructura está abajo desde el 12 de octubre (destroy). El día anterior: Actions → infra → Run workflow → apply; en la EC2, `fetch-poc`, `./fleet/build.sh` y `./fleet/up.sh`; desde el portátil, `./demo/publish.sh 1.0.0`, `2.0.0` y `./demo/deploy.sh 1.0.0 all`. En el ensayo todo eso tomó unos 15 minutos.
 - Grabar el video de respaldo, cortado por actos.
+- Opcional: si quieres capturas de la consola en vez de la evidencia del ensayo, tómalas con la infraestructura arriba y reemplaza los archivos de `talk/assets/screens/` con los mismos nombres (instrucciones en su README).
 - Cronometrar la charla completa en un ensayo con la EC2 y ajustar donde haga falta.
 
 ## Fuentes de lo que dices en voz alta
@@ -719,4 +732,6 @@ Dentro de la demo: mapa 0:20, intro de las terminales 0:20, acto 1 1:00, acto 2 
   - EKS local en Outposts sin red: https://docs.aws.amazon.com/eks/latest/userguide/eks-outposts-network-disconnects.html
   - Greengrass en Docker: https://docs.aws.amazon.com/greengrass/v2/developerguide/run-greengrass-docker.html
 - Métodos de drift (A6): documentación de Evidently y NannyML; crítica a los umbrales del PSI: arXiv:2303.01227.
+- Face ID (lámina 5): Apple, «About Face ID advanced technology», https://support.apple.com/102381: los datos no salen del equipo, no van a iCloud, están protegidos por el Secure Enclave, y Face ID se adapta a cambios de apariencia.
+- Seguridad del equipo (lámina 12): Greengrass con HSM o TPM vía PKCS#11, https://docs.aws.amazon.com/greengrass/v2/developerguide/hardware-security.html · OpenSSF Model Signing, https://github.com/sigstore/model-transparency
 - Regulación (A7): Reglamento (UE) 2024/1689, arts. 12, 19 y 72, con las fechas del Reglamento (UE) 2026/1744; NIST AI 100-1; ISO/IEC 42001:2023.

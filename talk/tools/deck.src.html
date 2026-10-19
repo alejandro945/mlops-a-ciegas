@@ -8,8 +8,9 @@
   Deck source. Do NOT edit talk/devopsdays.html by hand:
   it is generated with  AWS_ICONS=~/Downloads/Icon-package_07312026 python3 talk/tools/build_deck.py
   Design: official DevOpsDays Bogotá 2026 template (navy #071329 · purple #6D28D9 · blue #2448FF · cyan #00BCEB, Calibri).
-  Slide order and ids: this file (31 slides + 10 annexes); the speaker notes come from GUION-devopsdays.md by id. Placeholders (in double braces, see build_deck.py):
-  FIG:name · M:key · AUDIO:a and AUDIO:b · ARCH_GENERIC · PHOTO · QR · REPO · LINKEDIN · IMG:file · FONT:file.
+  Slide order and ids: this file (29 slides + 10 annexes); the speaker notes come from GUION-devopsdays.md by id. Placeholders (in double braces, see build_deck.py):
+  FIG:name · M:key · AUDIO:a and AUDIO:b · ARCH_GENERIC · PHOTO · QR · REPO · LINKEDIN · IMG:file · FONT:file ·
+  SHOT:name (an AWS console screenshot from talk/assets/screens/name.png; the list is SHOTS in build_deck.py).
   Click steps: data-on="n" (shows up at click n) · data-off="n" (goes away) · data-prog (architecture) · canvas.anim with ANIM[name].
   Slide text and speaker notes are in Spanish (the talk is in Spanish); code and comments are in English.
 -->
@@ -218,6 +219,31 @@ tr.hot td.k,tr.hot td b{color:var(--acc)}
 .cd .cl{font-size:21px;color:var(--slate);padding:9px 0;border-top:1.5px solid var(--line)}
 .cd .cf{position:absolute;left:28px;right:28px;bottom:22px;font-size:16px;color:var(--muted)}
 
+/* four cards (device security) */
+.cards4{position:absolute;left:84px;right:84px;top:236px;display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+.cards4 .cd{min-height:300px;padding:26px 26px}
+.cards4 .cn{font-family:var(--mono);font-size:40px;font-weight:700;line-height:1;color:var(--blue)}
+.cards4 .ch{font-size:30px;margin:18px 0 14px}
+.cards4 .cl{border-top:none;padding:0;font-size:22px;line-height:1.4}
+.cards4 .cf{font-family:var(--mono);font-size:15px;line-height:1.4;color:var(--link)}
+.cards4 .cd.hot{border-color:var(--acc)} .cards4 .cd.hot .cn{color:var(--acc)}
+
+/* "this is how it looks in AWS": a console window over the figure, on the last click */
+.shot{position:absolute;left:0;right:0;top:190px;height:532px;padding:0 84px;z-index:4;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.9)}
+.shot .win{background:#FFFFFF;border:1.5px solid var(--line);border-radius:12px;box-shadow:0 18px 50px rgba(7,19,41,.18);overflow:hidden;
+  display:flex;flex-direction:column;max-width:100%}
+.shot .wb{height:38px;flex:none;background:var(--light);border-bottom:1.5px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 16px;
+  font-family:var(--mono);font-size:16px;color:var(--slate);white-space:nowrap}
+.shot .wb i{width:11px;height:11px;border-radius:50%;background:var(--ink16);display:block;flex:none}
+.shot .wb span{margin-left:12px}
+.shot .wb b{color:var(--acc);font-weight:700}
+.shot img{display:block;max-width:1429px;max-height:490px;width:auto;height:auto}
+.shot .spend{width:1100px;height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;
+  background:var(--light);color:var(--muted);font-size:24px;font-weight:700;padding:0 60px}
+.shot .spend code{font-size:18px;color:var(--link)}
+.shot .spend small{font-size:19px;font-weight:400;color:var(--slate);line-height:1.4}
+
 .rows.five .row{padding:20px 0}
 .rows.five .row h3{font-size:32px}
 
@@ -367,6 +393,35 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="tag" a="4">#DevOpsDaysBogota</div>
 </section>
 
+<!-- ═══════════════ 2 · WHO AM I (right after the cover) ═══════════════ -->
+<section class="s" data-id="quien" data-sec="0" data-notes="">
+  <div class="kick">Ponente</div>
+  <div class="ttl">Sobre <b>mí</b></div>
+  {{PHOTO}}
+  <div class="me">
+    <div class="nm" a="2">Alejandro Varela</div>
+    <div class="rl" a="2">Senior Cloud Engineer <img class="co" src="{{BADGE:epam.png}}" data-file="epam.png" alt="EPAM"></div>
+    <p a="3">Diseño cómo llegan y se gobiernan modelos de IA en equipos de campo: inferencia en el edge e IoT industrial sobre AWS, Azure y GCP.</p>
+    <div class="bdg" a="4">
+      <div class="bg"><div class="bl"><i>5</i> certificaciones de AWS</div><div class="bi">
+        <img src="{{BADGE:aws-sap-solutions-architect-professional.png}}" data-file="aws-sap-solutions-architect-professional.png" alt="AWS Certified Solutions Architect – Professional">
+        <img src="{{BADGE:aws-dop-devops-engineer-professional.png}}" data-file="aws-dop-devops-engineer-professional.png" alt="AWS Certified DevOps Engineer – Professional">
+        <img src="{{BADGE:aws-ans-advanced-networking-specialty.png}}" data-file="aws-ans-advanced-networking-specialty.png" alt="AWS Certified Advanced Networking – Specialty">
+        <img src="{{BADGE:aws-scs-security-specialty.png}}" data-file="aws-scs-security-specialty.png" alt="AWS Certified Security – Specialty">
+        <img src="{{BADGE:aws-saa-solutions-architect-associate.png}}" data-file="aws-saa-solutions-architect-associate.png" alt="AWS Certified Solutions Architect – Associate">
+      </div></div>
+      <div class="bg"><div class="bl"><i>3</i> certificaciones de Kubernetes</div><div class="bi">
+        <img src="{{BADGE:k8s-cka-administrator.png}}" data-file="k8s-cka-administrator.png" alt="Certified Kubernetes Administrator">
+        <img src="{{BADGE:k8s-ckad-application-developer.png}}" data-file="k8s-ckad-application-developer.png" alt="Certified Kubernetes Application Developer">
+        <img src="{{BADGE:k8s-cks-security-specialist.png}}" data-file="k8s-cks-security-specialist.png" alt="Certified Kubernetes Security Specialist">
+      </div></div>
+    </div>
+    <p class="hb" a="4"><b>Fuera del trabajo:</b> cualquier deporte de raqueta (tenis de mesa, tenis, pádel…), aprender algo nuevo para estar a la vanguardia y viajar.</p>
+    <div class="hd" a="4">{{LINKEDIN}}</div>
+  </div>
+  <div class="foot"></div>
+</section>
+
 <!-- ═══════════════ 2 · IS THIS PUMP FAILING? (two real audios) ═══════════════ -->
 <section class="s" data-id="suena" data-sec="0" data-notes="">
   <div class="kick">Escucha</div>
@@ -405,48 +460,6 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="foot"></div>
 </section>
 
-<!-- ═══════════════ 6 · WHO AM I ═══════════════ -->
-<section class="s" data-id="quien" data-sec="0" data-notes="">
-  <div class="kick">Ponente</div>
-  <div class="ttl">Sobre <b>mí</b></div>
-  {{PHOTO}}
-  <div class="me">
-    <div class="nm" a="2">Alejandro Varela</div>
-    <div class="rl" a="2">Senior Cloud Engineer <img class="co" src="{{BADGE:epam.png}}" data-file="epam.png" alt="EPAM"></div>
-    <p a="3">Llevo modelos de IA de la nube a equipos en campo: inferencia en el edge e IoT industrial sobre AWS, Azure y GCP.</p>
-    <div class="bdg" a="4">
-      <div class="bg"><div class="bl"><i>5</i> certificaciones de AWS</div><div class="bi">
-        <img src="{{BADGE:aws-sap-solutions-architect-professional.png}}" data-file="aws-sap-solutions-architect-professional.png" alt="AWS Certified Solutions Architect – Professional">
-        <img src="{{BADGE:aws-dop-devops-engineer-professional.png}}" data-file="aws-dop-devops-engineer-professional.png" alt="AWS Certified DevOps Engineer – Professional">
-        <img src="{{BADGE:aws-ans-advanced-networking-specialty.png}}" data-file="aws-ans-advanced-networking-specialty.png" alt="AWS Certified Advanced Networking – Specialty">
-        <img src="{{BADGE:aws-scs-security-specialty.png}}" data-file="aws-scs-security-specialty.png" alt="AWS Certified Security – Specialty">
-        <img src="{{BADGE:aws-saa-solutions-architect-associate.png}}" data-file="aws-saa-solutions-architect-associate.png" alt="AWS Certified Solutions Architect – Associate">
-      </div></div>
-      <div class="bg"><div class="bl"><i>3</i> certificaciones de Kubernetes</div><div class="bi">
-        <img src="{{BADGE:k8s-cka-administrator.png}}" data-file="k8s-cka-administrator.png" alt="Certified Kubernetes Administrator">
-        <img src="{{BADGE:k8s-ckad-application-developer.png}}" data-file="k8s-ckad-application-developer.png" alt="Certified Kubernetes Application Developer">
-        <img src="{{BADGE:k8s-cks-security-specialist.png}}" data-file="k8s-cks-security-specialist.png" alt="Certified Kubernetes Security Specialist">
-      </div></div>
-    </div>
-    <p class="hb" a="4"><b>Fuera del trabajo:</b> cualquier deporte de raqueta (tenis de mesa, tenis, pádel…), aprender algo nuevo para estar a la vanguardia y viajar.</p>
-    <div class="hd" a="4">{{LINKEDIN}}</div>
-  </div>
-  <div class="foot"></div>
-</section>
-
-<!-- ═══════════════ 7 · AGENDA ═══════════════ -->
-<section class="s" data-id="agenda" data-sec="0" data-notes="">
-  <div class="kick">Agenda</div>
-  <div class="ttl">Contenido <b>de la sesión</b></div>
-  <div class="agenda">
-    <div class="r" a="1"><div class="n">01</div><div class="t">El problema</div><div class="d">Operar un modelo fuera de la nube: sin red y sin acceso al equipo.</div></div>
-    <div class="r" a="2"><div class="n">02</div><div class="t">El patrón</div><div class="d">Las piezas para gobernarlo, primero en general y después en AWS.</div></div>
-    <div class="r" a="3"><div class="n">03</div><div class="t">Los seis pasos</div><div class="d">Entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear.</div></div>
-    <div class="r" a="4"><div class="n">04</div><div class="t">Demostración</div><div class="d">Cinco equipos con IoT Greengrass: una falla, un corte de red y una reversión automática.</div></div>
-  </div>
-  <div class="foot"></div>
-</section>
-
 <!-- ═══════════════ 8 · DIVIDER 01 ═══════════════ -->
 <section class="s dv" data-id="div1" data-sec="0" data-notes="">
   <div class="sq"></div>
@@ -480,20 +493,6 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="foot" data-src="Medido en la PoC con MIMII DUE (bombas, dominio de entrenamiento contra dominio nuevo)"></div>
 </section>
 
-<!-- ═══════════════ 11 · WHAT TO ASK WHEN MONITORING A MODEL ═══════════════ -->
-<section class="s" data-id="preguntas" data-sec="4" data-notes="">
-  <div class="kick">El problema</div>
-  <div class="ttl wide">Monitorear la infraestructura <b>no es monitorear el modelo</b></div>
-  <div class="tbl"><table>
-    <tr><th>Monitoreo de ML / MLOps</th></tr>
-    <tr><td class="k">¿El modelo sigue distinguiendo correctamente?</td></tr>
-    <tr><td class="k">¿Cambió la distribución de los datos?</td></tr>
-    <tr><td class="k">¿Aumentaron los falsos positivos o negativos?</td></tr>
-    <tr class="hot"><td class="k">¿Las predicciones siguen siendo útiles?</td></tr>
-  </table></div>
-  <div class="foot"></div>
-</section>
-
 <!-- ═══════════════ 13 · DIVIDER 02 ═══════════════ -->
 <section class="s dv" data-id="div2" data-sec="0" data-notes="">
   <div class="sq"></div>
@@ -511,6 +510,28 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="foot"></div>
 </section>
 
+<!-- ═══════════════ 12 · DEVICE SECURITY FIRST ═══════════════ -->
+<section class="s" data-id="seguridad" data-sec="5" data-notes="">
+  <div class="kick">El patrón</div>
+  <div class="ttl wide">Antes de proteger el modelo, <b>protege el equipo</b></div>
+  <div class="cards4">
+    <div class="cd" data-on="0"><div class="cn">01</div><div class="ch">Arranque seguro</div>
+      <div class="cl">Solo arranca software firmado.</div>
+      <div class="cf">secure boot · UEFI, HAB en ARM</div></div>
+    <div class="cd" data-on="1"><div class="cn">02</div><div class="ch">Llave protegida</div>
+      <div class="cl">La identidad del equipo no se copia de la tarjeta SD.</div>
+      <div class="cf">TPM · PKCS#11 en Greengrass</div></div>
+    <div class="cd" data-on="2"><div class="cn">03</div><div class="ch">Updates verificados</div>
+      <div class="cl">Solo instala lo que trae la huella correcta.</div>
+      <div class="cf">digest · mTLS · firma</div></div>
+    <div class="cd hot" data-on="3"><div class="cn">04</div><div class="ch">Datos privados</div>
+      <div class="cl">El audio no sale y se cifra en el disco.</div>
+      <div class="cf">solo salen eventos</div></div>
+  </div>
+  <div class="say" data-on="4" style="top:598px;font-size:34px">Sin esto, nadie necesita engañar a tu modelo: <b>le basta con reemplazarlo</b>.</div>
+  <div class="foot"></div>
+</section>
+
 <!-- ═══════════════ 15 · THE GENERIC FLOW ═══════════════ -->
 <section class="s" data-id="flujo" data-sec="5" data-prog='[{"b":0},{"b":1},{"b":2},{"b":3},{"b":4},{"b":5},{"b":6}]' data-notes="">
   <div class="kick">El patrón</div>
@@ -520,7 +541,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 16 · THE SAME FLOW, ON AWS ═══════════════ -->
-<section class="s" data-id="aws" data-sec="6" data-prog='[{"b":0},{"b":1},{"b":2},{"b":3},{"b":4},{"b":5},{"b":6}]' data-notes="">
+<section class="s" data-id="aws" data-sec="6" data-prog='[{"b":0},{"b":1},{"b":2},{"b":3},{"b":4},{"b":5}]' data-notes="">
   <div class="kick">El patrón</div>
   <div class="ttl wide">El mismo patrón <b>en AWS</b></div>
   <div class="stack">{{FIG:arq_ref}}<svg class="pk" viewBox="0 0 1600 900"></svg></div>
@@ -542,6 +563,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide"><i class="pn">Paso 1 ·</i> Entrenar <b>con sonido normal</b></div>
   <div class="fig">{{FIG:entrenar}}</div>
   <div class="spine">{{FIG:espina_1}}</div>
+  <div class="shot" data-on="3"><div class="win"><div class="wb"><i></i><i></i><i></i><span>./demo/publish.sh · <b>S3</b>, una carpeta por versión · ensayo del 12 oct</span></div>{{SHOT:s3-versiones}}</div></div>
   <div class="foot"></div>
 </section>
 
@@ -560,6 +582,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide"><i class="pn">Paso 3 ·</i> Empaquetar <b>como componente</b></div>
   <div class="fig">{{FIG:receta}}</div>
   <div class="spine">{{FIG:espina_3}}</div>
+  <div class="shot" data-on="5"><div class="win"><div class="wb"><i></i><i></i><i></i><span>./demo/publish.sh · <b>IoT Greengrass</b> crea el componente · ensayo del 12 oct</span></div>{{SHOT:gg-componente}}</div></div>
   <div class="foot"></div>
 </section>
 
@@ -569,6 +592,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide"><i class="pn">Paso 4 ·</i> Desplegar <b>por rings</b></div>
   <div class="fig">{{FIG:anillos}}</div>
   <div class="spine">{{FIG:espina_4}}</div>
+  <div class="shot" data-on="4"><div class="win"><div class="wb"><i></i><i></i><i></i><span>aws greengrassv2 list-deployments · <b>un despliegue por ring</b> · ensayo del 12 oct</span></div>{{SHOT:gg-despliegues}}</div></div>
   <div class="foot"></div>
 </section>
 
@@ -578,6 +602,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide"><i class="pn">Paso 5 ·</i> Operar <b>sin red</b></div>
   <div class="fig">{{FIG:sinred}}</div>
   <div class="spine">{{FIG:espina_5}}</div>
+  <div class="shot" data-on="2"><div class="win"><div class="wb"><i></i><i></i><i></i><span><b>core devices</b> y lo que llegó tarde al volver la red · ensayo del 12 oct</span></div>{{SHOT:gg-equipos}}</div></div>
   <div class="foot"></div>
 </section>
 
@@ -587,6 +612,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide"><i class="pn">Paso 6 ·</i> Monitorear <b>lo que decide el modelo</b></div>
   <div class="fig">{{FIG:monitoreo}}</div>
   <div class="spine">{{FIG:espina_6}}</div>
+  <div class="shot" data-on="5"><div class="win"><div class="wb"><i></i><i></i><i></i><span>CloudWatch · dashboard <b>station</b> · ensayo del 12 oct</span></div>{{SHOT:cw-dashboard}}</div></div>
   <div class="foot"></div>
 </section>
 
@@ -646,6 +672,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
     </div>
   </div>
   <div class="say" data-on="2" style="top:684px;font-size:28px">Greengrass revierte despliegues fallidos, <b>no modelos equivocados</b>: ese gate lo pones tú.</div>
+  <div class="shot" data-on="3"><div class="win"><div class="wb"><i></i><i></i><i></i><span>CloudWatch · <b>station-missed-faults</b> → Lambda → v1 · ensayo del 12 oct</span></div>{{SHOT:cw-alarma}}</div></div>
   <div class="foot"></div>
 </section>
 
@@ -654,11 +681,11 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="kick">Conclusiones</div>
   <div class="ttl wide">Cinco <b>recomendaciones</b></div>
   <div class="rows solo five">
-    <div class="row" data-on="0"><div class="big">01</div><div><h3>El modelo es un artefacto más: <b>versión, digest y receta</b>.</h3></div></div>
-    <div class="row" data-on="1"><div class="big">02</div><div><h3>Optimiza por chip y <b>mide en el chip</b>.</h3></div></div>
+    <div class="row" data-on="0"><div class="big">01</div><div><h3>El modelo es un artefacto: <b>versión, huella y firma</b>, sobre un equipo seguro.</h3></div></div>
+    <div class="row" data-on="1"><div class="big">02</div><div><h3>Mide en el chip de verdad, <b>con batería baja y con calor</b>.</h3></div></div>
     <div class="row" data-on="2"><div class="big">03</div><div><h3>Despliega por rings, con un gate que <b>mire al modelo</b> y no solo al proceso.</h3></div></div>
     <div class="row" data-on="3"><div class="big">04</div><div><h3>Diseña para estar sin red: <b>cola local y decisiones locales</b>.</h3></div></div>
-    <div class="row hot" data-on="4"><div class="big">05</div><div><h3>Que el modelo cuente qué decide; <b>el dato crudo se queda en el equipo</b>.</h3></div></div>
+    <div class="row hot" data-on="4"><div class="big">05</div><div><h3>Vigila tres señales: <b>entrada, salida y autenticidad</b>. El audio no sale.</h3></div></div>
   </div>
   <div class="foot"></div>
 </section>
@@ -819,6 +846,8 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
     <tr><td class="k">Métodos de drift · Evidently · NannyML · crítica al PSI</td><td class="m">docs.evidentlyai.com · nannyml.readthedocs.io · arxiv.org/abs/2303.01227</td></tr>
     <tr><td class="k">AI Act (UE 2024/1689) · Digital Omnibus (UE 2026/1744)</td><td class="m">eur-lex.europa.eu · artificialintelligenceact.eu</td></tr>
     <tr><td class="k">NIST AI RMF · ISO/IEC 42001</td><td class="m">nist.gov/itl/ai-risk-management-framework · iso.org</td></tr>
+    <tr><td class="k">Face ID: los datos no salen del equipo · Secure Enclave</td><td class="m">support.apple.com/102381 · Apple Platform Security Guide</td></tr>
+    <tr><td class="k">Greengrass con HSM/TPM (PKCS#11) · OpenSSF Model Signing</td><td class="m">docs.aws.amazon.com/greengrass/v2 · github.com/sigstore/model-transparency</td></tr>
   </table></div>
   <div class="foot"></div>
 </section>
@@ -901,18 +930,17 @@ function burst(g,x,y,r,col){ if(r<=0) return; g.fillStyle=col; g.beginPath();
   for(let k=0;k<20;k++){ const a=k/20*6.284, q=k%2?r*.45:r, px=x+Math.cos(a)*q, py=y+Math.sin(a)*q; k?g.lineTo(px,py):g.moveTo(px,py); }
   g.closePath(); g.fill(); }
 function bars(g,x,y,n,col){ for(let k=0;k<4;k++){ g.fillStyle=k<n?col:ink(.16); g.fillRect(x+k*9,y-6-k*6,6,6+k*6); } }
-function heart(g,x,y,r,col){ dot(g,x-r*.5,y,r*.56,col); dot(g,x+r*.5,y,r*.56,col);
-  g.fillStyle=col; g.beginPath(); g.moveTo(x-r*1.04,y+r*.12); g.lineTo(x+r*1.04,y+r*.12); g.lineTo(x,y+r*1.25); g.closePath(); g.fill(); }
 function padlock(g,x,y,col){ g.save(); g.strokeStyle=col; g.lineWidth=4; g.beginPath(); g.arc(x,y-6,11,Math.PI,0); g.stroke(); g.restore();
   fillRR(g,x-17,y-6,34,28,5,col); dot(g,x,y+6,4,'#FFFFFF'); }
-function ecg(g,x,y,w,t,col){ g.save(); g.strokeStyle=col; g.lineWidth=2.5; g.beginPath();
-  for(let k=0;k<=w;k+=3){ const f=((k/w)+t*.6)%1, d=f%.5; let v=0;
-    if(d>.2&&d<.23) v=-.9; else if(d>=.23&&d<.26) v=.6; else if(d>.3&&d<.34) v=-.15;
-    const yy=y+v*26; k?g.lineTo(x+k,yy):g.moveTo(x+k,yy); }
-  g.stroke(); g.restore(); }
-function watch(g,cx,cy,t){ fillRR(g,cx-38,cy-112,76,42,6,ink(.16)); fillRR(g,cx-38,cy+70,76,42,6,ink(.16));
-  fillRR(g,cx-64,cy-80,128,160,28,'#FFFFFF'); strokeRR(g,cx-64,cy-80,128,160,28,INK,3); fillRR(g,cx+62,cy-16,9,28,3,INK);
-  ecg(g,cx-48,cy+4,96,t,INK); }
+function phone(g,cx,cy){ fillRR(g,cx-62,cy-118,124,236,22,'#FFFFFF'); strokeRR(g,cx-62,cy-118,124,236,22,INK,3);
+  fillRR(g,cx-22,cy-108,44,10,5,INK); }
+function faceid(g,cx,cy,s,col){ /* the Face ID glyph: four corners, two eyes, the nose and a smile */
+  g.save(); g.strokeStyle=col; g.lineWidth=3.2; g.lineCap='round'; g.lineJoin='round';
+  const a=s, c=s*.42;
+  [[-1,-1],[1,-1],[1,1],[-1,1]].forEach(([dx,dy])=>{ g.beginPath(); g.moveTo(cx+dx*a,cy+dy*(a-c)); g.lineTo(cx+dx*a,cy+dy*a); g.lineTo(cx+dx*(a-c),cy+dy*a); g.stroke(); });
+  g.beginPath(); g.moveTo(cx-s*.36,cy-s*.32); g.lineTo(cx-s*.36,cy-s*.16); g.moveTo(cx+s*.36,cy-s*.32); g.lineTo(cx+s*.36,cy-s*.16);
+  g.moveTo(cx+s*.02,cy-s*.3); g.lineTo(cx+s*.02,cy+s*.08); g.lineTo(cx-s*.1,cy+s*.08); g.stroke();
+  g.beginPath(); g.arc(cx,cy+s*.12,s*.36,Math.PI*.22,Math.PI*.78); g.stroke(); g.restore(); }
 function rich(g,x,y,parts,size){ let xx=x; parts.forEach(pt=>{ T(g,xx,y,pt[0],pt[1],size,pt[2]); xx+=g.measureText(pt[0]).width; }); }
 
 /* 02 · the hook: out of every 100 new PCs… */
@@ -977,19 +1005,23 @@ function scPlant(g,px,py,pw,ph,side,u,t){
       strokeRR(g,tx+22,ty+108+k*48,352,40,12,INK,1.5); T(g,tx+36,ty+134+k*48,s,INK,17,400); g.restore(); });
   }
 }
-function scWatch(g,px,py,pw,ph,side,u,t){
-  const cx=px+170, cy=py+ph/2+14;
-  if(side){ const f=(t*.6)%1; if(f<.6){ g.save(); g.globalAlpha=(1-f/.6)*.8; g.strokeStyle=INK; g.lineWidth=2.5;
-      g.beginPath(); g.arc(cx,cy,96+f*90,0,6.284); g.stroke(); g.restore(); } }
-  watch(g,cx,cy,t);
+function scFace(g,px,py,pw,ph,side,u,t){
+  const cx=px+170, cy=py+ph/2+20;
+  phone(g,cx,cy);
+  const scan=side&&u>.15&&u<.45;                                    /* on the device: a quick scan, then unlocked */
+  faceid(g,cx,cy-12,34,side&&u>=.45?ACC:INK);
+  if(scan){ const y=cy-46+((t*2)%1)*68; line(g,[[cx-40,y],[cx+40,y]],acc(.7),2.5); }
   const ccx=px+pw-150, ccy=py+130;
   if(!side){
     cloud(g,ccx,ccy,58,INK); eyes(g,ccx,ccy-6,58,-1,.7);
-    for(let k=0;k<7;k++){ const s=((t*.45)+k/7)%1, x=lerp(cx+74,ccx-56,s), y=lerp(cy-30,ccy+16,s)-Math.sin(s*Math.PI)*70; heart(g,x,y,8,ACC); }
-    T(g,ccx,ccy+96,'¿quién más lo está viendo?',INK,20,700,false,'center');
+    for(let k=0;k<5;k++){ const s=((t*.4)+k/5)%1, x=lerp(cx+70,ccx-56,s), y=lerp(cy-40,ccy+16,s)-Math.sin(s*Math.PI)*70;
+      g.save(); g.globalAlpha=Math.sin(s*Math.PI); faceid(g,x,y,11,ACC); g.restore(); }
+    T(g,ccx,ccy+96,'¿quién más tiene tu cara?',INK,20,700,false,'center');
   } else {
-    padlock(g,cx+118,cy-54,INK);
-    T(g,cx+160,cy+10,'solo sale la alerta',INK,22,700);
+    padlock(g,cx+124,cy-54,INK);
+    T(g,cx+160,cy-6,'Secure Enclave',INK,22,700);
+    T(g,cx+160,cy+24,'solo sale un sí o un no',ink(.66),20,400);
+    if(u>=.45) T(g,cx,cy+150,'desbloqueado',ACC,18,700,true,'center');
   }
 }
 const MEMES=[
@@ -998,8 +1030,8 @@ const MEMES=[
   {tag:'SIN CONEXIÓN', h1:'Técnico en la planta, 3 a. m.: «¿cómo cambio este rodamiento?»', h2:'El asistente, con el modelo en la nube: «Sin conexión. Intente más tarde.»',
    punch:[['Sin conexión: ',INK,700],['con el modelo en el equipo, igual responde.',ACC,700]],
    src:'', draw:scPlant},
-  {tag:'PRIVACIDAD', h1:'Tu reloj, cada segundo:', h2:'«mandando tus latidos al modelo en la nube…»',
-   punch:[['Privacidad: ',INK,700],['lo sensible no sale del equipo.',ACC,700]], src:'', draw:scWatch}
+  {tag:'PRIVACIDAD', h1:'Desbloquear tu teléfono:', h2:'«un momento, le mando tu cara al modelo en la nube…»',
+   punch:[['Privacidad: ',INK,700],['tu cara nunca sale del teléfono.',ACC,700]], src:'Apple · About Face ID advanced technology', draw:scFace}
 ];
 ANIM.memes={steps:3,dur:900,draw(g,W,H,st,p,t){
   const m=MEMES[st], a=RM?1:ease(clamp(p*1.4)), u=RM?.8:((t/4.6)%1);

@@ -10,6 +10,8 @@ Placeholders in deck.src.html:
                        disabled, «audio pendiente»)
     {{ARCH_GENERIC}}   the generic pattern (layer lay-a); the AWS one and the PoC one are {{FIG:arq_ref}} and {{FIG:arq_poc}}
     {{PHOTO}}, {{QR}}, {{REPO}}, {{LINKEDIN}}, {{IMG:…}} (assets/template), {{BADGE:…}} (assets/badges), {{FONT:…}}
+    {{SHOT:name}}      talk/assets/screens/name.png (or .jpg): an AWS console screenshot · if missing: a «captura pendiente»
+                       box that says what to capture (SHOTS below) and a warning
 
 Usage (from the repo root):
     AWS_ICONS=~/Downloads/Icon-package_07312026 python3 talk/tools/build_deck.py
@@ -41,6 +43,18 @@ AUDIO = (os.environ.get("STATION_AUDIO_DIR") or os.environ.get("AUDIO_DIR")
 
 PENDING_FIGS = []                              # figures that do not exist yet
 PENDING_AUDIO = []
+PENDING_SHOTS = []
+
+SCREENS = os.path.join(ASSETS, "screens")      # AWS evidence of the PoC, one per step (see assets/screens/README.md)
+# name → what it shows (Spanish: it shows on the slide while the file is missing). Same list in assets/screens/README.md.
+SHOTS = {
+    "s3-versiones":   "publish.sh sube cada versión a su carpeta de S3: station/1.0.0/ y station/2.0.0/",
+    "gg-componente":  "publish.sh crea com.station.Listener 1.0.0 y 2.0.0 en IoT Greengrass",
+    "gg-despliegues": "list-deployments de StationRing0 y StationRing1 después del rollback",
+    "gg-equipos":     "list-core-devices (las cinco HEALTHY) y los eventos que llegaron tarde al volver la red",
+    "cw-dashboard":   "los seis widgets del dashboard station durante el ensayo",
+    "cw-alarma":      "la métrica MissedFaults cruzando el umbral, la alarma, la Lambda y pump-01 de vuelta en v1",
+}
 
 
 def warn(msg):
@@ -93,6 +107,28 @@ def metric(m):
 
 def resolve_metrics(text):
     return re.sub(r"\{\{M:([\w.]+)\}\}", metric, text)
+
+
+def shot(name):
+    """{{SHOT:name}} → the screenshot as <img> (resized: at most 2 × 1429 px wide); missing: a box saying what to capture."""
+    path = next((os.path.join(SCREENS, name + e) for e in (".png", ".jpg", ".jpeg")
+                 if os.path.exists(os.path.join(SCREENS, name + e))), None)
+    if not path:
+        PENDING_SHOTS.append(name)
+        warn(f"missing screenshot: talk/assets/screens/{name}.png ({SHOTS.get(name, '?')})")
+        return (f'<div class="spend">captura pendiente<code>talk/assets/screens/{name}.png</code>'
+                f'<small>{H.escape(SHOTS.get(name, ""))}</small></div>')
+    try:
+        from PIL import Image
+        import io
+        im = Image.open(path).convert("RGB")
+        if im.width > 2858:
+            im = im.resize((2858, round(im.height * 2858 / im.width)), Image.LANCZOS)
+        buf = io.BytesIO(); im.save(buf, "JPEG", quality=86)
+        uri = "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+    except ImportError:
+        uri = data_uri(path)
+    return f'<img src="{uri}" alt="{H.escape(SHOTS.get(name, name))}" data-file="{os.path.basename(path)}">'
 
 
 def pending_box(name):
@@ -180,6 +216,7 @@ def main():
     html = re.sub(r"\{\{AUDIO:([ab])\}\}", lambda m: audio_src(m.group(1)), html)
     # figures by name: {{FIG:onda_a}} → build_iso.FIGS["onda_a"]()
     html = re.sub(r"\{\{FIG:([\w-]+)\}\}", lambda m: figure(m.group(1)), html)
+    html = re.sub(r"\{\{SHOT:([\w-]+)\}\}", lambda m: shot(m.group(1)), html)
     # template images and the font, embedded: the file works offline
     html = re.sub(r"\{\{IMG:([\w.-]+)\}\}", lambda m: data_uri(os.path.join(ASSETS, "template", m.group(1))), html)
     html = re.sub(r"\{\{BADGE:([\w.-]+)\}\}", lambda m: data_uri(os.path.join(ASSETS, "badges", m.group(1))), html)
@@ -201,6 +238,8 @@ def main():
         print("  missing figures:", ", ".join(sorted(set(PENDING_FIGS))))
     if PENDING_AUDIO:
         print("  missing audio:", ", ".join(sorted(set(PENDING_AUDIO))))
+    if PENDING_SHOTS:
+        print("  missing screenshots (talk/assets/screens/):", ", ".join(sorted(set(PENDING_SHOTS))))
 
 
 if __name__ == "__main__":

@@ -306,14 +306,15 @@ def fig_loop(edge=False, static=False):
             e.add(f'<path d="M{sx + r * .25:.1f},{sy + r * .97:.1f} A{r},{r} 0 0 1 {sx - r * .9:.1f},{sy + r * .43:.1f}" '
                   f'fill="none" stroke="{PURPLE}" stroke-width="2.6" stroke-linecap="round" data-on="3"/>')
 
-    # the three constraints, one per click (2 + 1, bottom)
-    R = ["Equipos de varias generaciones.", "Red intermitente.", "El audio no puede salir de la estación."]
+    # the five limits, one per click (3 + 2, bottom); 4 and 5 have no drawing: they are said, not shown
+    R = ["Poca memoria, chips distintos.", "Red intermitente.", "El audio no puede salir.",
+         "Latencia según batería y calor.", "Datos escasos y que cambian."]
     for k, r in enumerate(R):
-        x = 96 + (k % 2) * 700
-        y = 700 + (k // 2) * 44
+        x = 96 + (k % 3) * 480
+        y = 694 + (k // 3) * 42
         g.add(f'<g data-on="{k + 1}"><text x="{x}" y="{y}" font-family="{MONO}" font-size="18" font-weight="700" '
               f'fill="{PURPLE}">0{k + 1}</text>'
-              f'<text x="{x + 40}" y="{y}" font-family="{FONT}" font-size="26" font-weight="700" fill="{NAVY}">{r}</text></g>')
+              f'<text x="{x + 40}" y="{y}" font-family="{FONT}" font-size="25" font-weight="700" fill="{NAVY}">{r}</text></g>')
     return wrap(e.svg() + g.svg())
 
 
