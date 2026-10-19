@@ -1,6 +1,6 @@
 # Notas de apoyo · MLOps a ciegas
 
-Lo que no se dice en voz alta pero conviene saber: datos de respaldo por lámina, detalles técnicos para las preguntas y las fuentes. El guion (`GUION-devopsdays.md`) tiene solo lo que dices; el estudio, en `ESTUDIO.md`.
+Lo que no se dice en voz alta pero conviene saber: datos de respaldo por lámina, detalles técnicos para las preguntas y las fuentes. El guion (`GUION-devopsdays.md`) tiene solo lo que dices; el estudio, en `talk/private/ESTUDIO.md` (no se sube al repo).
 
 ## Por lámina
 
