@@ -188,7 +188,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 **[CLIC]** "Quinta: un gate que evalúa esos eventos y decide automáticamente si se avanza o se revierte. Es el ciclo rápido, de minutos."
 
-**[CLIC]** "Esos mismos eventos alimentan el reentrenamiento: el ciclo lento, de días. Y de forma transversal, identidad, mínimo privilegio, cifrado y auditoría. El patrón no depende de ningún proveedor de nube."
+**[CLIC]** "Esos eventos dicen cuándo reentrenar y en qué estación, y el mantenimiento pone las etiquetas. El audio para reentrenar se recolecta de forma selectiva: alertas, casos dudosos y una muestra de lo normal. Ese es el ciclo lento, de días. Y de forma transversal, identidad, mínimo privilegio, cifrado y auditoría. El patrón no depende de ningún proveedor de nube."
 
 ---
 

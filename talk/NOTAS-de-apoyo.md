@@ -19,6 +19,15 @@ Lo que no se dice en voz alta pero conviene saber: datos de respaldo por lámina
 - **23 · Versiones.** Detalle de un equipo: `aws greengrassv2 list-installed-components --core-device-thing-name pump-01`.
 - **25 · PoC.** Las cinco bombas salen de tres secciones de MIMII DUE (la 1 y la 4 comparten sección, la 2 y la 5 también, con clips distintos). Cada nucleus es una JVM: unos 220 MB por bomba.
 
+## Reentrenamiento (si preguntan)
+
+- En la PoC viaja un evento por cada clip, haya alerta o no; el audio nunca sale. Con mil bombas: un resumen por minuto más el detalle cuando algo cambia (anexo A5).
+- Los eventos no sirven como dato de entrenamiento (el autoencoder necesita audio): dicen **cuándo** reentrenar y **dónde** (drift de la entrada, cambio en la distribución de scores, más falsas alarmas).
+- Las etiquetas llegan tarde, con las órdenes de mantenimiento: confirman alertas y revelan fallas no detectadas.
+- El audio se recolecta de forma selectiva desde un buffer local en disco: clips alrededor de cada alerta, cerca del umbral, del periodo con deriva, una muestra pequeña de lo normal y, si mantenimiento revela una falla no detectada, las horas previas. Se sube en ventanas con buena conectividad o en la visita de mantenimiento.
+- Alternativa: recalibrar en el equipo la huella de lo normal y el umbral (`stats.json`), como Face ID se adapta en el teléfono; el reentrenamiento completo o federado es más complejo.
+- Antes de entrenar, el dato se valida (la lección de la v2): se excluyen los periodos con fallas conocidas o entrada anómala; después se evalúa offline contra fallas conocidas y se despliega por rings con el gate.
+
 ## El ensayo del 18 de octubre (lo que muestran los actos)
 
 | Momento | Hora (Bogotá) | Dato |
