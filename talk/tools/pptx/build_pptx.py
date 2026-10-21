@@ -1,7 +1,7 @@
 """
 Builds talk/MLOps-a-ciegas-DevOpsDays-Bogota-2026.pptx on top of the official
 DevOpsDays Bogotá 2026 template, with the same content as talk/devopsdays.html
-(33 slides + 11 annexes, same order and ids as deck.src.html).
+(34 slides + 11 annexes, same order and ids as deck.src.html).
 Slide text, speaker notes, shape names and section names stay in Spanish (the talk is in Spanish).
 
 - Titles, kickers, text, tables, cards, the spine bar and the speaker notes:
@@ -1555,7 +1555,7 @@ BUILDERS = {
     "entrenar": ("CONTENIDO", b_iso), "optimizar": ("CONTENIDO", b_iso), "componente": ("CONTENIDO", b_iso),
     "anillos": ("CONTENIDO", b_iso), "reflexion2": ("CONTENIDO", b_refl), "sinred": ("CONTENIDO", b_iso),
     "monitoreo": ("CONTENIDO", b_iso), "reflexion3": ("CONTENIDO", b_refl3), "div4": ("DIVISOR", b_div),
-    "poc": ("CONTENIDO", b_htmlsteps), "gancho": ("CONTENIDO", b_hook), "artefacto": ("CONTENIDO", b_pair), "flota": ("CONTENIDO", b_pair), "acto1": ("CONTENIDO", b_acto), "acto2": ("CONTENIDO", b_acto),
+    "poc": ("CONTENIDO", b_htmlsteps), "gancho": ("CONTENIDO", b_hook), "artefacto": ("CONTENIDO", b_pair), "flota": ("CONTENIDO", b_pair), "reporte": ("CONTENIDO", b_pair), "acto1": ("CONTENIDO", b_acto), "acto2": ("CONTENIDO", b_acto),
     "acto3": ("CONTENIDO", b_acto), "senales": ("CONTENIDO", b_iso), "demo": ("CONTENIDO", b_acts),
     "costo": ("CONTENIDO", b_cost), "llevo": ("CONTENIDO", b_rows), "final": ("SIMPLE", b_final),
     "recursos": ("CONTENIDO", b_res), "cierre": ("CIERRE", b_closing),

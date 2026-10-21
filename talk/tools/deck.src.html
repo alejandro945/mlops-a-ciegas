@@ -8,7 +8,7 @@
   Deck source. Do NOT edit talk/devopsdays.html by hand:
   it is generated with  AWS_ICONS=~/Downloads/Icon-package_07312026 python3 talk/tools/build_deck.py
   Design: official DevOpsDays Bogotá 2026 template (navy #071329 · purple #6D28D9 · blue #2448FF · cyan #00BCEB, Calibri).
-  Slide order and ids: this file (33 slides + 11 annexes); the speaker notes come from GUION-devopsdays.md by id. Placeholders (in double braces, see build_deck.py):
+  Slide order and ids: this file (34 slides + 11 annexes); the speaker notes come from GUION-devopsdays.md by id. Placeholders (in double braces, see build_deck.py):
   FIG:name · M:key · AUDIO:a and AUDIO:b · ARCH_GENERIC · PHOTO · QR · REPO · LINKEDIN · IMG:file · FONT:file ·
   SHOT:name (an AWS console screenshot from talk/assets/screens/name.png; the list is SHOTS in build_deck.py).
   Click steps: data-on="n" (shows up at click n) · data-off="n" (goes away) · data-prog (architecture) · canvas.anim with ANIM[name].
@@ -659,9 +659,18 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 <section class="s" data-id="flota" data-sec="7" data-notes="">
   <div class="kick">La evidencia</div>
-  <div class="ttl wide">La flota, <b>reportando</b></div>
+  <div class="ttl wide">La flota, <b>en línea</b></div>
   <div class="pair">
-    <figure class="hi" data-on="0">{{SHOT:cw-dashboard}}<figcaption>CloudWatch · cinco equipos, dos rings, lo que decide el modelo</figcaption></figure>
+    <figure class="hi" data-on="0">{{SHOT:gg-equipos}}<figcaption>IoT Greengrass · cinco things, uno por bomba, en dos rings</figcaption></figure>
+  </div>
+  <div class="foot"></div>
+</section>
+
+<section class="s" data-id="reporte" data-sec="7" data-notes="">
+  <div class="kick">La evidencia</div>
+  <div class="ttl wide">Lo que <b>reporta</b></div>
+  <div class="pair">
+    <figure class="hi" data-on="0">{{SHOT:cw-dashboard}}<figcaption>CloudWatch · lo que decide el modelo, por señal</figcaption></figure>
   </div>
   <div class="foot"></div>
 </section>

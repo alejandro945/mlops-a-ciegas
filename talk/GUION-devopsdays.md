@@ -2,7 +2,7 @@
 
 Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo demás en cursiva es para ti. Lo que va entre comillas no se memoriza palabra por palabra, salvo la apertura, las cifras y el cierre. Cómo estudiarlo: `talk/private/ESTUDIO.md` (no se sube al repo). Fuentes y datos de respaldo: `NOTAS-de-apoyo.md`. Las notas del deck (tecla **N**) salen de este archivo.
 
-**21:40** de contenido para un espacio de 25 min + 5 de preguntas. Reloj al entrar a cada divisor: 4:00 · 6:40 · 9:05 · 14:35.
+**21:50** de contenido para un espacio de 25 min + 5 de preguntas. Reloj al entrar a cada divisor: 4:00 · 6:40 · 9:05 · 14:35.
 
 ---
 
@@ -326,15 +326,23 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 26 · La flota, reportando
+## 26 · La flota, en línea
 <!-- id: flota -->
-**0:30** · sin clics
+**0:20** · sin clics
 
-"La flota: cinco equipos en dos rings, reportando a este dashboard, organizado por las tres señales: entrada, salida y autenticidad. Con esto en marcha, tres pruebas."
+"La flota: cada bomba es una thing de AWS IoT, con su propio certificado. Cinco equipos en dos rings, todos sanos."
 
 ---
 
-## 27 · Acto 1 · Escuchar
+## 27 · Lo que reporta
+<!-- id: reporte -->
+**0:20** · sin clics
+
+"Y esto es lo que reportan: el dashboard, organizado por las tres señales: entrada, salida y autenticidad. Con esto en marcha, tres pruebas."
+
+---
+
+## 28 · Acto 1 · Escuchar
 <!-- id: acto1 -->
 **0:50** · sin clics · *deja que lean primero*
 
@@ -348,7 +356,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 28 · Acto 2 · Sin red, y una deriva
+## 29 · Acto 2 · Sin red, y una deriva
 <!-- id: acto2 -->
 **1:00** · sin clics
 
@@ -360,7 +368,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 29 · Acto 3 · Ring deployment y rollback
+## 30 · Acto 3 · Ring deployment y rollback
 <!-- id: acto3 -->
 **1:30** · 3 clics · *el punto culminante: ve despacio*
 
@@ -380,9 +388,9 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 30 · Cinco recomendaciones
+## 31 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 19:20 al entrar*
+**1:05** · 4 clics · *reloj: 19:30 al entrar*
 
 "Cinco recomendaciones para aplicar desde el lunes."
 
@@ -396,11 +404,11 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 **[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad."
 
-*(Si el reloj marca 19:40 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
+*(Si el reloj marca 19:50 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
 
 ---
 
-## 31 · La frase final: ¿esta bomba está fallando?
+## 32 · La frase final: ¿esta bomba está fallando?
 <!-- id: final -->
 **0:45** · 3 clics · *el primer clic reproduce la bomba B*
 
@@ -416,7 +424,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 32 · Recursos y contacto
+## 33 · Recursos y contacto
 <!-- id: recursos -->
 **0:15** · sin clics
 
@@ -424,7 +432,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 33 · Gracias
+## 34 · Gracias
 <!-- id: cierre -->
 **0:15** · sin clics
 
