@@ -8,7 +8,7 @@
   Deck source. Do NOT edit talk/devopsdays.html by hand:
   it is generated with  AWS_ICONS=~/Downloads/Icon-package_07312026 python3 talk/tools/build_deck.py
   Design: official DevOpsDays Bogotá 2026 template (navy #071329 · purple #6D28D9 · blue #2448FF · cyan #00BCEB, Calibri).
-  Slide order and ids: this file (33 slides + 10 annexes); the speaker notes come from GUION-devopsdays.md by id. Placeholders (in double braces, see build_deck.py):
+  Slide order and ids: this file (32 slides + 11 annexes); the speaker notes come from GUION-devopsdays.md by id. Placeholders (in double braces, see build_deck.py):
   FIG:name · M:key · AUDIO:a and AUDIO:b · ARCH_GENERIC · PHOTO · QR · REPO · LINKEDIN · IMG:file · FONT:file ·
   SHOT:name (an AWS console screenshot from talk/assets/screens/name.png; the list is SHOTS in build_deck.py).
   Click steps: data-on="n" (shows up at click n) · data-off="n" (goes away) · data-prog (architecture) · canvas.anim with ANIM[name].
@@ -545,28 +545,6 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="foot"></div>
 </section>
 
-<!-- ═══════════════ 12 · DEVICE SECURITY FIRST ═══════════════ -->
-<section class="s" data-id="seguridad" data-sec="5" data-notes="">
-  <div class="kick">El patrón</div>
-  <div class="ttl wide">Antes de proteger el modelo, <b>protege el equipo</b></div>
-  <div class="cards4">
-    <div class="cd" data-on="0"><div class="cn">01</div><div class="ch">Arranque seguro</div>
-      <div class="cl">Solo arranca software firmado.</div>
-      <div class="cf">secure boot · UEFI, HAB en ARM</div></div>
-    <div class="cd" data-on="1"><div class="cn">02</div><div class="ch">Llave protegida</div>
-      <div class="cl">La identidad del equipo no se copia de la tarjeta SD.</div>
-      <div class="cf">TPM · PKCS#11 en Greengrass</div></div>
-    <div class="cd" data-on="2"><div class="cn">03</div><div class="ch">Updates verificados</div>
-      <div class="cl">Solo instala lo que trae la huella correcta.</div>
-      <div class="cf">digest · mTLS · firma</div></div>
-    <div class="cd hot" data-on="3"><div class="cn">04</div><div class="ch">Datos privados</div>
-      <div class="cl">El audio no sale y se cifra en el disco.</div>
-      <div class="cf">solo salen eventos</div></div>
-  </div>
-  <div class="say" data-on="4" style="top:598px;font-size:34px">Sin esto, nadie necesita engañar a tu modelo: <b>le basta con reemplazarlo</b>.</div>
-  <div class="foot"></div>
-</section>
-
 <!-- ═══════════════ 15 · THE GENERIC FLOW ═══════════════ -->
 <section class="s" data-id="flujo" data-sec="5" data-prog='[{"b":0},{"b":1},{"b":2},{"b":3},{"b":4},{"b":5},{"b":6}]' data-notes="">
   <div class="kick">El patrón</div>
@@ -910,6 +888,28 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="foot" data-src="Cálculo: 16 000 muestras/s × 2 B = 32 000 B/s ≈ 115 MB/h ≈ 2,76 GB/día por bomba · eventos: 86 400 s ÷ 10 s = 8 640/día por bomba · resumen: 1 440 min/día · todo × 1 000 bombas"></div>
 </section>
 
+
+<!-- ═══════════════ A11 · DEVICE SECURITY FIRST ═══════════════ -->
+<section class="s" data-id="seguridad" data-annex="1" data-notes="">
+  <div class="kick">Anexo</div><div class="anx">A · ANEXOS  ·  M · VOLVER</div>
+  <div class="ttl wide">Antes de proteger el modelo, <b>protege el equipo</b></div>
+  <div class="cards4">
+    <div class="cd" data-on="0"><div class="cn">01</div><div class="ch">Arranque seguro</div>
+      <div class="cl">Solo arranca software firmado.</div>
+      <div class="cf">secure boot · UEFI, HAB en ARM</div></div>
+    <div class="cd" data-on="1"><div class="cn">02</div><div class="ch">Llave protegida</div>
+      <div class="cl">La identidad del equipo no se copia de la tarjeta SD.</div>
+      <div class="cf">TPM · PKCS#11 en Greengrass</div></div>
+    <div class="cd" data-on="2"><div class="cn">03</div><div class="ch">Updates verificados</div>
+      <div class="cl">Solo instala lo que trae la huella correcta.</div>
+      <div class="cf">digest · mTLS · firma</div></div>
+    <div class="cd hot" data-on="3"><div class="cn">04</div><div class="ch">Datos privados</div>
+      <div class="cl">El audio no sale y se cifra en el disco.</div>
+      <div class="cf">solo salen eventos</div></div>
+  </div>
+  <div class="say" data-on="4" style="top:598px;font-size:34px">Sin esto, nadie necesita engañar a tu modelo: <b>le basta con reemplazarlo</b>.</div>
+  <div class="foot"></div>
+</section>
 
 </div>
 <div id="bar"></div>

@@ -8,7 +8,7 @@
   Deck source. Do NOT edit talk/devopsdays.html by hand:
   it is generated with  AWS_ICONS=~/Downloads/Icon-package_07312026 python3 talk/tools/build_deck.py
   Design: official DevOpsDays Bogotá 2026 template (navy #071329 · purple #6D28D9 · blue #2448FF · cyan #00BCEB, Calibri).
-  Slide order and ids: this file (33 slides + 10 annexes); the speaker notes come from GUION-devopsdays.md by id. Placeholders (in double braces, see build_deck.py):
+  Slide order and ids: this file (32 slides + 11 annexes); the speaker notes come from GUION-devopsdays.md by id. Placeholders (in double braces, see build_deck.py):
   FIG:name · M:key · AUDIO:a and AUDIO:b · ARCH_GENERIC · PHOTO · QR · REPO · LINKEDIN · IMG:file · FONT:file ·
   SHOT:name (an AWS console screenshot from talk/assets/screens/name.png; the list is SHOTS in build_deck.py).
   Click steps: data-on="n" (shows up at click n) · data-off="n" (goes away) · data-prog (architecture) · canvas.anim with ANIM[name].
@@ -1076,44 +1076,8 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="foot"></div>
 </section>
 
-<!-- ═══════════════ 12 · DEVICE SECURITY FIRST ═══════════════ -->
-<section class="s" data-id="seguridad" data-sec="5" data-notes="14 · ANTES DE PROTEGER EL MODELO, PROTEGE EL EQUIPO
-
-0:50 · 4 clics
-
-'Un punto que suele quedar fuera de las discusiones de MLOps: estos equipos están físicamente expuestos. Cualquiera puede abrir el gabinete de una estación rural.'
-
-'Antes de hablar de ataques al modelo, hay cuatro controles del equipo que son prerrequisito. Primero, arranque seguro: el equipo solo ejecuta software firmado.'
-
-▶ CLIC 'Segundo, protección de la identidad: la llave privada del certificado no puede vivir en la tarjeta SD, porque quien la copie suplanta al dispositivo. Va en un TPM o un elemento seguro.'
-
-▶ CLIC 'Tercero, actualizaciones autenticadas: solo se instala lo que trae la huella esperada, por un canal cifrado.'
-
-▶ CLIC 'Cuarto, privacidad del dato: el audio no sale y se cifra en reposo.'
-
-▶ CLIC 'Sin estos controles, nadie necesita engañar al modelo. Basta con reemplazarlo.'">
-  <div class="kick">El patrón</div>
-  <div class="ttl wide">Antes de proteger el modelo, <b>protege el equipo</b></div>
-  <div class="cards4">
-    <div class="cd" data-on="0"><div class="cn">01</div><div class="ch">Arranque seguro</div>
-      <div class="cl">Solo arranca software firmado.</div>
-      <div class="cf">secure boot · UEFI, HAB en ARM</div></div>
-    <div class="cd" data-on="1"><div class="cn">02</div><div class="ch">Llave protegida</div>
-      <div class="cl">La identidad del equipo no se copia de la tarjeta SD.</div>
-      <div class="cf">TPM · PKCS#11 en Greengrass</div></div>
-    <div class="cd" data-on="2"><div class="cn">03</div><div class="ch">Updates verificados</div>
-      <div class="cl">Solo instala lo que trae la huella correcta.</div>
-      <div class="cf">digest · mTLS · firma</div></div>
-    <div class="cd hot" data-on="3"><div class="cn">04</div><div class="ch">Datos privados</div>
-      <div class="cl">El audio no sale y se cifra en el disco.</div>
-      <div class="cf">solo salen eventos</div></div>
-  </div>
-  <div class="say" data-on="4" style="top:598px;font-size:34px">Sin esto, nadie necesita engañar a tu modelo: <b>le basta con reemplazarlo</b>.</div>
-  <div class="foot"></div>
-</section>
-
 <!-- ═══════════════ 15 · THE GENERIC FLOW ═══════════════ -->
-<section class="s" data-id="flujo" data-sec="5" data-prog='[{"b":0},{"b":1},{"b":2},{"b":3},{"b":4},{"b":5},{"b":6}]' data-notes="15 · CINCO PIEZAS PARA GOBERNARLO
+<section class="s" data-id="flujo" data-sec="5" data-prog='[{"b":0},{"b":1},{"b":2},{"b":3},{"b":4},{"b":5},{"b":6}]' data-notes="14 · CINCO PIEZAS PARA GOBERNARLO
 
 1:05 · 6 clics
 
@@ -1309,7 +1273,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 16 · THE SAME FLOW, ON AWS ═══════════════ -->
-<section class="s" data-id="aws" data-sec="6" data-prog='[{"b":0},{"b":1},{"b":2},{"b":3},{"b":4},{"b":5}]' data-notes="16 · EL MISMO PATRÓN EN AWS
+<section class="s" data-id="aws" data-sec="6" data-prog='[{"b":0},{"b":1},{"b":2},{"b":3},{"b":4},{"b":5}]' data-notes="15 · EL MISMO PATRÓN EN AWS
 
 0:30 · 5 clics · *ritmo ágil*
 
@@ -1493,9 +1457,9 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 17 · DIVIDER 03 · THE SPINE ═══════════════ -->
-<section class="s dv" data-id="div3" data-sec="0" data-notes="17 · 03 · LOS SEIS PASOS
+<section class="s dv" data-id="div3" data-sec="0" data-notes="16 · 03 · LOS SEIS PASOS
 
-0:10 · *reloj: 9:55*
+0:10 · *reloj: 9:05*
 
 'La implementación, en seis pasos: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear.'">
   <div class="sq"></div>
@@ -1506,7 +1470,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 18 · STEP 1 · TRAIN ═══════════════ -->
-<section class="s" data-id="entrenar" data-sec="5" data-notes="18 · PASO 1 · ENTRENAR CON SONIDO NORMAL
+<section class="s" data-id="entrenar" data-sec="5" data-notes="17 · PASO 1 · ENTRENAR CON SONIDO NORMAL
 
 0:50 · 3 clics
 
@@ -1526,7 +1490,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 19 · STEP 2 · OPTIMIZE ═══════════════ -->
-<section class="s" data-id="optimizar" data-sec="5" data-notes="19 · PASO 2 · OPTIMIZAR PARA CADA CHIP
+<section class="s" data-id="optimizar" data-sec="5" data-notes="18 · PASO 2 · OPTIMIZAR PARA CADA CHIP
 
 1:00 · 3 clics
 
@@ -1547,7 +1511,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 20 · STEP 3 · PACKAGE ═══════════════ -->
-<section class="s" data-id="componente" data-sec="5" data-notes="20 · PASO 3 · EMPAQUETAR COMO COMPONENTE
+<section class="s" data-id="componente" data-sec="5" data-notes="19 · PASO 3 · EMPAQUETAR COMO COMPONENTE
 
 1:00 · 5 clics
 
@@ -1571,7 +1535,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 21 · STEP 4 · DEPLOY ═══════════════ -->
-<section class="s" data-id="anillos" data-sec="5" data-notes="21 · PASO 4 · DESPLEGAR POR RINGS
+<section class="s" data-id="anillos" data-sec="5" data-notes="20 · PASO 4 · DESPLEGAR POR RINGS
 
 1:05 · 4 clics
 
@@ -1595,7 +1559,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 23 · STEP 5 · RUN OFFLINE ═══════════════ -->
-<section class="s" data-id="sinred" data-sec="5" data-notes="22 · PASO 5 · OPERAR SIN RED
+<section class="s" data-id="sinred" data-sec="5" data-notes="21 · PASO 5 · OPERAR SIN RED
 
 0:40 · 2 clics
 
@@ -1613,7 +1577,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 24 · STEP 6 · MONITOR ═══════════════ -->
-<section class="s" data-id="monitoreo" data-sec="5" data-notes="23 · PASO 6 · MONITOREAR LO QUE DECIDE EL MODELO
+<section class="s" data-id="monitoreo" data-sec="5" data-notes="22 · PASO 6 · MONITOREAR LO QUE DECIDE EL MODELO
 
 1:25 · 5 clics
 
@@ -1625,7 +1589,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 ▶ CLIC 'Segunda, la salida: ¿cambió la distribución de las decisiones? Se compara la distribución de scores de la última hora contra la de referencia, con una métrica como PSI.'
 
-▶ CLIC 'Tercera, la autenticidad: ¿el modelo en ejecución es el que desplegamos? Cada evento incluye la versión y la huella del modelo.' *(pausa)* 'Esa huella la reporta el propio equipo, y un equipo comprometido puede reportar lo que quiera. Por eso los controles del equipo van primero.'
+▶ CLIC 'Tercera, la autenticidad: ¿el modelo en ejecución es el que desplegamos? Cada evento incluye la versión y la huella del modelo.' *(pausa)* 'Esa huella la reporta el propio equipo, y un equipo comprometido puede reportar lo que quiera. Por eso necesita arranque seguro y su llave en un TPM.'
 
 ▶ CLIC 'En el ensayo, el gate usa la verdad de cada clip, porque sé qué audio está sonando. En producción esa etiqueta llega tarde, con la orden de mantenimiento. Las tres señales no la necesitan: funcionan desde el primer día.'
 
@@ -1639,7 +1603,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 25 · SHOW OF HANDS 3 · THE ANSWER ═══════════════ -->
-<section class="s" data-id="reflexion3" data-sec="0" data-notes="24 · A MANO ALZADA
+<section class="s" data-id="reflexion3" data-sec="0" data-notes="23 · A MANO ALZADA
 
 0:30 · 1 clic
 
@@ -1662,9 +1626,9 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 26 · DIVIDER 04 ═══════════════ -->
-<section class="s dv" data-id="div4" data-sec="0" data-notes="25 · 04 · LA EVIDENCIA EN AWS
+<section class="s dv" data-id="div4" data-sec="0" data-notes="24 · 04 · LA EVIDENCIA EN AWS
 
-0:05 · *reloj: 16:35*
+0:05 · *reloj: 15:45*
 
 'Pasemos a la evidencia: una ejecución completa en AWS.'">
   <div class="sq"></div>
@@ -1675,7 +1639,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 27 · THE PoC ═══════════════ -->
-<section class="s" data-id="poc" data-sec="6" data-notes="26 · LO QUE MONTÉ Y CORRÍ
+<section class="s" data-id="poc" data-sec="6" data-notes="25 · LO QUE MONTÉ Y CORRÍ
 
 0:30 · sin clics
 
@@ -1857,7 +1821,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 25-27 · THE RUN, ONE ACT PER SLIDE (real evidence of the October 18 run) ═══════════════ -->
-<section class="s" data-id="acto1" data-sec="7" data-notes="27 · ACTO 1 · ESCUCHAR
+<section class="s" data-id="acto1" data-sec="7" data-notes="26 · ACTO 1 · ESCUCHAR
 
 0:50 · sin clics · *deja que lean primero*
 
@@ -1875,7 +1839,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="foot"></div>
 </section>
 
-<section class="s" data-id="acto2" data-sec="7" data-notes="28 · ACTO 2 · SIN RED, Y UNA DERIVA
+<section class="s" data-id="acto2" data-sec="7" data-notes="27 · ACTO 2 · SIN RED, Y UNA DERIVA
 
 1:00 · sin clics
 
@@ -1891,7 +1855,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="foot"></div>
 </section>
 
-<section class="s" data-id="acto3" data-sec="7" data-notes="29 · ACTO 3 · RING DEPLOYMENT Y ROLLBACK
+<section class="s" data-id="acto3" data-sec="7" data-notes="28 · ACTO 3 · RING DEPLOYMENT Y ROLLBACK
 
 1:20 · 2 clics · *el punto culminante: ve despacio*
 
@@ -1916,9 +1880,9 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 31 · WHAT DO I TAKE HOME? ═══════════════ -->
-<section class="s" data-id="llevo" data-sec="0" data-notes="30 · CINCO RECOMENDACIONES
+<section class="s" data-id="llevo" data-sec="0" data-notes="29 · CINCO RECOMENDACIONES
 
-1:05 · 4 clics · *reloj: 20:20 al entrar*
+1:05 · 4 clics · *reloj: 19:30 al entrar*
 
 'Cinco recomendaciones para aplicar desde el lunes.'
 
@@ -1932,7 +1896,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 ▶ CLIC 'Quinta: monitoreen tres señales: entrada, salida y autenticidad. Y mantengan el dato crudo en el equipo.'
 
-*(Si el reloj marca 20:40 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*">
+*(Si el reloj marca 19:50 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*">
   <div class="kick">Conclusiones</div>
   <div class="ttl wide">Cinco <b>recomendaciones</b></div>
   <div class="rows solo five">
@@ -1946,7 +1910,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 32 · THE FINAL LINE (the audios come back) ═══════════════ -->
-<section class="s" data-id="final" data-sec="0" data-play='{"1":"b"}' data-notes="31 · LA FRASE FINAL: ¿ESTA BOMBA ESTÁ FALLANDO?
+<section class="s" data-id="final" data-sec="0" data-play='{"1":"b"}' data-notes="30 · LA FRASE FINAL: ¿ESTA BOMBA ESTÁ FALLANDO?
 
 0:45 · 3 clics · *el primer clic reproduce la bomba B*
 
@@ -1974,7 +1938,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ RESOURCES ═══════════════ -->
-<section class="s" data-id="recursos" data-sec="0" data-notes="32 · RECURSOS Y CONTACTO
+<section class="s" data-id="recursos" data-sec="0" data-notes="31 · RECURSOS Y CONTACTO
 
 0:15 · sin clics
 
@@ -1992,13 +1956,13 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ CLOSING (template layout CIERRE) ═══════════════ -->
-<section class="s end" data-id="cierre" data-sec="0" data-notes="33 · GRACIAS
+<section class="s end" data-id="cierre" data-sec="0" data-notes="32 · GRACIAS
 
 0:15 · sin clics
 
 'Muchas gracias. Con gusto respondo sus preguntas.'
 
-*Anexos: la tecla A abre A1; las flechas los recorren; M o Esc te devuelven. A1 evento · A2 rollback · A3 qué revierte Greengrass · A4 permisos y costo · A5 a producción · A6 drift · A7 regulación · A8 fuentes · A9 golden signals · A10 audio contra eventos.*">
+*Anexos: la tecla A abre A1; las flechas los recorren; M o Esc te devuelven. A1 evento · A2 rollback · A3 qué revierte Greengrass · A4 permisos y costo · A5 a producción · A6 drift · A7 regulación · A8 fuentes · A9 golden signals · A10 audio contra eventos · A11 seguridad del equipo.*">
   <div class="pn" aria-hidden="true"></div>
   <div class="am" aria-hidden="true"></div>
   <div class="lg" role="img" aria-label="DevOpsDays Bogotá 2026"></div>
@@ -2339,6 +2303,40 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="foot" data-src="Cálculo: 16 000 muestras/s × 2 B = 32 000 B/s ≈ 115 MB/h ≈ 2,76 GB/día por bomba · eventos: 86 400 s ÷ 10 s = 8 640/día por bomba · resumen: 1 440 min/día · todo × 1 000 bombas"></div>
 </section>
 
+
+<!-- ═══════════════ A11 · DEVICE SECURITY FIRST ═══════════════ -->
+<section class="s" data-id="seguridad" data-annex="1" data-notes="A11 · ANTES DE PROTEGER EL MODELO, PROTEGE EL EQUIPO
+
+4 clics · *si preguntan por la seguridad del equipo*
+
+'Estos equipos están físicamente expuestos: cualquiera puede abrir el gabinete de una estación rural. Antes de hablar de ataques al modelo, hay cuatro controles del equipo que son prerrequisito. Primero, arranque seguro: el equipo solo ejecuta software firmado.'
+
+▶ CLIC 'Segundo, protección de la identidad: la llave privada del certificado no puede vivir en la tarjeta SD, porque quien la copie suplanta al dispositivo. Va en un TPM o un elemento seguro.'
+
+▶ CLIC 'Tercero, actualizaciones autenticadas: solo se instala lo que trae la huella esperada, por un canal cifrado.'
+
+▶ CLIC 'Cuarto, privacidad del dato: el audio no sale y se cifra en reposo.'
+
+▶ CLIC 'Sin estos controles, nadie necesita engañar al modelo. Basta con reemplazarlo.'">
+  <div class="kick">Anexo</div><div class="anx">A · ANEXOS  ·  M · VOLVER</div>
+  <div class="ttl wide">Antes de proteger el modelo, <b>protege el equipo</b></div>
+  <div class="cards4">
+    <div class="cd" data-on="0"><div class="cn">01</div><div class="ch">Arranque seguro</div>
+      <div class="cl">Solo arranca software firmado.</div>
+      <div class="cf">secure boot · UEFI, HAB en ARM</div></div>
+    <div class="cd" data-on="1"><div class="cn">02</div><div class="ch">Llave protegida</div>
+      <div class="cl">La identidad del equipo no se copia de la tarjeta SD.</div>
+      <div class="cf">TPM · PKCS#11 en Greengrass</div></div>
+    <div class="cd" data-on="2"><div class="cn">03</div><div class="ch">Updates verificados</div>
+      <div class="cl">Solo instala lo que trae la huella correcta.</div>
+      <div class="cf">digest · mTLS · firma</div></div>
+    <div class="cd hot" data-on="3"><div class="cn">04</div><div class="ch">Datos privados</div>
+      <div class="cl">El audio no sale y se cifra en el disco.</div>
+      <div class="cf">solo salen eventos</div></div>
+  </div>
+  <div class="say" data-on="4" style="top:598px;font-size:34px">Sin esto, nadie necesita engañar a tu modelo: <b>le basta con reemplazarlo</b>.</div>
+  <div class="foot"></div>
+</section>
 
 </div>
 <div id="bar"></div>

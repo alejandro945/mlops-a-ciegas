@@ -2,7 +2,7 @@
 
 Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo demás en cursiva es para ti. Lo que va entre comillas no se memoriza palabra por palabra, salvo la apertura, las cifras y el cierre. Cómo estudiarlo: `talk/private/ESTUDIO.md` (no se sube al repo). Fuentes y datos de respaldo: `NOTAS-de-apoyo.md`. Las notas del deck (tecla **N**) salen de este archivo.
 
-**22:40** de contenido para un espacio de 25 min + 5 de preguntas. Reloj al entrar a cada divisor: 4:00 · 6:40 · 9:55 · 16:35.
+**21:50** de contenido para un espacio de 25 min + 5 de preguntas. Reloj al entrar a cada divisor: 4:00 · 6:40 · 9:05 · 15:45.
 
 ---
 
@@ -172,25 +172,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 14 · Antes de proteger el modelo, protege el equipo
-<!-- id: seguridad -->
-**0:50** · 4 clics
-
-"Un punto que suele quedar fuera de las discusiones de MLOps: estos equipos están físicamente expuestos. Cualquiera puede abrir el gabinete de una estación rural."
-
-"Antes de hablar de ataques al modelo, hay cuatro controles del equipo que son prerrequisito. Primero, arranque seguro: el equipo solo ejecuta software firmado."
-
-**[CLIC]** "Segundo, protección de la identidad: la llave privada del certificado no puede vivir en la tarjeta SD, porque quien la copie suplanta al dispositivo. Va en un TPM o un elemento seguro."
-
-**[CLIC]** "Tercero, actualizaciones autenticadas: solo se instala lo que trae la huella esperada, por un canal cifrado."
-
-**[CLIC]** "Cuarto, privacidad del dato: el audio no sale y se cifra en reposo."
-
-**[CLIC]** "Sin estos controles, nadie necesita engañar al modelo. Basta con reemplazarlo."
-
----
-
-## 15 · Cinco piezas para gobernarlo
+## 14 · Cinco piezas para gobernarlo
 <!-- id: flujo -->
 **1:05** · 6 clics
 
@@ -210,7 +192,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 16 · El mismo patrón en AWS
+## 15 · El mismo patrón en AWS
 <!-- id: aws -->
 **0:30** · 5 clics · *ritmo ágil*
 
@@ -222,15 +204,15 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 17 · 03 · Los seis pasos
+## 16 · 03 · Los seis pasos
 <!-- id: div3 -->
-**0:10** · *reloj: 9:55*
+**0:10** · *reloj: 9:05*
 
 "La implementación, en seis pasos: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear."
 
 ---
 
-## 18 · Paso 1 · Entrenar con sonido normal
+## 17 · Paso 1 · Entrenar con sonido normal
 <!-- id: entrenar -->
 **0:50** · 3 clics
 
@@ -244,7 +226,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 19 · Paso 2 · Optimizar para cada chip
+## 18 · Paso 2 · Optimizar para cada chip
 <!-- id: optimizar -->
 **1:00** · 3 clics
 
@@ -260,7 +242,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 20 · Paso 3 · Empaquetar como componente
+## 19 · Paso 3 · Empaquetar como componente
 <!-- id: componente -->
 **1:00** · 5 clics
 
@@ -278,7 +260,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 21 · Paso 4 · Desplegar por rings
+## 20 · Paso 4 · Desplegar por rings
 <!-- id: anillos -->
 **1:05** · 4 clics
 
@@ -296,7 +278,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 22 · Paso 5 · Operar sin red
+## 21 · Paso 5 · Operar sin red
 <!-- id: sinred -->
 **0:40** · 2 clics
 
@@ -308,7 +290,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 23 · Paso 6 · Monitorear lo que decide el modelo
+## 22 · Paso 6 · Monitorear lo que decide el modelo
 <!-- id: monitoreo -->
 **1:25** · 5 clics
 
@@ -320,7 +302,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 **[CLIC]** "Segunda, la salida: ¿cambió la distribución de las decisiones? Se compara la distribución de scores de la última hora contra la de referencia, con una métrica como PSI."
 
-**[CLIC]** "Tercera, la autenticidad: ¿el modelo en ejecución es el que desplegamos? Cada evento incluye la versión y la huella del modelo." *(pausa)* "Esa huella la reporta el propio equipo, y un equipo comprometido puede reportar lo que quiera. Por eso los controles del equipo van primero."
+**[CLIC]** "Tercera, la autenticidad: ¿el modelo en ejecución es el que desplegamos? Cada evento incluye la versión y la huella del modelo." *(pausa)* "Esa huella la reporta el propio equipo, y un equipo comprometido puede reportar lo que quiera. Por eso necesita arranque seguro y su llave en un TPM."
 
 **[CLIC]** "En el ensayo, el gate usa la verdad de cada clip, porque sé qué audio está sonando. En producción esa etiqueta llega tarde, con la orden de mantenimiento. Las tres señales no la necesitan: funcionan desde el primer día."
 
@@ -328,7 +310,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 24 · A mano alzada
+## 23 · A mano alzada
 <!-- id: reflexion3 -->
 **0:30** · 1 clic
 
@@ -338,15 +320,15 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 25 · 04 · La evidencia en AWS
+## 24 · 04 · La evidencia en AWS
 <!-- id: div4 -->
-**0:05** · *reloj: 16:35*
+**0:05** · *reloj: 15:45*
 
 "Pasemos a la evidencia: una ejecución completa en AWS."
 
 ---
 
-## 26 · Lo que monté y corrí
+## 25 · Lo que monté y corrí
 <!-- id: poc -->
 **0:30** · sin clics
 
@@ -356,7 +338,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 27 · Acto 1 · Escuchar
+## 26 · Acto 1 · Escuchar
 <!-- id: acto1 -->
 **0:50** · sin clics · *deja que lean primero*
 
@@ -370,7 +352,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 28 · Acto 2 · Sin red, y una deriva
+## 27 · Acto 2 · Sin red, y una deriva
 <!-- id: acto2 -->
 **1:00** · sin clics
 
@@ -382,7 +364,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 29 · Acto 3 · Ring deployment y rollback
+## 28 · Acto 3 · Ring deployment y rollback
 <!-- id: acto3 -->
 **1:20** · 2 clics · *el punto culminante: ve despacio*
 
@@ -400,9 +382,9 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 30 · Cinco recomendaciones
+## 29 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 20:20 al entrar*
+**1:05** · 4 clics · *reloj: 19:30 al entrar*
 
 "Cinco recomendaciones para aplicar desde el lunes."
 
@@ -416,11 +398,11 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 **[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad. Y mantengan el dato crudo en el equipo."
 
-*(Si el reloj marca 20:40 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
+*(Si el reloj marca 19:50 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
 
 ---
 
-## 31 · La frase final: ¿esta bomba está fallando?
+## 30 · La frase final: ¿esta bomba está fallando?
 <!-- id: final -->
 **0:45** · 3 clics · *el primer clic reproduce la bomba B*
 
@@ -436,7 +418,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 32 · Recursos y contacto
+## 31 · Recursos y contacto
 <!-- id: recursos -->
 **0:15** · sin clics
 
@@ -444,13 +426,13 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 33 · Gracias
+## 32 · Gracias
 <!-- id: cierre -->
 **0:15** · sin clics
 
 "Muchas gracias. Con gusto respondo sus preguntas."
 
-*Anexos: la tecla A abre A1; las flechas los recorren; M o Esc te devuelven. A1 evento · A2 rollback · A3 qué revierte Greengrass · A4 permisos y costo · A5 a producción · A6 drift · A7 regulación · A8 fuentes · A9 golden signals · A10 audio contra eventos.*
+*Anexos: la tecla A abre A1; las flechas los recorren; M o Esc te devuelven. A1 evento · A2 rollback · A3 qué revierte Greengrass · A4 permisos y costo · A5 a producción · A6 drift · A7 regulación · A8 fuentes · A9 golden signals · A10 audio contra eventos · A11 seguridad del equipo.*
 
 ---
 
@@ -525,3 +507,19 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 **[CLIC]** "Un evento cada 10 segundos: 8,64 millones de mensajes al día."
 
 **[CLIC]** "Un resumen por minuto: 1,44 millones. Y el audio permanece en la estación."
+
+---
+
+## A11 · Antes de proteger el modelo, protege el equipo
+<!-- id: seguridad -->
+**4 clics** · *si preguntan por la seguridad del equipo*
+
+"Estos equipos están físicamente expuestos: cualquiera puede abrir el gabinete de una estación rural. Antes de hablar de ataques al modelo, hay cuatro controles del equipo que son prerrequisito. Primero, arranque seguro: el equipo solo ejecuta software firmado."
+
+**[CLIC]** "Segundo, protección de la identidad: la llave privada del certificado no puede vivir en la tarjeta SD, porque quien la copie suplanta al dispositivo. Va en un TPM o un elemento seguro."
+
+**[CLIC]** "Tercero, actualizaciones autenticadas: solo se instala lo que trae la huella esperada, por un canal cifrado."
+
+**[CLIC]** "Cuarto, privacidad del dato: el audio no sale y se cifra en reposo."
+
+**[CLIC]** "Sin estos controles, nadie necesita engañar al modelo. Basta con reemplazarlo."
