@@ -394,7 +394,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 **[CLIC]** "Cuarta: diseñen para operar sin conectividad: cola local y decisiones locales."
 
-**[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad. Y mantengan el dato crudo en el equipo."
+**[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad."
 
 *(Si el reloj marca 19:40 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
 
