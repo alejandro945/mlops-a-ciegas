@@ -82,8 +82,7 @@ Object.assign(SHOTS,{
     cmd('./demo/watch.sh pump-03')+
     at('19:58:24','19:58:33','pump-03').map(l=>L(short(l))).join('')+
     mark('19:58:36','./demo/fault.sh pump-03   · la bomba 3 suena como la B')+
-    at('19:58:36','19:58:48','pump-03').map(l=>L(short(l),'hot')).join('')+gap+
-    note('En el clip siguiente, alerta: el score pasa el umbral. Lo único que salió de la estación fue esta línea.')},
+    at('19:58:36','19:58:48','pump-03').map(l=>L(short(l),'hot')).join('')},
   'acto2': {w:1420, body:
     `<div class="cols a2"><div>`+
     mark('19:59:26','./demo/network.sh off pump-03')+
@@ -91,8 +90,7 @@ Object.assign(SHOTS,{
     L('                     … la 3 calla; las otras cuatro siguen')+
     mark('20:00:11','./demo/network.sh on pump-03   · 45 s sin red')+
     late.slice(0,4).map(l=>L(short(l),'hot')).join('')+
-    `</div><div><img class="chart2" src="${w('input-level-per-pump')}">`+
-    note('Y la deriva: a la bomba 5 le cambié la velocidad a las 20:01. Ni un error; la entrada por bomba salta de 0,8 a 1,8.')+`</div></div>`},
+    `</div><div><img class="chart2" src="${w('input-level-per-pump')}">`+`</div></div>`},
   'acto3': {w:1240, body:
     mark('20:13:06','./demo/deploy.sh 2.0.0 ring-0')+
     L(short(firstV2),'')+
@@ -100,8 +98,7 @@ Object.assign(SHOTS,{
     missed.map(l=>L(short(l),'hot')).join('')+
     L(alarm.replace(/^\S+T(\d\d:\d\d:\d\d)\.\d+-05:00\s+/,'$1  alarma · '),'hot')+
     L('20:15:16  lambda · '+lambda.trim().replace(/,\s*"deploymentId".*$/,'}'),'hot')+
-    L(short(v1back),'hot')+gap+
-    note('De la falla a la primera alerta de la v1: 88 s, sin que nadie tocara nada. El ring 1 nunca recibió la v2.')},
+    L(short(v1back),'hot')},
 });
 const ONLY=(process.env.ONLY||'').split(',').filter(Boolean);
 

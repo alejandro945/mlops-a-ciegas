@@ -8,7 +8,7 @@
   Deck source. Do NOT edit talk/devopsdays.html by hand:
   it is generated with  AWS_ICONS=~/Downloads/Icon-package_07312026 python3 talk/tools/build_deck.py
   Design: official DevOpsDays Bogotá 2026 template (navy #071329 · purple #6D28D9 · blue #2448FF · cyan #00BCEB, Calibri).
-  Slide order and ids: this file (32 slides + 11 annexes); the speaker notes come from GUION-devopsdays.md by id. Placeholders (in double braces, see build_deck.py):
+  Slide order and ids: this file (33 slides + 11 annexes); the speaker notes come from GUION-devopsdays.md by id. Placeholders (in double braces, see build_deck.py):
   FIG:name · M:key · AUDIO:a and AUDIO:b · ARCH_GENERIC · PHOTO · QR · REPO · LINKEDIN · IMG:file · FONT:file ·
   SHOT:name (an AWS console screenshot from talk/assets/screens/name.png; the list is SHOTS in build_deck.py).
   Click steps: data-on="n" (shows up at click n) · data-off="n" (goes away) · data-prog (architecture) · canvas.anim with ANIM[name].
@@ -239,6 +239,11 @@ tr.hot td.k,tr.hot td b{color:var(--acc)}
 .shot .wb span{margin-left:12px}
 .shot .wb b{color:var(--acc);font-weight:700}
 .shot img{display:block;max-width:1429px;max-height:490px;width:auto;height:auto}
+.pair{position:absolute;left:84px;right:84px;top:216px;height:510px;display:flex;gap:40px;justify-content:center;align-items:center;z-index:3}
+.pair .hi{display:flex;flex-direction:column;align-items:center;gap:10px}
+.pair .hi img{display:block;max-height:440px;max-width:686px;width:auto;border:1.5px solid var(--line);border-radius:8px;box-shadow:0 12px 36px rgba(7,19,41,.14)}
+.pair .hi:only-child img{max-width:1432px;max-height:470px}
+.pair figcaption{font-size:17px;color:var(--slate)}
 .hook{position:absolute;left:84px;right:84px;top:206px;height:500px;display:flex;gap:44px;justify-content:center;align-items:flex-start;z-index:3}
 .hook .hi{display:flex;flex-direction:column;align-items:center;gap:8px}
 .hook .hi img{display:block;max-height:470px;width:auto;border:1.5px solid var(--line);border-radius:8px;box-shadow:0 12px 36px rgba(7,19,41,.14)}
@@ -576,7 +581,6 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide"><i class="pn">Paso 1 ·</i> Entrenar <b>con sonido normal</b></div>
   <div class="fig">{{FIG:entrenar}}</div>
   <div class="spine">{{FIG:espina_1}}</div>
-  <div class="shot" data-on="3"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · <b>S3</b>, una carpeta por versión · ensayo del 18 oct</span></div>{{SHOT:s3-versiones}}</div></div>
   <div class="foot"></div>
 </section>
 
@@ -595,7 +599,6 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide"><i class="pn">Paso 3 ·</i> Empaquetar <b>como componente</b></div>
   <div class="fig">{{FIG:receta}}</div>
   <div class="spine">{{FIG:espina_3}}</div>
-  <div class="shot" data-on="5"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · <b>IoT Greengrass</b>, el componente y sus versiones · ensayo del 18 oct</span></div>{{SHOT:gg-componente}}</div></div>
   <div class="foot"></div>
 </section>
 
@@ -605,7 +608,6 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide"><i class="pn">Paso 4 ·</i> Desplegar <b>por rings</b></div>
   <div class="fig">{{FIG:anillos}}</div>
   <div class="spine">{{FIG:espina_4}}</div>
-  <div class="shot" data-on="4"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · <b>despliegues</b>: el ring 0 quedó en el rollback · ensayo del 18 oct</span></div>{{SHOT:gg-despliegues}}</div></div>
   <div class="foot"></div>
 </section>
 
@@ -615,7 +617,6 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide"><i class="pn">Paso 5 ·</i> Operar <b>sin red</b></div>
   <div class="fig">{{FIG:sinred}}</div>
   <div class="spine">{{FIG:espina_5}}</div>
-  <div class="shot" data-on="2"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · <b>core devices</b>: las cinco bombas · ensayo del 18 oct</span></div>{{SHOT:gg-equipos}}</div></div>
   <div class="foot"></div>
 </section>
 
@@ -625,24 +626,6 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide"><i class="pn">Paso 6 ·</i> Monitorear <b>lo que decide el modelo</b></div>
   <div class="fig">{{FIG:monitoreo}}</div>
   <div class="spine">{{FIG:espina_6}}</div>
-  <div class="shot" data-on="5"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · <b>CloudWatch</b>, dashboard station · ensayo del 18 oct</span></div>{{SHOT:cw-dashboard}}</div></div>
-  <div class="foot"></div>
-</section>
-
-<!-- ═══════════════ 25 · SHOW OF HANDS 3 · THE ANSWER ═══════════════ -->
-<section class="s" data-id="reflexion3" data-sec="0" data-notes="">
-  <div class="kick">A mano alzada</div>
-  <div class="refl">
-    <div class="rq">¿Qué versión corre <b>en cada equipo</b>?</div>
-    <div class="rs" data-off="1">Levanten la mano… y bájenla si tuvieron que pensarlo.</div>
-    <div class="ans" data-on="1">
-      <div class="ah">La respuesta está en la nube: el estado del despliegue, por thing group</div>
-      <div class="ag ahd"><span>Thing group</span><span>Equipos</span><span>Componente</span><span>Estado</span></div>
-      <div class="ag"><span>StationRing0</span><span>pump-01</span><span>com.station.Listener 1.0.0</span><b>ACTIVE</b></div>
-      <div class="ag"><span>StationRing1</span><span>pump-02 a pump-05</span><span>com.station.Listener 1.0.0</span><b>ACTIVE</b></div>
-    </div>
-    <div class="timer"><i></i></div><div class="tl">5 segundos</div>
-  </div>
   <div class="foot"></div>
 </section>
 
@@ -663,30 +646,48 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="foot"></div>
 </section>
 
+<!-- ═══════════════ 25-26 · THE EVIDENCE: the artifact and the fleet, in the AWS console ═══════════════ -->
+<section class="s" data-id="artefacto" data-sec="7" data-notes="">
+  <div class="kick">La evidencia</div>
+  <div class="ttl wide">El modelo, <b>versionado</b></div>
+  <div class="pair">
+    <figure class="hi" data-on="0">{{SHOT:s3-versiones}}<figcaption>S3 · una carpeta por versión</figcaption></figure>
+    <figure class="hi" data-on="0">{{SHOT:gg-componente}}<figcaption>IoT Greengrass · el componente y sus versiones</figcaption></figure>
+  </div>
+  <div class="foot"></div>
+</section>
+
+<section class="s" data-id="flota" data-sec="7" data-notes="">
+  <div class="kick">La evidencia</div>
+  <div class="ttl wide">La flota, <b>reportando</b></div>
+  <div class="pair">
+    <figure class="hi" data-on="0">{{SHOT:cw-dashboard}}<figcaption>CloudWatch · cinco equipos, dos rings, lo que decide el modelo</figcaption></figure>
+  </div>
+  <div class="foot"></div>
+</section>
+
 <!-- ═══════════════ 25-27 · THE RUN, ONE ACT PER SLIDE (real evidence of the October 18 run) ═══════════════ -->
 <section class="s" data-id="acto1" data-sec="7" data-notes="">
-  <div class="kick">La evidencia · 18 oct</div>
+  <div class="kick">La evidencia</div>
   <div class="ttl wide"><i class="pn">Acto 1 ·</i> Escuchar</div>
-  <div class="sre">La bomba 3 suena como la B del principio. En el clip siguiente, alerta.</div>
-  <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>./demo/watch.sh pump-03 · <b>de normal a ALERT</b> · ensayo del 18 oct</span></div>{{SHOT:acto1}}</div></div>
+  <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>./demo/watch.sh pump-03 · <b>de normal a ALERT</b></span></div>{{SHOT:acto1}}</div></div>
   <div class="foot"></div>
 </section>
 
 <section class="s" data-id="acto2" data-sec="7" data-notes="">
-  <div class="kick">La evidencia · 18 oct</div>
+  <div class="kick">La evidencia</div>
   <div class="ttl wide"><i class="pn">Acto 2 ·</i> Sin red, y una deriva</div>
-  <div class="sre">La 3 se queda sin red 45 s y las otras siguen; al volver, todo llega tarde y nada se pierde.</div>
-  <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>./demo/watch.sh y el dashboard · <b>sin red y deriva</b> · ensayo del 18 oct</span></div>{{SHOT:acto2}}</div></div>
+  <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>./demo/watch.sh y el dashboard · <b>sin red y deriva</b></span></div>{{SHOT:acto2}}</div></div>
   <div class="foot"></div>
 </section>
 
 <section class="s" data-id="acto3" data-sec="7" data-notes="">
-  <div class="kick">La evidencia · 18 oct</div>
+  <div class="kick">La evidencia</div>
   <div class="ttl wide"><i class="pn">Acto 3 ·</i> Ring deployment <b>y rollback</b></div>
-  <div class="sre">La v2 llega solo al ring 0, no oye la falla, y el gate la devuelve solo.</div>
-  <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la línea de tiempo · <b>de la v2 al rollback</b> · ensayo del 18 oct</span></div>{{SHOT:acto3}}</div></div>
-  <div class="shot " data-on="1"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · alarma <b>station-missed-faults</b> · ensayo del 18 oct</span></div>{{SHOT:cw-alarma}}</div></div>
-  <div class="say" data-on="2" style="top:728px;font-size:28px;z-index:5">Greengrass revierte despliegues fallidos, <b>no modelos equivocados</b>: ese gate lo pones tú.</div>
+  <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la línea de tiempo · <b>de la v2 al rollback</b></span></div>{{SHOT:acto3}}</div></div>
+  <div class="shot " data-on="1"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · alarma <b>station-missed-faults</b></span></div>{{SHOT:cw-alarma}}</div></div>
+  <div class="shot " data-on="2"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · <b>despliegues</b>: el ring 0 en rollback</span></div>{{SHOT:gg-despliegues}}</div></div>
+  <div class="say" data-on="3" style="top:728px;font-size:28px;z-index:5">Greengrass revierte despliegues fallidos, <b>no modelos equivocados</b>: ese gate lo pones tú.</div>
   <div class="foot"></div>
 </section>
 

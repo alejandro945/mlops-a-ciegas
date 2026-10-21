@@ -1,7 +1,7 @@
 """
 Builds talk/MLOps-a-ciegas-DevOpsDays-Bogota-2026.pptx on top of the official
 DevOpsDays Bogotá 2026 template, with the same content as talk/devopsdays.html
-(32 slides + 11 annexes, same order and ids as deck.src.html).
+(33 slides + 11 annexes, same order and ids as deck.src.html).
 Slide text, speaker notes, shape names and section names stay in Spanish (the talk is in Spanish).
 
 - Titles, kickers, text, tables, cards, the spine bar and the speaker notes:
@@ -1331,11 +1331,37 @@ def b_hook(s, sec, tm):
     tm.click((textbox(s, 84, top, 1432, 30 * NAT + 4, [runs_of(say, PURPLE)], size=30, name="Remate"), "in"))
 
 
+def b_pair(s, sec, tm):
+    """Slides 25-26 (the evidence): two console screenshots side by side, each with its caption, no clicks."""
+    import base64, io
+    header(s, sec)
+    figs = []
+    for k, fg in enumerate(sec.cssselect(".pair .hi")):
+        img = q(fg, "img")
+        if img is None:
+            continue
+        im = Image.open(io.BytesIO(base64.b64decode(img.get("src").split(",", 1)[1]))).convert("RGB")
+        path = os.path.join(BUILD, "img", f"pair_{sec.get('data-id')}_{k}.jpg")
+        im.save(path, quality=90)
+        single = len(sec.cssselect(".pair .hi")) == 1
+        k1 = min(470 / im.height, 1432 / im.width) if single else min(440 / im.height, 686 / im.width)
+        figs.append((fg, path, im.width * k1, im.height * k1))
+    total = sum(w for _, _, w, _ in figs) + 40 * (len(figs) - 1)
+    x, mid = 800 - total / 2, 216 + 510 / 2
+    for fg, path, w, h in figs:
+        y = mid - (h + 10 + 22) / 2
+        picture(s, path, x, y, w, h, name="Captura")
+        textbox(s, x, y + h + 10, w, 24, [plain(q(fg, "figcaption"))], size=17, color=SLATE, align=PP_ALIGN.CENTER,
+                name="Pie")
+        x += w + 40
+
+
 def b_acto(s, sec, tm):
     """Slides 25-27 (the run, one act each): title, subtitle, the evidence window; on acto3 the console alarm and the
     closing sentence come in on clicks, in that order."""
     header(s, sec)
-    textbox(s, 84, 206, 1432, 32, [plain(q(sec, ".sre"))], size=24, color=SLATE, name="Subtítulo")
+    if q(sec, ".sre") is not None:
+        textbox(s, 84, 206, 1432, 32, [plain(q(sec, ".sre"))], size=24, color=SLATE, name="Subtítulo")
     shot_block(s, sec, tm)
     say = q(sec, ".say")
     if say is not None:
@@ -1529,7 +1555,7 @@ BUILDERS = {
     "entrenar": ("CONTENIDO", b_iso), "optimizar": ("CONTENIDO", b_iso), "componente": ("CONTENIDO", b_iso),
     "anillos": ("CONTENIDO", b_iso), "reflexion2": ("CONTENIDO", b_refl), "sinred": ("CONTENIDO", b_iso),
     "monitoreo": ("CONTENIDO", b_iso), "reflexion3": ("CONTENIDO", b_refl3), "div4": ("DIVISOR", b_div),
-    "poc": ("CONTENIDO", b_htmlsteps), "gancho": ("CONTENIDO", b_hook), "acto1": ("CONTENIDO", b_acto), "acto2": ("CONTENIDO", b_acto),
+    "poc": ("CONTENIDO", b_htmlsteps), "gancho": ("CONTENIDO", b_hook), "artefacto": ("CONTENIDO", b_pair), "flota": ("CONTENIDO", b_pair), "acto1": ("CONTENIDO", b_acto), "acto2": ("CONTENIDO", b_acto),
     "acto3": ("CONTENIDO", b_acto), "senales": ("CONTENIDO", b_iso), "demo": ("CONTENIDO", b_acts),
     "costo": ("CONTENIDO", b_cost), "llevo": ("CONTENIDO", b_rows), "final": ("SIMPLE", b_final),
     "recursos": ("CONTENIDO", b_res), "cierre": ("CIERRE", b_closing),
@@ -1589,7 +1615,7 @@ def main():
         s = new_slide(layout)
         tm = Timing()
         fn(s, sec, tm)
-        if fn not in (b_acto, b_hook):             # (the act slides and the hook place their own images)
+        if fn not in (b_acto, b_hook, b_pair):     # (these slides place their own images)
             shot_block(s, sec, tm)                 # the AWS screenshot is always the slide's last click
         tm.apply(s)
         nt = notes_text(sec)

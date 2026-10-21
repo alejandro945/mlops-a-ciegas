@@ -2,7 +2,7 @@
 
 Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo demás en cursiva es para ti. Lo que va entre comillas no se memoriza palabra por palabra, salvo la apertura, las cifras y el cierre. Cómo estudiarlo: `talk/private/ESTUDIO.md` (no se sube al repo). Fuentes y datos de respaldo: `NOTAS-de-apoyo.md`. Las notas del deck (tecla **N**) salen de este archivo.
 
-**21:50** de contenido para un espacio de 25 min + 5 de preguntas. Reloj al entrar a cada divisor: 4:00 · 6:40 · 9:05 · 15:45.
+**21:40** de contenido para un espacio de 25 min + 5 de preguntas. Reloj al entrar a cada divisor: 4:00 · 6:40 · 9:05 · 14:35.
 
 ---
 
@@ -214,15 +214,13 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ## 17 · Paso 1 · Entrenar con sonido normal
 <!-- id: entrenar -->
-**0:50** · 3 clics
+**0:45** · 2 clics
 
 "Paso uno: el modelo se entrena únicamente con audio de bombas sanas."
 
 **[CLIC]** "Es un autoencoder: aprende a reconstruir el sonido normal, y el error de reconstrucción es el score de anomalía. Si no puede reconstruir lo que escucha, algo cambió."
 
-**[CLIC]** "El resultado se publica en S3: el modelo en ONNX, el umbral y el código de preprocesamiento. El preprocesamiento viaja con el modelo porque la causa más común de degradación silenciosa es entrenar con una transformación y servir con otra."
-
-**[CLIC]** "En la consola: un prefijo por versión, 1.0.0 y 2.0.0. Una versión publicada nunca se sobrescribe."
+**[CLIC]** "El resultado se publica en S3: el modelo en ONNX, el umbral y el código de preprocesamiento. El preprocesamiento viaja con el modelo porque la causa más común de degradación silenciosa es entrenar con una transformación y servir con otra. Cada versión, en su propio prefijo: nunca se sobrescribe."
 
 ---
 
@@ -244,7 +242,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ## 19 · Paso 3 · Empaquetar como componente
 <!-- id: componente -->
-**1:00** · 5 clics
+**0:55** · 4 clics
 
 "Paso tres: en IoT Greengrass, el modelo se empaqueta como componente. Esta es la receta, resumida."
 
@@ -256,13 +254,13 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 **[CLIC]** "Y los permisos son mínimos: el componente solo puede publicar en un tópico, station/events."
 
-**[CLIC]** "En la consola: el componente con sus dos versiones. Una regla operativa: una versión publicada es inmutable. Si se modifica un artefacto sin cambiar la versión, la huella no coincide y el despliegue falla."
+"Una regla operativa: una versión publicada es inmutable. Si se modifica un artefacto sin cambiar la versión, la huella no coincide y el despliegue falla."
 
 ---
 
 ## 20 · Paso 4 · Desplegar por rings
 <!-- id: anillos -->
-**1:05** · 4 clics
+**0:55** · 3 clics
 
 "Paso cuatro: cómo llevar una versión nueva a mil equipos sin afectarlos a todos a la vez. Despliegue por rings, donde cada ring es un thing group. El ring 0 es una sola estación: el canary."
 
@@ -274,25 +272,21 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 "La distinción es importante: Greengrass revierte despliegues que fallan. Un modelo que se instala correctamente y decide mal es, para Greengrass, un despliegue exitoso."
 
-**[CLIC]** "Este es el estado en la consola al terminar el ensayo: un despliegue activo por ring. Observen el nombre del despliegue del ring 0; lo explico en el acto 3."
-
 ---
 
 ## 21 · Paso 5 · Operar sin red
 <!-- id: sinred -->
-**0:40** · 2 clics
+**0:30** · 1 clic
 
 "Paso cinco: operación desconectada. Greengrass encola los eventos localmente hasta que vuelve la conectividad. Para equipos con muy poca memoria existe una versión ligera del agente, escrita en C."
 
 **[CLIC]** "La estación sigue decidiendo y alertando sin red, porque todo lo necesario está en el equipo. Un detalle de diseño: la cola por defecto vive en memoria y descarta mensajes al llenarse. Para desconexiones largas, debe ir a disco."
 
-**[CLIC]** "En la consola: cinco core devices, todos en estado Healthy. El comportamiento sin red lo vemos en el acto 2."
-
 ---
 
 ## 22 · Paso 6 · Monitorear lo que decide el modelo
 <!-- id: monitoreo -->
-**1:25** · 5 clics
+**1:15** · 4 clics
 
 "Paso seis: desde la nube no vemos el audio, vemos los eventos del modelo. Unos cientos de bytes por inferencia, que pasan por IoT Core, una regla, CloudWatch y una alarma conectada al rollback."
 
@@ -306,39 +300,41 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 **[CLIC]** "En el ensayo, el gate usa la verdad de cada clip, porque sé qué audio está sonando. En producción esa etiqueta llega tarde, con la orden de mantenimiento. Las tres señales no la necesitan: funcionan desde el primer día."
 
-**[CLIC]** "Este es el dashboard, organizado por esas tres señales. Lo vamos a ver con datos reales en un momento."
-
 ---
 
-## 23 · A mano alzada
-<!-- id: reflexion3 -->
-**0:30** · 1 clic
-
-"Antes de la evidencia, una pregunta: ¿quiénes saben con certeza qué versión de modelo corre en cada uno de sus equipos?" *(espera)* "Ahora, que bajen la mano quienes tuvieron que pensarlo." *(pausa)*
-
-**[CLIC]** "En esta arquitectura, la respuesta sale del plano de control, sin acceder a ningún equipo: ring 0, versión 1.0.0, activo; ring 1, versión 1.0.0, activo."
-
----
-
-## 24 · 04 · La evidencia en AWS
+## 23 · 04 · La evidencia en AWS
 <!-- id: div4 -->
-**0:05** · *reloj: 15:45*
+**0:05** · *reloj: 14:35*
 
-"Pasemos a la evidencia: una ejecución completa en AWS."
+"Ahora, la evidencia: la misma arquitectura, ejecutada en AWS."
 
 ---
 
-## 25 · Lo que monté y corrí
+## 24 · Lo que monté y corrí
 <!-- id: poc -->
+**0:25** · sin clics
+
+"Cinco bombas simuladas: contenedores con el agente real de Greengrass en una instancia EC2. La bomba 1 es el canary; las otras cuatro, el ring 1. Audio real e infraestructura con Terraform. Todo lo que sigue es la consola y los eventos de esa ejecución, sin editar."
+
+---
+
+## 25 · El modelo, versionado
+<!-- id: artefacto -->
+**0:25** · sin clics
+
+"Primero, el artefacto. En S3, cada versión en su propia carpeta. En Greengrass, el componente con sus dos versiones: 1.0.0 y 2.0.0. Nada se sobrescribe."
+
+---
+
+## 26 · La flota, reportando
+<!-- id: flota -->
 **0:30** · sin clics
 
-"El entorno: cinco bombas simuladas, cada una un contenedor con el agente real de Greengrass sobre una instancia EC2. La bomba 1 es el canary; de la 2 a la 5, el ring 1. El audio es real y la infraestructura se despliega con Terraform desde GitHub Actions."
-
-"Lo que sigue son los eventos y las métricas de la ejecución del 18 de octubre, sin editar."
+"La flota: cinco equipos en dos rings, reportando a este dashboard, organizado por las tres señales: entrada, salida y autenticidad. Con esto en marcha, tres pruebas."
 
 ---
 
-## 26 · Acto 1 · Escuchar
+## 27 · Acto 1 · Escuchar
 <!-- id: acto1 -->
 **0:50** · sin clics · *deja que lean primero*
 
@@ -352,7 +348,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 27 · Acto 2 · Sin red, y una deriva
+## 28 · Acto 2 · Sin red, y una deriva
 <!-- id: acto2 -->
 **1:00** · sin clics
 
@@ -364,9 +360,9 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 28 · Acto 3 · Ring deployment y rollback
+## 29 · Acto 3 · Ring deployment y rollback
 <!-- id: acto3 -->
-**1:20** · 2 clics · *el punto culminante: ve despacio*
+**1:30** · 3 clics · *el punto culminante: ve despacio*
 
 "Tercer acto: despliego la versión 2.0.0 solo en el ring 0. Esta versión se entrenó con más datos." *(pausa)* "Llega en 17 segundos, sin errores. Para Greengrass, un despliegue exitoso."
 
@@ -374,17 +370,19 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 "La causa: el audio adicional incluía un periodo en que una bomba ya estaba fallando, y nadie lo validó. El modelo aprendió la falla como comportamiento normal. No es un error de código; es un error de datos."
 
-"Nadie interviene. La alarma pasa a ALARM, la Lambda restaura la versión 1.0.0 y la bomba 1 vuelve a alertar. Ochenta y ocho segundos desde la falla, sin acceso al equipo, y el ring 1 nunca recibió la versión defectuosa." *(pausa)* "Ese es el nombre que vieron en la consola: rollback."
+"Nadie interviene. La alarma pasa a ALARM, la Lambda restaura la versión 1.0.0 y la bomba 1 vuelve a alertar. Ochenta y ocho segundos desde la falla, sin acceso al equipo." *(pausa)*
 
 **[CLIC]** "La alarma en CloudWatch: las fallas no detectadas superan el umbral de 8 por minuto, y la franja roja marca el periodo en ALARM."
+
+**[CLIC]** "Y en los despliegues: el ring 0 corre «rollback-to-1.0.0», creado por la Lambda, no por mí. El ring 1 nunca recibió la 2.0.0."
 
 **[CLIC]** *(mirando a la sala)* "Greengrass revierte despliegues fallidos, no modelos equivocados. Ese gate es responsabilidad nuestra."
 
 ---
 
-## 29 · Cinco recomendaciones
+## 30 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 19:30 al entrar*
+**1:05** · 4 clics · *reloj: 19:20 al entrar*
 
 "Cinco recomendaciones para aplicar desde el lunes."
 
@@ -398,11 +396,11 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 **[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad. Y mantengan el dato crudo en el equipo."
 
-*(Si el reloj marca 19:50 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
+*(Si el reloj marca 19:40 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
 
 ---
 
-## 30 · La frase final: ¿esta bomba está fallando?
+## 31 · La frase final: ¿esta bomba está fallando?
 <!-- id: final -->
 **0:45** · 3 clics · *el primer clic reproduce la bomba B*
 
@@ -418,7 +416,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 31 · Recursos y contacto
+## 32 · Recursos y contacto
 <!-- id: recursos -->
 **0:15** · sin clics
 
@@ -426,7 +424,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 32 · Gracias
+## 33 · Gracias
 <!-- id: cierre -->
 **0:15** · sin clics
 
