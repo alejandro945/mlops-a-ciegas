@@ -755,9 +755,6 @@ def fig_offline(static=False):
         for i, line in enumerate(d):
             b.append(T(x + 76, Y0 + 210 + i * 28, line, 20, SLATE))
     o.append(G(0, "".join(b)))
-    o.append(G(1, R(X, 606, W, 64, fill=LIGHT, stroke=PURPLE, sw=2) +
-               TR(X + 30, 647, [("Sin red, la estación sigue escuchando y alertando: ", NAVY, 700),
-                                ("lo que necesita para decidir ya está adentro.", SLATE, 400)], 25)))
     return wrap("".join(o))
 
 
@@ -848,9 +845,6 @@ def fig_monitoring(static=False):
             b.append(f'<circle cx="{gx + 84}" cy="{gy + 20}" r="19" fill="none" stroke="{PURPLE}" stroke-width="2.6"/>')
             b.append(check(gx + 84, gy + 20))
         o.append(G(k + 1, "".join(b)))
-    o.append(G(4, R(96, 624, 1408, 62, fill=LIGHT, stroke=PURPLE, sw=2) +
-               TR(126, 664, [("En la demo, el gate sabe si la bomba fallaba. ", NAVY, 700),
-                             ("En producción no lo sabes: estas tres no lo necesitan.", PURPLE, 700)], 24)))
     return wrap("".join(o))
 
 

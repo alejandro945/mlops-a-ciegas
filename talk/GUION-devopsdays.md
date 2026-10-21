@@ -276,17 +276,17 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ## 21 · Paso 5 · Operar sin red
 <!-- id: sinred -->
-**0:30** · 1 clic
+**0:30** · sin clics
 
 "Paso cinco: operación desconectada. Greengrass encola los eventos localmente hasta que vuelve la conectividad. Para equipos con muy poca memoria existe una versión ligera del agente, escrita en C."
 
-**[CLIC]** "La estación sigue decidiendo y alertando sin red, porque todo lo necesario está en el equipo. Un detalle de diseño: la cola por defecto vive en memoria y descarta mensajes al llenarse. Para desconexiones largas, debe ir a disco."
+"La estación sigue decidiendo y alertando sin red, porque todo lo necesario está en el equipo. Un detalle de diseño: la cola por defecto vive en memoria y descarta mensajes al llenarse. Para desconexiones largas, debe ir a disco."
 
 ---
 
 ## 22 · Paso 6 · Monitorear lo que decide el modelo
 <!-- id: monitoreo -->
-**1:15** · 4 clics
+**1:15** · 3 clics
 
 "Paso seis: desde la nube no vemos el audio, vemos los eventos del modelo. Unos cientos de bytes por inferencia, que pasan por IoT Core, una regla, CloudWatch y una alarma conectada al rollback."
 
@@ -298,7 +298,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 **[CLIC]** "Tercera, la autenticidad: ¿el modelo en ejecución es el que desplegamos? Cada evento incluye la versión y la huella del modelo." *(pausa)* "Esa huella la reporta el propio equipo, y un equipo comprometido puede reportar lo que quiera. Por eso necesita arranque seguro y su llave en un TPM."
 
-**[CLIC]** "En el ensayo, el gate usa la verdad de cada clip, porque sé qué audio está sonando. En producción esa etiqueta llega tarde, con la orden de mantenimiento. Las tres señales no la necesitan: funcionan desde el primer día."
+"En la PoC, el gate usa la verdad de cada clip, porque sé qué audio está sonando. En producción esa etiqueta llega tarde, con la orden de mantenimiento. Las tres señales no la necesitan: funcionan desde el primer día."
 
 ---
 
