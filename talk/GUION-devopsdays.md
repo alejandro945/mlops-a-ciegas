@@ -236,7 +236,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 **[CLIC]** "Medido en el equipo del ensayo: de 32 a 8 bits, el modelo pasa de 464 a 127 KB, la latencia por clip de 14,4 a 12,7 milisegundos, y la decisión coincide en el 98 % de los casos."
 
-"En mi portátil, la mejora era casi del doble. En el equipo real, el cuello de botella es el preprocesamiento del audio, no el modelo. Por eso se mide en el hardware de destino, y en condiciones reales: batería baja y temperatura alta."
+"En una estación de desarrollo, la mejora era casi del doble. En el equipo real, el cuello de botella es el preprocesamiento del audio, no el modelo. Por eso se mide en el hardware de destino, y en condiciones reales: batería baja y temperatura alta."
 
 ---
 
@@ -310,11 +310,11 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 ---
 
-## 24 · Lo que monté y corrí
+## 24 · Demo
 <!-- id: poc -->
 **0:25** · sin clics
 
-"Cinco bombas simuladas: contenedores con el agente real de Greengrass en una instancia EC2. La bomba 1 es el canary; las otras cuatro, el ring 1. Audio real e infraestructura con Terraform. Todo lo que sigue es la consola y los eventos de esa ejecución, sin editar."
+"Lo único simulado son las bombas: cinco contenedores, cada uno con el agente real de Greengrass. La bomba 1 es el canary; las otras cuatro, el ring 1. Todo lo demás es AWS real, con audio real e infraestructura en Terraform. Lo que sigue es la consola y los eventos de esa ejecución, sin editar."
 
 ---
 

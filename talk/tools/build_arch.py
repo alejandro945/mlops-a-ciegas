@@ -232,11 +232,11 @@ def build(mode="ref", deck=False, slow=True):
         node(key, cx, cy, size, l1, l2, p, gen=gen, icon=ic)
     if poc:
         _poc_site()
-        # in the PoC the factory is a script on the laptop, outside AWS: it trains and quantizes
+        # in the PoC the model factory is the training script: it trains and quantizes
         add(f'<g data-node="sagemaker"{delay(1300)}><g data-p="o s">')
         box(1236, 324, 210, 64, rx=8, sw=1.6)
         text(1341, 363, "model/train.py", 20, INK, 700, "middle", family=MONO)
-        text(1341, 418, "Mi portátil", 20, INK, 700, "middle")
+        text(1341, 418, "Entrenamiento", 20, INK, 700, "middle")
         add("</g></g>")
 
     # ── cross-cutting ────────────────────────────────────────────
