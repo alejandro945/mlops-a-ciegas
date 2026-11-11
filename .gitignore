@@ -1,6 +1,8 @@
 # PowerPoint render output
 talk/tools/pptx/build/
 talk/tools/pptx/node_modules/
+talk/tools/cali/node_modules/
+talk/tools/cali/build/
 
 # PoC data (MIMII DUE: large and CC BY-NC-SA)
 poc-devopsdays/data/

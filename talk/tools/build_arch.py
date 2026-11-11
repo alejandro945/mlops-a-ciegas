@@ -19,14 +19,25 @@ Labels are slide text and stay in Spanish; AWS resource names match the PoC.
 
 Usage:
     AWS_ICONS=~/Downloads/Icon-package_07312026 python3 build_arch.py [out/]
+    ARCH_THEME=tdc …   Tech Day Cali: its palette and Montserrat, and the PoC as it is now, with the
+                       judge (Step Functions) and the clips worth keeping (stream manager → S3)
 """
 import math, os, sys
 import aws_icons
 from aws_icons import nested as _nested
 
-INK = "#071329"   # navy from the DevOpsDays Bogotá template
-ACC = "#6D28D9"   # purple from the template
-FONT = "Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif"
+THEME = os.environ.get("ARCH_THEME", "devopsdays")
+TDC = THEME == "tdc"
+if TDC:
+    INK = "#0B132A"   # navy from the Tech Day Cali template
+    ACC = "#FF5A1F"   # its orange: the gate
+    DATA = "#1F8F7A"  # its teal: the clips worth keeping
+    FONT = "Montserrat, 'Segoe UI', Helvetica, Arial, sans-serif"
+else:
+    INK = "#071329"   # navy from the DevOpsDays Bogotá template
+    ACC = "#6D28D9"   # purple from the template
+    DATA = INK
+    FONT = "Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif"
 MONO = "'Courier New', ui-monospace, Menlo, Consolas, monospace"
 
 # official icons not in aws_icons.ICONS (added in memory)
@@ -34,6 +45,8 @@ for _k, _v in {
     "grp_ec2":        "Architecture-Group-Icons_07312026/EC2-instance-contents_32.svg",
     "sm_model":       "Resource-Icons_07312026/Res_Artificial-Intelligence/Res_Amazon-SageMaker-AI_Model_48.svg",
     "iot_sensor_gen": "Resource-Icons_07312026/Res_IoT/Res_AWS-IoT_Sensor_48.svg",
+    "sfn":            "Architecture-Service-Icons_07312026/Arch_Application-Integration/64/Arch_AWS-Step-Functions_64.svg",
+    "gg_stream":      "Resource-Icons_07312026/Res_IoT/Res_AWS-IoT-Greengrass_Stream-Manager_48.svg",
 }.items():
     aws_icons.ICONS.setdefault(_k, _v)
 
@@ -92,7 +105,7 @@ def slot(cx, cy, size):
         f'fill="#FFFFFF" stroke="{INK}" stroke-width="2"/>')
     add(f'<circle cx="{cx}" cy="{cy}" r="5" fill="{INK}"/>')
 
-DETAIL = False   # True: second line with the technical detail under each node
+DETAIL = TDC    # True: second line with the technical detail under each node
 
 def node(key, cx, cy, size, l1, l2="", p="", gen=False, icon=None):
     add(f'<g data-node="{key}"{delay(cx)}><g data-p="{p}">')
@@ -100,9 +113,9 @@ def node(key, cx, cy, size, l1, l2="", p="", gen=False, icon=None):
         slot(cx, cy, size)
     else:
         add(nested(icon or key, cx - size / 2, cy - size / 2, size))
-    text(cx, cy + size / 2 + 26, l1, 20, INK, 700, "middle")
+    text(cx, cy + size / 2 + 26, l1, 18 if TDC else 20, INK, 700, "middle")
     if l2 and DETAIL:
-        text(cx, cy + size / 2 + 46, l2, 15, INK, 400, "middle", op=.66)
+        text(cx, cy + size / 2 + 46, l2, 14, INK, 400, "middle", op=.7)
     add("</g></g>")
 
 def arrow(pts, color=INK, dashed=False, sw=2.2, head=9, p=""):
@@ -120,6 +133,8 @@ SHOW = {"o": "1", "1": "2", "2": "3", "3": "4", "4": "5"}   # visible number of 
 
 
 def badge(cx, cy, n, color=INK, p=None):
+    if TDC:                     # no piece numbers for a general audience
+        return
     add(f'<g data-p="{p or n}"><circle cx="{cx}" cy="{cy}" r="14" fill="{color}"/>')
     text(cx, cy + 6, SHOW.get(str(n), str(n)), 16, "#FFFFFF", 700, "middle")
     add("</g>")
@@ -145,6 +160,21 @@ NODES = [
     ("lambda",      1212, 612, 64, "4",     ("Lambda", "rollback"),                      ("Controlador", "decide volver"), None),
     ("ssm_param",   1392, 612, 56, "4",     ("Parameter Store", "última versión buena"), ("Memoria", "última versión buena"), None),
 ]
+if TDC:
+    # what the audience needs: the role under each service, the judge in the bottom row and the
+    # alarm with its Lambda as the safety net (the parameter store stays out: the judge and the
+    # Lambda read and write it, it is not a step)
+    NODES = [n for n in NODES if n[0] not in ("iot_rule", "cw_logs", "cw_alarm", "lambda", "ssm_param")] + [
+        ("iot_rule",  680,  612, 56, "3",   ("Regla de IoT", "una línea por decisión"),   ("Ingesta", ""), None),
+        ("cw_logs",   830,  612, 56, "3 4", ("CloudWatch", "eventos → métricas"),          ("Métricas", ""), None),
+        ("sfn",       990,  612, 64, "4",   ("Step Functions", "el juez"),                  ("Juez", ""), None),
+        ("cw_alarm",  1250, 612, 56, "4",   ("Alarma", "red de seguridad"),                 ("Umbral", ""), None),
+        ("lambda",    1400, 612, 64, "4",   ("Lambda", "vuelve a la buena"),                ("Controlador", ""), None),
+        ("gg_stream", 380,  690, 52, "c",   ("Stream manager", "clips en disco"),           ("Cola", ""), None),
+    ]
+    NODES = [(k, cx, cy, sz, p, {"greengrass": ("IoT Greengrass", "despliegues"),
+                                 "s3": ("S3", "")}.get(k, aws), gl, ic)
+             for k, cx, cy, sz, p, aws, gl, ic in NODES]
 DEVICE = {"gg_ml", "gg_artifact", "gg_ipc", "gg_nucleus", "iot_sensor"}
 
 TITLES = {
@@ -152,6 +182,9 @@ TITLES = {
     "ref": ("EL PATRÓN", "¿Cómo se ve esto ", "en AWS?", "16"),
     "poc": ("EN VIVO", "¿Qué monté ", "para la demo?", "27"),
 }
+if TDC:
+    TITLES = {k: (v[0], v[1], v[2], "") for k, v in TITLES.items()}
+    TITLES["poc"] = ("LA PRUEBA", "Lo montamos ", "de verdad", "")
 
 
 def _container(x, y, w, name):
@@ -182,8 +215,11 @@ def _poc_site():
     for k in range(13):
         h = [10, 22, 14, 30, 18, 34, 26, 16, 30, 12, 24, 16, 8][k]
         add(f'<rect x="{cx - 39 + k * 6}" y="{cy - h / 2}" width="3.6" height="{h}" rx="1.5" fill="{INK}"/>')
-    text(cx, cy + 50, "Audio real", 20, INK, 700, "middle")
-    text(cx + 70, cy + 6, "MIMII DUE", 16, INK, 400, op=.75, family=MONO)
+    text(cx, cy + 50, "Audio real", 18 if TDC else 20, INK, 700, "middle")
+    if TDC:
+        text(cx, cy + 70, "MIMII DUE · Hitachi", 14, INK, 400, "middle", op=.7)
+    else:
+        text(cx + 70, cy + 6, "MIMII DUE", 16, INK, 400, op=.75, family=MONO)
     add("</g></g>")
     arrow([(200, 662), (200, 580)], INK, sw=1.6, head=7, p="3")
 
@@ -203,7 +239,7 @@ def build(mode="ref", deck=False, slow=True):
     # ── piece legend ─────────────────────────────────────────────
     leg = [("o", "optimizar por chip"), ("1", "artefacto verificable"), ("2", "desired state"),
            ("3", "evento de inferencia"), ("4", "gate")]
-    for i, (n, t) in enumerate(leg):
+    for i, (n, t) in enumerate([] if TDC else leg):
         lx, ly = 892 + (i % 3) * 212, 100 + (i // 3) * 36
         add(f'<g data-p="{n}">')
         add(f'<circle cx="{lx}" cy="{ly - 6}" r="14" fill="{ACC if n == "4" else INK}"/>')
@@ -216,11 +252,15 @@ def build(mode="ref", deck=False, slow=True):
         group(96, 196, 380, 614, "grp_ec2", "EC2 · la estación simulada", key="site")
     else:
         group(96, 196, 380, 614, "grp_dc", "Sitio" if gen else "Estación", gen=gen, key="site")
-        group(116, 246, 340, 392, "iot_ipc", "Equipo" if gen else "Equipo con Greengrass", gen=gen, key="dev")
+        group(116, 246, 340, 500 if TDC else 392, "iot_ipc", "Equipo" if gen else "Equipo con Greengrass", gen=gen, key="dev")
     group(580, 196, 924, 614, "grp_cloud", "Nube o datacenter" if gen else "AWS Cloud", gen=gen, key="cloud")
     group(604, 244, 400, 236, None, "PLANO DE CONTROL", dashed=True, op=.45)
     group(1028, 244, 452, 236, None, "FÁBRICA DE MODELOS", dashed=True, op=.45)
-    group(604, 520, 876, 214, None, "OBSERVACIÓN Y GATE", dashed=True, op=.45, right=True)
+    if TDC:     # the label goes bottom right: the gate's lines climb through the top edge
+        box(604, 520, 876, 214, dashed=True, op=.45)
+        text(1466, 724, "OBSERVACIÓN Y GATE", 14, INK, 700, "end", op=.62, ls=1.6)
+    else:
+        group(604, 520, 876, 214, None, "OBSERVACIÓN Y GATE", dashed=True, op=.45, right=True)
 
     # ── nodes ────────────────────────────────────────────────────
     for key, cx, cy, size, p, aws, gl, ic in NODES:
@@ -288,10 +328,24 @@ def build(mode="ref", deck=False, slow=True):
     arrow([(690, 448), (690, 578)], INK, dashed=True, p="3")
     arrow([(724, 612), (828, 612)], INK, dashed=True, p="3")
     # ── 4 · gate (fast loop, minutes) ────────────────────────────
-    arrow([(896, 612), (1000, 612)], ACC, sw=2.6, p="4")
-    arrow([(1068, 612), (1174, 612)], ACC, sw=2.6, p="4")
-    arrow([(1250, 612), (1358, 612)], ACC, sw=1.8, dashed=True, head=7, p="4")
-    arrow([(1212, 578), (1212, 500), (1016, 500), (1016, 372), (940, 372)], ACC, sw=2.6, p="4")
+    if TDC:
+        # the judge reads the events and decides the deployment; the alarm and its Lambda are the net
+        arrow([(724, 612), (794, 612)], INK, dashed=True, p="3")
+        arrow([(866, 612), (950, 612)], ACC, sw=2.6, p="4")
+        arrow([(990, 578), (990, 364), (938, 364)], ACC, sw=2.6, p="4")
+        arrow([(830, 582), (830, 552), (1250, 552), (1250, 580)], INK, sw=1.6, head=7, p="4")
+        arrow([(1284, 612), (1360, 612)], INK, sw=1.6, head=7, p="4")
+        arrow([(1400, 578), (1400, 500), (1012, 500), (1012, 386), (938, 386)], INK, sw=1.6, head=7, p="4")
+        # the clips worth keeping: stream manager → S3, in batches
+        arrow([(410, 690), (560, 690), (560, 714), (1132, 714), (1132, 392)], DATA, dashed=True, sw=2.2, p="c")
+        add('<g data-p="c">')
+        text(576, 731, "clips que importan · por lotes; sin red, esperan en disco", 14, DATA, 700)
+        add("</g>")
+    else:
+        arrow([(896, 612), (1000, 612)], ACC, sw=2.6, p="4")
+        arrow([(1068, 612), (1174, 612)], ACC, sw=2.6, p="4")
+        arrow([(1250, 612), (1358, 612)], ACC, sw=1.8, dashed=True, head=7, p="4")
+        arrow([(1212, 578), (1212, 500), (1016, 500), (1016, 372), (940, 372)], ACC, sw=2.6, p="4")
     badge(1110, 500, 4, ACC)
 
     # ── the "before": how models get deployed today (only step 0 of the generic flow) ──
@@ -302,7 +356,7 @@ def build(mode="ref", deck=False, slow=True):
         add("</g>")
 
     # ── slow loop (days): generic and reference ──────────────────
-    if slow and not poc:
+    if slow and not poc and not TDC:
         arrow([(1480, 690), (1492, 690), (1492, 300), (1412, 300), (1412, 318)], INK, dashed=True, sw=1.6, head=7, p="s")
         add('<g data-p="4">')
         add(f'<path d="M1030,168 L1058,168" stroke="{ACC}" stroke-width="2.6"/>')
@@ -317,11 +371,11 @@ def build(mode="ref", deck=False, slow=True):
         # sticker top right, under the legend
         add(f'<g data-node="sticker" style="--d:.5s">')
         add(f'<rect x="1150" y="148" width="330" height="38" rx="5" fill="{ACC}"/>')
-        text(1315, 174, "5 bombas · 7 servicios", 21, "#FFFFFF", 700, "middle")
+        text(1315, 174, "5 bombas · 9 servicios" if TDC else "5 bombas · 7 servicios", 21, "#FFFFFF", 700, "middle")
         add("</g>")
 
     if not deck:
-        text(96, 866, "DevOpsDays Bogotá 2026 · MLOps a ciegas", 13, INK, 400, op=.45)
+        text(96, 866, "Tech Day Cali 2026 · MLOps a ciegas" if TDC else "DevOpsDays Bogotá 2026 · MLOps a ciegas", 13, INK, 400, op=.45)
         text(1504, 866, TITLES[mode][3], 13, INK, 700, "end", op=.45)
     add("</svg>")
     return "\n".join(out)

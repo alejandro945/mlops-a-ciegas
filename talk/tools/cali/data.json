@@ -1,0 +1,1989 @@
+{
+ "source": "October 18, 2026 rehearsal on AWS (us-east-1), real MIMII DUE audio; times in Bogotá",
+ "threshold": 0.34,
+ "act1": [
+  {
+   "t": "19:58:00",
+   "score": 0.27,
+   "alert": false
+  },
+  {
+   "t": "19:58:03",
+   "score": 0.29,
+   "alert": false
+  },
+  {
+   "t": "19:58:06",
+   "score": 0.22,
+   "alert": false
+  },
+  {
+   "t": "19:58:09",
+   "score": 0.23,
+   "alert": false
+  },
+  {
+   "t": "19:58:12",
+   "score": 0.22,
+   "alert": false
+  },
+  {
+   "t": "19:58:15",
+   "score": 0.27,
+   "alert": false
+  },
+  {
+   "t": "19:58:18",
+   "score": 0.29,
+   "alert": false
+  },
+  {
+   "t": "19:58:22",
+   "score": 0.22,
+   "alert": false
+  },
+  {
+   "t": "19:58:24",
+   "score": 0.23,
+   "alert": false
+  },
+  {
+   "t": "19:58:27",
+   "score": 0.22,
+   "alert": false
+  },
+  {
+   "t": "19:58:30",
+   "score": 0.27,
+   "alert": false
+  },
+  {
+   "t": "19:58:33",
+   "score": 0.29,
+   "alert": false
+  },
+  {
+   "t": "19:58:36",
+   "score": 0.42,
+   "alert": true
+  },
+  {
+   "t": "19:58:39",
+   "score": 0.35,
+   "alert": true
+  },
+  {
+   "t": "19:58:42",
+   "score": 0.37,
+   "alert": true
+  },
+  {
+   "t": "19:58:45",
+   "score": 0.37,
+   "alert": true
+  },
+  {
+   "t": "19:58:48",
+   "score": 0.35,
+   "alert": true
+  },
+  {
+   "t": "19:58:51",
+   "score": 0.42,
+   "alert": true
+  },
+  {
+   "t": "19:58:54",
+   "score": 0.35,
+   "alert": true
+  },
+  {
+   "t": "19:58:57",
+   "score": 0.37,
+   "alert": true
+  },
+  {
+   "t": "19:59:00",
+   "score": 0.37,
+   "alert": true
+  }
+ ],
+ "act2": {
+  "offline": [
+   "19:59:26",
+   "20:00:11"
+  ],
+  "late_seconds": [
+   41,
+   32,
+   29,
+   20,
+   17,
+   44,
+   38,
+   50,
+   14,
+   47,
+   35,
+   26,
+   23,
+   11
+  ],
+  "during": {
+   "pump-01": 14,
+   "pump-02": 15,
+   "pump-03": 0,
+   "pump-04": 14,
+   "pump-05": 14
+  },
+  "pump05": [
+   {
+    "t": "19:59:32",
+    "input": 0.9,
+    "alert": false
+   },
+   {
+    "t": "19:59:35",
+    "input": 0.6,
+    "alert": false
+   },
+   {
+    "t": "19:59:38",
+    "input": 1.1,
+    "alert": false
+   },
+   {
+    "t": "19:59:41",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "19:59:44",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "19:59:47",
+    "input": 0.9,
+    "alert": false
+   },
+   {
+    "t": "19:59:50",
+    "input": 0.6,
+    "alert": false
+   },
+   {
+    "t": "19:59:53",
+    "input": 1.1,
+    "alert": false
+   },
+   {
+    "t": "19:59:56",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "19:59:59",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:00:02",
+    "input": 0.9,
+    "alert": false
+   },
+   {
+    "t": "20:00:05",
+    "input": 0.6,
+    "alert": false
+   },
+   {
+    "t": "20:00:08",
+    "input": 1.1,
+    "alert": false
+   },
+   {
+    "t": "20:00:11",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:00:14",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:00:17",
+    "input": 0.9,
+    "alert": false
+   },
+   {
+    "t": "20:00:20",
+    "input": 0.6,
+    "alert": false
+   },
+   {
+    "t": "20:00:23",
+    "input": 1.1,
+    "alert": false
+   },
+   {
+    "t": "20:00:26",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:00:29",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:00:32",
+    "input": 0.9,
+    "alert": false
+   },
+   {
+    "t": "20:00:35",
+    "input": 0.6,
+    "alert": false
+   },
+   {
+    "t": "20:00:38",
+    "input": 1.1,
+    "alert": false
+   },
+   {
+    "t": "20:00:41",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:00:44",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:00:47",
+    "input": 0.9,
+    "alert": false
+   },
+   {
+    "t": "20:00:50",
+    "input": 0.6,
+    "alert": false
+   },
+   {
+    "t": "20:00:53",
+    "input": 1.1,
+    "alert": false
+   },
+   {
+    "t": "20:00:56",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:00:59",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:01:02",
+    "input": 1.7,
+    "alert": true
+   },
+   {
+    "t": "20:01:05",
+    "input": 1.8,
+    "alert": false
+   },
+   {
+    "t": "20:01:08",
+    "input": 1.7,
+    "alert": false
+   },
+   {
+    "t": "20:01:11",
+    "input": 1.6,
+    "alert": true
+   },
+   {
+    "t": "20:01:14",
+    "input": 2.2,
+    "alert": true
+   },
+   {
+    "t": "20:01:17",
+    "input": 1.7,
+    "alert": true
+   },
+   {
+    "t": "20:01:20",
+    "input": 1.8,
+    "alert": false
+   },
+   {
+    "t": "20:01:23",
+    "input": 1.7,
+    "alert": false
+   },
+   {
+    "t": "20:01:26",
+    "input": 1.6,
+    "alert": true
+   },
+   {
+    "t": "20:01:29",
+    "input": 2.2,
+    "alert": true
+   },
+   {
+    "t": "20:01:32",
+    "input": 1.7,
+    "alert": true
+   },
+   {
+    "t": "20:01:35",
+    "input": 1.8,
+    "alert": false
+   },
+   {
+    "t": "20:01:38",
+    "input": 1.7,
+    "alert": false
+   },
+   {
+    "t": "20:01:41",
+    "input": 1.6,
+    "alert": true
+   },
+   {
+    "t": "20:01:44",
+    "input": 2.2,
+    "alert": true
+   },
+   {
+    "t": "20:01:47",
+    "input": 1.7,
+    "alert": true
+   },
+   {
+    "t": "20:01:50",
+    "input": 1.8,
+    "alert": false
+   },
+   {
+    "t": "20:01:53",
+    "input": 1.7,
+    "alert": false
+   },
+   {
+    "t": "20:01:56",
+    "input": 1.6,
+    "alert": true
+   },
+   {
+    "t": "20:01:59",
+    "input": 2.2,
+    "alert": true
+   },
+   {
+    "t": "20:02:02",
+    "input": 0.9,
+    "alert": false
+   },
+   {
+    "t": "20:02:05",
+    "input": 0.6,
+    "alert": false
+   },
+   {
+    "t": "20:02:08",
+    "input": 1.1,
+    "alert": false
+   },
+   {
+    "t": "20:02:11",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:02:14",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:02:17",
+    "input": 0.9,
+    "alert": false
+   },
+   {
+    "t": "20:02:20",
+    "input": 0.6,
+    "alert": false
+   },
+   {
+    "t": "20:02:23",
+    "input": 1.1,
+    "alert": false
+   },
+   {
+    "t": "20:02:26",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:02:29",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:02:32",
+    "input": 0.9,
+    "alert": false
+   },
+   {
+    "t": "20:02:35",
+    "input": 0.6,
+    "alert": false
+   },
+   {
+    "t": "20:02:38",
+    "input": 1.1,
+    "alert": false
+   },
+   {
+    "t": "20:02:41",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:02:44",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:02:47",
+    "input": 0.9,
+    "alert": false
+   },
+   {
+    "t": "20:02:50",
+    "input": 0.6,
+    "alert": false
+   },
+   {
+    "t": "20:02:53",
+    "input": 1.1,
+    "alert": false
+   },
+   {
+    "t": "20:02:56",
+    "input": 0.8,
+    "alert": false
+   },
+   {
+    "t": "20:02:59",
+    "input": 0.8,
+    "alert": false
+   }
+  ],
+  "window": [
+   {
+    "t": "19:59:00",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "19:59:01",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:01",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:02",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:02",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:03",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "19:59:04",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:04",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:05",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:05",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:06",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "19:59:07",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:07",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:08",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:08",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:09",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "19:59:10",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:10",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:11",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:11",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:12",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "19:59:13",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:13",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:14",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:14",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:15",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "19:59:16",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:16",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:17",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:17",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:18",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "19:59:19",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:19",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:20",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:20",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:21",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "19:59:22",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:22",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:23",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:23",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:24",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "19:59:25",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:25",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:26",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:26",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:28",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:28",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:29",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:29",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:31",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:31",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:32",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:32",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:34",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:34",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:35",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:35",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:37",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:37",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:38",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:38",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:40",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:40",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:41",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:41",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:43",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:43",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:44",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:44",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:46",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:46",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:47",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:47",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:49",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:49",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:50",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:50",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:52",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:52",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:53",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:53",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:55",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:55",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:56",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:56",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:58",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:58",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:59",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "19:59:59",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:01",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:01",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:02",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:02",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:04",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:04",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:05",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:05",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:07",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:07",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:08",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:08",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:10",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:11",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:11",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:12",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:13",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:13",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:14",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:14",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:16",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:16",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 41,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 32,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 29,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 20,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 17,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 44,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 38,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 50,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 14,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 47,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 35,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 26,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 23,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 11,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "20:00:17",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:18",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "20:00:19",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:19",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:20",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:20",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:21",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "20:00:22",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:22",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:23",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:23",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:24",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "20:00:25",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:25",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:26",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:26",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:27",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "20:00:28",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:28",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:29",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:29",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:30",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "20:00:31",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:31",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:32",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:32",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:33",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "20:00:34",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:34",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:35",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:35",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:36",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "20:00:37",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:37",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:38",
+    "device": "pump-05",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:38",
+    "device": "pump-01",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:39",
+    "device": "pump-03",
+    "late": 0,
+    "alert": true
+   },
+   {
+    "t": "20:00:40",
+    "device": "pump-02",
+    "late": 0,
+    "alert": false
+   },
+   {
+    "t": "20:00:40",
+    "device": "pump-04",
+    "late": 0,
+    "alert": false
+   }
+  ]
+ },
+ "shadow": {
+  "fault": [
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3462,
+    "shadow_score": 0.3103
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5041,
+    "shadow_score": 0.385
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3936,
+    "shadow_score": 0.3359
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5117,
+    "shadow_score": 0.4441
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.4801,
+    "shadow_score": 0.3146
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3462,
+    "shadow_score": 0.3103
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5041,
+    "shadow_score": 0.385
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3936,
+    "shadow_score": 0.3359
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5117,
+    "shadow_score": 0.4441
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.4801,
+    "shadow_score": 0.3146
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3462,
+    "shadow_score": 0.3103
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5041,
+    "shadow_score": 0.385
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3936,
+    "shadow_score": 0.3359
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5117,
+    "shadow_score": 0.4441
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.4801,
+    "shadow_score": 0.3146
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3462,
+    "shadow_score": 0.3103
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5041,
+    "shadow_score": 0.385
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3936,
+    "shadow_score": 0.3359
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5117,
+    "shadow_score": 0.4441
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.4801,
+    "shadow_score": 0.3146
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3462,
+    "shadow_score": 0.3103
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5041,
+    "shadow_score": 0.385
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3936,
+    "shadow_score": 0.3359
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5117,
+    "shadow_score": 0.4441
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.4801,
+    "shadow_score": 0.3146
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3462,
+    "shadow_score": 0.3103
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5041,
+    "shadow_score": 0.385
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3936,
+    "shadow_score": 0.3359
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5117,
+    "shadow_score": 0.4441
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.4801,
+    "shadow_score": 0.3146
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3462,
+    "shadow_score": 0.3103
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5041,
+    "shadow_score": 0.385
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3936,
+    "shadow_score": 0.3359
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5117,
+    "shadow_score": 0.4441
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.4801,
+    "shadow_score": 0.3146
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3462,
+    "shadow_score": 0.3103
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5041,
+    "shadow_score": 0.385
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.3936,
+    "shadow_score": 0.3359
+   },
+   {
+    "v1": true,
+    "v2": true,
+    "score": 0.5117,
+    "shadow_score": 0.4441
+   },
+   {
+    "v1": true,
+    "v2": false,
+    "score": 0.4801,
+    "shadow_score": 0.3146
+   }
+  ],
+  "normal": [
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2368,
+    "shadow_score": 0.2361
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2477,
+    "shadow_score": 0.2463
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2366,
+    "shadow_score": 0.2348
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2382,
+    "shadow_score": 0.2372
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2516,
+    "shadow_score": 0.2543
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2368,
+    "shadow_score": 0.2361
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2477,
+    "shadow_score": 0.2463
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2366,
+    "shadow_score": 0.2348
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2382,
+    "shadow_score": 0.2372
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2516,
+    "shadow_score": 0.2543
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2368,
+    "shadow_score": 0.2361
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2477,
+    "shadow_score": 0.2463
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2366,
+    "shadow_score": 0.2348
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2382,
+    "shadow_score": 0.2372
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2516,
+    "shadow_score": 0.2543
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2368,
+    "shadow_score": 0.2361
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2477,
+    "shadow_score": 0.2463
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2366,
+    "shadow_score": 0.2348
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2382,
+    "shadow_score": 0.2372
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2516,
+    "shadow_score": 0.2543
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2368,
+    "shadow_score": 0.2361
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2477,
+    "shadow_score": 0.2463
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2366,
+    "shadow_score": 0.2348
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2382,
+    "shadow_score": 0.2372
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2516,
+    "shadow_score": 0.2543
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2368,
+    "shadow_score": 0.2361
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2477,
+    "shadow_score": 0.2463
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2366,
+    "shadow_score": 0.2348
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2382,
+    "shadow_score": 0.2372
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2516,
+    "shadow_score": 0.2543
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2368,
+    "shadow_score": 0.2361
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2477,
+    "shadow_score": 0.2463
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2366,
+    "shadow_score": 0.2348
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2382,
+    "shadow_score": 0.2372
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2516,
+    "shadow_score": 0.2543
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2368,
+    "shadow_score": 0.2361
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2477,
+    "shadow_score": 0.2463
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2366,
+    "shadow_score": 0.2348
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2382,
+    "shadow_score": 0.2372
+   },
+   {
+    "v1": false,
+    "v2": false,
+    "score": 0.2516,
+    "shadow_score": 0.2543
+   }
+  ],
+  "note": "measured with component/inference.py --local on pump-01's clips; v1.0.0 decides, v2.0.0 in shadow"
+ }
+}

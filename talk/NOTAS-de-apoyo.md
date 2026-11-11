@@ -18,6 +18,20 @@ Lo que no se dice en voz alta pero conviene saber: datos de respaldo por lámina
 - **22 · Señales.** Los umbrales del PSI (0,1 y 0,25) son costumbre, no estadística (A6). El filtro `MissedFaults` usa el campo `truth`, que solo existe en la PoC.
 - **24 · PoC.** Las cinco bombas salen de tres secciones de MIMII DUE (la 1 y la 4 comparten sección, la 2 y la 5 también, con clips distintos). Cada nucleus es una JVM: unos 220 MB por bomba.
 
+## Tech Day Cali (21 nov 2026)
+
+Deck: `techdaycali.html` · guion: `GUION-techdaycali.md`.
+
+- **2 · 11 %.** Siemens, *The True Cost of Downtime 2024*: el paro no planeado le cuesta a las 500 empresas más grandes el 11 % de sus ingresos (US$1,4 billones al año). Es de gran industria, no la cifra de un ingenio. "La caña se cosecha casi todo el año en el Valle": verificar con Asocaña antes de decirlo como dato.
+- **6 · 20 W.** Balasubramanian, *Brain power*, PNAS (2021). Que el cerebro reacciona sobre todo a lo inesperado es *predictive coding*; Ali et al., *Patterns* (2022), muestran que emerge al optimizar energía. Es una simplificación: no decir que "solo se activan las neuronas de lo diferente".
+- **7 · ML tradicional.** El modelo es un autoencoder de 464 KB (127 KB en INT8). Un LLM pequeño, cuantizado, pesa del orden de gigabytes.
+- **10 · El péndulo.** Gartner (28 ago 2025): PC con IA, 31 % en 2025 y 54,7 % proyectado para 2026. Arduino UNO Q: Qualcomm compró Arduino el 7 oct 2025; trae Edge Impulse integrado.
+- **11 · Colombia.** DANE, ECV 2025: 73,9 % de los hogares con internet; rurales, 56,9 % (eran 32,2 % en 2022). Cenicaña: red LoRaWAN de 14 estaciones, de Santander de Quilichao a La Virginia, ≈ 85 % de la zona cañera (Agronegocios, jun 2022); no consta que haga IA en el borde. Wi-Fi HaLow (IEEE 802.11ah): 3 km en una prueba de Morse Micro y 16 km en otra, con línea de vista; prueba a gran escala de la WBA en Japón (2026). Antes de decir que se puede usar en Colombia, confirmar la banda de 902–928 MHz con la ANE.
+- **16 · Por lotes.** Greengrass stream manager exporta archivos locales a S3 en orden, con multipart y reintentos sin límite, y los guarda en disco mientras no hay red. En la PoC: `poc-devopsdays/component/inference.py` (`--upload-bucket`); se suben las alertas, los clips cerca del límite, los desacuerdos con la sombra y uno de cada 100 normales.
+- **20 · La sombra.** Medida con `component/inference.py --local` en los clips de falla de la bomba 1: la v1 alertó en 40 de 40 y la v2 no oyó 24. Los números están en `tools/cali/data.json`.
+- **21 · El juez.** `poc-devopsdays/cloud/judge.asl.json` (Step Functions, JSONata) e `infra/judge.tf`. El validador de AWS lo da por bueno, y TestState probó el veredicto: rechaza con 22 de 38 no oídas, promueve una versión limpia y hornea más si faltan clips. Pendiente: correrlo en el ensayo completo en AWS.
+- **Foto del mecánico:** Mike Newbry en Unsplash (licencia Unsplash), recortada y desenfocada para que no se lean marcas.
+
 ## Reentrenamiento (si preguntan)
 
 - En la PoC viaja un evento por cada clip, haya alerta o no; el audio nunca sale. Con mil bombas: un resumen por minuto más el detalle cuando algo cambia (anexo A5).
