@@ -24,6 +24,11 @@ output "dashboard" {
   value = "https://${var.region}.console.aws.amazon.com/cloudwatch/home?region=${var.region}#dashboards/dashboard/station"
 }
 
+output "judge" {
+  description = "The judge's executions, drawn as a graph (demo/judge.sh starts them)."
+  value       = "https://${var.region}.console.aws.amazon.com/states/home?region=${var.region}#/statemachines/view/${aws_sfn_state_machine.judge.arn}"
+}
+
 output "host_id" {
   value = var.create_host ? aws_instance.host[0].id : null
 }

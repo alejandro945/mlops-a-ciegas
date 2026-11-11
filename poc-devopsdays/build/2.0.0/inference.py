@@ -13,6 +13,17 @@ the device; what leaves is a JSON of a few hundred bytes:
   latency_ms                         · features + inference
   truth                              · demo only: the folder says whether the audio is a fault
 
+With a candidate in SHADOW (--shadow-model): the active model still decides; the candidate only says
+what it would have done, on the same clip. The event adds
+  shadow_version, shadow_score, shadow_threshold, shadow_alert
+  shadow_missed                      · 1 if the active model alerted and the candidate did not
+  shadow_extra                       · 1 if the candidate alerted and the active model did not
+and the judge (Step Functions) compares them before the candidate ever decides.
+
+With --upload-bucket: the clips worth keeping (an alert, a score near the threshold, a disagreement
+with the shadow, one normal clip in --sample-every) go to S3 in batches through stream manager, which
+keeps them on disk while there is no network. The event adds  upload  (why the clip was kept).
+
 Demo audio (read-only):  <audio-root>/<device>/{normal,fault,shifted}/*.wav
 The --mode-file says which folder is playing (normal, fault or shifted; normal by default) and is
 re-read on every clip: demo/fault.sh and demo/domain.sh change it without restarting anything.
@@ -24,7 +35,7 @@ Without AWS:  AWS_IOT_THING_NAME=pump-03 python3 inference.py ... --local    (pr
 """
 import sys
 sys.dont_write_bytecode = True               # Greengrass artifacts are read-only
-import argparse, hashlib, json, os, re, time
+import argparse, hashlib, json, os, re, shutil, time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -46,6 +57,11 @@ p.add_argument("--threshold", default="", help="score threshold; empty = the one
 p.add_argument("--interval", type=float, default=3.0, help="seconds between clips")
 p.add_argument("--local", action="store_true", help="print the events instead of publishing them")
 p.add_argument("--max", type=int, default=0, help="stop after N events (0 = never)")
+p.add_argument("--shadow-model", default="", help="candidate model that runs in shadow: it never decides")
+p.add_argument("--shadow-stats", default="", help="the candidate's stats.json (its threshold and version)")
+p.add_argument("--upload-bucket", default="", help="bucket for the clips worth keeping (empty = none)")
+p.add_argument("--near", type=float, default=0.15, help="a score this close to the threshold (relative) is kept")
+p.add_argument("--sample-every", type=int, default=100, help="also keep one normal clip in N (0 = none)")
 a = p.parse_args()
 
 
@@ -72,6 +88,13 @@ input_name = sess.get_inputs()[0].name
 device = os.environ.get("AWS_IOT_THING_NAME", "local-device")
 folder = os.path.join(a.audio_root, device)
 
+shadow = None
+if a.shadow_model:
+    sst = json.load(open(a.shadow_stats, encoding="utf-8"))
+    shadow = {"sess": ort.InferenceSession(a.shadow_model, so, providers=["CPUExecutionProvider"]),
+              "version": sst.get("version", "?"), "threshold": float(sst["threshold"])}
+    shadow["input"] = shadow["sess"].get_inputs()[0].name
+
 if a.local:
     def publish(evt):
         print(json.dumps(evt, ensure_ascii=False), flush=True)
@@ -90,6 +113,59 @@ else:
         fut = ipc.publish_to_iot_core_async(topic_name=a.topic, qos=QOS.AT_LEAST_ONCE,
                                             payload=json.dumps(evt).encode())
         fut.add_done_callback(_on_done)
+
+
+class Uploader:
+    """Clips worth keeping → S3, in batches, through stream manager (it keeps them on disk while offline)."""
+    STREAM = "station-clips"
+
+    def __init__(self, bucket):
+        from stream_manager import (ExportDefinition, MessageStreamDefinition, Persistence,
+                                    S3ExportTaskExecutorConfig, StrategyOnFull, StreamManagerClient)
+        from stream_manager.data import S3ExportTaskDefinition
+        from stream_manager.util import Util
+        self.bucket, self.Task, self.Util = bucket, S3ExportTaskDefinition, Util
+        self.outbox = os.path.join(os.getcwd(), "outbox")      # the component's work folder
+        os.makedirs(self.outbox, exist_ok=True)
+        self.client = StreamManagerClient()
+        try:
+            self.client.create_message_stream(MessageStreamDefinition(
+                name=self.STREAM, strategy_on_full=StrategyOnFull.OverwriteOldestData, persistence=Persistence.File,
+                export_definition=ExportDefinition(s3_task_executor=[S3ExportTaskExecutorConfig(identifier="clips-to-s3")])))
+        except Exception as e:                    # it already exists (the component restarted)
+            log(f"stream {self.STREAM}: {e}")
+
+    def keep(self, path, reason, ts):
+        day = time.strftime("%Y-%m-%d", time.gmtime(ts / 1000))
+        name = f"{ts}_{reason}_{os.path.basename(path)}"
+        local = os.path.join(self.outbox, name)
+        shutil.copyfile(path, local)
+        task = self.Task(input_url="file://" + local, bucket=self.bucket,
+                         key=f"clips/device={device}/date={day}/{name}")
+        self.client.append_message(self.STREAM, self.Util.validate_and_serialize_to_json_bytes(task))
+        old = sorted(os.listdir(self.outbox))[:-500]           # the copies of the last 500 are enough
+        for f in old:
+            os.remove(os.path.join(self.outbox, f))
+
+
+uploader = None
+if a.upload_bucket and not a.local:
+    try:
+        uploader = Uploader(a.upload_bucket)
+    except Exception as e:                        # without stream manager the pump still listens and decides
+        log(f"no clip upload: {e}")
+
+
+def worth_keeping(evt):
+    if evt["alert"]:
+        return "alert"
+    if evt.get("shadow_missed") or evt.get("shadow_extra"):
+        return "disagree"
+    if abs(evt["score"] - evt["threshold"]) <= a.near * evt["threshold"]:
+        return "near"
+    if a.sample_every and evt["seq"] % a.sample_every == 0:
+        return "sample"
+    return None
 
 
 def mode():
@@ -135,6 +211,7 @@ while True:
         X = F.clip_features(x, sr)
         score = float(sess.run(None, {input_name: X})[0].mean())
         ms = (time.perf_counter() - t0) * 1000
+        s_score = float(shadow["sess"].run(None, {shadow["input"]: X})[0].mean()) if shadow else None
     except Exception as e:                    # a broken clip does not take the component down
         log(f"could not listen to {path}: {e}")
         time.sleep(a.interval)
@@ -156,6 +233,24 @@ while True:
         "latency_ms": round(ms, 2),
         "truth": TRUTH[m],
     }
+    if shadow:
+        s_alert = s_score > shadow["threshold"]
+        evt.update({
+            "shadow_version": shadow["version"],
+            "shadow_score": float(f"{s_score:.4g}"),
+            "shadow_threshold": float(f"{shadow['threshold']:.4g}"),
+            "shadow_alert": s_alert,
+            "shadow_missed": int(evt["alert"] and not s_alert),
+            "shadow_extra": int(s_alert and not evt["alert"]),
+        })
+    if uploader:
+        reason = worth_keeping(evt)
+        if reason:
+            try:
+                uploader.keep(path, reason, evt["ts"])
+                evt["upload"] = reason
+            except Exception as e:
+                log(f"could not keep {name}: {e}")
     publish(evt)
     if a.max and seq >= a.max:
         break

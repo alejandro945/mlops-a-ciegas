@@ -77,6 +77,11 @@ locals {
     latency = { metric = "LatencyMs", pattern = "{ $.latency_ms = * }", value = "$.latency_ms", dim = "", dim_value = "", default = "" }
     # what triggers the rollback: the pump sounded faulty (truth only exists in the demo) and did not alert
     missed_faults = { metric = "MissedFaults", pattern = "{ ($.truth = \"anomaly\") && ($.alert IS FALSE) }", value = "1", dim = "", dim_value = "", default = "0" }
+    # the judge: clips heard by a candidate in shadow, and the ones it missed that the active model heard
+    shadow_clips  = { metric = "ShadowClips", pattern = "{ $.shadow_version = * }", value = "1", dim = "Version", dim_value = "$.shadow_version", default = "" }
+    shadow_missed = { metric = "ShadowMissed", pattern = "{ $.shadow_missed = 1 }", value = "1", dim = "", dim_value = "", default = "0" }
+    # the clips kept for the next training, by reason (alert, near, disagree, sample)
+    clips_kept = { metric = "ClipsKept", pattern = "{ $.upload = * }", value = "1", dim = "Reason", dim_value = "$.upload", default = "" }
   }
 }
 

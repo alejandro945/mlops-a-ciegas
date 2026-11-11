@@ -1,0 +1,179 @@
+{
+  "Comment": "The judge: a candidate model runs in shadow on the canary and only goes on if it hears what the active one hears. Input: candidate, carrier, active, canary, bakeSeconds, minClips, maxMissedRate, maxExtraRate, maxRounds.",
+  "QueryLanguage": "JSONata",
+  "StartAt": "DeployInShadow",
+  "States": {
+    "DeployInShadow": {
+      "Type": "Task",
+      "Comment": "Ring 0 gets the carrier: the active model decides, the candidate only says what it would have done",
+      "Resource": "arn:aws:states:::aws-sdk:greengrassv2:createDeployment",
+      "Arguments": {
+        "TargetArn": "${ring0_arn}",
+        "DeploymentName": "{% 'shadow-' & $states.input.candidate & '-' & $string($floor($millis() / 1000)) %}",
+        "Components": {
+          "${component}": {
+            "ComponentVersion": "{% $states.input.carrier %}",
+            "ConfigurationUpdate": { "Reset": [""] }
+          }
+        },
+        "DeploymentPolicies": { "FailureHandlingPolicy": "ROLLBACK" }
+      },
+      "Assign": {
+        "cfg": "{% $states.input %}",
+        "since": "{% $floor($millis() / 1000) %}",
+        "rounds": 0
+      },
+      "Next": "Bake"
+    },
+    "Bake": {
+      "Type": "Wait",
+      "Comment": "Let the canary hear real clips with both models",
+      "Seconds": "{% $cfg.bakeSeconds %}",
+      "Next": "Measure"
+    },
+    "Measure": {
+      "Type": "Task",
+      "Comment": "On the same clips: how often did the candidate miss what the active model heard, and how often did it alert alone?",
+      "Resource": "arn:aws:states:::aws-sdk:cloudwatchlogs:startQuery",
+      "Arguments": {
+        "LogGroupName": "${log_group}",
+        "StartTime": "{% $since %}",
+        "EndTime": "{% $floor($millis() / 1000) %}",
+        "QueryString": "{% 'filter device = \"' & $cfg.canary & '\" and shadow_version = \"' & $cfg.candidate & '\" | stats count(*) as clips, sum(shadow_missed) as missed, sum(shadow_extra) as extra' %}"
+      },
+      "Assign": {
+        "queryId": "{% $states.result.QueryId %}",
+        "rounds": "{% $rounds + 1 %}"
+      },
+      "Next": "WaitForQuery"
+    },
+    "WaitForQuery": {
+      "Type": "Wait",
+      "Seconds": 3,
+      "Next": "ReadQuery"
+    },
+    "ReadQuery": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:cloudwatchlogs:getQueryResults",
+      "Arguments": { "QueryId": "{% $queryId %}" },
+      "Next": "QueryDone?"
+    },
+    "QueryDone?": {
+      "Type": "Choice",
+      "Choices": [
+        { "Condition": "{% $states.input.Status = 'Complete' %}", "Next": "Verdict" },
+        { "Condition": "{% $states.input.Status in ['Scheduled', 'Running'] %}", "Next": "WaitForQuery" }
+      ],
+      "Default": "QueryFailed"
+    },
+    "QueryFailed": {
+      "Type": "Fail",
+      "Error": "QueryFailed",
+      "Cause": "Logs Insights did not finish the query"
+    },
+    "Verdict": {
+      "Type": "Pass",
+      "Output": "{% ( $row := $states.input.Results[0]; $n := function($f) { $exists($row[Field = $f].Value) ? $number($row[Field = $f].Value) : 0 }; $clips := $n('clips'); { 'candidate': $cfg.candidate, 'clips': $clips, 'missed': $n('missed'), 'extra': $n('extra'), 'missedRate': $clips > 0 ? $n('missed') / $clips : 0, 'extraRate': $clips > 0 ? $n('extra') / $clips : 0, 'rounds': $rounds } ) %}",
+      "Next": "Passes?"
+    },
+    "Passes?": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Comment": "Not enough clips yet: bake some more",
+          "Condition": "{% $states.input.clips < $cfg.minClips and $rounds < $cfg.maxRounds %}",
+          "Next": "Bake"
+        },
+        {
+          "Condition": "{% $states.input.clips >= $cfg.minClips and $states.input.missedRate <= $cfg.maxMissedRate and $states.input.extraRate <= $cfg.maxExtraRate %}",
+          "Next": "PromoteRing0"
+        }
+      ],
+      "Default": "Reject"
+    },
+    "PromoteRing0": {
+      "Type": "Task",
+      "Comment": "The candidate now decides on the canary",
+      "Resource": "arn:aws:states:::aws-sdk:greengrassv2:createDeployment",
+      "Arguments": {
+        "TargetArn": "${ring0_arn}",
+        "DeploymentName": "{% 'promote-' & $cfg.candidate & '-' & $string($floor($millis() / 1000)) %}",
+        "Components": {
+          "${component}": {
+            "ComponentVersion": "{% $cfg.candidate %}",
+            "ConfigurationUpdate": { "Reset": [""] }
+          }
+        },
+        "DeploymentPolicies": { "FailureHandlingPolicy": "ROLLBACK" }
+      },
+      "Assign": { "verdict": "{% $states.input %}" },
+      "Next": "PromoteRing1"
+    },
+    "PromoteRing1": {
+      "Type": "Task",
+      "Comment": "In production there would be another bake here, with the candidate deciding on the canary",
+      "Resource": "arn:aws:states:::aws-sdk:greengrassv2:createDeployment",
+      "Arguments": {
+        "TargetArn": "${ring1_arn}",
+        "DeploymentName": "{% 'promote-' & $cfg.candidate & '-' & $string($floor($millis() / 1000)) %}",
+        "Components": {
+          "${component}": {
+            "ComponentVersion": "{% $cfg.candidate %}",
+            "ConfigurationUpdate": { "Reset": [""] }
+          }
+        },
+        "DeploymentPolicies": { "FailureHandlingPolicy": "ROLLBACK" }
+      },
+      "Next": "RememberLastGood"
+    },
+    "RememberLastGood": {
+      "Type": "Task",
+      "Comment": "The rollback Lambda goes back to this version from now on",
+      "Resource": "arn:aws:states:::aws-sdk:ssm:putParameter",
+      "Arguments": {
+        "Name": "${last_good}",
+        "Value": "{% $cfg.candidate %}",
+        "Type": "String",
+        "Overwrite": true
+      },
+      "Output": "{% $verdict %}",
+      "Next": "Promoted"
+    },
+    "Promoted": {
+      "Type": "Succeed"
+    },
+    "Reject": {
+      "Type": "Task",
+      "Comment": "The canary goes back to the active version alone: the candidate never decided",
+      "Resource": "arn:aws:states:::aws-sdk:greengrassv2:createDeployment",
+      "Arguments": {
+        "TargetArn": "${ring0_arn}",
+        "DeploymentName": "{% 'reject-' & $cfg.candidate & '-' & $string($floor($millis() / 1000)) %}",
+        "Components": {
+          "${component}": {
+            "ComponentVersion": "{% $cfg.active %}",
+            "ConfigurationUpdate": { "Reset": [""] }
+          }
+        },
+        "DeploymentPolicies": { "FailureHandlingPolicy": "ROLLBACK" }
+      },
+      "Assign": { "verdict": "{% $states.input %}" },
+      "Next": "Notify"
+    },
+    "Notify": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::aws-sdk:sns:publish",
+      "Arguments": {
+        "TopicArn": "${topic_arn}",
+        "Subject": "{% 'Model ' & $cfg.candidate & ' rejected' %}",
+        "Message": "{% $string($verdict) %}"
+      },
+      "Next": "CandidateRejected"
+    },
+    "CandidateRejected": {
+      "Type": "Fail",
+      "Error": "CandidateRejected",
+      "Cause": "{% 'v' & $cfg.candidate & ' did not hear what v' & $cfg.active & ' heard: missed ' & $string($verdict.missed) & ' of ' & $string($verdict.clips) & ' clips. It never decided.' %}"
+    }
+  }
+}

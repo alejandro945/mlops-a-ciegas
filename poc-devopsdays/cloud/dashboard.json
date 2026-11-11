@@ -73,6 +73,14 @@
     {"type": "metric", "x": 16, "y": 29, "width": 8, "height": 6,
      "properties": {"title": "How fast? · latency (ms)", "region": "__REGION__", "view": "timeSeries", "stat": "Average", "period": 60,
        "yAxis": {"left": {"min": 0}},
-       "metrics": [["__NS__", "LatencyMs", {"label": "average"}], ["__NS__", "LatencyMs", {"stat": "p99", "label": "p99"}]]}}
+       "metrics": [["__NS__", "LatencyMs", {"label": "average"}], ["__NS__", "LatencyMs", {"stat": "p99", "label": "p99"}]]}},
+    {"type": "text", "x": 0, "y": 35, "width": 24, "height": 1,
+     "properties": {"markdown": "### Judge and data · a candidate in shadow never decides; the clips worth keeping go to S3 for the next training"}},
+    {"type": "metric", "x": 0, "y": 36, "width": 12, "height": 6,
+     "properties": {"title": "Candidate in shadow · clips heard vs what it missed", "region": "__REGION__", "view": "timeSeries", "stacked": false, "stat": "Sum", "period": 60,
+       "metrics": [["__NS__", "ShadowClips", "Version", "2.0.0", {"label": "clips heard by 2.0.0 in shadow"}], ["__NS__", "ShadowMissed", {"label": "missed what the active model heard", "color": "#d62728"}]]}},
+    {"type": "metric", "x": 12, "y": 36, "width": 12, "height": 6,
+     "properties": {"title": "Clips kept for the next training, by reason", "region": "__REGION__", "view": "timeSeries", "stacked": true, "stat": "Sum", "period": 60,
+       "metrics": [["__NS__", "ClipsKept", "Reason", "alert"], ["...", "near"], ["...", "disagree"], ["...", "sample"]]}}
   ]
 }

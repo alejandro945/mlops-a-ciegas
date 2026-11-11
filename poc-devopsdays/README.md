@@ -4,7 +4,7 @@ A water utility (made up for the talk) runs pumping stations in rural areas with
 
 This PoC shows the infrastructure side: how the model reaches a thousand devices, how you see what it decides, what happens when the network drops, and how you roll back when a version hears worse.
 
-**There are no physical devices.** Each "pump" is a Docker container running the real AWS IoT Greengrass V2 nucleus, on a Linux EC2 (AWS requires a Linux host for [Greengrass in Docker](https://docs.aws.amazon.com/greengrass/v2/developerguide/run-greengrass-docker.html)). **Everything else is real AWS:** IoT Core, Greengrass deployments and thing groups, CloudWatch, Lambda, S3 and Parameter Store. There are five pumps: `pump-01` in ring 0 (the canary) and `pump-02` to `pump-05` in ring 1.
+**There are no physical devices.** Each "pump" is a Docker container running the real AWS IoT Greengrass V2 nucleus, on a Linux EC2 (AWS requires a Linux host for [Greengrass in Docker](https://docs.aws.amazon.com/greengrass/v2/developerguide/run-greengrass-docker.html)). **Everything else is real AWS:** IoT Core, Greengrass deployments and thing groups, stream manager, CloudWatch, Step Functions, Lambda, SNS, S3 and Parameter Store. There are five pumps: `pump-01` in ring 0 (the canary) and `pump-02` to `pump-05` in ring 1.
 
 It fits in a week.
 
@@ -16,9 +16,14 @@ It fits in a week.
 |---|---|---|
 | **1 · Listen** | `./demo/fault.sh pump-03` | Pump 3 sounds like pump B from the start of the talk and the alert shows up |
 | **2 · No network** | `./demo/network.sh off pump-03`, wait, `./demo/network.sh on pump-03` | Pump 3 goes quiet while the other four carry on; when it comes back its events arrive "late". Then `./demo/domain.sh pump-05 shifted`: pump 5 changes speed and there is no error at all, but the input drifts away from what the model learned |
-| **3 · Deploy by rings and roll back** | `./demo/deploy.sh 2.0.0 ring-0` and `./demo/fault.sh pump-01` | Pump 1 moves to v2 and misses the fault; the alarm triggers the Lambda and pump 1 goes back to v1. Ring 1 never got v2 |
+| **3 · The judge** | `./demo/judge.sh 2.0.0` and, during the bake, `./demo/fault.sh pump-01` | v2 runs **in shadow** on pump 1: v1 still decides, v2 only says what it would have done. Pump 1 fails, v1 alerts and v2 says "normal". The judge (Step Functions) sees it and rejects v2: **it never decided**. Ring 1 never got it |
+| **3b · The safety net** (optional) | `./demo/deploy.sh 2.0.0 ring-0` and `./demo/fault.sh pump-01` | What happens without the judge: v2 decides and misses the fault; the alarm triggers the Lambda and pump 1 goes back to v1 (88 s on October 18) |
 
-Act 3 punchline: **Greengrass rolls back failed deployments, not wrong models. That gate is yours to build.**
+Act 3 punchline: **Greengrass rolls back failed deployments, not wrong models. That judge is yours to build.**
+
+### The clips worth keeping
+
+The audio still doesn't stream to the cloud. But the clips that will teach the next version something (an alert, a score near the threshold, a disagreement with the shadow, one normal clip in 100) go to `s3://station-<account>-<region>/clips/device=<pump>/date=<day>/` in batches, through Greengrass **stream manager**: it keeps them on disk while there is no network and uploads them when it comes back. The event says which ones (`upload`) and the dashboard counts them by reason (`ClipsKept`).
 
 ### The model's signals (dashboard `station`)
 
@@ -30,6 +35,8 @@ Act 3 punchline: **Greengrass rolls back failed deployments, not wrong models. T
 | Which version runs where? | inferences per version | `Inferences` by `Version` |
 | How fast? | latency | `LatencyMs` |
 | What triggers the rollback | faults nobody heard | `MissedFaults` |
+| Does the candidate hear what the active model hears? | candidate in shadow | `ShadowClips` by `Version`, `ShadowMissed` |
+| What do we keep for the next training? | clips kept | `ClipsKept` by `Reason` |
 
 ---
 
@@ -61,7 +68,15 @@ Act 3 punchline: **Greengrass rolls back failed deployments, not wrong models. T
  │  filters → metrics         │    │ Lambda station-rollback          │
  │  dashboard "station"       │ ─▶ │  to ring 0, never to ring 1      │
  │  alarm missed-faults       │    └──────────────────────────────────┘
- └────────────────────────────┘ ALARM
+ └─────────────┬──────────────┘ ALARM
+               │ Logs Insights: does the candidate hear what the active model hears?
+               ▼
+ ┌────────────────────────────────────────────────────────────────┐
+ │ Step Functions station-judge                                   │
+ │  shadow on ring 0 → bake → measure → promote or reject (+ SNS) │
+ └────────────────────────────────────────────────────────────────┘
+
+ The clips worth keeping: each pump → stream manager (on disk while offline) → S3 clips/
 ```
 
 ### Names
@@ -74,8 +89,9 @@ Act 3 punchline: **Greengrass rolls back failed deployments, not wrong models. T
 | MQTT topic | `station/events` |
 | IoT rule | `station_events` → CloudWatch Logs `/station/events` |
 | Dashboard · alarm · Lambda | `station` · `station-missed-faults` · `station-rollback` |
+| Judge · its topic | state machine `station-judge` (role `StationJudge`) · SNS `station-judge` |
 | Parameter | `/station/last_good_version` |
-| Bucket | `station-<account>-<region>`, prefix `station/<version>/` |
+| Bucket | `station-<account>-<region>`, prefixes `station/<version>/` (artifacts) and `clips/` (the clips worth keeping) |
 | Docker | network `station`, containers `pump-01`…`pump-05`, volumes `pump-0N-gg`, image `station/greengrass` |
 
 ### The event (one per clip heard)
@@ -87,6 +103,8 @@ Act 3 punchline: **Greengrass rolls back failed deployments, not wrong models. T
 ```
 
 `ts` is when the pump decided. The IoT rule adds `arrived_ts` (when it reached the cloud); the difference is how long the pump was offline, and `watch.sh` prints it as "arrived N s late". `input_z` is the mean distance, in standard deviations, between the clip's features and the fingerprint in `stats.json`. `truth` exists only because the demo knows which audio is playing.
+
+With a candidate in shadow the event adds `shadow_version`, `shadow_score`, `shadow_threshold`, `shadow_alert`, `shadow_missed` (the active model alerted and the candidate did not) and `shadow_extra` (the other way round). The judge reads only these, so it does not need `truth`: it compares the candidate with the active model on the same clips, which is what exists in production.
 
 ---
 

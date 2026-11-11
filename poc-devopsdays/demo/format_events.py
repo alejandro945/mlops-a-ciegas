@@ -8,6 +8,8 @@ Used by demo/watch.sh:  aws logs tail ... | python3 format_events.py [pump]
 · "arrived N s late": arrived_ts (when it reached the cloud) minus ts (when the pump decided)
   is over 10 s. That is the time the pump was offline.
 · "missed fault": the pump sounded faulty (truth, which only exists in the demo) and did not alert.
+· "shadow v2.0.0 normal · shadow missed it": a candidate in shadow did not hear what the active model heard.
+· "clip kept (alert)": the clip went to S3 for the next training, and why.
 """
 import json
 import sys
@@ -46,6 +48,13 @@ def format_event(e, color=True):
         line += "  " + c(ORANGE, f"· arrived {late:.0f} s late")
     if e.get("truth") == "anomaly" and not alert:
         line += "  " + c(RED, "· missed fault")
+    if "shadow_version" in e:             # a candidate in shadow: what it would have done
+        heard = c(RED, "ALERT") if e.get("shadow_alert") else c(GREEN, "normal")
+        line += f"  · shadow v{e['shadow_version']} {heard}"
+        if e.get("shadow_missed"):
+            line += "  " + c(RED, "· shadow missed it")
+    if e.get("upload"):
+        line += "  " + c(GREY, f"· clip kept ({e['upload']})")
 
     when = e.get("arrived_ts") or e.get("ts")
     clock = time.strftime("%H:%M:%S", time.localtime(when / 1000)) if when else "--:--:--"

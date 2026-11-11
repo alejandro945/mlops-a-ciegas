@@ -3,11 +3,15 @@ ComponentName: com.station.Listener
 ComponentVersion: '__VERSION__'
 ComponentDescription: 'The pump listens, decides and reports what it decided'
 ComponentPublisher: 'Alejandro Varela'
+ComponentDependencies:
+  aws.greengrass.StreamManager:
+    VersionRequirement: '^2.3.0'
 ComponentConfiguration:
   DefaultConfiguration:
     topic: 'station/events'
     intervalSeconds: '3'
     threshold: '__THRESHOLD__'
+    uploadBucket: '__BUCKET__'
     accessControl:
       aws.greengrass.ipc.mqttproxy:
         com.station.Listener:mqttproxy:1:
@@ -25,10 +29,11 @@ Manifests:
         --stats {artifacts:path}/stats.json
         --audio-root /data/station
         --mode-file /run/station/mode
-        --version __VERSION__
+        --version __MODEL_VERSION__
         --topic {configuration:/topic}
         --threshold {configuration:/threshold}
         --interval {configuration:/intervalSeconds}
+        --upload-bucket {configuration:/uploadBucket}__SHADOW_ARGS__
     Artifacts:
       - URI: 's3://__BUCKET__/station/__VERSION__/inference.py'
       - URI: 's3://__BUCKET__/station/__VERSION__/features.py'

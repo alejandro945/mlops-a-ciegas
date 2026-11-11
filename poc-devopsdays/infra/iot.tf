@@ -21,6 +21,7 @@ resource "aws_iam_role" "tes" {
 }
 
 # The minimum of the installer's default role + reading the published artifacts (only the station/ prefix)
+# + writing the clips worth keeping (only the clips/ prefix)
 resource "aws_iam_role_policy" "tes" {
   name = "station-device"
   role = aws_iam_role.tes.id
@@ -36,6 +37,12 @@ resource "aws_iam_role_policy" "tes" {
         Effect   = "Allow"
         Action   = "s3:GetObject"
         Resource = "${aws_s3_bucket.artifacts.arn}/station/*"
+      },
+      {
+        # stream manager uploads the clips worth keeping, and only there
+        Effect   = "Allow"
+        Action   = ["s3:PutObject", "s3:AbortMultipartUpload", "s3:ListMultipartUploadParts"]
+        Resource = "${aws_s3_bucket.artifacts.arn}/clips/*"
       }
     ]
   })

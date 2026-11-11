@@ -18,6 +18,7 @@ MODEL = os.path.join(POC, "model")
 METRICS_PY = os.path.join(REPO, "talk", "tools", "metrics.py")
 EVENT = ["device", "model_version", "sha256", "seq", "ts", "clip", "domain",
          "score", "threshold", "alert", "input_z", "latency_ms", "truth"]
+SHADOW = ["shadow_version", "shadow_score", "shadow_threshold", "shadow_alert", "shadow_missed", "shadow_extra"]
 ENV = dict(os.environ, PYTHONDONTWRITEBYTECODE="1")
 
 
@@ -111,6 +112,23 @@ class SyntheticPipeline(unittest.TestCase):
             self.assertEqual(e["alert"], e["score"] > e["threshold"])
             self.assertAlmostEqual(e["threshold"], st["threshold"], places=3)
             self.assertLess(len(json.dumps(e)), 600)          # a few hundred bytes
+
+    def test_a_candidate_in_shadow_only_gives_its_opinion(self):
+        st, cand = self.stats("1.0.0"), self.stats("2.0.0")
+        d = os.path.join(self.build, "2.0.0")
+        evs = self.events("pump-01", "fault", n=3, extra=("--shadow-model", os.path.join(d, "model.onnx"),
+                                                          "--shadow-stats", os.path.join(d, "stats.json")))
+        for e in evs:
+            self.assertEqual(list(e), EVENT + SHADOW)
+            self.assertEqual(e["model_version"], "1.0.0")              # the active model still decides
+            self.assertEqual(e["alert"], e["score"] > e["threshold"])
+            self.assertAlmostEqual(e["threshold"], st["threshold"], places=3)
+            self.assertEqual(e["shadow_version"], "2.0.0")
+            self.assertAlmostEqual(e["shadow_threshold"], cand["threshold"], places=3)
+            self.assertEqual(e["shadow_alert"], e["shadow_score"] > e["shadow_threshold"])
+            self.assertEqual(e["shadow_missed"], int(e["alert"] and not e["shadow_alert"]))
+            self.assertEqual(e["shadow_extra"], int(e["shadow_alert"] and not e["alert"]))
+            self.assertLess(len(json.dumps(e)), 800)
 
     def test_mode_is_read_from_the_file(self):
         for e in self.events("pump-05", "shifted", n=2):

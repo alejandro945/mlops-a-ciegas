@@ -26,7 +26,7 @@ RUN apt-get update \
 
 # Component dependencies, pinned (the same ones the model was measured with).
 RUN pip3 install --no-cache-dir --break-system-packages \
-      numpy==2.2.6 onnxruntime==1.23.2 awsiotsdk==1.31.0 awscrt==0.36.1
+      numpy==2.2.6 onnxruntime==1.23.2 awsiotsdk==1.31.0 awscrt==0.36.1 stream-manager==1.1.2
 
 # User that runs the components (Greengrass launches them with sudo)
 RUN groupadd --system ggc_group \

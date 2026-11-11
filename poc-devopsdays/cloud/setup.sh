@@ -83,7 +83,8 @@ role "$TES_ROLE" "$TMP/trust-tes.json"
 fill > "$TMP/tes-policy.json" <<'JSON'
 {"Version":"2012-10-17","Statement":[
  {"Effect":"Allow","Action":["logs:CreateLogGroup","logs:CreateLogStream","logs:PutLogEvents","logs:DescribeLogStreams","s3:GetBucketLocation"],"Resource":"*"},
- {"Effect":"Allow","Action":"s3:GetObject","Resource":"arn:aws:s3:::__BUCKET__/station/*"}]}
+ {"Effect":"Allow","Action":"s3:GetObject","Resource":"arn:aws:s3:::__BUCKET__/station/*"},
+ {"Effect":"Allow","Action":["s3:PutObject","s3:AbortMultipartUpload","s3:ListMultipartUploadParts"],"Resource":"arn:aws:s3:::__BUCKET__/clips/*"}]}
 JSON
 aws iam put-role-policy --role-name "$TES_ROLE" --policy-name station-device --policy-document "file://$TMP/tes-policy.json"
 exists aws iot describe-role-alias --role-alias "$TES_ALIAS" ||
@@ -165,6 +166,11 @@ metric_filter input_by_device InputZ       '{ ($.input_z = *) && ($.device = *) 
 metric_filter latency        LatencyMs     '{ $.latency_ms = * }'                                 '$.latency_ms' -                               -
 # what triggers the rollback: the pump sounded faulty (truth only exists in the demo) and did not alert
 metric_filter missed_faults  MissedFaults  '{ ($.truth = "anomaly") && ($.alert IS FALSE) }'      1             -                                0
+# the judge: clips heard by a candidate in shadow, and the ones it missed that the active model heard
+metric_filter shadow_clips   ShadowClips   '{ $.shadow_version = * }'                             1             '{"Version":"$.shadow_version"}' -
+metric_filter shadow_missed  ShadowMissed  '{ $.shadow_missed = 1 }'                              1             -                                0
+# the clips kept for the next training, by reason (alert, near, disagree, sample)
+metric_filter clips_kept     ClipsKept     '{ $.upload = * }'                                     1             '{"Reason":"$.upload"}'          -
 
 say "6 · dashboard station"
 fill < cloud/dashboard.json > "$TMP/dashboard.json"

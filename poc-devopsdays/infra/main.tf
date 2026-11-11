@@ -15,6 +15,7 @@ locals {
   rule        = "station_events"
   alarm       = "station-missed-faults"
   function    = "station-rollback"
+  judge       = "station-judge"
   last_good   = "/station/last_good_version"
   tes_role    = "GreengrassV2TokenExchangeRole"
   tes_alias   = "GreengrassCoreTokenExchangeRoleAlias"

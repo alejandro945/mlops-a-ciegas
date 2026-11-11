@@ -47,10 +47,11 @@ SCRIPTS = sorted(list((ROOT / "fleet").glob("*.sh")) + list((ROOT / "demo").glob
 EXPECTED_RUN = (
     "python3 -u {artifacts:path}/inference.py --model {artifacts:path}/model.onnx "
     "--stats {artifacts:path}/stats.json --audio-root /data/station --mode-file /run/station/mode "
-    "--version __VERSION__ --topic {configuration:/topic} --threshold {configuration:/threshold} "
-    "--interval {configuration:/intervalSeconds}")
+    "--version __MODEL_VERSION__ --topic {configuration:/topic} --threshold {configuration:/threshold} "
+    "--interval {configuration:/intervalSeconds} --upload-bucket {configuration:/uploadBucket}__SHADOW_ARGS__")
 
-METRICS = {"Alerts", "Score", "Threshold", "Inferences", "InputZ", "LatencyMs", "MissedFaults"}
+METRICS = {"Alerts", "Score", "Threshold", "Inferences", "InputZ", "LatencyMs", "MissedFaults",
+           "ShadowClips", "ShadowMissed", "ClipsKept"}
 
 
 # ─────────────────────────────────────────────────────────────────────
@@ -188,7 +189,7 @@ class ScriptsBasics(unittest.TestCase):
     def test_scripts_exist(self):
         names = {p.name for p in SCRIPTS}
         for expected in ("build.sh", "up.sh", "down.sh", "entrypoint.sh", "publish.sh", "deploy.sh", "fault.sh",
-                         "domain.sh", "network.sh", "watch.sh", "setup.sh", "teardown.sh", "delete-things.sh"):
+                         "domain.sh", "network.sh", "watch.sh", "judge.sh", "setup.sh", "teardown.sh", "delete-things.sh"):
             self.assertIn(expected, names)
 
     def test_bash_syntax(self):
@@ -241,6 +242,8 @@ class Recipe(unittest.TestCase):
         self.assertEqual(cfg["topic"], "station/events")
         self.assertEqual(cfg["intervalSeconds"], "3")                 # number as text, as Greengrass expects
         self.assertEqual(cfg["threshold"], "__THRESHOLD__")
+        self.assertEqual(cfg["uploadBucket"], "__BUCKET__")
+        self.assertEqual(r["ComponentDependencies"]["aws.greengrass.StreamManager"]["VersionRequirement"], "^2.3.0")
         ipc = cfg["accessControl"]["aws.greengrass.ipc.mqttproxy"]["com.station.Listener:mqttproxy:1"]
         self.assertEqual(ipc["operations"], ["aws.greengrass#PublishToIoTCore"])
         self.assertEqual(ipc["resources"], ["station/events"])
@@ -255,7 +258,7 @@ class Recipe(unittest.TestCase):
 
     def test_fits_on_one_slide(self):
         lines = self.PATH.read_text().splitlines()
-        self.assertLessEqual(len(lines), 40)
+        self.assertLessEqual(len(lines), 45)
         self.assertFalse([l for l in lines if l.strip().startswith("#")], "the recipe has no comments")
 
 
@@ -415,6 +418,13 @@ class Format(unittest.TestCase):
         self.assertTrue(self.f.format_event(e, color=False).endswith("· missed fault"))
         self.assertNotIn("missed fault", self.f.format_event(dict(self.base, truth="normal"), color=False))
 
+    def test_shadow_and_kept_clip(self):
+        e = dict(self.base, shadow_version="2.0.0", shadow_alert=False, shadow_missed=1, upload="alert")
+        self.assertTrue(self.f.format_event(e, color=False).endswith(
+            "4 ms  · shadow v2.0.0 normal  · shadow missed it  · clip kept (alert)"))
+        e = dict(self.base, shadow_version="2.0.0", shadow_alert=True, shadow_missed=0)
+        self.assertTrue(self.f.format_event(e, color=False).endswith("4 ms  · shadow v2.0.0 ALERT"))
+
     def test_local_time_of_arrived_ts_and_noise_ignored(self):
         self.assertTrue(self.f.format_event(self.base, color=False).startswith("08:53:21  "))
         self.assertIsNone(self.f.format_event({"hello": 1}))
@@ -442,7 +452,8 @@ class ContractWithTheModel(unittest.TestCase):
         mode.write_text("fault\n")
         self.addCleanup(shutil.rmtree, mode.parent, ignore_errors=True)
         run = " ".join(recipe["Manifests"][0]["Lifecycle"]["Run"].split())
-        for a, b in (("{artifacts:path}", str(build)), ("__VERSION__", "1.0.0"), ("{configuration:/topic}", cfg["topic"]),
+        for a, b in (("{artifacts:path}", str(build)), ("__MODEL_VERSION__", "1.0.0"), ("__SHADOW_ARGS__", ""),
+                     ("{configuration:/uploadBucket}", "station-123456789012-us-east-1"), ("{configuration:/topic}", cfg["topic"]),
                      ("{configuration:/threshold}", str(stats["threshold"])), ("{configuration:/intervalSeconds}", "0.1"),
                      ("/run/station/mode", str(mode)), ("/data/station", str(ROOT / "data" / "station"))):
             run = run.replace(a, b)
@@ -550,6 +561,37 @@ class Publish(unittest.TestCase):
         r = self.e.run("demo/publish.sh", "9.9.9")
         self.assertNotEqual(r.returncode, 0)
         self.assertIn("sha256", r.stdout + r.stderr)
+        self.assertEqual(self.e.aws("s3", "cp"), [])
+
+    def test_a_version_with_a_shadow(self):
+        self.e.fake_build("1.0.0")
+        self.e.fake_build("2.0.0", threshold=0.0456)
+        r = self.e.run("demo/publish.sh", "1.1.0", "--active", "1.0.0", "--shadow", "2.0.0",
+                       SHIM_MISSING=r"describe-component (?!.*componentState)")
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn("./demo/judge.sh 2.0.0", r.stdout)
+        targets = sorted(c["args"][3] for c in self.e.aws("s3", "cp"))
+        self.assertEqual(targets, [f"s3://station-123456789012-us-east-1/station/1.1.0/{f}" for f in
+                                   ("features.py", "inference.py", "model.onnx", "shadow.onnx", "shadow_stats.json", "stats.json")])
+        recipe = list(self.e.aws("greengrassv2", "create-component-version")[0]["files"].values())[0]
+        self.assertNotIn("__", recipe)
+        self.assertIn("ComponentVersion: '1.1.0'", recipe)
+        self.assertIn("threshold: '0.0123'", recipe)                  # the active model's threshold
+        if yaml:
+            parsed = yaml.safe_load(recipe)
+            run = " ".join(parsed["Manifests"][0]["Lifecycle"]["Run"].split())
+            self.assertIn("--version 1.0.0 ", run)                    # 1.0.0 decides
+            self.assertTrue(run.endswith("--shadow-model {artifacts:path}/shadow.onnx "
+                                         "--shadow-stats {artifacts:path}/shadow_stats.json"))
+            self.assertEqual([a["URI"].rsplit("/", 1)[1] for a in parsed["Manifests"][0]["Artifacts"]],
+                             ["inference.py", "features.py", "model.onnx", "stats.json", "shadow.onnx", "shadow_stats.json"])
+
+    def test_a_shadow_needs_its_own_version_number(self):
+        self.e.fake_build("1.0.0")
+        self.e.fake_build("2.0.0")
+        r = self.e.run("demo/publish.sh", "1.0.0", "--shadow", "2.0.0")
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn("its own number", r.stdout)
         self.assertEqual(self.e.aws("s3", "cp"), [])
 
     def test_badly_written_version(self):
@@ -913,17 +955,20 @@ class Setup(unittest.TestCase):
         self.assertIn("topic/$aws/things/pump-*/jobs/*", text)
         self.assertIn("client/pump-*", text)
         self.assertIn("topic/station/events", text)
-        # the TES role reads only the station prefix of the bucket
+        # the TES role reads only the station prefix of the bucket and writes only the clips prefix
         tes = [c for c in e.aws("iam", "put-role-policy") if "GreengrassV2TokenExchangeRole" in c["args"]][0]
         self.assertIn("arn:aws:s3:::station-123456789012-us-east-1/station/*", list(tes["files"].values())[0])
+        self.assertIn("arn:aws:s3:::station-123456789012-us-east-1/clips/*", list(tes["files"].values())[0])
         # the rule adds arrived_ts and writes to the station's log group
         rule = json.loads(list(e.aws("iot", "create-topic-rule" if e.aws("iot", "create-topic-rule") else "replace-topic-rule")[0]["files"].values())[0])
         self.assertEqual(rule["sql"], "SELECT *, timestamp() AS arrived_ts FROM 'station/events'")
         self.assertEqual(rule["actions"][0]["cloudwatchLogs"]["logGroupName"], "/station/events")
-        # metric filters: eight, in the Station namespace, MissedFaults with a default value and no dimensions
+        # metric filters: eleven, in the Station namespace, MissedFaults with a default value and no dimensions
         filters = {c["args"][c["args"].index("--filter-name") + 1]:
                    json.loads(c["args"][c["args"].index("--metric-transformations") + 1])[0] for c in e.aws("logs", "put-metric-filter")}
-        self.assertEqual(len(filters), 8)
+        self.assertEqual(len(filters), 11)
+        self.assertEqual(filters["shadow_clips"]["dimensions"], {"Version": "$.shadow_version"})
+        self.assertEqual(filters["clips_kept"]["dimensions"], {"Reason": "$.upload"})
         self.assertEqual({f["metricNamespace"] for f in filters.values()}, {"Station"})
         self.assertEqual({f["metricName"] for f in filters.values()}, METRICS)
         self.assertEqual(filters["alerts"]["dimensions"], {"Device": "$.device"})
