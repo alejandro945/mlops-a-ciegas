@@ -257,8 +257,12 @@ tr.hot td.k,tr.hot td b{color:var(--acc)}
 .hook .hi:nth-child(2) img{max-height:440px;max-width:720px}
 .hook figcaption{font-size:15px;color:var(--muted)}
 .shot.ev{top:246px;height:470px;background:none}
-.shot.st{top:176px;height:566px}
-.shot.st img{max-height:520px}
+/* the station, live, inside the slide (talk/estacion.html in an iframe; the clicks drive it: data-station) */
+.s.st iframe.stn{position:absolute;left:0;top:0;width:1600px;height:790px;border:0;background:transparent}
+.s.st .stl{position:absolute;left:300px;top:812px;font-size:15px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);z-index:3}
+.s.st .stl span{color:var(--slate);font-weight:600;letter-spacing:.06em;text-transform:none;margin-left:14px}
+.s.st .say{left:300px;top:806px;font-size:23px;max-width:1030px;line-height:1.3;z-index:3;background:var(--light);padding:0 12px 0 0}
+.s.st .say.vis + .stl{display:none}
 .shot.ev img{max-height:428px}
 .shot.ev .spend{height:380px}
 .shot .spend{width:1100px;height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;
@@ -637,7 +641,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="kick">La evidencia</div>
   <div class="ttl wide"><b>Demo</b></div>
   <div class="fig">{{FIG:arq_poc}}</div>
-  <div class="sre" style="left:330px;top:142px;font-size:18px;color:var(--muted)">tecla <b style="color:var(--acc)">D</b> · la estación en vivo</div>
+  <div class="sre" style="left:330px;top:142px;font-size:18px;color:var(--muted)">tecla <b style="color:var(--acc)">D</b> · la estación en vivo, en su propia ventana</div>
   <div class="foot"></div>
 </section>
 
@@ -670,41 +674,35 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="foot"></div>
 </section>
 
-<!-- ═══════════════ 28-31 · THE RUN, ONE ACT PER SLIDE: the station page (key D) and the AWS console, November 16 run ═══════════════ -->
-<section class="s" data-id="acto1" data-sec="7" data-notes="">
-  <div class="kick">La evidencia</div>
-  <div class="ttl wide"><i class="pn">Acto 1 ·</i> Escuchar</div>
-  <div class="shot st" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la estación en vivo · tecla D · <b>la bomba 3 pasa de normal a ALERT</b></span></div>{{SHOT:st-acto1}}</div></div>
+<!-- ═══════════════ 28-31 · THE RUN, ONE ACT PER SLIDE: the station page, live, inside the slide (November 16 run) ═══════════════
+     data-station: one command per click, posted to the iframe (act: seek to a marker and play · overlay: the AWS console capture). -->
+<section class="s st" data-id="acto1" data-sec="7" data-notes="" data-steps="1"
+  data-station='[{"cmd":"act","k":"acto1","speed":1}]'>
+  <iframe class="stn" src="estacion.html" title="La estación, en vivo"></iframe>
+  <div class="stl">Acto 1 · Escuchar<span>la bomba 3 pasa de normal a ALERT · lo que sale es una línea, no el audio</span></div>
   <div class="foot"></div>
 </section>
 
-<section class="s" data-id="acto2" data-sec="7" data-notes="">
-  <div class="kick">La evidencia</div>
-  <div class="ttl wide"><i class="pn">Acto 2 ·</i> Sin red, y una deriva</div>
-  <div class="shot st" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la estación en vivo · <b>vuelve la red</b>: los eventos guardados llegan tarde</span></div>{{SHOT:st-vuelve}}</div></div>
-  <div class="shot st" data-on="1"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la estación en vivo · <b>deriva</b>: la bomba 5 cambia de régimen, sin un solo error</span></div>{{SHOT:st-deriva}}</div></div>
-  <div class="shot" data-on="2"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · Logs Insights · <b>los que llegaron tarde</b>, con su hora de decisión y de llegada</span></div>{{SHOT:cw-logs}}</div></div>
+<section class="s st" data-id="acto2" data-sec="7" data-notes="" data-steps="3"
+  data-station='[{"cmd":"act","k":"acto2","speed":2},{"cmd":"act","k":"vuelve","speed":1},{"cmd":"act","k":"deriva","speed":2}]'>
+  <iframe class="stn" src="estacion.html" title="La estación, en vivo"></iframe>
+  <div class="stl">Acto 2 · Sin red, y una deriva<span>la bomba 3 sin red · vuelve y llegan tarde · la bomba 5 cambia de régimen</span></div>
   <div class="foot"></div>
 </section>
 
-<section class="s" data-id="acto3" data-sec="7" data-notes="">
-  <div class="kick">La evidencia</div>
-  <div class="ttl wide"><i class="pn">Acto 3 ·</i> El juez: <b>sombra y veredicto</b></div>
-  <div class="shot st" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la estación en vivo · judge.sh 2.0.0 · <b>la v2 en sombra</b> en el canary: decide la v1</span></div>{{SHOT:st-sombra}}</div></div>
-  <div class="shot" data-on="1"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · Step Functions · <b>station-judge</b>, horneando</span></div>{{SHOT:sfn-sombra}}</div></div>
-  <div class="shot st" data-on="2"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la estación en vivo · la bomba 1 falla · <b>el juez rechaza la v2</b></span></div>{{SHOT:st-veredicto}}</div></div>
-  <div class="shot" data-on="3"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · Step Functions · <b>el veredicto</b>: Reject, Notify, CandidateRejected</span></div>{{SHOT:sfn-veredicto}}</div></div>
-  <div class="say" data-on="4" style="top:728px;font-size:28px;z-index:5"><b>La v2 nunca decidió.</b> El canary volvió solo a la v1 y el ring 1 nunca la vio.</div>
+<section class="s st" data-id="acto3" data-sec="7" data-notes="" data-steps="4"
+  data-station='[{"cmd":"act","k":"sombra","speed":2},{"cmd":"act","k":"veredicto","speed":2},{"cmd":"overlay","on":true},{"cmd":"overlay","on":false}]'>
+  <iframe class="stn" src="estacion.html" title="La estación, en vivo"></iframe>
+  <div class="say" data-on="3"><b>La v2 nunca decidió.</b> El canary volvió solo a la v1 y el ring 1 nunca la vio.</div>
+  <div class="stl">Acto 3 · El juez<span>la v2 en sombra en el canary · la bomba 1 falla · el juez la rechaza · así se ve en Step Functions</span></div>
   <div class="foot"></div>
 </section>
 
-<section class="s" data-id="acto3b" data-sec="7" data-notes="">
-  <div class="kick">La evidencia</div>
-  <div class="ttl wide"><i class="pn">Acto 3b ·</i> Sin juez: <b>la red de seguridad</b></div>
-  <div class="shot st" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la estación en vivo · deploy.sh 2.0.0 ring-0 · <b>la alarma, la Lambda y la vuelta</b></span></div>{{SHOT:st-alarma}}</div></div>
-  <div class="shot" data-on="1"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · alarma <b>station-missed-faults</b></span></div>{{SHOT:cw-alarma}}</div></div>
-  <div class="shot" data-on="2"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · <b>despliegues</b>: sombra, rechazo, la v2 al ring 0 y la vuelta</span></div>{{SHOT:gg-despliegues}}</div></div>
-  <div class="say" data-on="3" style="top:728px;font-size:28px;z-index:5">Esa fue la red de seguridad: la v2 alcanzó a decidir. <b>Con el juez, nunca llega a decidir.</b></div>
+<section class="s st" data-id="acto3b" data-sec="7" data-notes="" data-steps="5"
+  data-station='[{"cmd":"act","k":"acto3","speed":4},{"cmd":"act","k":"noye","speed":2},{"cmd":"act","k":"alarma","speed":1},{"cmd":"overlay","on":true},{"cmd":"overlay","on":false}]'>
+  <iframe class="stn" src="estacion.html" title="La estación, en vivo"></iframe>
+  <div class="say" data-on="4">Esa fue la red de seguridad: la v2 alcanzó a decidir. <b>Con el juez, nunca llega a decidir.</b></div>
+  <div class="stl">Acto 3b · Sin juez: la red de seguridad<span>la v2 directa al ring 0 · fallas no oídas · la alarma, la Lambda y la vuelta</span></div>
   <div class="foot"></div>
 </section>
 
@@ -1216,6 +1214,8 @@ function setStep(k,st){
   sl.querySelectorAll('[data-off]').forEach(e=>e.classList.toggle('gone',st>=+e.dataset.off));
   sl.querySelectorAll('[data-hot]').forEach(e=>e.classList.toggle('hot',st>=+e.dataset.hot));
   applySvg(sl,st);
+  if(sl.dataset.station){ const acts=JSON.parse(sl.dataset.station), fr=sl.querySelector('iframe.stn');     /* the station, live */
+    if(fr&&fr.contentWindow){ const a=acts[Math.min(st,acts.length-1)]; fr.contentWindow.postMessage(RM_PRINT?{cmd:'pause'}:a,'*'); } }
   if(A[k]) A[k].t0=performance.now();
   sl.querySelectorAll('.foot .dots i').forEach((d,j)=>d.classList.toggle('on',j<=st));
 }
@@ -1267,7 +1267,8 @@ let ret=0; const inAnx=()=>!!slides[i].dataset.annex;
 function show(n,atEnd){
   i=Math.max(0,Math.min(slides.length-1,n));
   stopSnd();                                               /* changing slide stops the audio */
-  slides.forEach((sl,k)=>sl.classList.toggle('on',k===i));
+  slides.forEach((sl,k)=>{ sl.classList.toggle('on',k===i);
+    if(k!==i&&sl.dataset.station){ const fr=sl.querySelector('iframe.stn'); if(fr&&fr.contentWindow) fr.contentWindow.postMessage({cmd:'reset'},'*'); } });
   setStep(i, atEnd ? S[i].n-1 : 0);
   const b=inAnx()?ANX:MAIN; bar.style.width=((b.indexOf(i)+1)/b.length*100)+'%';
   notes.querySelector('p').textContent=slides[i].dataset.notes||'—';
@@ -1298,6 +1299,7 @@ addEventListener('keydown',e=>{
   else if(k==='d'){ e.preventDefault(); window.open('estacion.html','estacion'); }      /* the station, live (build_station.py) */
   else if(k==='f'){ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }
 });
+addEventListener('message',e=>{ const m=e.data||{}; if(m.cmd==='nav'){ m.d>0?next():prev(); } });   /* arrows pressed inside the station */
 addEventListener('click',e=>{
   if(e.target.closest&&e.target.closest('.play')) return;                                    /* the ▶ button does not advance */
   if(notes.contains(e.target)) return;

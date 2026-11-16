@@ -322,7 +322,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 <!-- id: poc -->
 **0:25** · sin clics
 
-"Lo único simulado son las bombas: cinco contenedores, cada uno con el agente real de Greengrass. La bomba 1 es el canary; las otras cuatro, el ring 1. Todo lo demás es AWS real, con audio real e infraestructura en Terraform. Lo que sigue es esa ejecución, del 16 de noviembre, reproducida tal como llegó: la tecla D abre la estación en vivo (talk/estacion.html); espacio reproduce, las flechas saltan de acto en acto y la tecla A muestra cómo se ve ese momento en la consola de AWS. Las láminas que siguen son capturas de esa misma página y de la consola."
+"Lo único simulado son las bombas: cinco contenedores, cada uno con el agente real de Greengrass. La bomba 1 es el canary; las otras cuatro, el ring 1. Todo lo demás es AWS real, con audio real e infraestructura en Terraform. Lo que sigue es esa ejecución, del 16 de noviembre, reproducida tal como llegó: los tres actos que siguen son esa página corriendo dentro de la lámina (talk/estacion.html); cada clic salta al momento siguiente. La tecla D la abre aparte, por si quieres manejarla a mano: espacio reproduce, las flechas saltan de acto en acto y la tecla A muestra cómo se ve ese momento en la consola de AWS."
 
 ---
 
@@ -352,9 +352,9 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 28 · Acto 1 · Escuchar
 <!-- id: acto1 -->
-**0:50** · sin clics · *deja que lean primero*
+**0:50** · sin clics · *la estación corre sola en la lámina; deja que la miren*
 
-"Esto es la estación en vivo: a la izquierda las cinco bombas, cada una con su versión, su score contra el umbral y su decisión; en el centro, cada punto es un evento viajando a la nube; a la derecha, lo que AWS cuenta."
+"Esto es la estación en vivo, reproduciendo la ejecución real: a la izquierda las cinco bombas, cada una con su versión, su score contra el umbral y su decisión; en el centro, cada punto es un evento viajando a la nube; a la derecha, lo que AWS cuenta."
 
 "Decisiones normales, hasta que inyecto el audio de falla en la bomba 3. En ese mismo clip el score supera el umbral y la tarjeta pasa a ALERT. En la nube sube el contador de alertas."
 
@@ -370,27 +370,25 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 "Segundo acto: desconecto la bomba 3 de la red. Su tarjeta se pone punteada y los eventos se van acumulando en la cola local, mientras las otras cuatro siguen llegando."
 
-"Cuarenta y cinco segundos después vuelve la red, y los eventos guardados llegan todos juntos, cada uno con su hora de decisión y hasta cuarenta y tantos segundos tarde. Ninguno se perdió. La bomba siguió decidiendo sin red."
+**[CLIC]** "Cuarenta y cinco segundos después vuelve la red, y los eventos guardados llegan todos juntos, cada uno con su hora de decisión y hasta cuarenta y tantos segundos tarde. Ninguno se perdió. La bomba siguió decidiendo sin red."
 
-**[CLIC]** "Otra prueba: cambio el régimen de la bomba 5. No hay un solo error, pero la entrada salta de 0,8 a casi 2 desviaciones de lo que el modelo aprendió. Es exactamente el tipo de deriva que el panel de infraestructura no ve."
-
-**[CLIC]** "Y así se ve en la consola: una consulta en Logs Insights con la hora en que decidió cada evento y la hora en que llegó."
+**[CLIC]** "Otra prueba: cambio el régimen de la bomba 5. No hay un solo error, pero la entrada salta de 0,8 a 2,2 desviaciones de lo que el modelo aprendió. Es exactamente el tipo de deriva que el panel de infraestructura no ve."
 
 ---
 
-## 30 · Acto 3 · El juez: sombra y veredicto
+## 30 · Acto 3 · El juez
 <!-- id: acto3 -->
-**1:30** · 4 clics · *el punto culminante: ve despacio*
+**1:30** · 3 clics · *el punto culminante: ve despacio*
 
 "Tercer acto: la versión 2.0.0, entrenada con más datos. No la despliego: se la entrego al juez." *(pausa)* "El juez la pone en sombra en el canary: la bomba 1 recibe la v2, pero sigue decidiendo la v1. La v2 solo dice qué habría hecho. Abajo a la derecha, la máquina de estados: desplegada, horneando."
 
-**[CLIC]** "La misma ejecución en Step Functions: DeployInShadow terminó, Bake en curso."
+"Ahora inyecto una falla en la bomba 1. La v1 alerta; la v2, en sombra, dice «normal»."
 
-**[CLIC]** "Ahora inyecto una falla en la bomba 1. La v1 alerta; la v2, en sombra, dice «normal». El juez mide en Logs Insights sobre los mismos clips: cuántas fallas que la v1 oyó se le escaparon a la v2. Y la rechaza: el canary vuelve a la v1 sola y llega el aviso."
+**[CLIC]** "El juez mide en Logs Insights sobre los mismos clips: cuántas fallas que la v1 oyó se le escaparon a la v2. Dieciséis de treinta y cuatro. Y la rechaza: el canary vuelve a la v1 sola y llega el aviso."
 
 "La causa: el audio adicional incluía un periodo en que una bomba ya estaba fallando, y nadie lo validó. El modelo aprendió la falla como comportamiento normal. No es un error de código; es un error de datos."
 
-**[CLIC]** "El veredicto en la consola: Reject, Notify, CandidateRejected, con el número de clips y de fallas no oídas."
+**[CLIC]** "Así se ve en la consola, en Step Functions: Reject, Notify, CandidateRejected, con el número de clips y de fallas no oídas."
 
 **[CLIC]** *(mirando a la sala)* "La v2 nunca decidió. Nadie tocó el equipo y el ring 1 nunca la vio."
 
@@ -398,13 +396,15 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 31 · Acto 3b · Sin juez: la red de seguridad
 <!-- id: acto3b -->
-**1:00** · 3 clics
+**1:00** · 4 clics
 
-"¿Y si no hubiera juez? Lo probé también: despliego la 2.0.0 directo al ring 0. Llega en segundos, sin errores. Para Greengrass, un despliegue exitoso. Inyecto la falla y la v2 responde «normal»: fallas no oídas. La métrica cruza el umbral, la alarma pasa a ALARM, la Lambda restaura la última versión buena y la bomba 1 vuelve a alertar. Un par de minutos, sin acceso al equipo."
+"¿Y si no hubiera juez? Lo probé también: despliego la 2.0.0 directo al ring 0. Llega en segundos, sin errores. Para Greengrass, un despliegue exitoso."
 
-**[CLIC]** "La alarma en CloudWatch: las fallas no oídas superan el umbral de 8 por minuto."
+**[CLIC]** "Inyecto la falla y la v2 responde «normal»: fallas no oídas. La nube las cuenta por minuto; la barra sube hasta el umbral."
 
-**[CLIC]** "Y en los despliegues, toda la historia: la sombra, el rechazo del juez, la v2 directa y la vuelta que creó la Lambda. El ring 1 nunca recibió la 2.0.0."
+**[CLIC]** "La métrica cruza el umbral, la alarma pasa a ALARM, la Lambda restaura la última versión buena y la bomba 1 vuelve a alertar. Un minuto y cincuenta segundos desde la falla, sin acceso al equipo."
+
+**[CLIC]** "En la consola: los logs de la Lambda, con la vuelta a la 1.0.0 que creó ella, no yo. El ring 1 nunca recibió la 2.0.0."
 
 **[CLIC]** "Greengrass revierte despliegues fallidos, no modelos equivocados. Esa fue la red de seguridad: la v2 alcanzó a decidir. Con el juez, nunca llega a decidir."
 

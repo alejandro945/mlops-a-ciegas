@@ -125,6 +125,10 @@ h1 b{color:var(--orange);font-weight:800}
 #tick .sh{color:#7FE3D0}
 #tick .dim{color:var(--mist)}
 #help{position:absolute;right:40px;bottom:6px;font-size:11px;color:var(--mist)}
+/* inside the deck (an iframe): transparent page, the stage as a card, no help line */
+html.embed,html.embed body{background:transparent}
+html.embed #stage{border-radius:16px;box-shadow:0 18px 50px rgba(11,19,42,.16);border:1.5px solid var(--line)}
+html.embed #help{display:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style></head>
 <body>
@@ -341,6 +345,19 @@ addEventListener('keydown',e=>{ const k=e.key;
   else if(k.toLowerCase()==='f'){ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }
 });
 window.__st={seek:ms=>{ step(ms); paint(); }, goto, M, T0, T1, toggle};
+/* inside the deck: the slide drives the replay (build_deck: data-station), and the arrows go back to the deck */
+const EMBED=window.parent!==window;
+if(EMBED){ document.documentElement.classList.add('embed');
+  addEventListener('message',ev=>{ const m=ev.data||{};
+    if(m.cmd==='act'){ const j=M.findIndex(x=>x.k===m.k); fit(); if(j>=0){ goto(j); if(m.speed) setSpeed(m.speed); } if(m.overlay===false) hideOv(); }
+    else if(m.cmd==='pause') toggle(false);
+    else if(m.cmd==='play') toggle(true);
+    else if(m.cmd==='overlay'){ m.on?showOv():hideOv(); }
+    else if(m.cmd==='speed') setSpeed(m.s);
+    else if(m.cmd==='reset'){ toggle(false); hideOv(); step(T0); paint(); } });
+  addEventListener('keydown',e=>{ if(['ArrowRight','ArrowDown','PageDown','Enter'].includes(e.key)){ e.preventDefault(); e.stopImmediatePropagation(); parent.postMessage({cmd:'nav',d:1},'*'); }
+    else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){ e.preventDefault(); e.stopImmediatePropagation(); parent.postMessage({cmd:'nav',d:-1},'*'); } },true);
+}
 step(T0); paint();
 </script>
 </body></html>
