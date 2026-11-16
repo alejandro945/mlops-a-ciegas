@@ -448,7 +448,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 <!-- id: recursos -->
 **0:15** · sin clics
 
-"El código, la infraestructura y estas láminas están en el repositorio del código QR."
+"Dos códigos QR: el repositorio, con el código, la infraestructura y estas láminas; y mi LinkedIn, por si quieren seguir la conversación."
 
 ---
 

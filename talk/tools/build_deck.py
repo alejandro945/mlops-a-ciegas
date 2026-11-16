@@ -9,7 +9,7 @@ Placeholders in deck.src.html:
     {{AUDIO:a|b}}      talk/assets/audio/pump-a.wav | pump-b.wav as a data URI · if missing: empty (the button is
                        disabled, «audio pendiente»)
     {{ARCH_GENERIC}}   the generic pattern (layer lay-a); the AWS one and the PoC one are {{FIG:arq_ref}} and {{FIG:arq_poc}}
-    {{PHOTO}}, {{QR}}, {{REPO}}, {{LINKEDIN}}, {{IMG:…}} (assets/template), {{BADGE:…}} (assets/badges), {{FONT:…}}
+    {{PHOTO}}, {{QR}}, {{QR_LINKEDIN}}, {{REPO}}, {{LINKEDIN}}, {{IMG:…}} (assets/template), {{BADGE:…}} (assets/badges), {{FONT:…}}
     {{SHOT:name}}      talk/assets/screens/name.png (or .jpg): an AWS console screenshot · if missing: a «captura pendiente»
                        box that says what to capture (SHOTS below) and a warning
 
@@ -239,6 +239,8 @@ def main():
         "{{QR}}":             lambda: qr or "QR del repo<br>se genera con REPO_URL",
         "{{REPO}}":           lambda: re.sub(r"^https?://", "", repo) if repo else "github.com/⟨usuario⟩/mlops-a-ciegas",
         "{{LINKEDIN}}":       lambda: os.environ.get("LINKEDIN", "linkedin.com/in/⟨tu-perfil⟩"),
+        "{{QR_LINKEDIN}}":    lambda: (qr_svg("https://www." + re.sub(r"^(https?://)?(www\.)?", "", os.environ["LINKEDIN"]))
+                                      if os.environ.get("LINKEDIN") else "QR de LinkedIn<br>se genera con LINKEDIN"),
         "{{PHOTO}}":          photo_html,
         "{{ARCH_GENERIC}}":   lambda: layer(arch("gen", deck=True), "lay-a"),
     }
