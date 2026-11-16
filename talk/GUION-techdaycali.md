@@ -4,7 +4,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el envío por lotes (paso 5).
 
-**24:00** de contenido aproximadamente. Reloj al entrar a cada divisor: 4:00 · 6:40 · 9:05 · 16:45.
+**22:30** de contenido aproximadamente. Reloj al entrar a cada divisor: 2:10 · 4:50 · 7:15 · 14:55.
 
 ---
 
@@ -66,7 +66,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 6 · 01 · El problema
 <!-- id: div1 -->
-**0:05** · *reloj: 4:00*
+**0:05** · *reloj: 2:10*
 
 "Empecemos por el problema."
 
@@ -124,7 +124,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 10 · 02 · El patrón
 <!-- id: div2 -->
-**0:05** · *reloj: 6:40*
+**0:05** · *reloj: 4:50*
 
 "Veamos cómo se gobierna esto, empezando por el equipo."
 
@@ -178,7 +178,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 14 · 03 · Los seis pasos
 <!-- id: div3 -->
-**0:10** · *reloj: 9:05*
+**0:10** · *reloj: 7:15*
 
 "La implementación, en seis pasos: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear."
 
@@ -312,7 +312,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 23 · 04 · La evidencia en AWS
 <!-- id: div4 -->
-**0:05** · *reloj: 16:45*
+**0:05** · *reloj: 14:55*
 
 "Ahora, la evidencia: la misma arquitectura, ejecutada en AWS."
 
@@ -322,7 +322,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 <!-- id: poc -->
 **0:25** · sin clics
 
-"Lo único simulado son las bombas: cinco contenedores, cada uno con el agente real de Greengrass. La bomba 1 es el canary; las otras cuatro, el ring 1. Todo lo demás es AWS real, con audio real e infraestructura en Terraform. Lo que sigue es esa ejecución, reproducida tal como llegó: la tecla D abre la estación en vivo (talk/estacion.html); espacio reproduce y las flechas saltan de acto en acto. Las capturas de la consola vienen después." *(Si preguntan por el juez: lo agregué después de esa ejecución; el acto 3 muestra la red de seguridad.)*
+"Lo único simulado son las bombas: cinco contenedores, cada uno con el agente real de Greengrass. La bomba 1 es el canary; las otras cuatro, el ring 1. Todo lo demás es AWS real, con audio real e infraestructura en Terraform. Lo que sigue es esa ejecución, del 16 de noviembre, reproducida tal como llegó: la tecla D abre la estación en vivo (talk/estacion.html); espacio reproduce, las flechas saltan de acto en acto y la tecla A muestra cómo se ve ese momento en la consola de AWS. Las láminas que siguen son capturas de esa misma página y de la consola."
 
 ---
 
@@ -330,7 +330,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 <!-- id: artefacto -->
 **0:25** · sin clics
 
-"Primero, el artefacto. En S3, cada versión en su propia carpeta. En Greengrass, el componente con sus dos versiones: 1.0.0 y 2.0.0. Nada se sobrescribe."
+"Primero, el artefacto. En S3, cada versión en su propia carpeta, y aparte los clips que valen la pena guardar. En Greengrass, el componente con sus versiones: la 1.0.0, la 2.0.0 y la 1.1.0, que es la 1.0.0 decidiendo con la 2.0.0 en sombra. Nada se sobrescribe."
 
 ---
 
@@ -354,51 +354,65 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 <!-- id: acto1 -->
 **0:50** · sin clics · *deja que lean primero*
 
-"Esto es lo que se ve desde la nube: cada línea es una inferencia de la bomba 3, con versión, decisión, score y nivel de entrada."
+"Esto es la estación en vivo: a la izquierda las cinco bombas, cada una con su versión, su score contra el umbral y su decisión; en el centro, cada punto es un evento viajando a la nube; a la derecha, lo que AWS cuenta."
 
-"Decisiones normales, hasta que inyecto el audio de falla. En ese mismo clip, el score supera el umbral y el modelo emite una alerta."
+"Decisiones normales, hasta que inyecto el audio de falla en la bomba 3. En ese mismo clip el score supera el umbral y la tarjeta pasa a ALERT. En la nube sube el contador de alertas."
 
 "Esa es la respuesta a la pregunta inicial: la bomba B era la que fallaba." *(pausa)*
 
-"Y lo único que salió de la estación fue esta línea, no el audio."
+"Y lo único que salió de la estación fue ese punto: una línea de unos cientos de bytes, no el audio."
 
 ---
 
 ## 29 · Acto 2 · Sin red, y una deriva
 <!-- id: acto2 -->
-**1:00** · sin clics
+**1:00** · 2 clics
 
-"Segundo acto: desconecto la bomba 3 de la red. A la izquierda, sus eventos dejan de llegar mientras las otras cuatro siguen reportando."
+"Segundo acto: desconecto la bomba 3 de la red. Su tarjeta se pone punteada y los eventos se van acumulando en la cola local, mientras las otras cuatro siguen llegando."
 
-"Cuarenta y cinco segundos después restablezco la conexión, y los eventos encolados llegan con su retraso registrado: 41, 32, 29, 20 segundos. Ninguno se perdió. La bomba siguió decidiendo sin red."
+"Cuarenta y cinco segundos después vuelve la red, y los eventos guardados llegan todos juntos, cada uno con su hora de decisión y hasta cuarenta y tantos segundos tarde. Ninguno se perdió. La bomba siguió decidiendo sin red."
 
-"A la derecha, otra prueba: cambio el régimen de la bomba 5. No hay un solo error, pero la señal de entrada salta de 0,8 a 1,8 desviaciones estándar. Es exactamente el tipo de deriva que el panel de infraestructura no ve."
+**[CLIC]** "Otra prueba: cambio el régimen de la bomba 5. No hay un solo error, pero la entrada salta de 0,8 a casi 2 desviaciones de lo que el modelo aprendió. Es exactamente el tipo de deriva que el panel de infraestructura no ve."
+
+**[CLIC]** "Y así se ve en la consola: una consulta en Logs Insights con la hora en que decidió cada evento y la hora en que llegó."
 
 ---
 
-## 30 · Acto 3 · Ring deployment y rollback
+## 30 · Acto 3 · El juez: sombra y veredicto
 <!-- id: acto3 -->
-**1:30** · 3 clics · *el punto culminante: ve despacio*
+**1:30** · 4 clics · *el punto culminante: ve despacio*
 
-"Tercer acto: despliego la versión 2.0.0 solo en el ring 0. Esta versión se entrenó con más datos." *(pausa)* "Llega en 17 segundos, sin errores. Para Greengrass, un despliegue exitoso."
+"Tercer acto: la versión 2.0.0, entrenada con más datos. No la despliego: se la entrego al juez." *(pausa)* "El juez la pone en sombra en el canary: la bomba 1 recibe la v2, pero sigue decidiendo la v1. La v2 solo dice qué habría hecho. Abajo a la derecha, la máquina de estados: desplegada, horneando."
 
-"Ahora inyecto una falla en la bomba 1. La versión nueva responde «normal» con la bomba fallando: fallas no detectadas."
+**[CLIC]** "La misma ejecución en Step Functions: DeployInShadow terminó, Bake en curso."
+
+**[CLIC]** "Ahora inyecto una falla en la bomba 1. La v1 alerta; la v2, en sombra, dice «normal». El juez mide en Logs Insights sobre los mismos clips: cuántas fallas que la v1 oyó se le escaparon a la v2. Y la rechaza: el canary vuelve a la v1 sola y llega el aviso."
 
 "La causa: el audio adicional incluía un periodo en que una bomba ya estaba fallando, y nadie lo validó. El modelo aprendió la falla como comportamiento normal. No es un error de código; es un error de datos."
 
-"Nadie interviene. La alarma pasa a ALARM, la Lambda restaura la versión 1.0.0 y la bomba 1 vuelve a alertar. Ochenta y ocho segundos desde la falla, sin acceso al equipo." *(pausa)*
+**[CLIC]** "El veredicto en la consola: Reject, Notify, CandidateRejected, con el número de clips y de fallas no oídas."
 
-**[CLIC]** "La alarma en CloudWatch: las fallas no detectadas superan el umbral de 8 por minuto, y la franja roja marca el periodo en ALARM."
-
-**[CLIC]** "Y en los despliegues: el ring 0 corre «rollback-to-1.0.0», creado por la Lambda, no por mí. El ring 1 nunca recibió la 2.0.0."
-
-**[CLIC]** *(mirando a la sala)* "Greengrass revierte despliegues fallidos, no modelos equivocados. Y esto que vieron fue la red de seguridad: la v2 alcanzó a decidir durante ochenta y ocho segundos. Con el juez del paso 4, se habría quedado en sombra: nunca llega a decidir."
+**[CLIC]** *(mirando a la sala)* "La v2 nunca decidió. Nadie tocó el equipo y el ring 1 nunca la vio."
 
 ---
 
-## 31 · Cinco recomendaciones
+## 31 · Acto 3b · Sin juez: la red de seguridad
+<!-- id: acto3b -->
+**1:00** · 3 clics
+
+"¿Y si no hubiera juez? Lo probé también: despliego la 2.0.0 directo al ring 0. Llega en segundos, sin errores. Para Greengrass, un despliegue exitoso. Inyecto la falla y la v2 responde «normal»: fallas no oídas. La métrica cruza el umbral, la alarma pasa a ALARM, la Lambda restaura la última versión buena y la bomba 1 vuelve a alertar. Un par de minutos, sin acceso al equipo."
+
+**[CLIC]** "La alarma en CloudWatch: las fallas no oídas superan el umbral de 8 por minuto."
+
+**[CLIC]** "Y en los despliegues, toda la historia: la sombra, el rechazo del juez, la v2 directa y la vuelta que creó la Lambda. El ring 1 nunca recibió la 2.0.0."
+
+**[CLIC]** "Greengrass revierte despliegues fallidos, no modelos equivocados. Esa fue la red de seguridad: la v2 alcanzó a decidir. Con el juez, nunca llega a decidir."
+
+---
+
+## 32 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 21:40 al entrar*
+**1:05** · 4 clics · *reloj: 20:50 al entrar*
 
 "Cinco recomendaciones para aplicar desde el lunes."
 
@@ -412,11 +426,11 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 **[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad."
 
-*(Si el reloj marca 22:00 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
+*(Si el reloj marca 20:30 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
 
 ---
 
-## 32 · Recursos y contacto
+## 33 · Recursos y contacto
 <!-- id: recursos -->
 **0:15** · sin clics
 
@@ -424,7 +438,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 33 · Gracias
+## 34 · Gracias
 <!-- id: cierre -->
 **0:15** · sin clics
 

@@ -9,7 +9,7 @@
   sending in batches. Do NOT edit talk/techdaycali.html by hand: it is generated with
     DECK_THEME=tdc AWS_ICONS=~/Downloads/aws-icon-set python3 talk/tools/build_deck.py
   Written in the DevOpsDays palette; build_deck.py puts the Tech Day Cali template on top (theme-tdc.css, its colors).
-  Slide order and ids: this file (36 slides + 11 annexes); the speaker notes come from GUION-techdaycali.md by id. Placeholders (in double braces, see build_deck.py):
+  Slide order and ids: this file (34 slides + 11 annexes); the speaker notes come from GUION-techdaycali.md by id. Placeholders (in double braces, see build_deck.py):
   FIG:name · M:key · AUDIO:a and AUDIO:b · ARCH_GENERIC · PHOTO · QR · REPO · LINKEDIN · IMG:file · FONT:file ·
   SHOT:name (an AWS console screenshot from talk/assets/screens/name.png; the list is SHOTS in build_deck.py).
   Click steps: data-on="n" (shows up at click n) · data-off="n" (goes away) · data-prog (architecture) · canvas.anim with ANIM[name].
@@ -257,6 +257,8 @@ tr.hot td.k,tr.hot td b{color:var(--acc)}
 .hook .hi:nth-child(2) img{max-height:440px;max-width:720px}
 .hook figcaption{font-size:15px;color:var(--muted)}
 .shot.ev{top:246px;height:470px;background:none}
+.shot.st{top:176px;height:566px}
+.shot.st img{max-height:520px}
 .shot.ev img{max-height:428px}
 .shot.ev .spend{height:380px}
 .shot .spend{width:1100px;height:420px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;
@@ -645,7 +647,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="ttl wide">El modelo, <b>versionado</b></div>
   <div class="pair">
     <figure class="hi" data-on="0">{{SHOT:s3-versiones}}<figcaption>S3 · una carpeta por versión</figcaption></figure>
-    <figure class="hi" data-on="0">{{SHOT:gg-componente}}<figcaption>IoT Greengrass · el componente y sus versiones</figcaption></figure>
+    <figure class="hi" data-on="0">{{SHOT:gg-componente}}<figcaption>IoT Greengrass · el componente y sus versiones (la 1.1.0 lleva la v2 en sombra)</figcaption></figure>
   </div>
   <div class="foot"></div>
 </section>
@@ -668,28 +670,41 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="foot"></div>
 </section>
 
-<!-- ═══════════════ 25-27 · THE RUN, ONE ACT PER SLIDE (real evidence of the October 18 run) ═══════════════ -->
+<!-- ═══════════════ 28-31 · THE RUN, ONE ACT PER SLIDE: the station page (key D) and the AWS console, November 16 run ═══════════════ -->
 <section class="s" data-id="acto1" data-sec="7" data-notes="">
   <div class="kick">La evidencia</div>
   <div class="ttl wide"><i class="pn">Acto 1 ·</i> Escuchar</div>
-  <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>./demo/watch.sh pump-03 · <b>de normal a ALERT</b></span></div>{{SHOT:acto1}}</div></div>
+  <div class="shot st" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la estación en vivo · tecla D · <b>la bomba 3 pasa de normal a ALERT</b></span></div>{{SHOT:st-acto1}}</div></div>
   <div class="foot"></div>
 </section>
 
 <section class="s" data-id="acto2" data-sec="7" data-notes="">
   <div class="kick">La evidencia</div>
   <div class="ttl wide"><i class="pn">Acto 2 ·</i> Sin red, y una deriva</div>
-  <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>./demo/watch.sh y el dashboard · <b>sin red y deriva</b></span></div>{{SHOT:acto2}}</div></div>
+  <div class="shot st" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la estación en vivo · <b>vuelve la red</b>: los eventos guardados llegan tarde</span></div>{{SHOT:st-vuelve}}</div></div>
+  <div class="shot st" data-on="1"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la estación en vivo · <b>deriva</b>: la bomba 5 cambia de régimen, sin un solo error</span></div>{{SHOT:st-deriva}}</div></div>
+  <div class="shot" data-on="2"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · Logs Insights · <b>los que llegaron tarde</b>, con su hora de decisión y de llegada</span></div>{{SHOT:cw-logs}}</div></div>
   <div class="foot"></div>
 </section>
 
 <section class="s" data-id="acto3" data-sec="7" data-notes="">
   <div class="kick">La evidencia</div>
-  <div class="ttl wide"><i class="pn">Acto 3 ·</i> Ring deployment <b>y rollback</b></div>
-  <div class="shot ev" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la línea de tiempo · <b>de la v2 al rollback</b></span></div>{{SHOT:acto3}}</div></div>
-  <div class="shot " data-on="1"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · alarma <b>station-missed-faults</b></span></div>{{SHOT:cw-alarma}}</div></div>
-  <div class="shot " data-on="2"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · <b>despliegues</b>: el ring 0 en rollback</span></div>{{SHOT:gg-despliegues}}</div></div>
-  <div class="say" data-on="3" style="top:728px;font-size:28px;z-index:5">Esa fue la red de seguridad. <b>Con el juez, la v2 nunca llega a decidir.</b></div>
+  <div class="ttl wide"><i class="pn">Acto 3 ·</i> El juez: <b>sombra y veredicto</b></div>
+  <div class="shot st" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la estación en vivo · judge.sh 2.0.0 · <b>la v2 en sombra</b> en el canary: decide la v1</span></div>{{SHOT:st-sombra}}</div></div>
+  <div class="shot" data-on="1"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · Step Functions · <b>station-judge</b>, horneando</span></div>{{SHOT:sfn-sombra}}</div></div>
+  <div class="shot st" data-on="2"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la estación en vivo · la bomba 1 falla · <b>el juez rechaza la v2</b></span></div>{{SHOT:st-veredicto}}</div></div>
+  <div class="shot" data-on="3"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · Step Functions · <b>el veredicto</b>: Reject, Notify, CandidateRejected</span></div>{{SHOT:sfn-veredicto}}</div></div>
+  <div class="say" data-on="4" style="top:728px;font-size:28px;z-index:5"><b>La v2 nunca decidió.</b> El canary volvió solo a la v1 y el ring 1 nunca la vio.</div>
+  <div class="foot"></div>
+</section>
+
+<section class="s" data-id="acto3b" data-sec="7" data-notes="">
+  <div class="kick">La evidencia</div>
+  <div class="ttl wide"><i class="pn">Acto 3b ·</i> Sin juez: <b>la red de seguridad</b></div>
+  <div class="shot st" data-on="0"><div class="win"><div class="wb"><i></i><i></i><i></i><span>la estación en vivo · deploy.sh 2.0.0 ring-0 · <b>la alarma, la Lambda y la vuelta</b></span></div>{{SHOT:st-alarma}}</div></div>
+  <div class="shot" data-on="1"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · alarma <b>station-missed-faults</b></span></div>{{SHOT:cw-alarma}}</div></div>
+  <div class="shot" data-on="2"><div class="win"><div class="wb"><i></i><i></i><i></i><span>consola de AWS · <b>despliegues</b>: sombra, rechazo, la v2 al ring 0 y la vuelta</span></div>{{SHOT:gg-despliegues}}</div></div>
+  <div class="say" data-on="3" style="top:728px;font-size:28px;z-index:5">Esa fue la red de seguridad: la v2 alcanzó a decidir. <b>Con el juez, nunca llega a decidir.</b></div>
   <div class="foot"></div>
 </section>
 

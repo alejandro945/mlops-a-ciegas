@@ -53,6 +53,7 @@ PENDING_AUDIO = []
 PENDING_SHOTS = []
 
 SCREENS = os.path.join(ASSETS, "screens")      # AWS evidence of the PoC, one per step (see assets/screens/README.md)
+SCREENS_TDC = os.path.join(SCREENS, "cali")     # Tech Day Cali: the November 16 run (console captures and the station page)
 # name → what it shows (Spanish: it shows on the slide while the file is missing). Same list in assets/screens/README.md.
 SHOTS = {
     "s3-versiones":   "consola de S3: el bucket › station/, con las carpetas 1.0.0/ y 2.0.0/",
@@ -66,6 +67,17 @@ SHOTS = {
     "acto2":          "watch.sh: la 3 sin red, las otras siguen, los eventos llegan tarde; y la entrada por bomba",
     "acto3":          "la línea de tiempo del acto 3: v2, fallas no oídas, alarma, Lambda, v1",
     "cw-alarma":      "consola de CloudWatch: la alarma station-missed-faults, con su gráfica y el momento en ALARM",
+    # Tech Day Cali (assets/screens/cali/): the November 16 run, with the judge
+    "sfn-sombra":     "consola de Step Functions: station-judge en marcha, la v2 en sombra, horneando",
+    "sfn-veredicto":  "consola de Step Functions: el veredicto, la v2 rechazada y el aviso por SNS",
+    "lambda-logs":    "consola de CloudWatch Logs: la Lambda station-rollback despliega la última versión buena",
+    "cw-logs":        "consola de Logs Insights: los eventos que llegaron tarde, con su hora de decisión y de llegada",
+    "st-acto1":       "la estación en vivo (talk/estacion.html): acto 1, la bomba 3 pasa a ALERT",
+    "st-vuelve":      "la estación en vivo: acto 2, vuelve la red y los eventos llegan tarde",
+    "st-deriva":      "la estación en vivo: acto 2, la bomba 5 cambia de régimen",
+    "st-sombra":      "la estación en vivo: acto 3, la v2 en sombra en el canary y el juez horneando",
+    "st-veredicto":   "la estación en vivo: acto 3, el juez rechaza la v2",
+    "st-alarma":      "la estación en vivo: acto 3b, la alarma, la Lambda y la vuelta a la v1",
 }
 
 
@@ -123,8 +135,9 @@ def resolve_metrics(text):
 
 def shot(name):
     """{{SHOT:name}} → the screenshot as <img> (resized: at most 2 × 1429 px wide); missing: a box saying what to capture."""
-    path = next((os.path.join(SCREENS, name + e) for e in (".png", ".jpg", ".jpeg")
-                 if os.path.exists(os.path.join(SCREENS, name + e))), None)
+    dirs = (SCREENS_TDC, SCREENS) if TDC else (SCREENS,)
+    path = next((os.path.join(d, name + e) for d in dirs for e in (".png", ".jpg", ".jpeg")
+                 if os.path.exists(os.path.join(d, name + e))), None)
     if not path:
         PENDING_SHOTS.append(name)
         warn(f"missing screenshot: talk/assets/screens/{name}.png ({SHOTS.get(name, '?')})")

@@ -103,24 +103,81 @@ def cloud_facts():
         pass
     deploys = []
     try:
+        group = ""
         for line in open(os.path.join(EV, "deployments.txt"), encoding="utf-8"):
+            if line.startswith("# "):
+                group = line[2:].strip()
             m = re.match(r"\|\s+(\S+)\s+\|\s+\w+\s+\|\s+(\S+)\s+\|", line)
             if m:
                 t = datetime.datetime.fromisoformat(m.group(2))
-                deploys.append({"name": m.group(1), "t": int(t.timestamp() * 1000)})
+                deploys.append({"name": m.group(1), "t": int(t.timestamp() * 1000), "g": group})
     except OSError:
         pass
     return alarm, lam, deploys
 
 
 def judge_steps():
-    """The judge's execution (Step Functions), if the folder has one: judge.json = [{state, t}]."""
+    """The judge's executions (Step Functions station-judge), if the folder has them: judge.json =
+    [{name, status, input, start, stop, steps: [{state, t, type, output?, error?, cause?}]}] (t = ms)."""
     p = os.path.join(EV, "judge.json")
-    return json.load(open(p, encoding="utf-8")) if os.path.exists(p) else None
+    if not os.path.exists(p):
+        return []
+    out = []
+    for x in json.load(open(p, encoding="utf-8")):
+        enter = {}
+        for st in x["steps"]:
+            if st["type"] == "enter" and st["state"] not in enter:
+                enter[st["state"]] = st["t"]
+        verdict = next((st.get("output") for st in x["steps"] if st["state"] == "Verdict" and st["type"] == "exit"), None)
+        end = next((st for st in x["steps"] if st["type"] == "end"), None)
+        out.append({"name": x["name"], "status": x["status"], "input": x.get("input", {}), "start": x["start"],
+                    "stop": x.get("stop"), "enter": enter, "verdict": verdict,
+                    "cause": (end or {}).get("cause")})
+    return out
+
+
+# the console, one capture per act: evidencia-e2e/<date>/console/<name>.png → the page, as JPEG
+CONSOLE = {
+    "gg-equipos":     "IoT Greengrass › Core devices: las cinco bombas, Healthy",
+    "cw-dashboard":   "CloudWatch › Dashboards › station: lo que decide el modelo, por señal",
+    "cw-logs":        "CloudWatch › Logs Insights: los eventos que llegaron tarde, con su hora de decisión y de llegada",
+    "sfn-sombra":     "Step Functions › station-judge: la ejecución en marcha, horneando con la v2 en sombra",
+    "sfn-veredicto":  "Step Functions › station-judge: el veredicto, la v2 rechazada y el aviso por SNS",
+    "gg-despliegues": "IoT Greengrass › Deployments: sombra, rechazo, la v2 al ring 0 y la vuelta de la Lambda",
+    "cw-alarma":      "CloudWatch › Alarms › station-missed-faults: las fallas no oídas cruzan el umbral",
+    "lambda-logs":    "CloudWatch › Logs › station-rollback: la Lambda despliega la última versión buena",
+    "gg-componente":  "IoT Greengrass › Components › com.station.Listener: las versiones 1.0.0, 1.1.0 (sombra) y 2.0.0",
+    "s3-versiones":   "S3 › station/: una carpeta por versión, y clips/ con los clips que valen la pena",
+}
+SHOT_BY_ACT = {"inicio": "gg-equipos", "acto1": "cw-dashboard", "acto2": "cw-logs", "vuelve": "cw-logs",
+               "deriva": "cw-dashboard", "sombra": "sfn-sombra", "veredicto": "sfn-veredicto", "acto3": "gg-despliegues",
+               "noye": "cw-alarma", "alarma": "lambda-logs", "fin": "gg-despliegues"}
+
+
+def console_shots():
+    """{name: {uri, cap}} for the captures that exist (JPEG, at most 1400 px wide, when Pillow is there)."""
+    d = os.path.join(EV, "console")
+    out = {}
+    for name, cap in CONSOLE.items():
+        path = next((os.path.join(d, name + ext) for ext in (".png", ".jpg") if os.path.exists(os.path.join(d, name + ext))), None)
+        if not path:
+            continue
+        try:
+            from PIL import Image
+            import io
+            im = Image.open(path).convert("RGB")
+            if im.width > 1400:
+                im = im.resize((1400, round(im.height * 1400 / im.width)), Image.LANCZOS)
+            buf = io.BytesIO(); im.save(buf, "JPEG", quality=82, optimize=True)
+            uri = "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
+        except ImportError:
+            uri = data_uri(path)
+        out[name] = {"uri": uri, "cap": cap}
+    return out
 
 
 # ── the acts: derived from the events, so another run gets its own markers ──
-def markers(ev, alarm, lam):
+def markers(ev, alarm, lam, judge=()):
     devs = sorted({e["device"] for e in ev})
     t0, t1 = ev[0]["ts"], max(e["arrived_ts"] for e in ev)
 
@@ -161,9 +218,23 @@ def markers(ev, alarm, lam):
     v2 = first(lambda e: e["model_version"] != ev[0]["model_version"] and "shadow_version" not in e)
     sh = first(lambda e: "shadow_version" in e)
     if sh:
+        bake = next((x["input"].get("bakeSeconds") for x in judge if x.get("input")), 120)
         M.append({"t": sh["ts"] - 5000, "k": "sombra", "tag": "ACTO 3 · EL JUEZ", "title": f"La v{sh['shadow_version']} escucha en sombra",
-                  "text": f"judge.sh {sh['shadow_version']}: el canary recibe la versión nueva, pero decide la v{sh['model_version']}. "
-                          "La nueva solo dice qué habría hecho. El juez espera, mide y decide.", "speed": 2})
+                  "text": f"judge.sh {sh['shadow_version']}: Step Functions despliega al canary la versión nueva en sombra. Decide la "
+                          f"v{sh['model_version']}; la nueva solo dice qué habría hecho. El juez hornea {bake} s y mide en Logs Insights.", "speed": 2})
+    for x in judge:
+        if not x.get("stop"):
+            continue
+        v, inp = x.get("verdict") or {}, x.get("input", {})
+        clips, missed = int(v.get("clips", 0)), int(v.get("missed", 0))
+        if x["status"] == "SUCCEEDED":
+            title, text = f"El juez promueve la v{inp.get('candidate')}", \
+                f"Sobre {clips} clips la v{inp.get('candidate')} oyó lo mismo que la v{inp.get('active')}: pasa al ring 0, al ring 1 y queda como la última versión buena."
+        else:
+            title = f"El juez rechaza la v{inp.get('candidate')}"
+            text = (f"Sobre {clips} clips, la v{inp.get('candidate')} no oyó {missed} fallas que la v{inp.get('active')} sí oyó. "
+                    f"El canary vuelve a la v{inp.get('active')} sola y llega el aviso por SNS. La v{inp.get('candidate')} nunca decidió.")
+        M.append({"t": x["stop"] - 15000, "k": "veredicto", "tag": "ACTO 3 · EL VEREDICTO", "title": title, "text": text, "speed": 2})
     if v2:
         M.append({"t": v2["ts"] - 12000, "k": "acto3", "tag": "ACTO 3 · LA RED DE SEGURIDAD", "title": f"La v{v2['model_version']} llega al canary",
                   "text": f"deploy.sh {v2['model_version']} ring-0: la versión nueva llega solo a la {v2['device']}. Instala, arranca y "
@@ -180,6 +251,8 @@ def markers(ev, alarm, lam):
     M.append({"t": t1 - 20000, "k": "fin", "tag": "FIN", "title": "La estación, como la encontramos",
               "text": "Las cinco bombas con la v1.0.0, el despliegue de la vuelta activo y el de la v2 inactivo. "
                       "El ring 1 nunca recibió la v2.", "speed": 8})
+    for m in M:
+        m["shot"] = SHOT_BY_ACT.get(m["k"])
     M.sort(key=lambda m: m["t"])
     return M
 
@@ -234,7 +307,7 @@ h1 b{color:var(--orange);font-weight:800}
 .pump .nm{position:absolute;left:134px;top:12px;font-size:17px;font-weight:800}
 .pump .ver{position:absolute;left:134px;top:38px;font-family:var(--mono);font-size:12px;font-weight:700;padding:2px 7px;border-radius:6px;border:1.5px solid var(--navy)}
 .pump .ver.v2{border-color:var(--orange);color:var(--orange)}
-.pump .ver.sh{border-color:var(--teal);color:var(--teal);margin-left:6px}
+.pump .ver.sh{border-color:var(--teal);color:var(--teal);left:auto;right:14px;top:36px;font-size:9.5px;padding:1px 5px;white-space:nowrap}
 .pump .dec{position:absolute;right:14px;top:12px;font-size:13px;font-weight:800;letter-spacing:.08em;color:var(--teal)}
 .pump.alert .dec{color:var(--orange)}
 .pump.miss .dec{color:var(--red)}
@@ -268,17 +341,33 @@ h1 b{color:var(--orange);font-weight:800}
 .ct{position:absolute;left:0;top:-4px;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--slate)}
 .gate{position:absolute;left:20px;top:372px;width:660px;height:168px;border:1.5px dashed var(--line);border-radius:12px}
 .gate .rl{position:absolute;left:14px;top:-9px;padding:0 8px;background:#fff;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--slate)}
-.st{position:absolute;top:30px;width:140px;height:116px;border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;font-size:12px}
-.st .t{font-weight:800;font-size:13px}
-.st .s{margin-top:6px;font-family:var(--mono);font-size:11px;color:var(--slate);line-height:1.4}
+.gate .gl{position:absolute;left:12px;font-size:9.5px;font-weight:700;letter-spacing:.1em;color:var(--mist)}
+.gate .gl b{color:var(--slate)}
+.st{position:absolute;height:52px;border:1.5px solid var(--line);border-radius:9px;padding:6px 9px;font-size:11px;background:#fff}
+.st .t{font-weight:800;font-size:11.5px;white-space:nowrap}
+.st .s{margin-top:3px;font-family:var(--mono);font-size:9.5px;color:var(--slate);line-height:1.25;white-space:nowrap;overflow:hidden}
 .st.on{border-color:var(--orange);background:#FFF3EE}
 .st.on .s{color:var(--orange);font-weight:700}
 .st.ok{border-color:var(--green);background:#EEFCF6}
 .st.ok .s{color:var(--teal);font-weight:700}
+.st.bad{border-color:var(--red);background:#FDEEED}
+.st.bad .s{color:var(--red);font-weight:700}
 .st.dim{opacity:.45}
-.arr{position:absolute;top:84px;width:30px;height:2px;background:var(--line)}
+.arr{position:absolute;width:14px;height:2px;background:var(--line)}
 .arr::after{content:"";position:absolute;right:-1px;top:-4px;border-left:7px solid var(--line);border-top:5px solid transparent;border-bottom:5px solid transparent}
 .arr.on{background:var(--orange)}.arr.on::after{border-left-color:var(--orange)}
+.arr.ok{background:var(--green)}.arr.ok::after{border-left-color:var(--green)}
+.j .st{top:30px;width:116px}.j .arr{top:55px}
+.n .st{top:106px;width:150px}.n .arr{top:131px}
+/* the console, as the act looks in AWS */
+#aw{position:absolute;right:16px;top:16px;width:212px;height:118px;border-radius:9px;overflow:hidden;border:1.5px solid var(--line);cursor:pointer;background:var(--pale);display:none}
+#aw img{width:100%;height:100%;object-fit:cover;object-position:top left}
+#aw .l{position:absolute;left:0;right:0;bottom:0;padding:4px 8px;background:rgba(11,19,42,.78);color:#fff;font-size:9.5px;font-weight:700;letter-spacing:.08em}
+#aw .l b{color:var(--yellow)}
+#ov{position:absolute;inset:0;background:rgba(11,19,42,.93);display:none;z-index:9;cursor:pointer}
+#ov img{position:absolute;left:50%;top:40px;transform:translateX(-50%);max-width:1480px;max-height:760px;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+#ov .c{position:absolute;left:0;right:0;bottom:36px;text-align:center;color:#fff;font-size:18px;font-weight:600}
+#ov .c b{color:var(--yellow);font-weight:800;letter-spacing:.1em;font-size:12px;display:block;margin-bottom:8px}
 /* the bottom */
 #tl{position:absolute;left:40px;top:668px;width:1520px;height:40px}
 #tl .bar{position:absolute;left:0;right:0;top:18px;height:4px;background:var(--line);border-radius:2px}
@@ -292,7 +381,8 @@ h1 b{color:var(--orange);font-weight:800}
 #cap .tag{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--orange)}
 #cap .tt{font-size:24px;font-weight:800;margin-top:6px;letter-spacing:-.01em}
 #cap .tx{font-size:15px;line-height:1.45;color:var(--slate);margin-top:8px;font-weight:500}
-#cap .sw{position:absolute;right:24px;top:18px;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--orange);display:none}
+#cap .tt,#cap .tx{max-width:610px}
+#cap .sw{position:absolute;right:248px;top:18px;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--orange);display:none}
 #tick{position:absolute;left:960px;top:724px;width:600px;height:150px;background:var(--navy);border-radius:14px;padding:14px 18px;overflow:hidden;color:#fff;font-family:var(--mono);font-size:12.5px;line-height:1.55}
 #tick .h{color:var(--mist);font-family:Montserrat;font-size:11px;font-weight:700;letter-spacing:.14em;margin-bottom:4px}
 #tick .l{white-space:nowrap}
@@ -307,9 +397,9 @@ h1 b{color:var(--orange);font-weight:800}
 """
 
 
-def page(devs, rows, M, alarm, lam, deploys, judge, day):
+def page(devs, rows, M, alarm, lam, deploys, judge, day, shots):
     data = json.dumps({"devs": devs, "ev": rows, "M": M, "alarm": alarm, "lam": lam, "deploys": deploys,
-                       "judge": judge, "day": day}, ensure_ascii=False, separators=(",", ":"))
+                       "judge": judge, "day": day, "shots": shots}, ensure_ascii=False, separators=(",", ":"))
     tdc = os.path.join(TALK, "assets", "cali", "tdc")
     logo = data_uri(os.path.join(tdc, "logo-navy.png"))
     return f"""<!DOCTYPE html>
@@ -340,19 +430,36 @@ def page(devs, rows, M, alarm, lam, deploys, judge, day):
       <div class="kpi r" style="left:510px"><div class="n" id="k-mf">0</div><div class="l">fallas no oídas</div></div>
     </div>
     <div id="chart"><div class="ct">FALLAS NO OÍDAS POR MINUTO · <span id="ct-thr"></span></div><svg viewBox="0 0 660 150"></svg></div>
-    <div class="gate"><div class="rl">OBSERVACIÓN Y GATE · LA RED DE SEGURIDAD</div>
-      <div class="st" id="s-alarm" style="left:16px"><div class="t">Alarma</div><div class="s">station-missed-faults<br>OK</div></div>
-      <div class="arr" id="a1" style="left:160px"></div>
-      <div class="st" id="s-lambda" style="left:194px"><div class="t">Lambda</div><div class="s">station-rollback<br>en espera</div></div>
-      <div class="arr" id="a2" style="left:338px"></div>
-      <div class="st" id="s-gg" style="left:372px"><div class="t">Greengrass</div><div class="s" id="s-dep">despliegues<br>—</div></div>
-      <div class="st" id="s-ssm" style="left:514px;width:128px"><div class="t">Parameter Store</div><div class="s">last_good_version<br><b id="s-lg">1.0.0</b></div></div>
+    <div class="gate"><div class="rl">EL GATE · ¿CUÁNDO VOLVER ATRÁS?</div>
+      <div class="gl" style="top:14px"><b>EL JUEZ</b> · Step Functions station-judge · decide antes de que la versión nueva decida</div>
+      <div class="j">
+        <div class="st" id="j0" style="left:0"><div class="t">Sombra</div><div class="s">DeployInShadow<br>—</div></div>
+        <div class="arr" id="ja0" style="left:118px"></div>
+        <div class="st" id="j1" style="left:136px"><div class="t">Hornear</div><div class="s">Bake<br>—</div></div>
+        <div class="arr" id="ja1" style="left:254px"></div>
+        <div class="st" id="j2" style="left:272px"><div class="t">Medir</div><div class="s">Logs Insights<br>—</div></div>
+        <div class="arr" id="ja2" style="left:390px"></div>
+        <div class="st" id="j3" style="left:408px"><div class="t">¿Pasa?</div><div class="s">Passes?<br>—</div></div>
+        <div class="arr" id="ja3" style="left:526px"></div>
+        <div class="st" id="j4" style="left:544px"><div class="t">Veredicto</div><div class="s">—<br>—</div></div>
+      </div>
+      <div class="gl" style="top:92px"><b>LA RED DE SEGURIDAD</b> · CloudWatch + Lambda · para lo que se le escape al juez</div>
+      <div class="n">
+        <div class="st" id="s-alarm" style="left:0"><div class="t">Alarma</div><div class="s">station-missed-faults<br>OK</div></div>
+        <div class="arr" id="a1" style="left:152px"></div>
+        <div class="st" id="s-lambda" style="left:170px"><div class="t">Lambda</div><div class="s">station-rollback<br>en espera</div></div>
+        <div class="arr" id="a2" style="left:322px"></div>
+        <div class="st" id="s-gg" style="left:340px"><div class="t">Greengrass</div><div class="s" id="s-dep">despliegues<br>—</div></div>
+        <div class="st" id="s-ssm" style="left:510px"><div class="t">Parameter Store</div><div class="s">last_good_version<br><b id="s-lg">1.0.0</b></div></div>
+      </div>
     </div>
   </div>
   <div id="tl"><div class="bar"></div><div class="done" id="tl-done"></div></div>
-  <div id="cap"><div class="tag" id="c-tag"></div><div class="tt" id="c-tt"></div><div class="tx" id="c-tx"></div><div class="sw" id="c-sw"></div></div>
+  <div id="cap"><div class="tag" id="c-tag"></div><div class="tt" id="c-tt"></div><div class="tx" id="c-tx"></div><div class="sw" id="c-sw"></div>
+    <div id="aw" title="tecla A"><img alt=""><div class="l">ASÍ SE VE EN AWS · <b>tecla A</b></div></div></div>
+  <div id="ov"><img alt=""><div class="c"><b>LA CONSOLA DE AWS · ESC CIERRA</b><span id="ov-c"></span></div></div>
   <div id="tick"><div class="h">LO QUE SALE DE LA ESTACIÓN · demo/watch.sh</div><div id="tk"></div></div>
-  <div id="help">espacio · reproducir  ·  ← → · actos  ·  1 2 4 8 · velocidad  ·  F · pantalla completa</div>
+  <div id="help">espacio · reproducir  ·  ← → · actos  ·  1 2 4 8 · velocidad  ·  A · la consola de AWS  ·  F · pantalla completa</div>
 </div>
 <script>
 const D={data};
@@ -405,7 +512,7 @@ function paint(){{
   DEVS.forEach((d,i)=>{{
     const el=pumps[i], e=dec[i]; if(!e) return;
     const v=el.querySelector('.ver'); v.textContent='v'+e.v; v.className='ver'+(e.v!==EV[0].v?' v2':'');
-    if(e.sv){{ let s=el.querySelector('.ver.sh'); if(!s){{ s=document.createElement('div'); s.className='ver sh'; s.style.left='200px'; s.style.top='38px'; s.style.position='absolute'; el.appendChild(s); }} s.textContent='sombra v'+e.sv+' · '+(e.sa?'ALERT':'normal'); }}
+    if(e.sv){{ let s=el.querySelector('.ver.sh'); if(!s){{ s=document.createElement('div'); s.className='ver sh'; s.style.position='absolute'; el.appendChild(s); }} s.textContent='sombra: '+(e.sa?'ALERT':'normal'); }}
     else {{ const s=el.querySelector('.ver.sh'); if(s) s.remove(); }}
     const miss=e.f&&!e.al, off=q[i]>3;
     el.className='pump'+(e.al?' alert':'')+(miss?' miss':'')+(off?' off':'');
@@ -419,13 +526,29 @@ function paint(){{
   }});
   $('#k-ev').textContent=arrived; $('#k-al').textContent=alerts; $('#k-late').textContent=late; $('#k-mf').textContent=missed;
   chart();
+  /* the judge */
+  const jx=(D.judge||[]).filter(x=>x.start<=t).pop();
+  const J=['j0','j1','j2','j3','j4'];
+  if(!jx){{ J.forEach(id=>{{ $('#'+id).className='st dim'; }}); for(let i=0;i<4;i++) $('#ja'+i).className='arr'; $('#j4 .s').innerHTML='—<br>—'; }}
+  else {{
+    const en=jx.enter, at=k=>en[k]!==undefined&&en[k]<=t, v=jx.verdict||{{}}, inp=jx.input||{{}};
+    const done=jx.stop&&t>=jx.stop, rej=jx.status!=='SUCCEEDED';
+    const bakeOn=at('Bake')&&!(at('Measure')), bakeS=at('Bake')?Math.min(inp.bakeSeconds||120,Math.round(((at('Measure')?en.Measure:t)-en.Bake)/1000)):0;
+    const set=(id,cls,s)=>{{ const e=$('#'+id); e.className='st '+cls; e.querySelector('.s').innerHTML=s; }};
+    set('j0',at('DeployInShadow')?(at('Bake')?'ok':'on'):'dim','DeployInShadow<br>'+(at('DeployInShadow')?'v'+inp.candidate+' en sombra · ring 0':'—'));
+    set('j1',at('Bake')?(bakeOn?'on':'ok'):'dim','Bake<br>'+(at('Bake')?bakeS+' s de '+(inp.bakeSeconds||120):'—'));
+    set('j2',at('Measure')?(at('Verdict')?'ok':'on'):'dim','Logs Insights<br>'+(at('Verdict')?'clips '+(v.clips??'?')+' · no oídas '+(v.missed??'?'):at('Measure')?'consultando…':'—'));
+    set('j3',at('Passes?')?(done?(rej?'bad':'ok'):'on'):'dim','Passes?<br>'+(at('Passes?')?('≥'+(inp.minClips||20)+' clips · ≤'+Math.round((inp.maxMissedRate||.1)*100)+'% no oídas'):'—'));
+    set('j4',done?(rej?'bad':'ok'):'dim',(done?(rej?'RECHAZADA':'PROMOVIDA'):'—')+'<br>'+(done?(rej?'ring 0 → v'+inp.active+' · SNS':'ring 0, ring 1, última buena'):'—'));
+    [['ja0','Bake'],['ja1','Measure'],['ja2','Passes?'],['ja3',null]].forEach(([id,k],i)=>{{ const o=k?at(k):done; $('#'+id).className='arr'+(o?(i===3&&rej?' on':' ok'):''); }});
+  }}
   /* the safety net */
   const on=D.alarm&&t>=D.alarm, lam=D.lam&&t>=D.lam.t;
   const sa=$('#s-alarm'); sa.className='st'+(on?' on':''); sa.querySelector('.s').innerHTML='station-missed-faults<br>'+(on?'ALARM':'OK');
   $('#a1').className='arr'+(on?' on':'');
   const sl=$('#s-lambda'); sl.className='st'+(lam?' on':''); sl.querySelector('.s').innerHTML='station-rollback<br>'+(lam?'rollback → '+D.lam.to:'en espera');
   $('#a2').className='arr'+(lam?' on':'');
-  const deps=D.deploys.filter(x=>x.t<=t&&x.t>=T0-600000&&/Ring0/.test(x.name)).sort((a,b)=>b.t-a.t).slice(0,2);
+  const deps=D.deploys.filter(x=>x.t<=t&&x.t>=T0-600000&&(x.g?x.g==='StationRing0':/Ring0/.test(x.name))).sort((a,b)=>b.t-a.t).slice(0,2);
   const sg=$('#s-gg'); sg.className='st'+(lam?' on':deps.length?' ok':'');
   $('#s-dep').innerHTML='ring 0<br>'+(deps.length?deps.map((x,k)=>'<span style="'+(k?'color:#AAB6CB;font-weight:400':'')+'">'+x.name.replace(/-StationRing0/,'').replace(/-\\d{{10}}$/,'')+(k?' · inactivo':' · activo')+'</span>').join('<br>'):'—');
   /* ticker */
@@ -434,7 +557,9 @@ function paint(){{
   $('#tl-done').style.width=pos(t)+'%';
   let k=0; while(k+1<M.length && M[k+1].t<=t) k++;
   document.querySelectorAll('#tl .mk').forEach((m,j)=>{{ m.className='mk'+(M[j].t<=t?' done':'')+(j===k?' cur':''); }});
-  if(k!==cur){{ cur=k; $('#c-tag').textContent=M[k].tag; $('#c-tt').textContent=M[k].title; $('#c-tx').textContent=M[k].text; }}
+  if(k!==cur){{ cur=k; $('#c-tag').textContent=M[k].tag; $('#c-tt').textContent=M[k].title; $('#c-tx').textContent=M[k].text;
+    const sh=M[k].shot&&D.shots[M[k].shot]; $('#aw').style.display=sh?'block':'none'; if(sh){{ $('#aw img').src=sh.uri; }}
+    if($('#ov').style.display==='block') showOv(); }}
   /* the stopwatch since the fault nobody heard */
   const mf0=M.find(m=>m.k==='noye'), sw=$('#c-sw');
   if(mf0 && t>=mf0.t+6000 && M[k].k!=='fin'){{ const back=D.lam?D.lam.t:null; const end=back&&t>back?back:t; sw.style.display='block'; sw.textContent='desde la falla: '+Math.max(0,Math.round((end-(mf0.t+6000))/1000))+' s'+(back&&t>back?' · vuelta':''); }} else sw.style.display='none';
@@ -456,6 +581,9 @@ M.forEach((m,j)=>{{ const d=document.createElement('div'); d.className='mk'; d.s
   const l=document.createElement('div'); l.className='ml'+(j%2?' lo':''); l.style.left=pos(m.t)+'%'; l.textContent=m.tag.replace(/^ACTO \\d · /,''); $('#tl').appendChild(d); $('#tl').appendChild(l); }});
 function goto(j){{ j=Math.max(0,Math.min(M.length-1,j)); step(M[j].t); setSpeed(M[j].speed); paint(); if(!playing) toggle(true); }}
 function setSpeed(s){{ speed=s; document.querySelectorAll('#ctl [data-sp]').forEach(b=>b.classList.toggle('on',+b.dataset.sp===s)); }}
+function showOv(){{ const sh=M[cur]&&M[cur].shot&&D.shots[M[cur].shot]; if(!sh) return; $('#ov img').src=sh.uri; $('#ov-c').textContent=sh.cap; $('#ov').style.display='block'; }}
+function hideOv(){{ $('#ov').style.display='none'; }}
+$('#aw').onclick=showOv; $('#ov').onclick=hideOv;
 function toggle(on){{ playing=on===undefined?!playing:on; $('#play').textContent=playing?'❚❚':'▶'; last=null; if(playing) requestAnimationFrame(tick); }}
 function tick(now){{ if(!playing) return; if(last!==null){{ step(Math.min(T1,t+(now-last)*speed)); paint(); if(t>=T1) toggle(false); }} last=now; requestAnimationFrame(tick); }}
 $('#play').onclick=()=>toggle();
@@ -466,6 +594,8 @@ addEventListener('keydown',e=>{{ const k=e.key;
   else if(k==='ArrowLeft'||k==='PageUp'){{ e.preventDefault(); goto(cur-1); }}
   else if(k==='Home'){{ step(T0); paint(); }}
   else if('1248'.includes(k)&&k){{ setSpeed(+k); }}
+  else if(k.toLowerCase()==='a'){{ e.preventDefault(); $('#ov').style.display==='block'?hideOv():showOv(); }}
+  else if(k==='Escape'){{ hideOv(); }}
   else if(k.toLowerCase()==='f'){{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }}
 }});
 window.__st={{seek:ms=>{{ step(ms); paint(); }}, goto, M, T0, T1, toggle}};
@@ -481,9 +611,10 @@ def main():
         sys.exit(f"no events in {EV}/raw-tail.txt")
     devs, rows = compact(ev)
     alarm, lam, deploys = cloud_facts()
-    M = markers(ev, alarm, lam)
+    judge = judge_steps()
+    M = markers(ev, alarm, lam, judge)
     day = local(ev[0]["ts"]).strftime("%-d de %B de %Y").replace("October", "octubre").replace("November", "noviembre")
-    html = page(devs, rows, M, alarm, lam, deploys, judge_steps(), day)
+    html = page(devs, rows, M, alarm, lam, deploys, judge, day, console_shots())
     open(OUT, "w", encoding="utf-8").write(html)
     print(f"✔ {OUT}  ({len(html.encode()) / 1024:.0f} KB · {len(rows)} events · {len(M)} markers: "
           + ", ".join(m["k"] for m in M) + ")")
