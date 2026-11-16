@@ -1,0 +1,77 @@
+/* Tech Day Cali 2026 skin for the Bogotá deck: same slides, the event's template on top.
+   Appended after deck.src.html's own CSS by build_deck.py when DECK_THEME=tdc.
+   Pieces: talk/assets/cali/tdc/ (TDC placeholders) · font: Montserrat (MONT placeholders).
+   Palette: navy #0B132A · orange #FF5A1F · green #12D18E · yellow #FFC700 · teal #1F8F7A. */
+@font-face{font-family:Montserrat;font-weight:400;font-style:normal;src:url({{MONT:Regular}}) format("woff2")}
+@font-face{font-family:Montserrat;font-weight:500;font-style:normal;src:url({{MONT:Medium}}) format("woff2")}
+@font-face{font-family:Montserrat;font-weight:600;font-style:normal;src:url({{MONT:SemiBold}}) format("woff2")}
+@font-face{font-family:Montserrat;font-weight:700;font-style:normal;src:url({{MONT:Bold}}) format("woff2")}
+@font-face{font-family:Montserrat;font-weight:800;font-style:normal;src:url({{MONT:ExtraBold}}) format("woff2")}
+:root{
+  --ink:#0B132A; --acc:#FF5A1F; --blue:#24407E; --cyan:#12D18E; --yel:#FFC700; --mist:#AAB6CB;
+  --slate:#5C6B85; --muted:#7C8AA3; --light:#F6F8FB; --link:#1F8F7A;
+  --ink66:#5C6B85; --ink45:#7C8AA3; --acc12:rgba(255,90,31,.10);
+  --sans:Montserrat,"Segoe UI",Helvetica,Arial,sans-serif;
+}
+html,body{background:#0B132A}
+
+/* content slides: the template's light background (navy shards bottom right) */
+.s{background:#F6F8FB url({{TDC:fondo-contenido.jpg}}) 0 0/1600px 900px no-repeat}
+.kick{color:var(--acc);letter-spacing:.12em}
+.kick::before{width:0;height:0;background:none;box-shadow:none;margin-right:22px;
+  border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:14px solid var(--cyan)}
+.ttl{font-size:48px;font-weight:800;letter-spacing:-.01em}
+.ttl b,.ttl i.pn{color:var(--acc)}
+
+/* footer: the navy logo bottom left, the click dots, the site in white over the shards */
+.foot{background:none}
+.foot .lg{left:84px;top:30px;width:84px;height:71px;background:url({{TDC:logo-navy.png}}) 0 0/100% 100% no-repeat}
+.foot .num{left:196px;top:56px;font-weight:600}
+.foot .dots i.on{background:var(--acc)}
+.foot .url{right:56px;top:76px;color:#FFFFFF;font-weight:600;letter-spacing:.08em;text-transform:uppercase;font-size:15px}
+.fsrc{right:460px}
+
+/* cover: dark background, white logo, the flying bird */
+.s.cov{background:#0B132A url({{TDC:fondo-portada.jpg}}) 0 0/1600px 900px no-repeat;color:#FFFFFF}
+.cov .logo{left:84px;top:64px;width:190px;height:161px;background:url({{TDC:logo-blanco.png}}) 0 0/100% 100% no-repeat}
+.cov .hug{left:1000px;top:250px;width:540px;height:493px;background:url({{TDC:pajaro-vuela.png}}) 0 0/100% 100% no-repeat}
+.cov h1{font-size:88px;font-weight:800}
+.cov h1 b{color:var(--cyan)}
+.cov .sub{font-weight:500;max-width:900px}
+.cov .who{color:var(--yel);font-weight:700}
+.cov .ev{font-size:26px;font-weight:600}
+.cov .tag{color:var(--cyan);letter-spacing:.1em}
+
+/* section dividers: dark background */
+.s.dv{background:#0B132A url({{TDC:fondo-oscuro.jpg}}) 0 0/1600px 900px no-repeat;color:#FFFFFF}
+.dv .sq{width:0;height:0;background:none;box-shadow:none;
+  border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:21px solid var(--cyan)}
+.dv .n{color:var(--cyan);font-weight:800}
+.dv .t{font-weight:800}
+.dv .d{color:var(--mist)}
+.dv .foot .lg{background-image:url({{TDC:logo-blanco.png}})}
+.dv .foot .num{color:var(--mist)}
+.dv .foot .dots i{background:rgba(255,255,255,.25)}
+
+/* reflection block and cards on the light background */
+.refl{background:#FFFFFF;border-color:var(--line)}
+.play:hover{background:#E04A12}
+
+/* closing: dark background, the bird, the white logo */
+.s.end{background:#0B132A url({{TDC:fondo-oscuro.jpg}}) 0 0/1600px 900px no-repeat;color:#FFFFFF}
+.end .pn{left:880px;top:150px;width:620px;height:566px;background:url({{TDC:pajaro-vuela.png}}) 0 0/100% 100% no-repeat}
+.end .am{display:none}
+.end .lg{width:150px;height:127px;background-image:url({{TDC:logo-blanco.png}})}
+.end .ant,.end .bd .tg{color:var(--cyan)}
+.end h2{font-weight:800}
+.end .bd .nm{color:var(--yel);font-weight:700}
+.end .bd .h{color:#FFFFFF}
+.end .bd .qr{background:#FFFFFF;padding:8px;border-radius:8px}
+.end .dt{color:var(--mist)}
+
+/* Montserrat is wider than Calibri: the regulation cards (annex) get a size smaller so they fit */
+.cards3 .cd .ch{font-size:27px}
+.cards3 .cd .cl{font-size:18px;padding:8px 0}
+.cards3 .cd .cf{font-size:14px}
+/* the demo-to-production pairs (annex): a size smaller, so the last row clears the footer */
+.pairs > div{font-size:26px;padding:16px 0}

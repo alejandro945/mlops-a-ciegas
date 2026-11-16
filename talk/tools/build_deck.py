@@ -19,6 +19,9 @@ Usage (from the repo root):
     LINKEDIN=linkedin.com/in/your-profile  ...                                                          # your profile
     STRICT=1 ...                                                                                        # fail if a figure is missing
     DECK_OUT=/tmp/deck.html ...                                                                         # write somewhere else
+    DECK_THEME=tdc ...                       # Tech Day Cali: deck-cali.src.html (the same deck, plus the judge and
+                                             # the batches) on its template → talk/techdaycali.html, notes from
+                                             # GUION-techdaycali.md (theme-tdc.css, the figures in its palette)
     STATION_AUDIO_DIR=...                                                                               # other pump-a/b.wav folder
     Your photo: save it as talk/assets/photo.jpg (or .jpeg / .png) and run the script again; it is cropped to a square.
 """
@@ -26,14 +29,18 @@ import base64, html as H, mimetypes, os, re, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+TDC = os.environ.get("DECK_THEME") == "tdc"    # Tech Day Cali: its own source and script, the event's template
+if TDC:
+    os.environ["ISO_THEME"] = "tdc"            # the figures in its palette (iso.py), before they are imported
+    os.environ["ARCH_JUDGE"] = "1"             # the gate is the judge (build_arch.py, build_figs.py)
 from build_arch import build as arch, INK     # noqa: E402
 from build_iso import FIGS                    # noqa: E402
 import metrics                                # noqa: E402
 
 TALK = os.path.dirname(HERE)
-SRC = os.path.join(HERE, "deck.src.html")
-DST = os.environ.get("DECK_OUT") or os.path.join(TALK, "devopsdays.html")
-SCRIPT = os.path.join(TALK, "GUION-devopsdays.md")    # the speaker script (Spanish)
+SRC = os.path.join(HERE, "deck-cali.src.html" if TDC else "deck.src.html")
+DST = os.environ.get("DECK_OUT") or os.path.join(TALK, "techdaycali.html" if TDC else "devopsdays.html")
+SCRIPT = os.path.join(TALK, "GUION-techdaycali.md" if TDC else "GUION-devopsdays.md")    # the speaker script (Spanish)
 ASSETS = os.path.join(TALK, "assets")
 # your photo (optional): photo.jpg, photo.jpeg or photo.png; it is cropped to a centered square
 PHOTO = next((os.path.join(ASSETS, f"photo.{e}") for e in ("jpg", "jpeg", "png")
@@ -203,6 +210,27 @@ def qr_svg(url):
     return f'<svg viewBox="0 0 {n} {n}" shape-rendering="crispEdges"><path d="{d}" fill="{INK}"/></svg>'
 
 
+# Tech Day Cali: the Bogotá colors that are not in iso.py (CSS, canvas, build_arch)
+TDC_COLORS = {
+    "#071329": "#0B132A", "#6D28D9": "#FF5A1F", "#2448FF": "#24407E", "#00BCEB": "#12D18E",
+    "#5B1FC0": "#E04A12", "#E5D8F8": "#FFE1D4", "#F0EAFB": "#FFF0E9", "#A47AE7": "#FF9C78", "#351C78": "#9A3410",
+    "#475569": "#5C6B85", "#5C7290": "#7C8AA3", "#F4F7FC": "#F6F8FB",
+    "rgba(109,40,217,": "rgba(255,90,31,", "rgba(7,19,41,": "rgba(11,19,42,",
+}
+
+
+def tdc_skin(html):
+    """The deck on the Tech Day Cali template: its colors, and theme-tdc.css after the deck's CSS.
+    The slide text goes in Montserrat; the SVG figures and the canvas keep Carlito, they are laid out for its widths."""
+    for a, b in TDC_COLORS.items():
+        html = re.sub(re.escape(a), b, html, flags=re.I)
+    css = open(os.path.join(HERE, "theme-tdc.css"), encoding="utf-8").read()
+    css = re.sub(r"\{\{TDC:([\w.-]+)\}\}", lambda m: data_uri(os.path.join(ASSETS, "cali", "tdc", m.group(1))), css)
+    css = re.sub(r"\{\{MONT:(\w+)\}\}",
+                 lambda m: data_uri(os.path.join(ASSETS, "fonts", "montserrat", f"Montserrat-{m.group(1)}.woff2")), css)
+    return html.replace("</style>", css + "</style>", 1)
+
+
 def main():
     html = open(SRC, encoding="utf-8").read()
     repo = os.environ.get("REPO_URL", "")
@@ -226,6 +254,8 @@ def main():
     html = re.sub(r"\{\{IMG:([\w.-]+)\}\}", lambda m: data_uri(os.path.join(ASSETS, "template", m.group(1))), html)
     html = re.sub(r"\{\{BADGE:([\w.-]+)\}\}", lambda m: data_uri(os.path.join(ASSETS, "badges", m.group(1))), html)
     html = re.sub(r"\{\{FONT:([\w.-]+)\}\}", lambda m: data_uri(os.path.join(ASSETS, "fonts", m.group(1) + ".woff2")), html)
+    if TDC:
+        html = tdc_skin(html)
     html = inject_notes(html)
     html = resolve_metrics(html)                 # measured numbers: on the slides and in the notes
     left = re.findall(r"\{\{[A-Z_]+(?::[\w.-]+)?\}\}", html)

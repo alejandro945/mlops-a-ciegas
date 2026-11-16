@@ -35,6 +35,8 @@ _EXTRA = {
     "sm_model":       "Resource-Icons_07312026/Res_Artificial-Intelligence/Res_Amazon-SageMaker-AI_Model_48.svg",
     "iot_sensor_gen": "Resource-Icons_07312026/Res_IoT/Res_AWS-IoT_Sensor_48.svg",
     "iot_utility":    "Resource-Icons_07312026/Res_IoT/Res_AWS-IoT_Thing_Utility_48.svg",
+    "sfn":            "Architecture-Service-Icons_07312026/Arch_Application-Integration/64/Arch_AWS-Step-Functions_64.svg",
+    "sns":            "Architecture-Service-Icons_07312026/Arch_Application-Integration/64/Arch_Amazon-Simple-Notification-Service_64.svg",
 }
 try:
     import aws_icons as _aws
@@ -313,9 +315,14 @@ def fig_rings(static=False):
     # the rollback: the gate says no and ring 0 goes back to the last good version
     b = [gate(560, 350, ok=False)]
     b.append(L([(560, 378), (560, 520), (306, 520), (306, Y1 + 8)], PURPLE, 3, head=12))
-    b.append(T(96, 586, "El rollback", 24, PURPLE, 700))
-    b.append(T(96, 618, "La alarma ve fallas que nadie oyó", 19, NAVY))
-    b.append(T(96, 646, "y despliega la última versión buena.", 19, NAVY))
+    if _os.environ.get("ARCH_JUDGE") == "1":   # the gate is the judge (next slide); the alarm, the net
+        b.append(T(96, 586, "El gate: un juez", 24, PURPLE, 700))
+        b.append(T(96, 618, "Compara la v2 con la v1 en el canary", 19, NAVY))
+        b.append(T(96, 646, "antes de dejarla decidir.", 19, NAVY))
+    else:
+        b.append(T(96, 586, "El rollback", 24, PURPLE, 700))
+        b.append(T(96, 618, "La alarma ve fallas que nadie oyó", 19, NAVY))
+        b.append(T(96, 646, "y despliega la última versión buena.", 19, NAVY))
     b.append(T(96, 682, "El ring 1 nunca recibe la v2.", 19, SLATE))
     o.append(G(3, "".join(b)))
     return wrap("".join(o))
@@ -950,6 +957,158 @@ def fig_spine_n(n, static=False):
             + "".join(o) + "</svg>")
 
 
+# ─────────────────────────────────────────────────────────────────────
+#  the judge: when to go back, decided before the new model ever decides (poc-devopsdays/cloud/judge.asl.json)
+# ─────────────────────────────────────────────────────────────────────
+def _judge_rules():
+    """The demo's thresholds, read from demo/judge.sh (MIN_CLIPS, MAX_MISSED_RATE, MAX_EXTRA_RATE, BAKE)."""
+    import re
+    r = {"MIN_CLIPS": "20", "MAX_MISSED_RATE": "0.1", "MAX_EXTRA_RATE": "0.2", "BAKE": "120"}
+    try:
+        txt = open(_os.path.join(CLOUD_DIR, _os.pardir, "demo", "judge.sh"), encoding="utf-8").read()
+        for k in r:
+            m = re.search(r'^%s="\$\{%s:-([\d.]+)\}"' % (k, k), txt, re.M)
+            if m:
+                r[k] = m.group(1)
+    except OSError as e:
+        print(f"  (warning) judge: could not read demo/judge.sh ({e}); using the planned thresholds", file=sys.stderr)
+    pct = lambda v: f"{float(v) * 100:.0f} %"
+    return {"clips": r["MIN_CLIPS"], "missed": pct(r["MAX_MISSED_RATE"]), "extra": pct(r["MAX_EXTRA_RATE"]),
+            "bake": f"{int(r['BAKE']) // 60} min"}
+
+
+def _clock(cx, cy, r, color):
+    return (f'<circle cx="{cx}" cy="{cy}" r="{r}" fill="{WHITE}" stroke="{color}" stroke-width="3"/>' +
+            L([(cx, cy), (cx, cy - r * .62)], color, 3) + L([(cx, cy), (cx + r * .45, cy + r * .2)], color, 3))
+
+
+def fig_judge(static=False):
+    """The judge (Step Functions): the candidate runs in shadow on the canary, both models hear the same
+    clips, and only then promote or reject. One box per click; the rule at the end."""
+    q = _judge_rules()
+    o = []
+    Y, H, W = 262, 132, 268
+
+    def box(x, title, lines, ic, color=NAVY, fill=WHITE):
+        b = [R(x, Y, W, H, fill=fill, stroke=color, sw=2, rx=12)]
+        b.append(ic(x + 22, Y + 22) if callable(ic) else icon(ic, x + 22, Y + 22, 44))
+        b.append(T(x + 80, Y + 54, title, 28, color, 700))
+        for i, line in enumerate(lines):
+            b.append(T(x + 22, Y + 94 + i * 24, line, 18, SLATE))
+        return "".join(b)
+
+    # 1 · shadow on the canary
+    o.append(G(0, box(96, "Sombra", ["la v2 escucha en el canary,", "pero decide la v1"], "greengrass") +
+               T(96, Y - 18, "AWS Step Functions · station-judge", 18, MUTED, 700, family=MONO)))
+    # 2 · bake and 3 · measure
+    b = [L([(364, Y + H / 2), (392, Y + H / 2)], NAVY, 2.2, head=9)]
+    b.append(box(396, "Hornear", [f"clips reales: {q['bake']} en la demo,", "días en producción"],
+                 lambda x, y: _clock(x + 22, y + 22, 20, NAVY)))
+    b.append(L([(664, Y + H / 2), (692, Y + H / 2)], NAVY, 2.2, head=9))
+    b.append(box(696, "Medir", ["mismos clips: ¿falló donde la v1", "oyó? ¿alertó sola?"], "cw_logs"))
+    o.append(G(1, "".join(b)))
+    # 4 · verdict: promote, or bake more
+    cx, cy = 1056, Y + H / 2
+    b = [L([(964, cy), (1018, cy)], NAVY, 2.2, head=9)]
+    b.append(f'<polygon points="{cx},{cy - 38} {cx + 38},{cy} {cx},{cy + 38} {cx - 38},{cy}" fill="{WHITE}" '
+             f'stroke="{NAVY}" stroke-width="2.4"/>')
+    b.append(T(cx, cy + 7, "¿Pasa?", 18, NAVY, 700, "middle"))
+    b.append(L([(cx, cy - 38), (cx, Y + 20), (1140, Y + 20)], NAVY, 2.2, head=9))
+    b.append(T(cx + 10, Y + 8, "sí", 18, NAVY, 700))
+    b.append(R(1144, Y - 18, 360, 76, fill=WHITE, stroke=NAVY, sw=2, rx=12))
+    b.append(T(1166, Y + 16, "Promover", 26, NAVY, 700))
+    b.append(T(1166, Y + 44, "ring 0 → ring 1 → la última buena", 18, SLATE))
+    # not enough clips yet: back to bake
+    b.append(L([(cx, cy + 38), (cx, Y + H + 52), (530, Y + H + 52), (530, Y + H + 4)], MUTED, 2, dash="7 6", head=9))
+    b.append(T(560, Y + H + 44, "pocos clips todavía: hornea más", 18, MUTED, 700))
+    o.append(G(2, "".join(b)))
+    # 5 · reject: the canary goes back alone, and somebody hears about it
+    b = [L([(cx + 38, cy), (1100, cy), (1100, Y + 112), (1140, Y + 112)], PURPLE, 2.6, head=10)]
+    b.append(T(1108, cy - 10, "no", 18, PURPLE, 700))
+    b.append(R(1144, Y + 74, 360, 96, fill=mix(PURPLE, WHITE, .92), stroke=PURPLE, sw=2.4, rx=12))
+    b.append(T(1166, Y + 108, "Rechazar", 26, PURPLE, 700))
+    b.append(T(1166, Y + 136, "el canary vuelve a la v1 solo", 18, NAVY))
+    b.append(icon("sns", 1452, Y + 88, 36))
+    b.append(T(1166, Y + 160, "y llega un aviso por SNS", 18, SLATE))
+    o.append(G(3, "".join(b)))
+    # the rule: no ground truth needed, two models on the same audio
+    y0 = 520
+    b = [R(96, y0, 1408, 150, fill=LIGHT, stroke=LINE, sw=1.5, rx=12)]
+    b.append(T(124, y0 + 40, "LA REGLA DE LA DEMO", 16, MUTED, 700, family=MONO, extra='letter-spacing="2"'))
+    for k, (big, small) in enumerate(((f"≥ {q['clips']}", "clips del canary"),
+                                      (f"≤ {q['missed']}", "fallas que la v1 sí oyó"),
+                                      (f"≤ {q['extra']}", "alertas que da sola"))):
+        x = 124 + k * 300
+        b.append(T(x, y0 + 100, big, 46, PURPLE if k == 1 else NAVY, 700))
+        b.append(T(x, y0 + 128, small, 18, SLATE))
+    b.append(L([(1040, y0 + 30), (1040, y0 + 120)], LINE, 1.5))
+    b.append(T(1070, y0 + 70, "No necesita saber la verdad:", 22, NAVY, 700))
+    b.append(T(1070, y0 + 100, "compara dos modelos", 22, NAVY))
+    b.append(T(1070, y0 + 128, "sobre el mismo audio.", 22, NAVY))
+    o.append(G(4, "".join(b)))
+    return wrap("".join(o))
+
+
+# ─────────────────────────────────────────────────────────────────────
+#  send in batches: one radio wake-up per minute instead of one per clip
+# ─────────────────────────────────────────────────────────────────────
+def fig_batch(static=False):
+    """One minute of one pump, a clip every 3 s (the PoC's interval): one send per clip against one batch
+    per minute, with the alert that does not wait. Drawn, not measured: the shaded band is the radio awake."""
+    o = []
+    X0, X1 = 330, 1480                       # the minute
+    sx = lambda t: X0 + (X1 - X0) * t / 60
+    awake = mix(PURPLE, WHITE, .80)
+
+    def lane(y, label, sub):
+        b = [T(96, y + 6, label, 26, NAVY, 700), T(96, y + 34, sub, 18, SLATE)]
+        b.append(L([(X0, y + 40), (X1, y + 40)], LINE, 1.5))
+        for t in (0, 15, 30, 45, 60):
+            b.append(T(sx(t), y + 64, f"{t} s", 15, MUTED, 400, "middle"))
+        return "".join(b)
+
+    # one by one: every clip wakes the radio and waits for its ack
+    y = 262
+    b = [lane(y, "Uno por uno", "20 envíos por minuto")]
+    for k in range(20):
+        t = 1.5 + k * 3
+        b.append(R(sx(t), y - 22, sx(2.2) - sx(0), 58, fill=awake, rx=3))
+        b.append(R(sx(t) - 4, y + 4, 8, 22, fill=NAVY, rx=2))
+    b.append(T(X1, y - 34, "la radio casi nunca se duerme", 18, PURPLE, 700, "end"))
+    o.append(G(0, "".join(b)))
+    # batched: the normal clips wait in the local queue, the alert goes now, one send at the end
+    y = 432
+    b = [lane(y, "Por lotes", "1 envío por minuto + lo urgente")]
+    for k in range(19):
+        t = 1.5 + k * 3
+        b.append(R(sx(t) - 4, y + 18, 8, 8, fill=S400, rx=2))
+    b.append(R(sx(58.5) - 30, y - 22, sx(4) - sx(0), 58, fill=awake, rx=3))
+    b.append(R(sx(58.5) - 8, y - 4, 16, 30, fill=NAVY, rx=2))
+    b.append(T(sx(58.5), y - 32, "el lote", 16, NAVY, 700, "end"))
+    t = 34.5                                   # the alert does not wait for the batch
+    b.append(R(sx(t) - 10, y - 22, sx(2.2) - sx(0), 58, fill=awake, rx=3))
+    b.append(R(sx(t) - 4, y + 4, 8, 22, fill=PURPLE, rx=2))
+    b.append(T(sx(t), y - 32, "ALERT: sale ya", 16, PURPLE, 700, "middle"))
+    b.append(T(X0, y + 92, "los clips normales esperan en la cola local", 16, MUTED, 400))
+    b.append(T(X1, y + 92, "ilustración: una bomba, un clip cada 3 s", 16, MUTED, 400, "end"))
+    o.append(G(1, "".join(b)))
+    # the strategies
+    y0, cw = 568, (1408 - 3 * 24) / 4
+    cards = (("01", "Junta por tiempo o tamaño", "un mensaje por minuto, o al llenar 5 KB"),
+             ("02", "Lo urgente no espera", "una ALERT sale en el momento"),
+             ("03", "Resume lo normal", "conteos y percentiles; detalle si cambia"),
+             ("04", "Comprime y prioriza", "gzip o CBOR; si se llena, cae lo normal"))
+    b = []
+    for k, (n, h, d) in enumerate(cards):
+        x = 96 + k * (cw + 24)
+        b.append(R(x, y0, cw, 124, fill=WHITE, stroke=PURPLE if k == 1 else LINE, sw=1.8, rx=12))
+        b.append(T(x + 22, y0 + 34, n, 17, PURPLE if k == 1 else MUTED, 700, family=MONO))
+        b.append(T(x + 22, y0 + 68, h, 23, NAVY, 700))
+        b.append(T(x + 22, y0 + 98, d, 16.5, SLATE))
+    o.append(G(2, "".join(b)))
+    return wrap("".join(o))
+
+
 def _arch(mode):
     """AWS architecture (build_arch.py), as an "arq lay-a" layer for <div class="stack">."""
     from build_arch import deck_layer
@@ -960,7 +1119,7 @@ def _arch(mode):
 FIGS = {"optimizar": fig_optimize, "pasaporte": fig_passport, "anillos": fig_rings,
         "drift": fig_drift, "medir": fig_measure, "espina": fig_spine,
         "entrenar": fig_train, "receta": fig_recipe, "sinred": fig_offline,
-        "monitoreo": fig_monitoring,
+        "monitoreo": fig_monitoring, "juez": fig_judge, "lotes": fig_batch,
         "arq_ref": lambda static=False: _arch("ref"), "arq_poc": lambda static=False: _arch("poc"),
         "seq": lambda static=False: __import__("build_seq").build(static),
         "onda_a": lambda static=False: fig_wave("a", static), "onda_b": lambda static=False: fig_wave("b", static)}

@@ -21,6 +21,8 @@ Usage:
     AWS_ICONS=~/Downloads/Icon-package_07312026 python3 build_arch.py [out/]
     ARCH_THEME=tdc …   Tech Day Cali: its palette and Montserrat, and the PoC as it is now, with the
                        judge (Step Functions) and the clips worth keeping (stream manager → S3)
+    ARCH_JUDGE=1 …     the judge and the clips only, in the DevOpsDays look (piece numbers and legend);
+                       the Tech Day Cali deck (build_deck.py, DECK_THEME=tdc) recolors it
 """
 import math, os, sys
 import aws_icons
@@ -28,6 +30,7 @@ from aws_icons import nested as _nested
 
 THEME = os.environ.get("ARCH_THEME", "devopsdays")
 TDC = THEME == "tdc"
+JUDGE = TDC or os.environ.get("ARCH_JUDGE") == "1"   # the gate is the judge; the alarm and its Lambda, the net
 if TDC:
     INK = "#0B132A"   # navy from the Tech Day Cali template
     ACC = "#FF5A1F"   # its orange: the gate
@@ -36,7 +39,7 @@ if TDC:
 else:
     INK = "#071329"   # navy from the DevOpsDays Bogotá template
     ACC = "#6D28D9"   # purple from the template
-    DATA = INK
+    DATA = "#1F8F7A" if JUDGE else INK   # teal: the clips worth keeping
     FONT = "Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif"
 MONO = "'Courier New', ui-monospace, Menlo, Consolas, monospace"
 
@@ -160,7 +163,7 @@ NODES = [
     ("lambda",      1212, 612, 64, "4",     ("Lambda", "rollback"),                      ("Controlador", "decide volver"), None),
     ("ssm_param",   1392, 612, 56, "4",     ("Parameter Store", "última versión buena"), ("Memoria", "última versión buena"), None),
 ]
-if TDC:
+if JUDGE:
     # what the audience needs: the role under each service, the judge in the bottom row and the
     # alarm with its Lambda as the safety net (the parameter store stays out: the judge and the
     # Lambda read and write it, it is not a step)
@@ -216,7 +219,7 @@ def _poc_site():
         h = [10, 22, 14, 30, 18, 34, 26, 16, 30, 12, 24, 16, 8][k]
         add(f'<rect x="{cx - 39 + k * 6}" y="{cy - h / 2}" width="3.6" height="{h}" rx="1.5" fill="{INK}"/>')
     text(cx, cy + 50, "Audio real", 18 if TDC else 20, INK, 700, "middle")
-    if TDC:
+    if JUDGE:   # the stream manager sits to the right
         text(cx, cy + 70, "MIMII DUE · Hitachi", 14, INK, 400, "middle", op=.7)
     else:
         text(cx + 70, cy + 6, "MIMII DUE", 16, INK, 400, op=.75, family=MONO)
@@ -252,11 +255,11 @@ def build(mode="ref", deck=False, slow=True):
         group(96, 196, 380, 614, "grp_ec2", "EC2 · la estación simulada", key="site")
     else:
         group(96, 196, 380, 614, "grp_dc", "Sitio" if gen else "Estación", gen=gen, key="site")
-        group(116, 246, 340, 500 if TDC else 392, "iot_ipc", "Equipo" if gen else "Equipo con Greengrass", gen=gen, key="dev")
+        group(116, 246, 340, 540 if JUDGE else 392, "iot_ipc", "Equipo" if gen else "Equipo con Greengrass", gen=gen, key="dev")
     group(580, 196, 924, 614, "grp_cloud", "Nube o datacenter" if gen else "AWS Cloud", gen=gen, key="cloud")
     group(604, 244, 400, 236, None, "PLANO DE CONTROL", dashed=True, op=.45)
     group(1028, 244, 452, 236, None, "FÁBRICA DE MODELOS", dashed=True, op=.45)
-    if TDC:     # the label goes bottom right: the gate's lines climb through the top edge
+    if JUDGE:   # the label goes bottom right: the gate's lines climb through the top edge
         box(604, 520, 876, 214, dashed=True, op=.45)
         text(1466, 724, "OBSERVACIÓN Y GATE", 14, INK, 700, "end", op=.62, ls=1.6)
     else:
@@ -325,12 +328,15 @@ def build(mode="ref", deck=False, slow=True):
     else:
         arrow([(406, 500), (436, 500), (436, 378), (650, 378)], INK, dashed=True, p="3")
     badge(526, 378, 3)
-    arrow([(690, 448), (690, 578)], INK, dashed=True, p="3")
-    arrow([(724, 612), (828, 612)], INK, dashed=True, p="3")
+    if JUDGE:
+        arrow([(680, 448), (680, 578)], INK, dashed=True, p="3")
+    else:
+        arrow([(690, 448), (690, 578)], INK, dashed=True, p="3")
+        arrow([(724, 612), (828, 612)], INK, dashed=True, p="3")
     # ── 4 · gate (fast loop, minutes) ────────────────────────────
-    if TDC:
+    if JUDGE:
         # the judge reads the events and decides the deployment; the alarm and its Lambda are the net
-        arrow([(724, 612), (794, 612)], INK, dashed=True, p="3")
+        arrow([(712, 612), (796, 612)], INK, dashed=True, p="3")
         arrow([(866, 612), (950, 612)], ACC, sw=2.6, p="4")
         arrow([(990, 578), (990, 364), (938, 364)], ACC, sw=2.6, p="4")
         arrow([(830, 582), (830, 552), (1250, 552), (1250, 580)], INK, sw=1.6, head=7, p="4")
@@ -339,14 +345,14 @@ def build(mode="ref", deck=False, slow=True):
         # the clips worth keeping: stream manager → S3, in batches
         arrow([(410, 690), (560, 690), (560, 714), (1132, 714), (1132, 392)], DATA, dashed=True, sw=2.2, p="c")
         add('<g data-p="c">')
-        text(576, 731, "clips que importan · por lotes; sin red, esperan en disco", 14, DATA, 700)
+        text(576, 704, "clips que importan · por lotes; sin red, esperan en disco", 14, DATA, 700)
         add("</g>")
     else:
         arrow([(896, 612), (1000, 612)], ACC, sw=2.6, p="4")
         arrow([(1068, 612), (1174, 612)], ACC, sw=2.6, p="4")
         arrow([(1250, 612), (1358, 612)], ACC, sw=1.8, dashed=True, head=7, p="4")
         arrow([(1212, 578), (1212, 500), (1016, 500), (1016, 372), (940, 372)], ACC, sw=2.6, p="4")
-    badge(1110, 500, 4, ACC)
+    badge(990, 470, 4, ACC) if JUDGE else badge(1110, 500, 4, ACC)
 
     # ── the "before": how models get deployed today (only step 0 of the generic flow) ──
     if gen and slow and deck:
@@ -371,7 +377,7 @@ def build(mode="ref", deck=False, slow=True):
         # sticker top right, under the legend
         add(f'<g data-node="sticker" style="--d:.5s">')
         add(f'<rect x="1150" y="148" width="330" height="38" rx="5" fill="{ACC}"/>')
-        text(1315, 174, "5 bombas · 9 servicios" if TDC else "5 bombas · 7 servicios", 21, "#FFFFFF", 700, "middle")
+        text(1315, 174, "5 bombas · 9 servicios" if JUDGE else "5 bombas · 7 servicios", 21, "#FFFFFF", 700, "middle")
         add("</g>")
 
     if not deck:

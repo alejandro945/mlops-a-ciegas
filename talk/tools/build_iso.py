@@ -269,8 +269,9 @@ def fig_loop(edge=False, static=False):
     corners = [g.P(-.5, -.5, 2.6), g.P(PW + .5, -.5, 2.6), g.P(PW + .5, PD + .5, -.4), g.P(-.5, PD + .5, -.4)]
     xs = [p[0] for p in corners]; ys = [p[1] for p in corners]
     fx, fy = min(xs) - 30, 236
+    fog = LIGHT if os.environ.get("ISO_THEME") == "tdc" else WHITE     # the slide's background (Tech Day Cali: light gray)
     g.add(f'<rect x="{fx:.0f}" y="{fy}" width="{1580 - fx:.0f}" height="{max(ys) + 30 - fy:.0f}" '
-          f'fill="{WHITE}" opacity=".62" data-on="2" data-fog="1"/>')
+          f'fill="{fog}" opacity=".62" data-on="2" data-fog="1"/>')
 
     e, mast, mics, cabs = _station(static)
 

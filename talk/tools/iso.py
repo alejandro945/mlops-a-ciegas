@@ -6,7 +6,7 @@ isometric camera. Three-tone shading: the top face lighter,
 the +y face in the base tone and the +x face darker. Palette from the
 DevOpsDays Bogotá 2026 template.
 """
-import math
+import math, os
 
 NAVY, SLATE, MUTED, LIGHT = "#071329", "#475569", "#5C7290", "#F4F7FC"
 PURPLE, BLUE, CYAN, MAGENTA = "#6D28D9", "#2448FF", "#00BCEB", "#F000A8"
@@ -14,6 +14,9 @@ S100, S200, S300, S400 = "#F1F5F9", "#E2E8F0", "#CBD5E1", "#94A3B8"
 WHITE = "#FFFFFF"
 FONT = "Calibri, CarlitoX, Carlito, 'Segoe UI', Helvetica, Arial, sans-serif"
 MONO = "'Courier New', ui-monospace, Menlo, Consolas, monospace"
+if os.environ.get("ISO_THEME") == "tdc":       # Tech Day Cali: its palette (build_deck.py with DECK_THEME=tdc); the
+    NAVY, SLATE, MUTED, LIGHT = "#0B132A", "#5C6B85", "#7C8AA3", "#F6F8FB"     # labels keep Carlito: the figures are
+    PURPLE, BLUE, CYAN, MAGENTA = "#FF5A1F", "#24407E", "#12D18E", "#FFC700"   # laid out for its widths
 
 C30 = math.cos(math.radians(30))
 
