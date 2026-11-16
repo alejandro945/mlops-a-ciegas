@@ -415,17 +415,6 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="tag" a="4">#TechDayCali</div>
 </section>
 
-<!-- ═══════════════ 2 · THE HOOK: us-east-1, October 20, 2025 (the meme, then the news, then the punchline) ═══════════════ -->
-<section class="s" data-id="gancho" data-sec="0" data-notes="">
-  <div class="kick">Hace un año</div>
-  <div class="ttl wide">20 de octubre de 2025: <b>se cae us-east-1</b></div>
-  <div class="hook">
-    <figure class="hi" data-on="0">{{SHOT:gancho-internet}}<figcaption>Basado en xkcd 2347 · CC BY-NC 2.5</figcaption></figure>
-    <figure class="hi" data-on="1">{{SHOT:gancho-camas}}<figcaption>Prensa, octubre de 2025 · imagen: Eight Sleep</figcaption></figure>
-  </div>
-  <div class="say" data-on="2" style="top:722px;font-size:30px;z-index:5">La decisión vivía en la nube. <b>Llevarla al dispositivo: eso es edge.</b></div>
-  <div class="foot"></div>
-</section>
 
 <!-- ═══════════════ 2 · WHO AM I (right after the cover) ═══════════════ -->
 <section class="s" data-id="quien" data-sec="0" data-notes="">
@@ -646,6 +635,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="kick">La evidencia</div>
   <div class="ttl wide"><b>Demo</b></div>
   <div class="fig">{{FIG:arq_poc}}</div>
+  <div class="sre" style="left:330px;top:142px;font-size:18px;color:var(--muted)">tecla <b style="color:var(--acc)">D</b> · la estación en vivo</div>
   <div class="foot"></div>
 </section>
 
@@ -717,21 +707,6 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="foot"></div>
 </section>
 
-<!-- ═══════════════ 32 · THE FINAL LINE (the audios come back) ═══════════════ -->
-<section class="s" data-id="final" data-sec="0" data-play='{"1":"b"}' data-notes="">
-  <div class="fq" a="1">¿Esta bomba está <b>fallando</b>?</div>
-  <div class="fplay" a="2">
-    <button class="play sm" type="button" data-snd="a" aria-label="Reproducir la bomba A"><i class="ic"></i><span class="lb">Bomba A</span></button>
-    <button class="play sm" type="button" data-snd="b" aria-label="Reproducir la bomba B"><i class="ic"></i><span class="lb">Bomba B</span></button>
-  </div>
-  <div class="evt" data-on="2">
-    <div class="eh">Lo que sale de la estación · bomba B</div>
-    <div class="el"><span>pump-03</span><i>·</i><span>v1.0.0</span><i>·</i><b>ALERT</b><i>·</i><span>score 0.42 (threshold 0.34)</span><i>·</i><span>input 0.7</span></div>
-    <div class="ef">Unos cientos de bytes. El audio se quedó en la estación.</div>
-  </div>
-  <div class="fz" data-on="3">No necesitas <b>ver</b> el modelo.<br>Necesitas que <b>te cuente</b>.</div>
-  <div class="foot"></div>
-</section>
 
 <!-- ═══════════════ RESOURCES ═══════════════ -->
 <section class="s" data-id="recursos" data-sec="0" data-notes="">
@@ -1305,6 +1280,7 @@ addEventListener('keydown',e=>{
   else if(k==='r'){ setStep(i,0); }
   else if(k==='b'||k==='.'){ const bk=document.getElementById('blk'); bk.hidden=!bk.hidden; }
   else if(k==='n'){ nOn=!nOn; notes.classList.toggle('on',nOn); }
+  else if(k==='d'){ e.preventDefault(); window.open('estacion.html','estacion'); }      /* the station, live (build_station.py) */
   else if(k==='f'){ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }
 });
 addEventListener('click',e=>{
