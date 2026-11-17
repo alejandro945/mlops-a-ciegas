@@ -124,55 +124,57 @@ def judge_steps():
         return []
     out = []
     for x in json.load(open(p, encoding="utf-8")):
-        enter = {}
+        enter, exit_ = {}, {}
         for st in x["steps"]:
             if st["type"] == "enter" and st["state"] not in enter:
                 enter[st["state"]] = st["t"]
+            elif st["type"] == "exit":
+                exit_[st["state"]] = st["t"]
         verdict = next((st.get("output") for st in x["steps"] if st["state"] == "Verdict" and st["type"] == "exit"), None)
         end = next((st for st in x["steps"] if st["type"] == "end"), None)
         out.append({"name": x["name"], "status": x["status"], "input": x.get("input", {}), "start": x["start"],
-                    "stop": x.get("stop"), "enter": enter, "verdict": verdict,
+                    "stop": x.get("stop"), "enter": enter, "exit": exit_, "verdict": verdict,
                     "cause": (end or {}).get("cause")})
     return out
 
 
-# the console, one capture per act: evidencia-e2e/<date>/console/<name>.png → the page, as JPEG
-CONSOLE = {
-    "gg-equipos":     "IoT Greengrass › Core devices: las cinco bombas, Healthy",
-    "cw-dashboard":   "CloudWatch › Dashboards › station: lo que decide el modelo, por señal",
-    "cw-logs":        "CloudWatch › Logs Insights: los eventos que llegaron tarde, con su hora de decisión y de llegada",
-    "sfn-sombra":     "Step Functions › station-judge: la ejecución en marcha, horneando con la v2 en sombra",
-    "sfn-veredicto":  "Step Functions › station-judge: el veredicto, la v2 rechazada y el aviso por SNS",
-    "gg-despliegues": "IoT Greengrass › Deployments: sombra, rechazo, la v2 al ring 0 y la vuelta de la Lambda",
-    "cw-alarma":      "CloudWatch › Alarms › station-missed-faults: las fallas no oídas cruzan el umbral",
-    "lambda-logs":    "CloudWatch › Logs › station-rollback: la Lambda despliega la última versión buena",
-    "gg-componente":  "IoT Greengrass › Components › com.station.Listener: las versiones 1.0.0, 1.1.0 (sombra) y 2.0.0",
-    "s3-versiones":   "S3 › station/: una carpeta por versión, y clips/ con los clips que valen la pena",
-}
-SHOT_BY_ACT = {"inicio": "gg-equipos", "acto1": "cw-dashboard", "acto2": "cw-logs", "vuelve": "cw-logs",
-               "deriva": "cw-dashboard", "sombra": "sfn-sombra", "veredicto": "sfn-veredicto", "acto3": "gg-despliegues",
-               "noye": "cw-alarma", "alarma": "lambda-logs", "fin": "gg-despliegues"}
+# the AWS console, redrawn from the run's data (station-console.js): one panel per act
+CON_BY_ACT = {"inicio": "cores", "acto1": "insights", "acto2": "insights", "vuelve": "insights", "deriva": "metric",
+              "sombra": "sfn", "veredicto": "sfn", "acto3": "deploys", "noye": "alarm", "alarma": "lambda", "fin": "deploys"}
 
 
-def console_shots():
-    """{name: {uri, cap}} for the captures that exist (JPEG, at most 1400 px wide, when Pillow is there)."""
-    d = os.path.join(EV, "console")
-    out = {}
-    for name, cap in CONSOLE.items():
-        path = next((os.path.join(d, name + ext) for ext in (".png", ".jpg") if os.path.exists(os.path.join(d, name + ext))), None)
-        if not path:
-            continue
-        try:
-            from PIL import Image
-            import io
-            im = Image.open(path).convert("RGB")
-            if im.width > 1400:
-                im = im.resize((1400, round(im.height * 1400 / im.width)), Image.LANCZOS)
-            buf = io.BytesIO(); im.save(buf, "JPEG", quality=82, optimize=True)
-            uri = "data:image/jpeg;base64," + base64.b64encode(buf.getvalue()).decode()
-        except ImportError:
-            uri = data_uri(path)
-        out[name] = {"uri": uri, "cap": cap}
+def alarm_history():
+    """Every state change of the alarm in the folder: [{t, s}] (local ms)."""
+    out = []
+    try:
+        for line in open(os.path.join(EV, "alarm-history.txt"), encoding="utf-8"):
+            m = re.match(r"(\S+)\s+(Alarm updated from \S+ to \S+)", line)
+            if m:
+                out.append({"t": int(datetime.datetime.fromisoformat(m.group(1)).timestamp() * 1000), "s": m.group(2)})
+    except OSError:
+        pass
+    return out
+
+
+def lambda_lines(lam):
+    """The Lambda's log, line by line, timed around the rollback (lam.t): REPORT gives the duration and the init."""
+    if not lam:
+        return []
+    try:
+        raw = [l.strip() for l in open(os.path.join(EV, "lambda.txt"), encoding="utf-8") if l.strip()]
+    except OSError:
+        return []
+    txt = "\n".join(raw)
+    dur = float((re.search(r"\bDuration: ([\d.]+) ms", txt) or [0, 800])[1])
+    init = float((re.search(r"Init Duration: ([\d.]+) ms", txt) or [0, 500])[1])
+    start = lam["t"] - round(dur)
+    out = []
+    for l in raw:
+        l = re.sub(r"\d{12}", "‹cuenta›", l).replace("\t", "  ")
+        l = re.sub(r"(Runtime Version ARN: \S{40})\S+", r"\1…", l)
+        t = (start - round(init) if l.startswith("INIT_START") else start if l.startswith("START") else
+             start + 1 if "alarm_state" in l else lam["t"])
+        out.append({"t": t, "msg": l})
     return out
 
 
@@ -252,7 +254,9 @@ def markers(ev, alarm, lam, judge=()):
               "text": "Las cinco bombas con la v1.0.0, el despliegue de la vuelta activo y el de la v2 inactivo. "
                       "El ring 1 nunca recibió la v2.", "speed": 8})
     for m in M:
-        m["shot"] = SHOT_BY_ACT.get(m["k"])
+        m["con"] = CON_BY_ACT.get(m["k"])
+        if m["k"] == "acto1" and a1:
+            m["dev"] = a1["device"]
     M.sort(key=lambda m: m["t"])
     return M
 
@@ -359,15 +363,6 @@ h1 b{color:var(--orange);font-weight:800}
 .arr.ok{background:var(--green)}.arr.ok::after{border-left-color:var(--green)}
 .j .st{top:30px;width:116px}.j .arr{top:55px}
 .n .st{top:106px;width:150px}.n .arr{top:131px}
-/* the console, as the act looks in AWS */
-#aw{position:absolute;right:16px;top:16px;width:212px;height:118px;border-radius:9px;overflow:hidden;border:1.5px solid var(--line);cursor:pointer;background:var(--pale);display:none}
-#aw img{width:100%;height:100%;object-fit:cover;object-position:top left}
-#aw .l{position:absolute;left:0;right:0;bottom:0;padding:4px 8px;background:rgba(11,19,42,.78);color:#fff;font-size:9.5px;font-weight:700;letter-spacing:.08em}
-#aw .l b{color:var(--yellow)}
-#ov{position:absolute;inset:0;background:rgba(11,19,42,.93);display:none;z-index:9;cursor:pointer}
-#ov img{position:absolute;left:50%;top:40px;transform:translateX(-50%);max-width:1480px;max-height:760px;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
-#ov .c{position:absolute;left:0;right:0;bottom:36px;text-align:center;color:#fff;font-size:18px;font-weight:600}
-#ov .c b{color:var(--yellow);font-weight:800;letter-spacing:.1em;font-size:12px;display:block;margin-bottom:8px}
 /* the bottom */
 #tl{position:absolute;left:40px;top:668px;width:1520px;height:40px}
 #tl .bar{position:absolute;left:0;right:0;top:18px;height:4px;background:var(--line);border-radius:2px}
@@ -401,15 +396,17 @@ html.embed #help{display:none}
 """
 
 
-def page(devs, rows, M, alarm, lam, deploys, judge, day, shots):
+def page(devs, rows, M, alarm, lam, deploys, judge, day, alarm_hist):
     data = json.dumps({"devs": devs, "ev": rows, "M": M, "alarm": alarm, "lam": lam, "deploys": deploys,
-                       "judge": judge, "day": day, "shots": shots}, ensure_ascii=False, separators=(",", ":"))
+                       "judge": judge, "day": day, "alarmHist": alarm_hist}, ensure_ascii=False, separators=(",", ":"))
+    con_css = open(os.path.join(HERE, "station-console.css"), encoding="utf-8").read()
+    con_js = open(os.path.join(HERE, "station-console.js"), encoding="utf-8").read()
     tdc = os.path.join(TALK, "assets", "cali", "tdc")
     logo = data_uri(os.path.join(tdc, "logo-navy.png"))
     return f"""<!DOCTYPE html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>La estación · MLOps a ciegas</title>
-<style>{fonts_css()}{CSS}</style></head>
+<style>{fonts_css()}{CSS}{con_css}</style></head>
 <body>
 <svg width="0" height="0" style="position:absolute">{pump_symbol()}</svg>
 <div id="stage">
@@ -460,8 +457,10 @@ def page(devs, rows, M, alarm, lam, deploys, judge, day, shots):
   </div>
   <div id="tl"><div class="bar"></div><div class="done" id="tl-done"></div></div>
   <div id="cap"><div class="tag" id="c-tag"></div><div class="tt" id="c-tt"></div><div class="tx" id="c-tx"></div><div class="sw" id="c-sw"></div>
-    <div id="aw" title="tecla A"><img alt=""><div class="l">ASÍ SE VE EN AWS · <b>tecla A</b></div></div></div>
-  <div id="ov"><img alt=""><div class="c"><b>LA CONSOLA DE AWS · ESC CIERRA</b><span id="ov-c"></span></div></div>
+    <div id="aw" title="tecla A"><div class="a1">ASÍ SE VE EN AWS</div><div class="a2" id="aw-svc"></div><div class="a3">TECLA A</div></div></div>
+  <div id="ov"><div id="cw"><div class="tb"><div class="lg">aws<i></i></div><div class="sr">Search</div><div class="rg">United States (N. Virginia)</div><div class="us">‹cuenta›</div></div>
+    <div class="bc" id="cw-bc"></div><div class="bd" id="cw-bd"></div></div>
+    <div class="c"><b>LA CONSOLA DE AWS, REDIBUJADA CON LOS DATOS DEL ENSAYO</b>{day} · <span id="ov-t"></span> · Esc cierra</div></div>
   <div id="tick"><div class="h">LO QUE SALE DE LA ESTACIÓN · demo/watch.sh</div><div id="tk"></div></div>
   <div id="help">espacio · reproducir  ·  ← → · actos  ·  1 2 4 8 · velocidad  ·  A · la consola de AWS  ·  F · pantalla completa</div>
 </div>
@@ -474,6 +473,7 @@ const TZ=-5*3600*1000;
 function hms(ms){{ const d=new Date(ms+TZ); return d.toISOString().slice(11,19); }}
 function fit(){{ const s=Math.min(innerWidth/1600,innerHeight/900); $('#stage').style.transform=`translate(-50%,-50%) scale(${{s}})`; }}
 addEventListener('resize',fit); fit();
+{con_js}
 
 /* the pumps */
 const pumps=[];
@@ -562,11 +562,12 @@ function paint(){{
   let k=0; while(k+1<M.length && M[k+1].t<=t) k++;
   document.querySelectorAll('#tl .mk').forEach((m,j)=>{{ m.className='mk'+(M[j].t<=t?' done':'')+(j===k?' cur':''); }});
   if(k!==cur){{ cur=k; $('#c-tag').textContent=M[k].tag; $('#c-tt').textContent=M[k].title; $('#c-tx').textContent=M[k].text;
-    const sh=M[k].shot&&D.shots[M[k].shot]; $('#aw').style.display=sh?'block':'none'; if(sh){{ $('#aw img').src=sh.uri; }}
-    if($('#ov').style.display==='block') showOv(); }}
+    const cn=M[k].con; $('#aw').style.display=cn?'block':'none'; if(cn) $('#aw-svc').textContent=CONS[cn].svc;
+    if(conOpen) renderCon(true); }}
   /* the stopwatch since the fault nobody heard */
   const mf0=M.find(m=>m.k==='noye'), sw=$('#c-sw');
   if(mf0 && t>=mf0.t+6000 && M[k].k!=='fin'){{ const back=D.lam?D.lam.t:null; const end=back&&t>back?back:t; sw.style.display='block'; sw.textContent='desde la falla: '+Math.max(0,Math.round((end-(mf0.t+6000))/1000))+' s'+(back&&t>back?' · vuelta':''); }} else sw.style.display='none';
+  renderCon();
 }}
 function chart(){{
   const svg=$('#chart svg'); const m0=Math.floor(T0/60000), m1=Math.floor(T1/60000), n=m1-m0+1, w=660/n, H=120, mx=Math.max(12,...Object.values(perMin));
@@ -585,9 +586,7 @@ M.forEach((m,j)=>{{ const d=document.createElement('div'); d.className='mk'; d.s
   const l=document.createElement('div'); l.className='ml'+(j%2?' lo':''); l.style.left=pos(m.t)+'%'; l.textContent=m.tag.replace(/^ACTO \\d · /,''); $('#tl').appendChild(d); $('#tl').appendChild(l); }});
 function goto(j){{ j=Math.max(0,Math.min(M.length-1,j)); step(M[j].t); setSpeed(M[j].speed); paint(); if(!playing) toggle(true); }}
 function setSpeed(s){{ speed=s; document.querySelectorAll('#ctl [data-sp]').forEach(b=>b.classList.toggle('on',+b.dataset.sp===s)); }}
-function showOv(){{ const sh=M[cur]&&M[cur].shot&&D.shots[M[cur].shot]; if(!sh) return; $('#ov img').src=sh.uri; $('#ov-c').textContent=sh.cap; $('#ov').style.display='block'; }}
-function hideOv(){{ $('#ov').style.display='none'; }}
-$('#aw').onclick=showOv; $('#ov').onclick=hideOv;
+$('#aw').onclick=()=>showOv(); $('#ov').onclick=e=>{{ if(!e.target.closest('#cw')) hideOv(); }};
 function toggle(on){{ playing=on===undefined?!playing:on; $('#play').textContent=playing?'❚❚':'▶'; last=null; if(playing) requestAnimationFrame(tick); }}
 function tick(now){{ if(!playing) return; if(last!==null){{ step(Math.min(T1,t+(now-last)*speed)); paint(); if(t>=T1) toggle(false); }} last=now; requestAnimationFrame(tick); }}
 $('#play').onclick=()=>toggle();
@@ -598,7 +597,7 @@ addEventListener('keydown',e=>{{ const k=e.key;
   else if(k==='ArrowLeft'||k==='PageUp'){{ e.preventDefault(); goto(cur-1); }}
   else if(k==='Home'){{ step(T0); paint(); }}
   else if('1248'.includes(k)&&k){{ setSpeed(+k); }}
-  else if(k.toLowerCase()==='a'){{ e.preventDefault(); $('#ov').style.display==='block'?hideOv():showOv(); }}
+  else if(k.toLowerCase()==='a'){{ e.preventDefault(); conOpen?hideOv():showOv(); }}
   else if(k==='Escape'){{ hideOv(); }}
   else if(k.toLowerCase()==='f'){{ document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen(); }}
 }});
@@ -607,10 +606,10 @@ window.__st={{seek:ms=>{{ step(ms); paint(); }}, goto, M, T0, T1, toggle}};
 const EMBED=window.parent!==window;
 if(EMBED){{ document.documentElement.classList.add('embed');
   addEventListener('message',ev=>{{ const m=ev.data||{{}};
-    if(m.cmd==='act'){{ const j=M.findIndex(x=>x.k===m.k); fit(); if(j>=0){{ goto(j); if(m.speed) setSpeed(m.speed); }} if(m.overlay===false) hideOv(); }}
+    if(m.cmd==='act'){{ const j=M.findIndex(x=>x.k===m.k); fit(); if(j>=0){{ goto(j); if(m.dt){{ step(M[j].t+m.dt); paint(); }} if(m.speed) setSpeed(m.speed); }} m.con?showOv(m.con):hideOv(); }}
     else if(m.cmd==='pause') toggle(false);
     else if(m.cmd==='play') toggle(true);
-    else if(m.cmd==='overlay'){{ m.on?showOv():hideOv(); }}
+    else if(m.cmd==='overlay'){{ m.on?showOv(m.con):hideOv(); if(m.speed) setSpeed(m.speed); if(m.on&&!playing) toggle(true); }}
     else if(m.cmd==='speed') setSpeed(m.s);
     else if(m.cmd==='reset'){{ toggle(false); hideOv(); step(T0); paint(); }} }});
   addEventListener('keydown',e=>{{ if(['ArrowRight','ArrowDown','PageDown','Enter'].includes(e.key)){{ e.preventDefault(); e.stopImmediatePropagation(); parent.postMessage({{cmd:'nav',d:1}},'*'); }}
@@ -631,7 +630,9 @@ def main():
     judge = judge_steps()
     M = markers(ev, alarm, lam, judge)
     day = local(ev[0]["ts"]).strftime("%-d de %B de %Y").replace("October", "octubre").replace("November", "noviembre")
-    html = page(devs, rows, M, alarm, lam, deploys, judge, day, console_shots())
+    if lam:
+        lam["lines"] = lambda_lines(lam)
+    html = page(devs, rows, M, alarm, lam, deploys, judge, day, alarm_history())
     open(OUT, "w", encoding="utf-8").write(html)
     print(f"✔ {OUT}  ({len(html.encode()) / 1024:.0f} KB · {len(rows)} events · {len(M)} markers: "
           + ", ".join(m["k"] for m in M) + ")")
