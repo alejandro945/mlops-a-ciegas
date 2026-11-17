@@ -937,25 +937,21 @@ html,body{background:#0B132A}
 <!-- ═══════════════ 11 · THE GREEN DASHBOARD ═══════════════ -->
 <section class="s" data-id="tablero" data-sec="4" data-notes="9 · UN PANEL EN VERDE NO MIDE EL MODELO
 
-1:15 · 3 clics · *la idea central: ve despacio*
+1:15 · 4 clics · *la idea central: ve despacio*
 
-'La pregunta operativa es: ¿cómo sabemos si el modelo de la estación está funcionando? La respuesta habitual es el panel de infraestructura.'
+'¿Cómo sabemos si el modelo de la estación está funcionando? Normalmente miramos el panel de operaciones.'
 
-▶ CLIC 'Servicio arriba, CPU normal, memoria normal. Todo en verde. Desde operaciones, el sistema está sano.'
+▶ CLIC '¿Está encendido? Sí. ¿Responde a tiempo? Sí. ¿Le alcanza la memoria? Sí. Todo en verde. Para operaciones, todo bien.'
 
-▶ CLIC 'Pero la pregunta correcta es otra: ¿el modelo todavía distingue una bomba sana de una que falla? Eso lo mide el AUC: 1 es separación perfecta, 0,5 es azar.'
+▶ CLIC 'Pero la pregunta que importa es otra: ¿el modelo acierta? ¿Distingue una bomba sana de una que está fallando? En esta regla, a la izquierda está lanzar una moneda; a la derecha, acertar siempre. Nuestro modelo está en el medio: distingue algo. Y de cada 100 bombas sanas, 6 dan una falsa alarma.'
 
-'Con las condiciones de entrenamiento, este modelo tiene un AUC de 0,69. Cambiamos la velocidad de operación de la bomba y cae a 0,57.' *(pausa)* 'Prácticamente azar. Y las falsas alarmas pasan del 6 al 18 por ciento.'
+▶ CLIC 'Ahora la bomba cambia de velocidad, algo normal en la operación. Mismo modelo, mismo umbral, ni un error en los logs.' *(pausa)* 'La aguja cae hacia la moneda: casi al azar. Y las falsas alarmas se triplican: 18 de cada 100.'
 
-▶ CLIC 'Sin un solo error en los logs. La infraestructura está sana; el modelo dejó de discriminar.' *(pausa)*
-
-'Esto está medido con los mismos audios que escucharon al principio. Un servicio caído genera alertas. Un modelo degradado sigue respondiendo a tiempo, con un 200 OK.'
-
-'Monitorear la infraestructura no es monitorear el modelo. En el paso seis vamos a ver qué hay que medir.'">
+▶ CLIC 'Todo en verde, y el modelo ya casi adivina.' *(pausa)* 'Un servicio caído genera alertas. Un modelo que se equivoca sigue respondiendo a tiempo. Monitorear la infraestructura no es monitorear el modelo; en el paso seis vemos qué medir.' *(Si preguntan el número: el AUC pasa de 0,69 a 0,57, medido con los audios de MIMII DUE.)*">
   <div class="kick">El problema</div>
-  <div class="ttl wide">Un panel en verde <b>no mide el modelo</b></div>
+  <div class="ttl wide">Todo en verde <b>no significa que acierte</b></div>
   <div class="chart" style="left:84px;right:84px;top:222px;bottom:162px"><canvas class="anim" data-anim="tablero" data-vals='["0,69","0,57","6 %","18 %"]'></canvas></div>
-  <div class="foot" data-src="Medido en la PoC con MIMII DUE (bombas, dominio de entrenamiento contra dominio nuevo)"></div>
+  <div class="foot"></div>
 </section>
 
 <!-- ═══════════════ 13 · DIVIDER 02 ═══════════════ -->
@@ -2621,52 +2617,65 @@ ANIM.memes={steps:3,dur:900,draw(g,W,H,st,p,t){
 /* 11 · the device dashboard is green and the model no longer hears */
 const OKG='#16825D';
 function fitSize(g,txt,maxW,size,wt){ g.font=wt+' '+size+'px '+SANS; const w=g.measureText(txt).width; return w>maxW?Math.floor(size*maxW/w):size; }
-ANIM.tablero={steps:4,dur:900,draw(g,W,H,st,p,t){
-  if(st<1) return;                                   /* step 0: only the title question */
-  const q=RM?1:ease(clamp(p*1.25)), PW=640, PH=372, RX=PW+64, RW=W-RX;
-  /* click 1 · the device dashboard, all green */
+ANIM.tablero={steps:5,dur:1100,draw(g,W,H,st,p,t){
+  /* for a non-technical room: plain questions, a coin-to-perfect ruler, and 100 healthy pumps with their false alarms */
+  if(st<1) return;
+  const q=RM?1:ease(clamp(p*1.15)), PW=560, PH=432, RX=PW+56, RW=W-RX;
+  const V=ANIM.tablero.vals||['0,69','0,57','6 %','18 %'], num=x=>parseFloat(String(x).replace(',','.'))||0;
+  const A0=num(V[0]), A1=num(V[1]), F0=Math.round(num(V[2])), F1=Math.round(num(V[3]));
+  /* click 1 · what operations sees: everything answers yes */
   g.save(); g.globalAlpha=st===1?q:1;
-  strokeRR(g,.75,.75,PW-1.5,PH-1.5,10,INK,1.5);
-  T(g,28,40,'PANEL DEL EQUIPO',ink(.66),15,700,true);
-  dot(g,PW-148,34,6,OKG); T(g,PW-134,40,'todo en verde',OKG,16,700,true);
+  strokeRR(g,.75,.75,PW-1.5,PH-1.5,12,INK,1.5);
+  T(g,26,40,'LO QUE VE OPERACIONES',ink(.66),15,700,true);
+  dot(g,PW-150,34,6,OKG); T(g,PW-136,40,'todo en verde',OKG,16,700,true);
   g.fillStyle=ink(.12); g.fillRect(0,62,PW,1.5);
-  const R=[['Servicio del modelo','activo'],['CPU','normal'],['Memoria','normal']], rh=(PH-62)/R.length;
+  const R=['¿Está encendido?','¿Responde a tiempo?','¿Le alcanza la memoria?'], rh=(PH-62)/R.length;
   R.forEach((r,k)=>{
     const a=(st===1&&!RM)?clamp(p*3.4-k*.7):1; if(a<=.01) return;
     const y=62+k*rh; g.save(); g.globalAlpha=a;
-    if(k){ g.fillStyle=ink(.08); g.fillRect(24,y,PW-48,1); }
-    T(g,28,y+rh*.62,r[0],INK,27,400);
-    g.strokeStyle=ink(.28); g.lineWidth=1.5; g.beginPath();
-    for(let j=0;j<=22;j++){ const px=292+j*6, py=y+rh*.5+Math.sin(j*.7+k*1.3)*4+Math.sin(j*.23+k)*3; j?g.lineTo(px,py):g.moveTo(px,py); }
-    g.stroke();
-    fillRR(g,PW-198,y+rh/2-23,170,46,23,'rgba(22,130,93,.12)'); tick(g,PW-170,y+rh/2,OKG,1.1);
-    T(g,PW-150,y+rh/2+8,r[1],OKG,22,700);
+    if(k){ g.fillStyle=ink(.08); g.fillRect(22,y,PW-44,1); }
+    T(g,26,y+rh*.6,r,INK,28,400);
+    fillRR(g,PW-128,y+rh/2-24,100,48,24,'rgba(22,130,93,.12)'); tick(g,PW-104,y+rh/2,OKG,1.1); T(g,PW-84,y+rh/2+9,'sí',OKG,25,700);
     g.restore();
   });
   g.restore();
-  /* click 2 · detected faults, before and after the speed change */
-  if(st>=2){
-    g.save(); g.globalAlpha=st===2?q:1;
-    strokeRR(g,RX+.75,.75,RW-1.5,PH-1.5,10,INK,1.5);
-    T(g,RX+28,40,'¿DISTINGUE UNA FALLA DE UNA BOMBA SANA?',ink(.66),15,700,true);
-    g.fillStyle=ink(.12); g.fillRect(RX,62,RW,1.5);
-    const pz=v=>String(v).replace('⟨','[').replace('⟩',']'), V=ANIM.tablero.vals||['por medir','por medir','por medir','por medir'], t1=pz(V[0]), t2=pz(V[1]), cw=(RW-56-72)/2;
-    const sz=Math.min(fitSize(g,t1,cw,112,700),fitSize(g,t2,cw,112,700)), x1=RX+28, x2=x1+cw+72;
-    T(g,x1,176,t1,INK,sz,700);
-    T(g,x1+cw+36,168,'→',INK_SOFT,64,400,false,'center');
-    T(g,x2,176,t2,ACC,sz,700);
-    T(g,x1,214,'velocidad de entrenamiento',ink(.66),22,400);
-    T(g,x2,214,'cuando cambió la velocidad',ink(.66),22,400);
-    T(g,x1,244,'1 = siempre  ·  0,5 = lanzar una moneda',ink(.5),18,400);
-    g.fillStyle=ink(.12); g.fillRect(RX,266,RW,1.5);
-    T(g,x1,306,'Mismo modelo, mismo umbral, cero errores.',INK,26,700);
-    T(g,x1,342,'Falsas alarmas: '+pz(V[2])+' → '+pz(V[3]),ink(.66),22,400);
-    g.restore();
-  }
-  /* click 3 · the punchline */
-  if(st>=3){
-    const a=st===3?q:1; g.save(); g.globalAlpha=a; g.translate(0,(1-a)*14);
-    rich(g,0,H-34,[['El equipo está sano. ',INK,700],['El modelo casi no distingue.',ACC,700]],46);
+  if(st<2) return;
+  /* clicks 2-3 · what matters: does it get it right? before, then when the pump changes speed */
+  const ch=st>=3, u=st===3?q:(st>3?1:0);                       /* u: 0 = training speed, 1 = the speed changed */
+  g.save(); g.globalAlpha=st===2?q:1;
+  strokeRR(g,RX+.75,.75,RW-1.5,PH-1.5,12,ch?ACC:INK,ch?2.5:1.5);
+  T(g,RX+26,40,'LO QUE IMPORTA: ¿EL MODELO ACIERTA?',ink(.66),15,700,true);
+  if(ch){ const a=st===3?clamp(p*3):1; g.save(); g.globalAlpha=a; fillRR(g,RX+RW-300,20,276,30,15,'rgba(255,90,31,.12)'); T(g,RX+RW-286,41,'la bomba cambió de velocidad',ACC,16,700); g.restore(); }
+  g.fillStyle=ink(.12); g.fillRect(RX,62,RW,1.5);
+  /* the ruler: from tossing a coin (0,5) to always right (1) */
+  const gx0=RX+40, gx1=RX+RW-40, gy=186, X=v=>gx0+(clamp((v-.5)/.5))*(gx1-gx0);
+  T(g,RX+26,104,'¿Distingue una bomba sana de una que falla?',INK,24,700);
+  const grd=g.createLinearGradient(gx0,0,gx1,0); grd.addColorStop(0,'rgba(255,90,31,.55)'); grd.addColorStop(1,'rgba(22,130,93,.55)');
+  fillRR(g,gx0,gy-7,gx1-gx0,14,7,grd);
+  /* the coin on the left, a check on the right */
+  dot(g,gx0,gy,15,'#FFFFFF'); g.strokeStyle=INK; g.lineWidth=2; g.beginPath(); g.arc(gx0,gy,15,0,Math.PI*2); g.stroke(); T(g,gx0,gy+6,'$',INK,16,700,false,'center');
+  dot(g,gx1,gy,15,OKG); tick(g,gx1-7,gy,'#FFFFFF',.8);
+  T(g,gx0-14,gy+42,'como lanzar una moneda',ink(.66),18,400);
+  T(g,gx1+14,gy+42,'acierta siempre',ink(.66),18,400,false,'right');
+  const av=lerp(A0,A1,u), mx=X(av);
+  g.fillStyle=ch?ACC:INK; g.beginPath(); g.moveTo(mx,gy-12); g.lineTo(mx-11,gy-30); g.lineTo(mx+11,gy-30); g.closePath(); g.fill();
+  T(g,mx,gy-38,(ch&&u>.5?'casi al azar':'distingue algo'),ch?ACC:INK,20,700,false,'center');
+  g.fillStyle=ink(.12); g.fillRect(RX,252,RW,1.5);
+  /* 100 healthy pumps: how many raise a false alarm */
+  const fv=Math.round(lerp(F0,F1,u));
+  T(g,RX+26,292,'De cada 100 bombas sanas,',INK,22,400);
+  T(g,RX+26,322,'dan falsa alarma:',INK,22,400);
+  T(g,RX+26,392,String(fv),ch?ACC:INK,64,700);
+  if(ch&&u>.95) T(g,RX+26+g.measureText(String(fv)).width+16,388,'el triple',ACC,24,700);
+  const cols=25, rows=4, c0=RX+RW-26-cols*16, r0=280;
+  for(let k=0;k<100;k++){ const c=k%cols, r=Math.floor(k/cols), x=c0+c*16+6, y=r0+r*28+8, on=k<fv;
+    if(on) dot(g,x,y,6,ACC); else { g.strokeStyle=ink(.25); g.lineWidth=1.5; g.beginPath(); g.arc(x,y,5.5,0,Math.PI*2); g.stroke(); } }
+  T(g,c0,PH-14,'Mismo modelo, mismo umbral, cero errores en los logs.',ink(.6),17,400);
+  g.restore();
+  /* click 4 · the punchline */
+  if(st>=4){
+    const a=st===4?q:1; g.save(); g.globalAlpha=a; g.translate(0,(1-a)*14);
+    rich(g,0,H-6,[['Todo en verde. ',INK,700],['Y el modelo ya casi adivina.',ACC,700]],46);
     g.restore();
   }
 }};

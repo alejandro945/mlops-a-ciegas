@@ -104,21 +104,17 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 9 · Un panel en verde no mide el modelo
 <!-- id: tablero -->
-**1:15** · 3 clics · *la idea central: ve despacio*
+**1:15** · 4 clics · *la idea central: ve despacio*
 
-"La pregunta operativa es: ¿cómo sabemos si el modelo de la estación está funcionando? La respuesta habitual es el panel de infraestructura."
+"¿Cómo sabemos si el modelo de la estación está funcionando? Normalmente miramos el panel de operaciones."
 
-**[CLIC]** "Servicio arriba, CPU normal, memoria normal. Todo en verde. Desde operaciones, el sistema está sano."
+**[CLIC]** "¿Está encendido? Sí. ¿Responde a tiempo? Sí. ¿Le alcanza la memoria? Sí. Todo en verde. Para operaciones, todo bien."
 
-**[CLIC]** "Pero la pregunta correcta es otra: ¿el modelo todavía distingue una bomba sana de una que falla? Eso lo mide el AUC: 1 es separación perfecta, 0,5 es azar."
+**[CLIC]** "Pero la pregunta que importa es otra: ¿el modelo acierta? ¿Distingue una bomba sana de una que está fallando? En esta regla, a la izquierda está lanzar una moneda; a la derecha, acertar siempre. Nuestro modelo está en el medio: distingue algo. Y de cada 100 bombas sanas, 6 dan una falsa alarma."
 
-"Con las condiciones de entrenamiento, este modelo tiene un AUC de 0,69. Cambiamos la velocidad de operación de la bomba y cae a 0,57." *(pausa)* "Prácticamente azar. Y las falsas alarmas pasan del 6 al 18 por ciento."
+**[CLIC]** "Ahora la bomba cambia de velocidad, algo normal en la operación. Mismo modelo, mismo umbral, ni un error en los logs." *(pausa)* "La aguja cae hacia la moneda: casi al azar. Y las falsas alarmas se triplican: 18 de cada 100."
 
-**[CLIC]** "Sin un solo error en los logs. La infraestructura está sana; el modelo dejó de discriminar." *(pausa)*
-
-"Esto está medido con los mismos audios que escucharon al principio. Un servicio caído genera alertas. Un modelo degradado sigue respondiendo a tiempo, con un 200 OK."
-
-"Monitorear la infraestructura no es monitorear el modelo. En el paso seis vamos a ver qué hay que medir."
+**[CLIC]** "Todo en verde, y el modelo ya casi adivina." *(pausa)* "Un servicio caído genera alertas. Un modelo que se equivoca sigue respondiendo a tiempo. Monitorear la infraestructura no es monitorear el modelo; en el paso seis vemos qué medir." *(Si preguntan el número: el AUC pasa de 0,69 a 0,57, medido con los audios de MIMII DUE.)*
 
 ---
 
