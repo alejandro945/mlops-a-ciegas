@@ -10,7 +10,7 @@ const CONS={
   deploys: {svc:'IoT Greengrass', bc:['AWS IoT','Greengrass','<b>Deployments</b>']},
   alarm:   {svc:'CloudWatch Alarms', bc:['CloudWatch','Alarms','<b>station-missed-faults</b>']},
   lambda:  {svc:'Lambda · logs', bc:['CloudWatch','Log groups','<b>/aws/lambda/station-rollback</b>']},
-  s3:      {svc:'Amazon S3', bc:['Amazon S3','Buckets','station-‹cuenta›-us-east-1','<b>station/</b>']},
+  s3:      {svc:'Amazon S3', bc:['Amazon S3','Buckets','<b>station · artefactos</b>']},
   component:{svc:'IoT Greengrass', bc:['AWS IoT','Greengrass','Components','<b>com.station.Listener</b>']},
   dashboard:{svc:'CloudWatch', bc:['CloudWatch','Dashboards','<b>station</b>']},
 };
@@ -112,7 +112,7 @@ const PANEL={
     const S=D.s3||{versions:[],thr:{}}, vs=[...S.versions].reverse();
     const rows=vs.map(v=>'<tr><td><a>'+v.v+'</a></td><td>'+pill('Deployable','ok','ok')+'</td><td class="m">'+hms(v.t)+'</td><td class="m">v'+(v.shadow?'1.0.0':v.v)+
       '</td><td class="m">'+(v.shadow?'v2.0.0':'—')+'</td><td class="m">'+(+v.thr).toFixed(3)+'</td></tr>');
-    const cfg={topic:'station/events',intervalSeconds:'3',threshold:String((+((S.thr||{})['1.0.0']||0)).toFixed(3)),uploadBucket:'station-‹cuenta›-us-east-1'};
+    const cfg={topic:'station/events',intervalSeconds:'3',threshold:String((+((S.thr||{})['1.0.0']||0)).toFixed(3))};
     return H('com.station.Listener',null,'Component · Private · cada versión apunta a sus archivos en S3, con su huella')+
       T(['Version','Status','Created','Decide','En sombra','threshold'],rows)+
       '<div class="box"><div class="wt">Default configuration · 1.0.0 · el umbral es configuración: se cambia sin reentrenar</div><pre class="js sm">'+jsonHi(cfg)+'</pre></div>';

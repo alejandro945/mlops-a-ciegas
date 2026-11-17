@@ -82,3 +82,33 @@ html.cononly #cw .bd{padding:16px 30px}
 html.cononly #cw .sb{margin-bottom:10px}
 html.cononly #cw table.ctb td{padding:7px 12px}
 html.cononly #cw .box{margin-bottom:10px;padding:10px 20px}
+html.embed #ov .c{display:none}
+/* the prologue (station-prov.js): provisioning before the end-to-end validation */
+#prov{position:absolute;left:860px;top:92px;width:700px;height:560px;background:#fff;border:1.5px solid var(--line);border-radius:14px;z-index:5;display:none;padding:46px 22px 0}
+#prov .ph{position:absolute;left:20px;top:14px;font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--slate)}
+#prov .ph b{color:var(--orange)}
+#prov .pv-step{display:flex;gap:14px;margin-bottom:14px;opacity:.38}
+#prov .pv-step.cur,#prov .pv-step.ok{opacity:1}
+#prov .pv-step > i{flex:none;width:26px;height:26px;border-radius:50%;border:2.5px solid var(--mist);font-style:normal;font-size:15px;font-weight:800;color:#fff;display:flex;align-items:center;justify-content:center;margin-top:1px}
+#prov .pv-step > i.cur{border-color:var(--orange)}
+#prov .pv-step > i.ok{border-color:var(--green);background:var(--green)}
+#prov .pv-step > div{flex:1}
+#prov .pt{font-size:18px;font-weight:800}
+#prov .pt span{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--orange);margin-left:8px}
+#prov .pd{font-size:13.5px;color:var(--slate);margin-top:3px;font-weight:500}
+#prov .pg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:9px}
+#prov .gc{border:1.5px dashed var(--line);border-radius:9px;padding:6px 8px;font-size:12px;font-weight:600;color:var(--mist);line-height:1.15;height:52px}
+#prov .gc b{display:block;font-size:19px;font-weight:800}
+#prov .gc.ok{border:1.5px solid var(--green);background:#EEFCF6;color:var(--navy)}
+#prov .gc.ok b{color:var(--teal)}
+#prov .pv-go{margin-top:6px;padding:12px 16px;border-radius:10px;background:var(--pale);font-size:18px;font-weight:800;color:var(--mist)}
+#prov .pv-go.on{background:var(--navy);color:#fff}
+#prov .pv-go span{font-family:var(--mono);font-size:14px;color:var(--yellow);margin-left:8px}
+#station.pvon .pump .bar,#station.pvon .pump .thr,#station.pvon .pump .sc,#station.pvon .pump .z,#station.pvon .pump .dec,#station.pvon .pump .ver,#station.pvon .pump .q,#station.pvon .pump .tag{visibility:hidden}
+.pump .pvs{position:absolute;left:134px;top:44px;font-size:16px;font-weight:800;color:var(--teal)}
+.pump.pv0{opacity:.22}
+.pump.pv0 .pvs{display:none}
+.pump{transition:opacity .4s}
+#prov .gc b span{font-size:13px;font-weight:700;color:var(--mist);margin-left:1px}
+#prov .gc.go{border:1.5px solid var(--orange);color:var(--navy)}
+#prov .gc.go b{color:var(--orange)}

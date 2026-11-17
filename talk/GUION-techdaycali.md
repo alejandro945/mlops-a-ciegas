@@ -354,11 +354,13 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 28 · Acto 1 · Escuchar
 <!-- id: acto1 -->
-**0:50** · sin clics · *la estación corre sola en la lámina; deja que la miren*
+**1:20** · 1 clic · *la estación corre sola en la lámina; deja que la miren*
 
-"Esto es la estación en vivo, reproduciendo la ejecución real: a la izquierda las cinco bombas, cada una con su versión, su score contra el umbral y su decisión; en el centro, cada punto es un evento viajando a la nube; a la derecha, lo que AWS cuenta."
+"Antes de probar nada, se aprovisiona. A la derecha, Terraform crea los ochenta recursos: IoT Core, IAM, Parameter Store, CloudWatch, la Lambda, Step Functions y la EC2. Luego la flota: cinco bombas, cada una con Greengrass y su certificado, hasta quedar Healthy. Se publican la v1 y la v2, y la v1 llega a los dos rings. Con eso empieza la validación de punta a punta."
 
-"Decisiones normales, hasta que inyecto el audio de falla en la bomba 3. En ese mismo clip el score supera el umbral y la tarjeta pasa a ALERT. En la nube sube el contador de alertas."
+"Esto es la estación: a la izquierda las cinco bombas, cada una con su versión, su score contra el umbral y su decisión; en el centro, cada punto es un evento viajando a la nube; a la derecha, lo que AWS cuenta."
+
+**[CLIC]** "Inyecto el audio de falla en la bomba 3. En ese mismo clip el score supera el umbral y la tarjeta pasa a ALERT. En la nube sube el contador de alertas."
 
 "Esa es la respuesta a la pregunta inicial: la bomba B era la que fallaba." *(pausa)*
 

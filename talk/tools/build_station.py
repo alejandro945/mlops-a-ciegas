@@ -190,6 +190,32 @@ def s3_and_component(rows):
     return {"versions": sorted(vers.values(), key=lambda x: x["v"]), "clips": clips, "thr": thr}
 
 
+PROV_DUR = 64000                                    # the prologue, in replay ms before the first event
+PROV_GROUPS = [("S3", ("aws_s3_",)), ("IAM", ("aws_iam_",)), ("IoT Core", ("aws_iot_",)), ("Parameter Store", ("aws_ssm_",)),
+               ("CloudWatch", ("aws_cloudwatch_",)), ("Lambda", ("aws_lambda_",)), ("Step Functions · SNS", ("aws_sfn_", "aws_sns_")),
+               ("EC2", ("aws_instance", "aws_security_group"))]
+
+
+def provision(first_ts):
+    """The prologue: what Terraform created (terraform-apply.txt, in the order it finished) and when the fleet,
+    the publish and the deploy happened (provision.json). None if the folder has neither."""
+    try:
+        res = [m.group(1) for m in (re.match(r"(\S+?)(\[|:)", l) for l in open(os.path.join(EV, "terraform-apply.txt"), encoding="utf-8")
+                                    if "Creation complete" in l) if m]
+        pj = json.load(open(os.path.join(EV, "provision.json"), encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+    ms = lambda iso: int(datetime.datetime.fromisoformat(iso).timestamp() * 1000)
+    groups = []
+    for name, pre in PROV_GROUPS:
+        idx = [i for i, r in enumerate(res) if r.startswith(pre)]
+        if idx:                                          # each resource ticks in, in the order it finished, over 1-21 s
+            groups.append({"name": name, "n": len(idx), "ats": [round(1 + 20 * i / max(1, len(res) - 1), 2) for i in idx]})
+    return {"t0": first_ts - PROV_DUR, "dur": PROV_DUR, "groups": groups, "total": len(res),
+            "applyEnd": ms(pj["apply_end"]), "fleet": ms(pj["fleet_start"]), "publish": [[v, ms(t)] for v, t in pj["publish"]],
+            "deploy": ms(pj["deploy"]), "start": first_ts}
+
+
 def lambda_lines(lam):
     """The Lambda's log, line by line, timed around the rollback (lam.t): REPORT gives the duration and the init."""
     if not lam:
@@ -204,8 +230,8 @@ def lambda_lines(lam):
     start = lam["t"] - round(dur)
     out = []
     for l in raw:
-        l = re.sub(r"\d{12}", "‹cuenta›", l).replace("\t", "  ")
-        l = re.sub(r"(Runtime Version ARN: \S{40})\S+", r"\1…", l)
+        l = re.sub(r":\d{12}:", "::", l).replace("\t", "  ")
+        l = re.sub(r"\s+Runtime Version ARN: \S+", "", l)
         t = (start - round(init) if l.startswith("INIT_START") else start if l.startswith("START") else
              start + 1 if "alarm_state" in l else lam["t"])
         out.append({"t": t, "msg": l})
@@ -437,12 +463,14 @@ html.cononly.embed #stage{border:0;box-shadow:none;border-radius:0}
 """
 
 
-def page(devs, rows, M, alarm, lam, deploys, judge, day, alarm_hist):
+def page(devs, rows, M, alarm, lam, deploys, judge, day, alarm_hist, prov=None):
     data = json.dumps({"devs": devs, "ev": rows, "M": M, "alarm": alarm, "lam": lam, "deploys": deploys,
-                       "judge": judge, "day": day, "alarmHist": alarm_hist, "s3": s3_and_component(rows)},
+                       "judge": judge, "day": day, "alarmHist": alarm_hist, "s3": s3_and_component(rows),
+                       "prov": prov},
                       ensure_ascii=False, separators=(",", ":"))
     con_css = open(os.path.join(HERE, "station-console.css"), encoding="utf-8").read()
-    con_js = open(os.path.join(HERE, "station-console.js"), encoding="utf-8").read()
+    con_js = open(os.path.join(HERE, "station-console.js"), encoding="utf-8").read() + \
+        open(os.path.join(HERE, "station-prov.js"), encoding="utf-8").read()
     tdc = os.path.join(TALK, "assets", "cali", "tdc")
     logo = data_uri(os.path.join(tdc, "logo-navy.png"))
     return f"""<!DOCTYPE html>
@@ -453,7 +481,6 @@ def page(devs, rows, M, alarm, lam, deploys, judge, day, alarm_hist):
 <svg width="0" height="0" style="position:absolute">{pump_symbol()}</svg>
 <div id="stage">
   <h1>La estación, <b>en vivo</b></h1>
-  <div class="sub">Ensayo real en AWS us-east-1 · {day} · cinco bombas con el agente de Greengrass en una EC2 · reproducción de los eventos tal como llegaron</div>
   <div id="clock">00:00:00</div>
   <div id="ctl">
     <button class="play" id="play" title="espacio">▶</button>
@@ -497,10 +524,11 @@ def page(devs, rows, M, alarm, lam, deploys, judge, day, alarm_hist):
       </div>
     </div>
   </div>
+  <div id="prov"></div>
   <div id="tl"><div class="bar"></div><div class="done" id="tl-done"></div></div>
   <div id="cap"><div class="tag" id="c-tag"></div><div class="tt" id="c-tt"></div><div class="tx" id="c-tx"></div><div class="sw" id="c-sw"></div>
     <div id="aw" title="tecla A"><div class="a1">ASÍ SE VE EN AWS</div><div class="a2" id="aw-svc"></div><div class="a3">TECLA A</div></div></div>
-  <div id="ov"><div id="cw"><div class="tb"><div class="lg">aws<i></i></div><div class="sr">Search</div><div class="rg">United States (N. Virginia)</div><div class="us">‹cuenta›</div></div>
+  <div id="ov"><div id="cw"><div class="tb"><div class="lg">aws<i></i></div><div class="sr">Search</div><div class="rg">United States (N. Virginia)</div></div>
     <div class="bc" id="cw-bc"></div><div class="bd" id="cw-bd"></div></div>
     <div class="c"><b>LA CONSOLA DE AWS, REDIBUJADA CON LOS DATOS DEL ENSAYO</b>{day} · <span id="ov-t"></span> · Esc cierra</div></div>
   <div id="tick"><div class="h">LO QUE SALE DE LA ESTACIÓN · demo/watch.sh</div><div id="tk"></div></div>
@@ -527,7 +555,7 @@ DEVS.forEach((d,i)=>{{
   const el=document.createElement('div'); el.className='pump'; const ring=i===0?'.ring.r0':'.ring.r1';
   el.style.left=POS[i][0]+'px'; el.style.top=POS[i][1]+'px';
   el.innerHTML=`<svg class="ic"><use href="#pump"/></svg><div class="nm">${{d}}</div><div class="ver">v—</div><div class="dec">—</div>
-    <div class="bar"><i></i></div><div class="thr"></div><div class="sc">score — · umbral —</div><div class="z">entrada <b>—</b></div><div class="q"></div><div class="tag"></div>`;
+    <div class="bar"><i></i></div><div class="thr"></div><div class="sc">score — · umbral —</div><div class="z">entrada <b>—</b></div><div class="q"></div><div class="tag"></div><div class="pvs"></div>`;
   $('#station '+ring).appendChild(el); pumps.push(el);
 }});
 const SMAX=.6;      /* the score bar's scale */
@@ -612,7 +640,7 @@ function paint(){{
   /* the stopwatch since the fault nobody heard */
   const mf0=M.find(m=>m.k==='noye'), sw=$('#c-sw');
   if(mf0 && t>=mf0.t+6000 && M[k].k!=='fin'){{ const back=D.lam?D.lam.t:null; const end=back&&t>back?back:t; sw.style.display='block'; sw.textContent='desde la falla: '+Math.max(0,Math.round((end-(mf0.t+6000))/1000))+' s'+(back&&t>back?' · vuelta':''); }} else sw.style.display='none';
-  renderCon();
+  renderCon(); provPaint();
 }}
 function chart(){{
   const svg=$('#chart svg'); const m0=Math.floor(T0/60000), m1=Math.floor(T1/60000), n=m1-m0+1, w=660/n, H=120, mx=Math.max(12,...Object.values(perMin));
@@ -628,7 +656,7 @@ const GAP=120000, KN=[...M.map(m=>m.t),T1];
 const KX=[0]; for(let j=1;j<KN.length;j++) KX.push(KX[j-1]+Math.min(GAP,KN[j]-KN[j-1]));
 function pos(tt){{ let j=0; while(j+1<KN.length && KN[j+1]<=tt) j++; const seg=Math.min(GAP,KN[j+1]-KN[j]); const u=Math.min(1,(tt-KN[j])/(KN[j+1]-KN[j])); return (KX[j]+u*seg)/KX[KX.length-1]*100; }}
 M.forEach((m,j)=>{{ const d=document.createElement('div'); d.className='mk'; d.style.left=pos(m.t)+'%'; d.title=m.tag; d.onclick=()=>goto(j);
-  const l=document.createElement('div'); l.className='ml'+(j%2?' lo':''); l.style.left=pos(m.t)+'%'; l.textContent=m.tag.replace(/^ACTO \\d · /,''); $('#tl').appendChild(d); $('#tl').appendChild(l); }});
+  const l=document.createElement('div'); l.className='ml'+(j%2?' lo':''); l.style.left=pos(m.t)+'%'; if(j===0) l.style.transform='none'; l.textContent=m.tag.replace(/^ACTO \\d · /,''); $('#tl').appendChild(d); $('#tl').appendChild(l); }});
 function goto(j){{ j=Math.max(0,Math.min(M.length-1,j)); step(M[j].t); setSpeed(M[j].speed); paint(); if(!playing) toggle(true); }}
 function setSpeed(s){{ speed=s; document.querySelectorAll('#ctl [data-sp]').forEach(b=>b.classList.toggle('on',+b.dataset.sp===s)); }}
 $('#aw').onclick=()=>showOv(); $('#ov').onclick=e=>{{ if(!e.target.closest('#cw')) hideOv(); }};
@@ -678,7 +706,13 @@ def main():
     day = local(ev[0]["ts"]).strftime("%-d de %B de %Y").replace("October", "octubre").replace("November", "noviembre")
     if lam:
         lam["lines"] = lambda_lines(lam)
-    html = page(devs, rows, M, alarm, lam, deploys, judge, day, alarm_history())
+    prov = provision(ev[0]["ts"])
+    if prov:
+        M.insert(0, {"t": prov["t0"], "k": "prov", "tag": "APROVISIONAR", "title": "Terraform, la flota y la v1",
+                     "text": f"terraform apply crea {prov['total']} recursos; la flota instala cinco bombas con Greengrass; "
+                             "publish.sh sube la v1 y la v2 a S3; deploy.sh lleva la v1 a los dos rings. Con eso, la prueba.",
+                     "speed": 2, "con": None})
+    html = page(devs, rows, M, alarm, lam, deploys, judge, day, alarm_history(), prov)
     open(OUT, "w", encoding="utf-8").write(html)
     print(f"✔ {OUT}  ({len(html.encode()) / 1024:.0f} KB · {len(rows)} events · {len(M)} markers: "
           + ", ".join(m["k"] for m in M) + ")")
