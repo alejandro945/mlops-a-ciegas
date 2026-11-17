@@ -257,6 +257,8 @@ tr.hot td.k,tr.hot td b{color:var(--acc)}
 .hook .hi:nth-child(2) img{max-height:440px;max-width:720px}
 .hook figcaption{font-size:15px;color:var(--muted)}
 .shot.ev{top:246px;height:470px;background:none}
+/* the AWS console, redrawn (talk/estacion.html?con=…), on the evidence slides 25-27 */
+.s.cn iframe.stn{position:absolute;left:56px;top:182px;width:1488px;height:586px;border:0;background:transparent;z-index:3}
 /* the station, live, inside the slide (talk/estacion.html in an iframe; the clicks drive it: data-station) */
 .s.st iframe.stn{position:absolute;left:0;top:0;width:1600px;height:790px;border:0;background:transparent}
 .s.st .stl{position:absolute;left:300px;top:812px;font-size:15px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);z-index:3}
@@ -646,31 +648,25 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 <!-- ═══════════════ 25-26 · THE EVIDENCE: the artifact and the fleet, in the AWS console ═══════════════ -->
-<section class="s" data-id="artefacto" data-sec="7" data-notes="">
+<section class="s cn" data-id="artefacto" data-sec="7" data-notes="" data-steps="2"
+  data-station='[{"cmd":"show","con":"s3"},{"cmd":"show","con":"component"}]'>
   <div class="kick">La evidencia</div>
   <div class="ttl wide">El modelo, <b>versionado</b></div>
-  <div class="pair">
-    <figure class="hi" data-on="0">{{SHOT:s3-versiones}}<figcaption>S3 · una carpeta por versión</figcaption></figure>
-    <figure class="hi" data-on="0">{{SHOT:gg-componente}}<figcaption>IoT Greengrass · el componente y sus versiones (la 1.1.0 lleva la v2 en sombra)</figcaption></figure>
-  </div>
+  <iframe class="stn" src="estacion.html?con=s3" title="Amazon S3 · station/"></iframe>
   <div class="foot"></div>
 </section>
 
-<section class="s" data-id="flota" data-sec="7" data-notes="">
+<section class="s cn" data-id="flota" data-sec="7" data-notes="" data-station='[{"cmd":"show","con":"cores"}]'>
   <div class="kick">La evidencia</div>
   <div class="ttl wide">La flota, <b>en línea</b></div>
-  <div class="pair">
-    <figure class="hi" data-on="0">{{SHOT:gg-equipos}}<figcaption>IoT Greengrass · cinco things, uno por bomba, en dos rings</figcaption></figure>
-  </div>
+  <iframe class="stn" src="estacion.html?con=cores" title="IoT Greengrass · core devices"></iframe>
   <div class="foot"></div>
 </section>
 
-<section class="s" data-id="reporte" data-sec="7" data-notes="">
+<section class="s cn" data-id="reporte" data-sec="7" data-notes="" data-station='[{"cmd":"show","con":"dashboard"}]'>
   <div class="kick">La evidencia</div>
   <div class="ttl wide">Lo que <b>reporta</b></div>
-  <div class="pair">
-    <figure class="hi" data-on="0">{{SHOT:cw-dashboard}}<figcaption>CloudWatch · lo que decide el modelo, por señal</figcaption></figure>
-  </div>
+  <iframe class="stn" src="estacion.html?con=dashboard" title="CloudWatch · dashboard station"></iframe>
   <div class="foot"></div>
 </section>
 

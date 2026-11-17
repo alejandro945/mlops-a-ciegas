@@ -10,6 +10,9 @@ const CONS={
   deploys: {svc:'IoT Greengrass', bc:['AWS IoT','Greengrass','<b>Deployments</b>']},
   alarm:   {svc:'CloudWatch Alarms', bc:['CloudWatch','Alarms','<b>station-missed-faults</b>']},
   lambda:  {svc:'Lambda · logs', bc:['CloudWatch','Log groups','<b>/aws/lambda/station-rollback</b>']},
+  s3:      {svc:'Amazon S3', bc:['Amazon S3','Buckets','station-‹cuenta›-us-east-1','<b>station/</b>']},
+  component:{svc:'IoT Greengrass', bc:['AWS IoT','Greengrass','Components','<b>com.station.Listener</b>']},
+  dashboard:{svc:'CloudWatch', bc:['CloudWatch','Dashboards','<b>station</b>']},
 };
 let conOpen=false, conForce=null, conLast=0;
 const conKind=()=>conForce||(M[cur]&&M[cur].con)||null;
@@ -45,6 +48,24 @@ function qb(q,n){ return '<div class="qb"><div class="ql">Log group: <b>/station
 const mmss=s=>String(Math.floor(s/60)).padStart(2,'0')+':'+(s%60).toFixed(3).padStart(6,'0');
 const who=n=>/^(shadow|reject|promote)-/.test(n)?'el juez · Step Functions':/^rollback-/.test(n)?'la Lambda · alarma':'deploy.sh';
 
+const kb=n=>n>=1048576?(n/1048576).toFixed(1)+' MB':(n/1024).toFixed(1)+' KB';
+const kf=n=>n>=1000?(n/1000).toFixed(n>=10000?0:2).replace(/\.?0+$/,'')+'K':String(n);
+const FOLDER='<svg viewBox="0 0 16 16" class="fd"><path d="M1.5 3.5h4.2l1.4 1.6h7.4v8.4H1.5z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>';
+/* the input level per pump, as the dashboard's line chart (the drift shows as one pump jumping) */
+function inputChart(W,Hh){
+  const B=20000, b0=Math.floor(T0/B), b1=Math.floor(T1/B);
+  const sum=DEVS.map(()=>({})); EV.forEach(e=>{ if(e.t>t) return; const k=Math.floor(e.t/B), s=sum[e.d]; s[k]=s[k]||[0,0]; s[k][0]+=e.z; s[k][1]++; });
+  const mx=Math.max(2.4,...sum.flatMap(s=>Object.values(s).map(v=>v[0]/v[1])))*1.08;
+  const X=k=>64+(k-b0)/Math.max(1,b1-b0)*(W-96), Y=v=>Hh-44-v/mx*(Hh-64);
+  const COL=['#0972D3','#FF9900','#2EA597','#D91515','#9469D6'];
+  let s='';
+  for(let g=0;g<=4;g+=2){ const v=mx*g/4; s+='<line x1="64" x2="'+(W-32)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="#E9EBED"/><text x="54" y="'+(Y(v)+6)+'" text-anchor="end" font-size="17" fill="#5F6B7A">'+v.toFixed(1)+'</text>'; }
+  for(let k=b0;k<=b1;k+=9) s+='<text x="'+X(k)+'" y="'+(Hh-14)+'" text-anchor="middle" font-size="17" fill="#5F6B7A">'+hms(k*B).slice(0,5)+'</text>';
+  sum.forEach((sm,i)=>{ const ks=Object.keys(sm).map(Number).sort((a,b)=>a-b); if(!ks.length) return;
+    s+='<polyline fill="none" stroke="'+COL[i]+'" stroke-width="3.5" stroke-linejoin="round" points="'+ks.map(k=>X(k).toFixed(1)+','+Y(sm[k][0]/sm[k][1]).toFixed(1)).join(' ')+'"/>'; });
+  return {svg:'<svg viewBox="0 0 '+W+' '+Hh+'" class="ch">'+s+'</svg>', lg:'<div class="lgd">'+DEVS.map((d,i)=>'<span><i style="background:'+COL[i]+'"></i>'+d+'</span>').join('')+'</div>'};
+}
+
 const PANEL={
   /* IoT Greengrass › Core devices */
   cores(){
@@ -71,6 +92,46 @@ const PANEL={
       (e.al?'<b class="r">true</b>':'false')+'</td><td class="m"><b>'+((e.a-e.t)/1000).toFixed(1)+'</b></td></tr>');
     if(rs.length>7) rows.push('<tr><td colspan="5" class="mt">… y '+(rs.length-7)+' más</td></tr>');
     return qb(q,rs.length)+T(['@timestamp (llegó)','device','decidió','alert','segundos_tarde'],rows,'Nada tarde todavía: los eventos de la bomba sin red esperan en su cola local');
+  },
+
+  /* Amazon S3 › the artifacts bucket: one folder per version, nothing overwritten; and the clips kept */
+  s3(){
+    const S=D.s3||{versions:[],clips:{n:0,reason:{}}};
+    const what=v=>v.shadow?'la v'+(S.versions.find(x=>!x.shadow&&x.v!==v.v&&x.v.startsWith('2'))||{v:'2.0.0'}).v+' en sombra junto a la 1.0.0 (judge.sh)':v.v.startsWith('1')?'el modelo que hoy decide':'la versión candidata';
+    const rows=S.versions.map(v=>'<tr><td><a>'+FOLDER+v.v+'/</a></td><td>Folder</td><td class="m">'+v.files.length+'</td><td class="m">'+kb(v.files.reduce((a,f)=>a+f.size,0))+
+      '</td><td class="m">'+hms(v.t)+'</td><td>'+what(v)+'</td></tr>');
+    const R={alert:'alertas',near:'cerca del umbral',sample:'muestra normal',disagree:'desacuerdo con la sombra'};
+    const chips=Object.entries(S.clips.reason).sort((a,b)=>b[1]-a[1]).map(([k,n])=>'<span class="chip"><b>'+n+'</b> '+(R[k]||k)+'</span>').join('');
+    return '<div class="h1">station/ <span class="n">('+S.versions.length+')</span></div><div class="sb">Una carpeta por versión: lo que ya se publicó no se toca, y Greengrass verifica la huella de cada archivo</div>'+
+      T(['Name','Type','Archivos','Tamaño','Subida','Qué es'],rows)+
+      '<div class="box cl"><div class="wt">'+FOLDER+'clips/ · <b>'+S.clips.n+'</b> clips que valen la pena, subidos por lotes con stream manager</div><div class="chips">'+chips+'</div></div>';
+  },
+
+  /* IoT Greengrass › Components › com.station.Listener: the versions and the threshold each one carries */
+  component(){
+    const S=D.s3||{versions:[],thr:{}}, vs=[...S.versions].reverse();
+    const rows=vs.map(v=>'<tr><td><a>'+v.v+'</a></td><td>'+pill('Deployable','ok','ok')+'</td><td class="m">'+hms(v.t)+'</td><td class="m">v'+(v.shadow?'1.0.0':v.v)+
+      '</td><td class="m">'+(v.shadow?'v2.0.0':'—')+'</td><td class="m">'+(+v.thr).toFixed(3)+'</td></tr>');
+    const cfg={topic:'station/events',intervalSeconds:'3',threshold:String((+((S.thr||{})['1.0.0']||0)).toFixed(3)),uploadBucket:'station-‹cuenta›-us-east-1'};
+    return H('com.station.Listener',null,'Component · Private · cada versión apunta a sus archivos en S3, con su huella')+
+      T(['Version','Status','Created','Decide','En sombra','threshold'],rows)+
+      '<div class="box"><div class="wt">Default configuration · 1.0.0 · el umbral es configuración: se cambia sin reentrenar</div><pre class="js sm">'+jsonHi(cfg)+'</pre></div>';
+  },
+
+  /* CloudWatch › Dashboards › station: the totals of the run and the input per pump */
+  dashboard(){
+    const ev=EV.filter(e=>e.a<=t), byV={}; ev.forEach(e=>{ byV[e.v]=(byV[e.v]||0)+1; });
+    const al=ev.filter(e=>e.al).length, mf=ev.filter(e=>e.f&&!e.al).length, on=D.alarm&&t>=D.alarm;
+    const vv=Object.keys(byV).sort();
+    const ch=inputChart(1380,180);
+    const W=(tt,body)=>'<div class="box wd"><div class="wt">'+tt+'</div>'+body+'</div>';
+    return '<div class="h1">station · lo que decide el modelo, sin el audio</div><div class="sb">1 · Input: ¿el sensor dice la verdad? · 2 · Output: ¿cambió lo que decide? · 3 · Autenticidad: ¿es el modelo que mandamos?</div>'+
+      '<div class="wds">'+
+        W('Gate · rollback alarm','<div class="gw">'+(on?pill('station-missed-faults','bad big','bad'):pill('station-missed-faults','ok big','ok'))+'</div>')+
+        W('Clips per version','<div class="nums">'+vv.map((v,i)=>'<div><b style="color:'+(i?'#FF9900':'#0972D3')+'">'+kf(byV[v])+'</b><span>v'+v+'</span></div>').join('')+'</div>')+
+        W('Alerts','<div class="nums"><div><b>'+al+'</b><span>all pumps</span></div></div>')+
+        W('Faults nobody heard','<div class="nums"><div><b class="r">'+mf+'</b><span>missed faults</span></div></div>')+
+      '</div><div class="box"><div class="wt">Input level per pump (std devs from what it learned)</div>'+ch.svg+ch.lg+'</div>';
   },
 
   /* CloudWatch › Dashboards › station: the input level per pump (the drift) */

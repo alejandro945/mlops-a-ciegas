@@ -25,15 +25,6 @@ To retake them: bring the stack up and run the demo (see `poc-devopsdays/README.
 
 [`talk/tools/screens/render.js`](../../tools/screens/render.js) is the fallback: it renders the same six slots from a rehearsal's CLI evidence (`evidencia-e2e/<date>/`, out of the repo because it holds the account id) when no console is at hand.
 
-## Tech Day Cali (`cali/`)
+## Tech Day Cali
 
-The Cali deck (`DECK_THEME=tdc`) looks in `cali/` first, then here. These are from the end-to-end run of November 16, 2026, the first one with the judge (Step Functions `station-judge`), captured in Chrome with the account id replaced by `‹cuenta›` on the page:
-
-| File | Slide | What it shows |
-|---|---|---|
-| `s3-versiones.jpg` | El modelo, versionado | S3 › `station/`: `1.0.0/`, `1.1.0/` (the carrier: 1.0.0 deciding with 2.0.0 in shadow) and `2.0.0/` |
-| `gg-componente.jpg` | El modelo, versionado | IoT Greengrass › Components › `com.station.Listener`: the three versions and the threshold in the default configuration |
-| `gg-equipos.jpg` | La flota, en línea | IoT Greengrass › Core devices: `pump-01` to `pump-05`, Healthy |
-| `cw-dashboard.jpg` | Lo que reporta | CloudWatch › Dashboards › `station` over the run |
-
-The four act slides carry no image: they embed the station page itself (`talk/estacion.html`, built by `tools/build_station.py` from that run's evidence), live, and each click drives it. The console captures of the acts (Logs Insights, Step Functions baking and the verdict, the alarm, the Lambda logs, the deployments) live inside that page, one per act (key A), from `evidencia-e2e/2026-11-16/console/`.
+The Cali deck (`DECK_THEME=tdc`) uses no screenshots. Its evidence slides embed `talk/estacion.html`, built by `tools/build_station.py` from the end-to-end run of November 16, 2026 (`evidencia-e2e/2026-11-16/`, the first one with the judge): slides 25 to 27 show the AWS console redrawn in HTML from that run's data (S3, the component, the core devices, the dashboard), and the act slides show the station live, with the console panels of each moment (Logs Insights, Step Functions, the alarm, the Lambda log, the deployments). The panels live in `tools/station-console.js` and `tools/station-console.css`.

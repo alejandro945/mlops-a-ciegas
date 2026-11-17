@@ -328,9 +328,11 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 25 · El modelo, versionado
 <!-- id: artefacto -->
-**0:25** · sin clics
+**0:25** · 1 clic
 
-"Primero, el artefacto. En S3, cada versión en su propia carpeta, y aparte los clips que valen la pena guardar. En Greengrass, el componente con sus versiones: la 1.0.0, la 2.0.0 y la 1.1.0, que es la 1.0.0 decidiendo con la 2.0.0 en sombra. Nada se sobrescribe."
+"Primero, el artefacto. En S3, cada versión en su propia carpeta: la 1.0.0, la 2.0.0, y la 1.1.0, que es la 1.0.0 decidiendo con la 2.0.0 en sombra. Aparte, los clips que valen la pena guardar, subidos por lotes: alertas y los que quedaron cerca del umbral."
+
+**[CLIC]** "En Greengrass, el componente con sus tres versiones y el umbral de cada una. Nada se sobrescribe, y el umbral es configuración: se cambia sin reentrenar."
 
 ---
 
@@ -338,7 +340,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 <!-- id: flota -->
 **0:20** · sin clics
 
-"La flota: cada bomba es una thing de AWS IoT, con su propio certificado. Cinco equipos en dos rings, todos sanos."
+"La flota: cada bomba es una thing de AWS IoT, con su propio certificado. Cinco equipos en dos rings, todos sanos, con la versión que corre cada uno."
 
 ---
 
@@ -346,7 +348,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 <!-- id: reporte -->
 **0:20** · sin clics
 
-"Y esto es lo que reportan: el dashboard, organizado por las tres señales: entrada, salida y autenticidad. Con esto en marcha, tres pruebas."
+"Y esto es lo que reportan: el dashboard, organizado por las tres señales: entrada, salida y autenticidad. Clips por versión, alertas, fallas que nadie oyó, y la entrada de cada bomba: ese salto morado es la deriva de la bomba 5. Con esto en marcha, tres pruebas."
 
 ---
 

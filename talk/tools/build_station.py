@@ -156,6 +156,40 @@ def alarm_history():
     return out
 
 
+def s3_and_component(rows):
+    """The artifacts bucket (s3-station.txt), the clips kept (s3-clips.txt) and the component's versions,
+    with the threshold each version decided with (from the events)."""
+    vers = {}
+    try:
+        for line in open(os.path.join(EV, "s3-station.txt"), encoding="utf-8"):
+            m = re.match(r"(\S+ \S+)\s+(\d+)\s+station/([\d.]+)/(\S+)", line.strip())
+            if m:
+                t = int(datetime.datetime.fromisoformat(m.group(1)).replace(tzinfo=TZ).timestamp() * 1000)
+                v = vers.setdefault(m.group(3), {"v": m.group(3), "files": [], "t": t})
+                v["files"].append({"name": m.group(4), "size": int(m.group(2))})
+                v["t"] = max(v["t"], t)
+    except OSError:
+        pass
+    clips = {"n": 0, "reason": {}, "device": {}}
+    try:
+        for line in open(os.path.join(EV, "s3-clips.txt"), encoding="utf-8"):
+            m = re.search(r"clips/device=([^/]+)/.*?/\d+_([a-z]+)_section", line)
+            if m:
+                clips["n"] += 1
+                clips["reason"][m.group(2)] = clips["reason"].get(m.group(2), 0) + 1
+                clips["device"][m.group(1)] = clips["device"].get(m.group(1), 0) + 1
+    except OSError:
+        pass
+    thr = {}
+    for r in rows:
+        thr.setdefault(r["v"], r["h"])
+    for v in vers.values():
+        names = {f["name"] for f in v["files"]}
+        v["shadow"] = "shadow.onnx" in names
+        v["thr"] = thr.get(v["v"]) or thr.get("1.0.0")
+    return {"versions": sorted(vers.values(), key=lambda x: x["v"]), "clips": clips, "thr": thr}
+
+
 def lambda_lines(lam):
     """The Lambda's log, line by line, timed around the rollback (lam.t): REPORT gives the duration and the init."""
     if not lam:
@@ -392,13 +426,21 @@ h1 b{color:var(--orange);font-weight:800}
 html.embed,html.embed body{background:transparent}
 html.embed #stage{border-radius:16px;box-shadow:0 18px 50px rgba(11,19,42,.16);border:1.5px solid var(--line)}
 html.embed #help{display:none}
+/* console only (?con=…): the stage is the console window, nothing else */
+html.cononly #stage{width:1488px;height:622px;background:transparent;overflow:visible}
+html.cononly #stage > *:not(#ov){display:none}
+html.cononly #ov{display:block;background:transparent;cursor:default}
+html.cononly #ov .c{display:none}
+html.cononly #cw{left:0;top:0;width:1488px;height:622px;border:1.5px solid #D5DEEA;box-shadow:0 16px 44px rgba(11,19,42,.16)}
+html.cononly.embed #stage{border:0;box-shadow:none;border-radius:0}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 """
 
 
 def page(devs, rows, M, alarm, lam, deploys, judge, day, alarm_hist):
     data = json.dumps({"devs": devs, "ev": rows, "M": M, "alarm": alarm, "lam": lam, "deploys": deploys,
-                       "judge": judge, "day": day, "alarmHist": alarm_hist}, ensure_ascii=False, separators=(",", ":"))
+                       "judge": judge, "day": day, "alarmHist": alarm_hist, "s3": s3_and_component(rows)},
+                      ensure_ascii=False, separators=(",", ":"))
     con_css = open(os.path.join(HERE, "station-console.css"), encoding="utf-8").read()
     con_js = open(os.path.join(HERE, "station-console.js"), encoding="utf-8").read()
     tdc = os.path.join(TALK, "assets", "cali", "tdc")
@@ -471,7 +513,10 @@ const EV=D.ev, DEVS=D.devs, M=D.M, N=EV.length;
 const T0=M[0].t, T1=Math.max(...EV.map(e=>e.a))+5000;
 const TZ=-5*3600*1000;
 function hms(ms){{ const d=new Date(ms+TZ); return d.toISOString().slice(11,19); }}
-function fit(){{ const s=Math.min(innerWidth/1600,innerHeight/900); $('#stage').style.transform=`translate(-50%,-50%) scale(${{s}})`; }}
+const ONLY=new URLSearchParams(location.search).get('con');      /* console only: the deck's slides 25-27 */
+const SW=ONLY?1488:1600, SH=ONLY?622:900;
+if(ONLY) document.documentElement.classList.add('cononly');
+function fit(){{ const s=Math.min(innerWidth/SW,innerHeight/SH); $('#stage').style.transform=`translate(-50%,-50%) scale(${{s}})`; }}
 addEventListener('resize',fit); fit();
 {con_js}
 
@@ -611,11 +656,12 @@ if(EMBED){{ document.documentElement.classList.add('embed');
     else if(m.cmd==='play') toggle(true);
     else if(m.cmd==='overlay'){{ m.on?showOv(m.con):hideOv(); if(m.speed) setSpeed(m.speed); if(m.on&&!playing) toggle(true); }}
     else if(m.cmd==='speed') setSpeed(m.s);
-    else if(m.cmd==='reset'){{ toggle(false); hideOv(); step(T0); paint(); }} }});
+    else if(m.cmd==='show'){{ showOv(m.con); }}
+    else if(m.cmd==='reset'&&!ONLY){{ toggle(false); hideOv(); step(T0); paint(); }} }});
   addEventListener('keydown',e=>{{ if(['ArrowRight','ArrowDown','PageDown','Enter'].includes(e.key)){{ e.preventDefault(); e.stopImmediatePropagation(); parent.postMessage({{cmd:'nav',d:1}},'*'); }}
     else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){{ e.preventDefault(); e.stopImmediatePropagation(); parent.postMessage({{cmd:'nav',d:-1}},'*'); }} }},true);
 }}
-step(T0); paint();
+if(ONLY){{ step(T1); paint(); showOv(ONLY); }} else {{ step(T0); paint(); }}
 </script>
 </body></html>
 """
