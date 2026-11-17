@@ -458,7 +458,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
   <div class="kick">Contexto</div>
   <div class="ttl wide">La IA ya corre <b>en el dispositivo</b></div>
   <div class="chart" style="left:84px;right:84px;top:222px;bottom:162px"><canvas class="anim" data-anim="cien"></canvas></div>
-  <div class="foot" data-src="IoT Analytics, State of IoT 2025: dispositivos IoT conectados, sin PC, teléfonos ni tablets · 2030 es proyección"></div>
+  <div class="foot"></div>
 </section>
 
 <!-- ═══════════════ 03 · USE CASES (MEMES) ═══════════════ -->
@@ -976,28 +976,28 @@ function rich(g,x,y,parts,size){ let xx=x; parts.forEach(pt=>{ T(g,xx,y,pt[0],pt
 
 /* 02 · smart devices: connected IoT devices in the world, one box per billion (IoT Analytics) */
 ANIM.cien={steps:3,dur:1700,draw(g,W,H,st,p,t){
-  const s=Math.min(st,2), V=[18.5,21.1,39], Y=['2024','2025','2030 · proyección'];
-  const pv=s?V[s-1]:0, q=(RM||st>2)?1:ease(clamp(p*1.25));
-  const v=lerp(pv,V[s],q), txt=(Math.abs(v-Math.round(v))<.05?String(Math.round(v)):v.toFixed(1).replace('.',','));
-  T(g,0,44,'Dispositivos inteligentes conectados en el mundo',ink(.66),30,400);
-  T(g,-6,244,txt,INK,190,700);
-  const nw=g.measureText(txt).width; T(g,nw+8,244,'mil',INK,56,700); T(g,nw+8,300,'millones',INK,56,700);
-  T(g,0,340,Y[s],ink(.55),22,700,true);
-  if(s===1){ const a=(RM||st>2)?1:clamp(p*1.6-.6); g.save(); g.globalAlpha=a;
-    T(g,0,420,'más de dos por cada persona',ACC,40,700); g.restore(); }
-  if(s===2){ const a=(RM||st>2)?1:clamp(p*1.6-.6); g.save(); g.globalAlpha=a; T(g,0,400,'casi el doble en cinco años',ACC,40,700);
-    T(g,0,444,'Sensores, cámaras, máquinas, medidores:',ink(.66),22,400); T(g,0,474,'cada vez más deciden donde están, sin la nube.',ink(.66),22,400); g.restore(); }
-  /* 40 devices: one per billion */
-  const gx=660, cols=8, rows=5, cw=(W-gx)/cols, ch=(H-10)/rows, w=cw*.6, h=ch*.46, N=Math.ceil(V[s]), pn=Math.ceil(pv);
-  for(let k=0;k<cols*rows;k++){
-    const c=k%cols, r=Math.floor(k/cols), x=gx+c*cw+(cw-w)/2, y=r*ch+ch*.27;
-    let on=k<pn; if(!on && k<N) on = q >= (k-pn+1)/(N-pn);
-    const pop = on && k>=pn && q<1 ? 1+.25*Math.sin(Math.PI*clamp((q-(k-pn)/(N-pn))*6)) : 1;
+  /* the same series (IoT Analytics: 18.5 · 21.1 · 39 billion), as a share of 2030: 47 % · 54 % · 100 % */
+  const s=Math.min(st,2), V=[47,54,100], Y=['2024','2025','2030 · proyección'];
+  const pn=s?V[s-1]:0, pv=pn, q=(RM||st>2)?1:ease(clamp(p*1.25));
+  const v=lerp(pv,V[s],q), txt=String(Math.round(v));
+  T(g,0,44,'De cada 100 dispositivos inteligentes',ink(.66),30,400);
+  T(g,0,82,'que habrá en 2030, ya están conectados',ink(.66),30,400);
+  T(g,-6,282,txt,INK,190,700);
+  const nw=g.measureText(txt).width; T(g,nw+4,282,'%',INK,80,700);
+  T(g,0,344,Y[s],ink(.55),22,700,true);
+  if(s===2){ const a=(RM||st>2)?1:clamp(p*1.6-.6); g.save(); g.globalAlpha=a; T(g,0,438,'casi el doble en cinco años',ACC,40,700);
+    T(g,0,482,'Sensores, cámaras, máquinas, medidores:',ink(.66),22,400); T(g,0,512,'cada vez más deciden donde están, sin la nube.',ink(.66),22,400); g.restore(); }
+  /* 100 devices */
+  const gx=660, cw=(W-gx)/10, ch=(H-10)/10, w=cw*.6, h=ch*.5;
+  for(let k=0;k<100;k++){
+    const c=k%10, r=Math.floor(k/10), x=gx+c*cw+(cw-w)/2, y=r*ch+ch*.3;
+    let on=k<pn; if(!on && k<V[s]) on = q >= (k-pn+1)/(V[s]-pn);
+    const pop = on && k>=pn && q<1 ? 1+.25*Math.sin(Math.PI*clamp((q-(k-pn)/(V[s]-pn))*6)) : 1;
     g.save(); g.translate(x+w/2,y+h/2); g.scale(pop,pop); g.translate(-(x+w/2),-(y+h/2));
-    if(on){ fillRR(g,x,y,w,h,6,ACC); dot(g,x+w*.78,y+h*.3,h*.11,'#FFFFFF'); g.strokeStyle='#FFFFFF'; g.lineWidth=2; g.beginPath(); g.moveTo(x+w*.2,y+h*.68); g.lineTo(x+w*.62,y+h*.68); g.stroke();
-      g.strokeStyle=ACC; g.lineWidth=2.5; g.beginPath(); g.moveTo(x+w*.5,y); g.lineTo(x+w*.5,y-h*.3); g.stroke(); }
-    else  { strokeRR(g,x,y,w,h,6,ink(.3),1.5); dot(g,x+w*.78,y+h*.3,h*.11,ink(.3));
-      g.strokeStyle=ink(.3); g.lineWidth=1.5; g.beginPath(); g.moveTo(x+w*.5,y); g.lineTo(x+w*.5,y-h*.3); g.stroke(); }
+    if(on){ fillRR(g,x,y,w,h,4,ACC); dot(g,x+w*.76,y+h*.32,h*.12,'#FFFFFF');
+      g.strokeStyle=ACC; g.lineWidth=2; g.beginPath(); g.moveTo(x+w*.5,y); g.lineTo(x+w*.5,y-h*.32); g.stroke(); }
+    else  { strokeRR(g,x,y,w,h,4,ink(.3),1.5); dot(g,x+w*.76,y+h*.32,h*.12,ink(.3));
+      g.strokeStyle=ink(.3); g.lineWidth=1.5; g.beginPath(); g.moveTo(x+w*.5,y); g.lineTo(x+w*.5,y-h*.32); g.stroke(); }
     g.restore();
   }
 }};
