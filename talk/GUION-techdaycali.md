@@ -30,11 +30,11 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 <!-- id: cien -->
 **0:25** · 2 clics
 
-"Esto no es un caso aislado. Piensen en todos los dispositivos inteligentes que habrá conectados en 2030: sensores, cámaras, máquinas, medidores. En 2024 ya existía el 47 % de ellos."
+"Esto no es un caso aislado. Un ejemplo: de cada 100 PC nuevos que se vendieron en 2024, 16 traían un chip para correr IA en el equipo."
 
-**[CLIC]** "En 2025, el 54 %: más de la mitad ya está aquí."
+**[CLIC]** "En 2025, 31."
 
-**[CLIC]** "Y en cinco años, el resto: casi el doble. Y cada vez más de ellos deciden donde están, sin preguntarle a la nube." *(Si preguntan por la fuente: IoT Analytics, State of IoT 2025: 18,5 mil millones en 2024, 21,1 en 2025 y 39 proyectados para 2030.)*
+**[CLIC]** "Y para 2026 se proyecta más de la mitad: 55 de cada 100, tres veces y media en dos años. El modelo ya corre en el equipo, no en la nube." *(Si preguntan por la fuente: Gartner, agosto de 2025; 2026 es proyección.)*
 
 ---
 

@@ -976,28 +976,24 @@ function rich(g,x,y,parts,size){ let xx=x; parts.forEach(pt=>{ T(g,xx,y,pt[0],pt
 
 /* 02 · smart devices: connected IoT devices in the world, one box per billion (IoT Analytics) */
 ANIM.cien={steps:3,dur:1700,draw(g,W,H,st,p,t){
-  /* the same series (IoT Analytics: 18.5 · 21.1 · 39 billion), as a share of 2030: 47 % · 54 % · 100 % */
-  const s=Math.min(st,2), V=[47,54,100], Y=['2024','2025','2030 · proyección'];
-  const pn=s?V[s-1]:0, pv=pn, q=(RM||st>2)?1:ease(clamp(p*1.25));
-  const v=lerp(pv,V[s],q), txt=String(Math.round(v));
-  T(g,0,44,'De cada 100 dispositivos inteligentes',ink(.66),30,400);
-  T(g,0,82,'que habrá en 2030, ya están conectados',ink(.66),30,400);
-  T(g,-6,282,txt,INK,190,700);
-  const nw=g.measureText(txt).width; T(g,nw+4,282,'%',INK,80,700);
-  T(g,0,344,Y[s],ink(.55),22,700,true);
-  if(s===2){ const a=(RM||st>2)?1:clamp(p*1.6-.6); g.save(); g.globalAlpha=a; T(g,0,438,'casi el doble en cinco años',ACC,40,700);
-    T(g,0,482,'Sensores, cámaras, máquinas, medidores:',ink(.66),22,400); T(g,0,512,'cada vez más deciden donde están, sin la nube.',ink(.66),22,400); g.restore(); }
-  /* 100 devices */
-  const gx=660, cw=(W-gx)/10, ch=(H-10)/10, w=cw*.6, h=ch*.5;
+  const s=Math.min(st,2), V=[16,31,55], N=[16,31,55], Y=['2024','2025','2026 · proyección'];   /* Gartner, Aug 2025: 15.6 · 31 · 54.7 */
+  const pn=s?N[s-1]:0, pv=s?V[s-1]:0, q=(RM||st>2)?1:ease(clamp(p*1.25));
+  const v=lerp(pv,V[s],q), txt=(Math.abs(v-Math.round(v))<.05?String(Math.round(v)):v.toFixed(1).replace('.',','));
+  T(g,0,44,'Un ejemplo: de cada 100 PC nuevos,',ink(.66),30,400);
+  T(g,-6,244,txt,INK,190,700);
+  const nw=g.measureText(txt).width; T(g,nw+4,244,'%',INK,80,700);
+  T(g,0,306,Y[s],ink(.55),22,700,true);
+  if(s===2){ const a=(RM||st>2)?1:clamp(p*1.6-.6); g.save(); g.globalAlpha=a; T(g,0,420,'×3,5 en dos años',ACC,46,700);
+    T(g,0,474,'El modelo ya corre en el equipo,',ink(.66),22,400); T(g,0,504,'no en la nube.',ink(.66),22,400); g.restore(); }
+  /* 100 computers */
+  const gx=640, cw=(W-gx)/10, ch=(H-10)/10, w=cw*.64, h=ch*.5;
   for(let k=0;k<100;k++){
-    const c=k%10, r=Math.floor(k/10), x=gx+c*cw+(cw-w)/2, y=r*ch+ch*.3;
-    let on=k<pn; if(!on && k<V[s]) on = q >= (k-pn+1)/(V[s]-pn);
-    const pop = on && k>=pn && q<1 ? 1+.25*Math.sin(Math.PI*clamp((q-(k-pn)/(V[s]-pn))*6)) : 1;
+    const c=k%10, r=Math.floor(k/10), x=gx+c*cw+(cw-w)/2, y=r*ch+ch*.2;
+    let on=k<pn; if(!on && k<N[s]) on = q >= (k-pn+1)/(N[s]-pn);
+    const pop = on && k>=pn && q<1 ? 1+.25*Math.sin(Math.PI*clamp((q-(k-pn)/(N[s]-pn))*6)) : 1;
     g.save(); g.translate(x+w/2,y+h/2); g.scale(pop,pop); g.translate(-(x+w/2),-(y+h/2));
-    if(on){ fillRR(g,x,y,w,h,4,ACC); dot(g,x+w*.76,y+h*.32,h*.12,'#FFFFFF');
-      g.strokeStyle=ACC; g.lineWidth=2; g.beginPath(); g.moveTo(x+w*.5,y); g.lineTo(x+w*.5,y-h*.32); g.stroke(); }
-    else  { strokeRR(g,x,y,w,h,4,ink(.3),1.5); dot(g,x+w*.76,y+h*.32,h*.12,ink(.3));
-      g.strokeStyle=ink(.3); g.lineWidth=1.5; g.beginPath(); g.moveTo(x+w*.5,y); g.lineTo(x+w*.5,y-h*.32); g.stroke(); }
+    if(on){ fillRR(g,x,y,w,h,4,ACC); g.fillStyle=ACC; g.fillRect(x-w*.08,y+h+3,w*1.16,4); fillRR(g,x+w*.36,y+h*.3,w*.28,h*.4,2,'#FFFFFF'); }
+    else  { strokeRR(g,x,y,w,h,4,ink(.3),1.5); g.fillStyle=ink(.3); g.fillRect(x-w*.08,y+h+3,w*1.16,4); }
     g.restore();
   }
 }};
