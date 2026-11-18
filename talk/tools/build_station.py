@@ -334,6 +334,12 @@ def markers(ev, alarm, lam, judge=()):
         if m["k"] == "acto1" and a1:
             m["dev"] = a1["device"]
     M.sort(key=lambda m: m["t"])
+    HOLD = {"inicio": 12000, "acto1": 15000, "acto2": 15000, "vuelve": 15000, "deriva": 15000, "sombra": 20000,
+            "veredicto": 25000, "acto3": 21000, "noye": 20000, "fin": 8000}
+    for m in M:
+        m["hold"] = HOLD.get(m["k"], 15000)
+        if m["k"] == "alarma" and lam:                   # the alarm, then the Lambda and the pump back on v1
+            m["hold"] = max(15000, lam["t"] - m["t"] + 20000)
     return M
 
 
@@ -580,7 +586,10 @@ DEVS.forEach((d,i)=>{{
 const SMAX=.6;      /* the score bar's scale */
 
 /* replay state */
-let t=T0, playing=false, speed=4, last=null, cur=-1;
+let t=T0, playing=false, speed=4, last=null, cur=-1, eff=4;
+/* pacing: ff glides to a moment instead of jumping; stop is where the replay waits for the next click (in the deck);
+   between a moment's hold window and the next moment, the dead time runs at QUIET× */
+let ff=null, stop=null; const QUIET=12, LEAD=4000;
 let iDec=0, iArr=0;                                    /* cursors over the events, by decision and by arrival */
 const byArr=EV.map((e,i)=>i).sort((a,b)=>EV[a].a-EV[b].a);
 let dec=DEVS.map(()=>null), q=DEVS.map(()=>0), arrived=0, alerts=0, late=0, missed=0, perMin={{}}, lines=[];
@@ -596,7 +605,7 @@ function step(to){{
   t=to;
 }}
 function packet(d,al,mf){{
-  if(playing && speed>4) return;
+  if(playing && eff>4) return;
   const y=[88,106,106,262,262][d]+ (d===0?0:0) + 60;        /* roughly the card's middle */
   const c=document.createElementNS('http://www.w3.org/2000/svg','circle');
   c.setAttribute('r',mf?6:4.5); c.setAttribute('fill',mf?'#E03A2F':al?'#FF5A1F':'#1F8F7A'); c.setAttribute('cx',0); c.setAttribute('cy',y);
@@ -675,17 +684,29 @@ const KX=[0]; for(let j=1;j<KN.length;j++) KX.push(KX[j-1]+Math.min(GAP,KN[j]-KN
 function pos(tt){{ let j=0; while(j+1<KN.length && KN[j+1]<=tt) j++; const seg=Math.min(GAP,KN[j+1]-KN[j]); const u=Math.min(1,(tt-KN[j])/(KN[j+1]-KN[j])); return (KX[j]+u*seg)/KX[KX.length-1]*100; }}
 M.forEach((m,j)=>{{ const d=document.createElement('div'); d.className='mk'; d.style.left=pos(m.t)+'%'; d.title=m.tag; d.onclick=()=>goto(j);
   const l=document.createElement('div'); l.className='ml'+(j%2?' lo':''); l.style.left=pos(m.t)+'%'; if(j===0) l.style.transform='none'; l.textContent=m.tag.replace(/^ACTO \\d · /,''); $('#tl').appendChild(d); $('#tl').appendChild(l); }});
-function goto(j){{ j=Math.max(0,Math.min(M.length-1,j)); step(M[j].t); setSpeed(M[j].speed); paint(); if(!playing) toggle(true); }}
+function goto(j,sp){{ j=Math.max(0,Math.min(M.length-1,j)); const to=M[j].t, nx=M[j+1], s=sp||M[j].speed;
+  if(t>=to && (!nx||t<nx.t)) {{ setSpeed(s); }}                                   /* already in that moment: never step back */
+  else if(to>t && to-t<900000) {{ ff={{to, sp:s, rate:Math.max(8,(to-t)/1100)}}; }}  /* ahead: glide there in about a second */
+  else {{ ff=null; step(to); setSpeed(s); paint(); }}
+  if(!playing) toggle(true); }}
 function setSpeed(s){{ speed=s; document.querySelectorAll('#ctl [data-sp]').forEach(b=>b.classList.toggle('on',+b.dataset.sp===s)); }}
 $('#dock').onclick=()=>showOv(); $('#ov').onclick=e=>{{ if(!e.target.closest('#cw')) hideOv(); }};
 function toggle(on){{ playing=on===undefined?!playing:on; $('#play').textContent=playing?'❚❚':'▶'; last=null; if(playing) requestAnimationFrame(tick); }}
-function tick(now){{ if(!playing) return; if(last!==null){{ step(Math.min(T1,t+(now-last)*speed)); paint(); if(t>=T1) toggle(false); }} last=now; requestAnimationFrame(tick); }}
+function tick(now){{ if(!playing) return;
+  if(last!==null){{ const dt=now-last;
+    if(ff){{ eff=ff.rate; step(Math.min(ff.to,t+dt*ff.rate)); if(t>=ff.to){{ setSpeed(ff.sp); ff=null; }} }}
+    else {{ const m=M[cur], nx=M[cur+1], quiet=m&&(t-m.t)>(m.hold||15000)&&(!nx||nx.t-t>LEAD);
+      eff=quiet?Math.max(speed,QUIET):speed; let to=Math.min(T1,t+dt*eff);
+      if(stop!=null&&to>=stop){{ to=stop; }}
+      step(to); if(stop!=null&&t>=stop){{ stop=null; paint(); toggle(false); last=null; return; }} }}
+    paint(); if(t>=T1) toggle(false); }}
+  last=now; requestAnimationFrame(tick); }}
 $('#play').onclick=()=>toggle();
 document.querySelectorAll('#ctl [data-sp]').forEach(b=>b.onclick=()=>setSpeed(+b.dataset.sp));
 addEventListener('keydown',e=>{{ const k=e.key;
   if(k===' '){{ e.preventDefault(); toggle(); }}
-  else if(k==='ArrowRight'||k==='PageDown'){{ e.preventDefault(); goto(cur+1); }}
-  else if(k==='ArrowLeft'||k==='PageUp'){{ e.preventDefault(); goto(cur-1); }}
+  else if(k==='ArrowRight'||k==='PageDown'){{ e.preventDefault(); stop=null; goto(cur+1); }}
+  else if(k==='ArrowLeft'||k==='PageUp'){{ e.preventDefault(); stop=null; ff=null; step(M[Math.max(0,cur-1)].t); goto(cur-1); }}
   else if(k==='Home'){{ step(T0); paint(); }}
   else if('1248'.includes(k)&&k){{ setSpeed(+k); }}
   else if(k.toLowerCase()==='a'){{ e.preventDefault(); conOpen?hideOv():showOv(); }}
@@ -697,7 +718,10 @@ window.__st={{seek:ms=>{{ step(ms); paint(); }}, goto, M, T0, T1, toggle}};
 const EMBED=window.parent!==window;
 if(EMBED){{ document.documentElement.classList.add('embed');
   addEventListener('message',ev=>{{ const m=ev.data||{{}};
-    if(m.cmd==='act'){{ const j=M.findIndex(x=>x.k===m.k); fit(); if(j>=0){{ goto(j); if(m.dt){{ step(M[j].t+m.dt); paint(); }} if(m.speed) setSpeed(m.speed); }} m.con?showOv(m.con):hideOv(); }}
+    if(m.cmd==='act'){{ const j=M.findIndex(x=>x.k===m.k); fit(); hideOv();
+      if(j>=0){{ if(m.back||t>(M[j+1]||{{t:T1}}).t){{ ff=null; step(M[j].t); }} goto(j,m.speed);
+        /* wait for the next click just before the next stop (m.until: a marker key, or 'end') */
+        const u=m.until==='end'?-1:m.until?M.findIndex(x=>x.k===m.until):j+1; stop=u>=0&&M[u]?M[u].t-1500:null; }} }}
     else if(m.cmd==='pause') toggle(false);
     else if(m.cmd==='play') toggle(true);
     else if(m.cmd==='overlay'){{ m.on?showOv(m.con):hideOv(); if(m.speed) setSpeed(m.speed); if(m.on&&!playing) toggle(true); }}
@@ -729,7 +753,7 @@ def main():
         M.insert(0, {"t": prov["t0"], "k": "prov", "tag": "APROVISIONAR", "title": "Terraform, la flota y la v1",
                      "text": f"terraform apply crea {prov['total']} recursos; la flota instala cinco bombas con Greengrass; "
                              "la v1 y la v2 se registran como versiones del componente; Greengrass despliega la v1 a los dos rings. Con eso, la prueba.",
-                     "speed": 2, "con": None})
+                     "speed": 2, "con": None, "hold": prov.get("dur", 64000)})
     html = page(devs, rows, M, alarm, lam, deploys, judge, day, alarm_history(), prov)
     open(OUT, "w", encoding="utf-8").write(html)
     print(f"✔ {OUT}  ({len(html.encode()) / 1024:.0f} KB · {len(rows)} events · {len(M)} markers: "

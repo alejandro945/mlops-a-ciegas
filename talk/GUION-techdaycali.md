@@ -394,33 +394,31 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 31 · Acto 3 · El juez
 <!-- id: acto3 -->
-**1:30** · 3 clics · *el punto culminante: ve despacio*
+**1:30** · 2 clics · *el punto culminante: ve despacio*
 
 "Tercer acto: la versión 2.0.0, entrenada con más datos. No la despliego: se la entrego al juez." *(pausa)* "El juez la pone en sombra en el canary: la bomba 1 recibe la v2, pero sigue decidiendo la v1. La v2 solo dice qué habría hecho."
 
-**[CLIC]** "Así se ve en AWS: la ejecución en Step Functions. Desplegó la sombra y ahora hornea: dos minutos escuchando clips reales." *(mientras avanza el contador)* "Durante el horneado inyecto una falla en la bomba 1. La v1 alerta; la v2, en sombra, dice «normal»."
+*(señala la derecha)* "Así se ve en AWS: la ejecución en Step Functions. Desplegó la sombra y ahora hornea: dos minutos escuchando clips reales." *(mientras avanza el contador)* "Durante el horneado inyecto una falla en la bomba 1. La v1 alerta; la v2, en sombra, dice «normal»."
 
 **[CLIC]** "Termina de hornear y mide en Logs Insights, sobre los mismos clips: dieciséis de treinta y cuatro fallas que la v1 oyó, la v2 no las oyó. No pasa la regla. Reject, Notify, CandidateRejected: el canary vuelve a la v1 sola y llega el aviso."
 
 "La causa: el audio adicional incluía un periodo en que una bomba ya estaba fallando, y nadie lo validó. El modelo aprendió la falla como comportamiento normal. No es un error de código; es un error de datos."
 
-**[CLIC]** *(vuelve la estación; mirando a la sala)* "La v2 nunca decidió. Nadie tocó el equipo y el ring 1 nunca la vio."
+**[CLIC]** *(mirando a la sala)* "La v2 nunca decidió. Nadie tocó el equipo y el ring 1 nunca la vio."
 
 ---
 
 ## 32 · Acto 3b · Sin juez: la red de seguridad
 <!-- id: acto3b -->
-**1:00** · 4 clics
+**1:00** · 3 clics
 
 "¿Y si no hubiera juez? Lo probé también: despliego la 2.0.0 directo al ring 0. Llega en segundos, sin errores. Para Greengrass, un despliegue exitoso."
 
-**[CLIC]** "Inyecto la falla y la v2 responde «normal»: fallas no oídas." *(Si preguntan: aquí la alarma las cuenta porque sé qué audio suena; en producción reaccionaría a la salida, porque la tasa de alertas cae y cambia la distribución de scores.)*
+**[CLIC]** "Inyecto la falla y la v2 responde «normal»: fallas no oídas. A la derecha, la alarma en CloudWatch: las fallas por minuto suben hacia el umbral de 8." *(Si preguntan: aquí la alarma las cuenta porque sé qué audio suena; en producción reaccionaría a la salida, porque la tasa de alertas cae y cambia la distribución de scores.)*
 
-**[CLIC]** "En CloudWatch, la alarma: las fallas por minuto suben, cruzan el umbral de 8 y la alarma pasa a ALARM."
+**[CLIC]** "Cruza el umbral: ALARM. La alarma invoca la Lambda; su log: «rolled_back_to 1.0.0». Despliega al ring 0 la última versión buena. Un minuto y cincuenta segundos desde la falla, sin acceso al equipo."
 
-**[CLIC]** "La alarma invoca la Lambda. Su log: «rolled_back_to 1.0.0». Despliega al ring 0 la última versión buena. Un minuto y cincuenta segundos desde la falla, sin acceso al equipo."
-
-**[CLIC]** *(vuelve la estación: la bomba 1 en v1, alertando)* "Greengrass revierte despliegues fallidos, no modelos equivocados. Esa fue la red de seguridad: la v2 alcanzó a decidir. Con el juez, nunca llega a decidir."
+**[CLIC]** *(la bomba 1 en v1, alertando)* "Greengrass revierte despliegues fallidos, no modelos equivocados. Esa fue la red de seguridad: la v2 alcanzó a decidir. Con el juez, nunca llega a decidir."
 
 ---
 
