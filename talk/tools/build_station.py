@@ -402,7 +402,7 @@ h1 b{color:var(--orange);font-weight:800}
 .pump .q{position:absolute;right:14px;top:36px;font-size:11px;font-weight:700;color:var(--mist);text-align:right;line-height:1.3}
 .pump .q i{display:inline-block;width:6px;height:6px;border-radius:2px;background:var(--mist);margin-left:2px}
 .pump .q b{color:var(--orange)}
-.pump .cert{position:absolute;right:12px;top:8px;width:28px;height:28px}
+.pump .cert{position:absolute;left:8px;top:6px;width:26px;height:26px;z-index:2}
 .pump .tag{position:absolute;left:8px;bottom:8px;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--mist)}
 .pump .tag.f{color:var(--orange)}.pump .tag.d{color:var(--yellow);filter:brightness(.85)}
 /* the link */
@@ -449,12 +449,12 @@ h1 b{color:var(--orange);font-weight:800}
 #tl .mk.cur{border-color:var(--orange);box-shadow:0 0 0 4px rgba(255,90,31,.2)}
 #tl .ml{position:absolute;top:-10px;font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--slate);transform:translateX(-50%);white-space:nowrap}
 #tl .ml.lo{top:34px}
-#cap{position:absolute;left:40px;top:724px;width:900px;height:150px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:18px 24px}
+#cap{position:absolute;left:40px;top:724px;width:1520px;height:150px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:18px 24px}
 #cap .tag{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--orange)}
 #cap .tt{font-size:24px;font-weight:800;margin-top:6px;letter-spacing:-.01em}
 #cap .tx{font-size:15px;line-height:1.45;color:var(--slate);margin-top:8px;font-weight:500}
-#cap .tt,#cap .tx{max-width:610px}
-#cap .sw{position:absolute;right:248px;top:18px;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--orange);display:none}
+#cap .tt,#cap .tx{max-width:1180px}
+#cap .sw{position:absolute;right:24px;top:18px;font-family:var(--mono);font-size:13px;font-weight:700;color:var(--orange);display:none}
 #tick{position:absolute;left:960px;top:724px;width:600px;height:150px;background:var(--navy);border-radius:14px;padding:14px 18px;overflow:hidden;color:#fff;font-family:var(--mono);font-size:12.5px;line-height:1.55}
 #tick .h{color:var(--mist);font-family:Montserrat;font-size:11px;font-weight:700;letter-spacing:.14em;margin-bottom:4px}
 #tick .l{white-space:nowrap}
@@ -510,6 +510,7 @@ def page(devs, rows, M, alarm, lam, deploys, judge, day, alarm_hist, prov=None):
   </div>
   <div id="link"><svg viewBox="0 0 120 560"><path id="bus" d="M0,320 C60,320 60,320 120,320" fill="none" stroke="#D5DEEA" stroke-width="2"/><g id="pk"></g></svg></div>
   <div class="panel" id="cloud"><div class="ph">AWS · <b>us-east-1</b> · IoT Core → regla → CloudWatch</div>
+    <div id="aw" title="tecla A"><div class="a1">ASÍ SE VE EN AWS</div><div class="a2" id="aw-svc"></div></div>
     <div class="row" style="top:48px">
       <div class="kpi" style="left:0"><div class="n" id="k-ev">0</div><div class="l">eventos recibidos</div></div>
       <div class="kpi o" style="left:170px"><div class="n" id="k-al">0</div><div class="l">alertas</div></div>
@@ -543,12 +544,10 @@ def page(devs, rows, M, alarm, lam, deploys, judge, day, alarm_hist, prov=None):
   </div>
   <div id="prov"></div>
   <div id="tl"><div class="bar"></div><div class="done" id="tl-done"></div></div>
-  <div id="cap"><div class="tag" id="c-tag"></div><div class="tt" id="c-tt"></div><div class="tx" id="c-tx"></div><div class="sw" id="c-sw"></div>
-    <div id="aw" title="tecla A"><div class="a1">ASÍ SE VE EN AWS</div><div class="a2" id="aw-svc"></div><div class="a3">TECLA A</div></div></div>
+  <div id="cap"><div class="tag" id="c-tag"></div><div class="tt" id="c-tt"></div><div class="tx" id="c-tx"></div><div class="sw" id="c-sw"></div></div>
   <div id="ov"><div id="cw"><div class="tb"><div class="lg">aws<i></i></div><div class="sr">Search</div><div class="rg">United States (N. Virginia)</div></div>
     <div class="bc" id="cw-bc"></div><div class="bd" id="cw-bd"></div></div>
     <div class="c"><b>LA CONSOLA DE AWS, REDIBUJADA CON LOS DATOS DEL ENSAYO</b>{day} · <span id="ov-t"></span> · Esc cierra</div></div>
-  <div id="tick"><div class="h">LO QUE SALE DE LA ESTACIÓN · demo/watch.sh</div><div id="tk"></div></div>
   <div id="help">espacio · reproducir  ·  ← → · actos  ·  1 2 4 8 · velocidad  ·  A · la consola de AWS  ·  F · pantalla completa</div>
 </div>
 <script>
@@ -647,14 +646,14 @@ function paint(){{
   const deps=D.deploys.filter(x=>x.t<=t&&x.t>=T0-600000&&(x.g?x.g==='StationRing0':/Ring0/.test(x.name))).sort((a,b)=>b.t-a.t).slice(0,2);
   const sg=$('#s-gg'); sg.className='st'+(lam?' on':deps.length?' ok':'');
   $('#s-dep').innerHTML='ring 0<br>'+(deps.length?deps.map((x,k)=>'<span style="'+(k?'color:#AAB6CB;font-weight:400':'')+'">'+x.name.replace(/-StationRing0/,'').replace(/-\\d{{10}}$/,'')+(k?' · inactivo':' · activo')+'</span>').join('<br>'):'—');
-  /* ticker */
-  $('#tk').innerHTML=lines.map(e=>{{ const lt=(e.a-e.t)/1000; return '<div class="l"><span class="dim">'+hms(e.a)+'</span>  '+DEVS[e.d]+'  v'+e.v+'  '+(e.al?'<span class="al">ALERT</span>':'<span class="ok">normal</span>')+'  score '+e.s.toFixed(2)+' ('+e.h.toFixed(2)+')  input '+e.z.toFixed(1)+(lt>10?'  <span class="lt">· llegó '+lt.toFixed(0)+' s tarde</span>':'')+(e.f&&!e.al?'  <span class="mf">· falla no oída</span>':'')+(e.sv?'  <span class="sh">· sombra v'+e.sv+' '+(e.sa?'ALERT':'normal')+(e.sm?' · no la oyó':'')+'</span>':'')+'</div>'; }}).join('');
+  /* ticker (kept for the standalone page's data; no box on the stage any more) */
+  if($('#tk')) $('#tk').innerHTML=lines.map(e=>{{ const lt=(e.a-e.t)/1000; return '<div class="l"><span class="dim">'+hms(e.a)+'</span>  '+DEVS[e.d]+'  v'+e.v+'  '+(e.al?'<span class="al">ALERT</span>':'<span class="ok">normal</span>')+'  score '+e.s.toFixed(2)+' ('+e.h.toFixed(2)+')  input '+e.z.toFixed(1)+(lt>10?'  <span class="lt">· llegó '+lt.toFixed(0)+' s tarde</span>':'')+(e.f&&!e.al?'  <span class="mf">· falla no oída</span>':'')+(e.sv?'  <span class="sh">· sombra v'+e.sv+' '+(e.sa?'ALERT':'normal')+(e.sm?' · no la oyó':'')+'</span>':'')+'</div>'; }}).join('');
   /* timeline and caption */
   $('#tl-done').style.width=pos(t)+'%';
   let k=0; while(k+1<M.length && M[k+1].t<=t) k++;
   document.querySelectorAll('#tl .mk').forEach((m,j)=>{{ m.className='mk'+(M[j].t<=t?' done':'')+(j===k?' cur':''); }});
   if(k!==cur){{ cur=k; $('#c-tag').textContent=M[k].tag; $('#c-tt').textContent=M[k].title; $('#c-tx').textContent=M[k].text;
-    const cn=M[k].con; $('#aw').style.display=cn?'block':'none'; if(cn) $('#aw-svc').textContent=CONS[cn].svc;
+    const cn=M[k].con; $('#aw').style.display=cn?'flex':'none'; if(cn) $('#aw-svc').textContent=CONS[cn].svc;
     if(conOpen) renderCon(true); }}
   /* the stopwatch since the fault nobody heard */
   const mf0=M.find(m=>m.k==='noye'), sw=$('#c-sw');

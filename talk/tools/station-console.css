@@ -1,8 +1,8 @@
 /* The AWS console, redrawn (station-console.js): big type, so the back of an auditorium can read it. */
-#aw{position:absolute;right:16px;top:16px;width:212px;height:118px;border-radius:10px;background:#232F3E;color:#fff;padding:13px 16px;cursor:pointer;display:none}
+#aw{position:absolute;right:14px;top:9px;height:30px;border-radius:8px;background:#232F3E;color:#fff;padding:0 12px;cursor:pointer;display:none;align-items:center;gap:9px;z-index:3}
 #aw .a1{font-size:10px;font-weight:800;letter-spacing:.14em;color:#FF9900}
-#aw .a2{font-size:19px;font-weight:800;margin-top:8px;line-height:1.15}
-#aw .a3{position:absolute;left:16px;bottom:11px;font-size:11px;font-weight:700;color:var(--mist);letter-spacing:.06em}
+#aw .a2{font-size:14px;font-weight:800}
+#aw .a3{font-size:10px;font-weight:700;color:var(--mist);letter-spacing:.06em}
 #ov{position:absolute;inset:0;background:rgba(11,19,42,.9);display:none;z-index:9;cursor:pointer}
 #ov .c{position:absolute;left:0;right:0;top:836px;text-align:center;color:var(--mist);font-size:15px;font-weight:600;letter-spacing:.04em}
 #ov .c b{color:#FF9900;font-weight:800;letter-spacing:.12em;margin-right:14px}

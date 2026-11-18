@@ -4,7 +4,7 @@
    alarm-history.txt, deployments.txt, lambda.txt); only the look is the console's. */
 const CONS={
   cores:   {svc:'IoT Greengrass', bc:['AWS IoT','Greengrass','<b>Core devices</b>']},
-  insights:{svc:'CloudWatch Logs Insights', bc:['CloudWatch','Logs','<b>Logs Insights</b>']},
+  insights:{svc:'Logs Insights', bc:['CloudWatch','Logs','<b>Logs Insights</b>']},
   metric:  {svc:'CloudWatch', bc:['CloudWatch','Dashboards','<b>station</b>']},
   sfn:     {svc:'Step Functions', bc:['Step Functions','State machines','station-judge','<b>Execution</b>']},
   deploys: {svc:'IoT Greengrass', bc:['AWS IoT','Greengrass','<b>Deployments</b>']},
