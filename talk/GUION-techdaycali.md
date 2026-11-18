@@ -282,7 +282,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 "Y lo importante: el juez no necesita saber la verdad. Compara dos modelos sobre el mismo audio. Por eso sirve en producción, donde la etiqueta de la falla llega semanas después." *(Si preguntan la regla de la demo: al menos 20 clips, no más del 10 % de las fallas que la v1 sí oyó y no más del 20 % de alertas que da sola.)*
 
-"La alarma y la Lambda siguen ahí, como red de seguridad, para lo que se le escape al juez."
+"La alarma y la Lambda siguen ahí, como red de seguridad, para lo que se le escape al juez. En producción esa alarma no puede contar fallas, porque no hay etiqueta: escucha las señales del paso seis."
 
 ---
 
@@ -326,7 +326,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 **[CLIC]** "Tercera, la autenticidad: ¿el modelo en ejecución es el que desplegamos? Cada evento incluye la versión y la huella del modelo." *(pausa)* "Esa huella la reporta el propio equipo, y un equipo comprometido puede reportar lo que quiera. Por eso necesita arranque seguro y su llave en un TPM."
 
-"En la PoC, el gate usa la verdad de cada clip, porque sé qué audio está sonando. En producción esa etiqueta llega tarde, con la orden de mantenimiento. Las tres señales no la necesitan: funcionan desde el primer día."
+"Y un detalle importante: en producción nadie sabe qué audio es una falla. Esa etiqueta llega semanas después, con la orden de mantenimiento. Así que la alarma no puede contar fallas no detectadas: se arma con estas tres señales, que no necesitan etiqueta y funcionan desde el primer día." *(En la PoC la alarma sí cuenta fallas no oídas, porque yo sé qué audio está sonando: es un lujo del laboratorio, y así se ve en el acto 3.)*
 
 ---
 
@@ -414,7 +414,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 "¿Y si no hubiera juez? Lo probé también: despliego la 2.0.0 directo al ring 0. Llega en segundos, sin errores. Para Greengrass, un despliegue exitoso."
 
-**[CLIC]** "Inyecto la falla y la v2 responde «normal»: fallas no oídas."
+**[CLIC]** "Inyecto la falla y la v2 responde «normal»: fallas no oídas." *(Si preguntan: aquí la alarma las cuenta porque sé qué audio suena; en producción reaccionaría a la salida, porque la tasa de alertas cae y cambia la distribución de scores.)*
 
 **[CLIC]** "En CloudWatch, la alarma: las fallas por minuto suben, cruzan el umbral de 8 y la alarma pasa a ALARM."
 

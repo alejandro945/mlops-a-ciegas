@@ -813,8 +813,9 @@ def fig_monitoring(static=False):
     nodes = [("iotcore", "IoT Core", f["TOPIC"]),
              ("iot_rule", "Regla de IoT", f["RULE"]),
              ("cw_logs", "CloudWatch Logs", f["LOG_GROUP"]),
-             ("cloudwatch", "Filtro de métrica", "MissedFaults"),
-             ("cw_alarm", "Alarma", f["ALARM"]),
+             ("cloudwatch", "Filtro de métrica",
+              "input_z · PSI · sha256" if _os.environ.get("ISO_THEME") == "tdc" else "MissedFaults"),
+             ("cw_alarm", "Alarma", "una por señal" if _os.environ.get("ISO_THEME") == "tdc" else f["ALARM"]),
              ("lambda", "Lambda", f["FN"])]
     X = [172 + k * 248 for k in range(6)]
     YI = 262
@@ -854,6 +855,9 @@ def fig_monitoring(static=False):
         else:                                               # the fingerprint matches: a seal with a check
             b.append(f'<circle cx="{gx + 84}" cy="{gy + 20}" r="19" fill="none" stroke="{PURPLE}" stroke-width="2.6"/>')
             b.append(check(gx + 84, gy + 20))
+        if k == 2 and _os.environ.get("ISO_THEME") == "tdc":   # production has no label: the alarm uses these three
+            b.append(T(96, Y0 + H + 52, "En producción nadie sabe qué audio es una falla:", 21, NAVY, 700))
+            b.append(T(96, Y0 + H + 80, "la alarma no puede contar fallas no oídas. Se arma con estas tres señales, que no necesitan etiqueta.", 19, SLATE))
         o.append(G(k + 1, "".join(b)))
     return wrap("".join(o))
 
