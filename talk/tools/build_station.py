@@ -41,8 +41,15 @@ def local(ms):
     return datetime.datetime.fromtimestamp(ms / 1000, TZ)
 
 
+def cert_icon():
+    """The AWS IoT certificate icon (AWS_ICONS, the official set) as a data URI; empty if the set is not there."""
+    p = os.path.join(os.environ.get("AWS_ICONS", os.path.expanduser("~/Downloads/aws-icon-set")),
+                     "Resource-Icons_07312026", "Res_IoT", "Res_AWS-IoT_Certificate_48.svg")
+    return data_uri(p) if os.path.exists(p) else ""
+
+
 def data_uri(path):
-    mime = {".woff2": "font/woff2", ".png": "image/png", ".jpg": "image/jpeg"}[os.path.splitext(path)[1]]
+    mime = {".woff2": "font/woff2", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml"}[os.path.splitext(path)[1]]
     return f"data:{mime};base64," + base64.b64encode(open(path, "rb").read()).decode()
 
 
@@ -386,6 +393,7 @@ h1 b{color:var(--orange);font-weight:800}
 .pump .q{position:absolute;right:14px;top:36px;font-size:11px;font-weight:700;color:var(--mist);text-align:right;line-height:1.3}
 .pump .q i{display:inline-block;width:6px;height:6px;border-radius:2px;background:var(--mist);margin-left:2px}
 .pump .q b{color:var(--orange)}
+.pump .cert{position:absolute;right:12px;top:8px;width:28px;height:28px}
 .pump .tag{position:absolute;left:8px;bottom:8px;font-size:10px;font-weight:700;letter-spacing:.08em;color:var(--mist)}
 .pump .tag.f{color:var(--orange)}.pump .tag.d{color:var(--yellow);filter:brightness(.85)}
 /* the link */
@@ -548,14 +556,15 @@ function fit(){{ const s=Math.min(innerWidth/SW,innerHeight/SH); $('#stage').sty
 addEventListener('resize',fit); fit();
 {con_js}
 
-/* the pumps */
+/* the pumps: each one with its own X.509 certificate (the AWS IoT certificate icon) */
+const CERT={json.dumps(cert_icon())};
 const pumps=[];
 const POS=[[180,16],[20,20],[340,20],[20,176],[340,176]];
 DEVS.forEach((d,i)=>{{
   const el=document.createElement('div'); el.className='pump'; const ring=i===0?'.ring.r0':'.ring.r1';
   el.style.left=POS[i][0]+'px'; el.style.top=POS[i][1]+'px';
   el.innerHTML=`<svg class="ic"><use href="#pump"/></svg><div class="nm">${{d}}</div><div class="ver">v—</div><div class="dec">—</div>
-    <div class="bar"><i></i></div><div class="thr"></div><div class="sc">score — · umbral —</div><div class="z">entrada <b>—</b></div><div class="q"></div><div class="tag"></div><div class="pvs"></div>`;
+    <div class="bar"><i></i></div><div class="thr"></div><div class="sc">score — · umbral —</div><div class="z">entrada <b>—</b></div><div class="q"></div><div class="tag"></div><div class="pvs"></div>${{CERT?'<img class="cert" alt="certificado X.509" title="AWS IoT · certificado X.509 de la bomba" src="'+CERT+'">':''}}`;
   $('#station '+ring).appendChild(el); pumps.push(el);
 }});
 const SMAX=.6;      /* the score bar's scale */
