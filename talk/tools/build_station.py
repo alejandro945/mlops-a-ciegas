@@ -371,7 +371,7 @@ h1{position:absolute;left:40px;top:22px;font-size:26px;font-weight:800;letter-sp
 h1 b{color:var(--orange);font-weight:800}
 .sub{position:absolute;left:40px;top:56px;font-size:13px;color:var(--slate);font-weight:500}
 #clock{position:absolute;left:50%;top:14px;transform:translateX(-50%);font-family:var(--mono);font-size:44px;font-weight:700;letter-spacing:.02em}
-#ctl{position:absolute;right:40px;top:22px;display:flex;gap:8px;align-items:center}
+#ctl{position:absolute;right:40px;top:22px;display:none;gap:8px;align-items:center}   /* the clicks drive the replay: no buttons on the stage */
 #ctl button{height:38px;padding:0 14px;border:1.5px solid var(--line);border-radius:9px;background:#fff;font:600 14px Montserrat;color:var(--navy);cursor:pointer}
 #ctl button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
 #ctl button.play{width:46px;font-size:18px}
@@ -589,7 +589,9 @@ const SMAX=.6;      /* the score bar's scale */
 let t=T0, playing=false, speed=4, last=null, cur=-1, eff=4;
 /* pacing: ff glides to a moment instead of jumping; stop is where the replay waits for the next click (in the deck);
    between a moment's hold window and the next moment, the dead time runs at QUIET× */
-let ff=null, stop=null; const QUIET=12, LEAD=4000;
+let ff=null, stop=null, plan=null; const QUIET=12, LEAD=4000;
+/* in the deck every click lasts the same: STEP_A ms of wall time for the moment's key part (its hold), STEP_B for the rest up to the next stop */
+const STEP_A=11000, STEP_B=5000, GLIDE=700;
 let iDec=0, iArr=0;                                    /* cursors over the events, by decision and by arrival */
 const byArr=EV.map((e,i)=>i).sort((a,b)=>EV[a].a-EV[b].a);
 let dec=DEVS.map(()=>null), q=DEVS.map(()=>0), arrived=0, alerts=0, late=0, missed=0, perMin={{}}, lines=[];
@@ -686,7 +688,7 @@ M.forEach((m,j)=>{{ const d=document.createElement('div'); d.className='mk'; d.s
   const l=document.createElement('div'); l.className='ml'+(j%2?' lo':''); l.style.left=pos(m.t)+'%'; if(j===0) l.style.transform='none'; l.textContent=m.tag.replace(/^ACTO \\d · /,''); $('#tl').appendChild(d); $('#tl').appendChild(l); }});
 function goto(j,sp){{ j=Math.max(0,Math.min(M.length-1,j)); const to=M[j].t, nx=M[j+1], s=sp||M[j].speed;
   if(t>=to && (!nx||t<nx.t)) {{ setSpeed(s); }}                                   /* already in that moment: never step back */
-  else if(to>t && to-t<900000) {{ ff={{to, sp:s, rate:Math.max(8,(to-t)/1100)}}; }}  /* ahead: glide there in about a second */
+  else if(to>t && to-t<900000) {{ ff={{to, sp:s, rate:Math.max(8,(to-t)/GLIDE)}}; }}  /* ahead: glide there in about a second */
   else {{ ff=null; step(to); setSpeed(s); paint(); }}
   if(!playing) toggle(true); }}
 function setSpeed(s){{ speed=s; document.querySelectorAll('#ctl [data-sp]').forEach(b=>b.classList.toggle('on',+b.dataset.sp===s)); }}
@@ -696,7 +698,7 @@ function tick(now){{ if(!playing) return;
   if(last!==null){{ const dt=now-last;
     if(ff){{ eff=ff.rate; step(Math.min(ff.to,t+dt*ff.rate)); if(t>=ff.to){{ setSpeed(ff.sp); ff=null; }} }}
     else {{ const m=M[cur], nx=M[cur+1], quiet=m&&(t-m.t)>(m.hold||15000)&&(!nx||nx.t-t>LEAD);
-      eff=quiet?Math.max(speed,QUIET):speed; let to=Math.min(T1,t+dt*eff);
+      eff=plan?(t<plan.h?plan.a:plan.b):quiet?Math.max(speed,QUIET):speed; let to=Math.min(T1,t+dt*eff);
       if(stop!=null&&to>=stop){{ to=stop; }}
       step(to); if(stop!=null&&t>=stop){{ stop=null; paint(); toggle(false); last=null; return; }} }}
     paint(); if(t>=T1) toggle(false); }}
@@ -705,8 +707,8 @@ $('#play').onclick=()=>toggle();
 document.querySelectorAll('#ctl [data-sp]').forEach(b=>b.onclick=()=>setSpeed(+b.dataset.sp));
 addEventListener('keydown',e=>{{ const k=e.key;
   if(k===' '){{ e.preventDefault(); toggle(); }}
-  else if(k==='ArrowRight'||k==='PageDown'){{ e.preventDefault(); stop=null; goto(cur+1); }}
-  else if(k==='ArrowLeft'||k==='PageUp'){{ e.preventDefault(); stop=null; ff=null; step(M[Math.max(0,cur-1)].t); goto(cur-1); }}
+  else if(k==='ArrowRight'||k==='PageDown'){{ e.preventDefault(); stop=null; plan=null; goto(cur+1); }}
+  else if(k==='ArrowLeft'||k==='PageUp'){{ e.preventDefault(); stop=null; ff=null; plan=null; step(M[Math.max(0,cur-1)].t); goto(cur-1); }}
   else if(k==='Home'){{ step(T0); paint(); }}
   else if('1248'.includes(k)&&k){{ setSpeed(+k); }}
   else if(k.toLowerCase()==='a'){{ e.preventDefault(); conOpen?hideOv():showOv(); }}
@@ -721,7 +723,10 @@ if(EMBED){{ document.documentElement.classList.add('embed');
     if(m.cmd==='act'){{ const j=M.findIndex(x=>x.k===m.k); fit(); hideOv();
       if(j>=0){{ if(m.back||t>(M[j+1]||{{t:T1}}).t){{ ff=null; step(M[j].t); }} goto(j,m.speed);
         /* wait for the next click just before the next stop (m.until: a marker key, or 'end') */
-        const u=m.until==='end'?-1:m.until?M.findIndex(x=>x.k===m.until):j+1; stop=u>=0&&M[u]?M[u].t-1500:null; }} }}
+        const u=m.until==='end'?-1:m.until?M.findIndex(x=>x.k===m.until):j+1; stop=u>=0&&M[u]?M[u].t-1500:null;
+        /* the same wall time for every click: the key part in STEP_A, the rest in STEP_B */
+        const a0=M[j].t, end=stop!=null?stop:T1, h=Math.min(end,a0+(M[j].hold||15000));
+        plan=end-h>2000?{{h, a:Math.max(.5,(h-a0)/STEP_A), b:(end-h)/STEP_B}}:{{h:end, a:Math.max(.5,(end-a0)/(STEP_A+STEP_B)), b:1}}; }} }}
     else if(m.cmd==='pause') toggle(false);
     else if(m.cmd==='play') toggle(true);
     else if(m.cmd==='overlay'){{ m.on?showOv(m.con):hideOv(); if(m.speed) setSpeed(m.speed); if(m.on&&!playing) toggle(true); }}
