@@ -163,50 +163,78 @@ const PANEL={
       '<div><span>Duration</span><b class="m">'+mmss(Math.max(0,(done?jx.stop:t)-jx.start)/1000)+'</b></div>'+
       '<div><span>Candidata</span><b>v'+esc(inp.candidate)+' en sombra · '+esc(inp.canary)+'</b></div></div></div>';
     if(done&&fail) h+='<div class="ban">'+IC.bad+'<b>CandidateRejected</b> in step: CandidateRejected<span>'+esc(jx.cause||'')+'</span></div>';
-    /* the graph, laid out like the console's: the main path down the left, promote in the middle, reject on the right */
-    const N=[['DeployInShadow',0,0],['Bake',0,1],['Measure',0,2],['WaitForQuery',0,3],['ReadQuery',0,4],['QueryDone?',0,5],['Verdict',0,6],['Passes?',0,7],
-             ['QueryFailed',1,2],['PromoteRing0',1,4],['PromoteRing1',1,5],['RememberLastGood',1,6],['Promoted',1,7],
-             ['Reject',2,0],['Notify',2,1],['CandidateRejected',2,2]];
-    const CX=[44,300,540], NW=200, NH=40, PY=58, Y0=24, P={};
-    N.forEach(([k,c,r])=>P[k]={x:CX[c],y:Y0+r*PY});
+    /* the graph, laid out as the console lays out station-judge (positions taken from its Graph view) */
+    const N={DeployInShadow:[345,74,'gg','AWS IoT Greengrass V2: CreateDeployment'],Bake:[345,126,'wait','Wait state'],
+      Measure:[246,178,'cwl','Amazon CloudWatch Logs: StartQuery'],WaitForQuery:[246,230,'wait','Wait state'],
+      ReadQuery:[132,282,'cwl','Amazon CloudWatch Logs: GetQueryResults'],'QueryDone?':[246,334,'choice','Choice state'],
+      Verdict:[345,390,'pass','Pass state'],'Passes?':[450,446,'choice','Choice state'],
+      PromoteRing0:[345,506,'gg','AWS IoT Greengrass V2: CreateDeployment'],PromoteRing1:[345,558,'gg','AWS IoT Greengrass V2: CreateDeployment'],
+      RememberLastGood:[345,610,'ssm','AWS Systems Manager: PutParameter'],Promoted:[345,666,'succeed','Succeed state'],
+      Reject:[588,558,'gg','AWS IoT Greengrass V2: CreateDeployment'],Notify:[588,610,'sns','Amazon SNS: Publish'],
+      CandidateRejected:[588,666,'fail','Fail state'],QueryFailed:[106,666,'fail','Fail state']};
+    const NW=232, NH=42, ord=Object.keys(en).filter(k=>en[k]<=t).sort((a,b)=>en[a]-en[b]), fk=ord[ord.length-1];
     const stt=k=>!at(k)?'idle':(k==='CandidateRejected'||k==='QueryFailed')?'fail':(out(k)||k==='Promoted'||(done&&!fail))?'ok':'run';
-    const col=(a,b)=>at(a)&&at(b)?'#037F0C':'#B6BEC9', mk=(a,b)=>at(a)&&at(b)?'url(#ahg)':'url(#ah)';
-    const pl=(pts,a,b,lab,lx,ly)=>'<polyline fill="none" stroke="'+(b?col(a,b):'#B6BEC9')+'" stroke-width="2.5" marker-end="'+(b?mk(a,b):'url(#ah)')+'" points="'+pts.map(p=>p.join(',')).join(' ')+'"/>'+
-      (lab?'<text x="'+lx+'" y="'+ly+'" font-size="14" fill="#5F6B7A">'+lab+'</text>':'');
+    const FILL={idle:['#FFFFFF','#C6CDD5','#5F6B7A'],run:['#E1EEFB','#0972D3','#0972D3'],ok:['#DDF2D6','#9FD38E','#29733A'],fail:['#FAD6D3','#E8908A','#D91515']};
+    const glyph=(kind,x,y,c)=>{ /* the flow states' own icons, as the console draws them */
+      const s='fill="none" stroke="'+c+'" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"';
+      if(kind==='wait') return '<circle cx="'+x+'" cy="'+(y+1)+'" r="8" '+s+'/><path d="M'+x+' '+(y-3)+'v4l3 2M'+(x-3)+' '+(y-10)+'h6" '+s+'/>';
+      if(kind==='choice') return '<circle cx="'+x+'" cy="'+(y-6)+'" r="3" '+s+'/><circle cx="'+(x-7)+'" cy="'+(y+7)+'" r="3" '+s+'/><circle cx="'+(x+7)+'" cy="'+(y+7)+'" r="3" '+s+'/><path d="M'+x+' '+(y-3)+'v3l-6 4M'+x+' '+y+'l6 4" '+s+'/>';
+      if(kind==='pass') return '<path d="M'+(x-9)+' '+y+'h18M'+x+' '+(y-9)+'v18M'+(x+5)+' '+(y-4)+'l4 4-4 4M'+(x-5)+' '+(y-4)+'l-4 4 4 4" '+s+'/>';
+      if(kind==='fail') return '<circle cx="'+x+'" cy="'+y+'" r="8.5" '+s+'/><path d="M'+(x-3.5)+' '+(y-3.5)+'l7 7M'+(x+3.5)+' '+(y-3.5)+'l-7 7" '+s+'/>';
+      if(kind==='succeed') return '<circle cx="'+x+'" cy="'+y+'" r="8.5" '+s+'/><path d="M'+(x-4)+' '+y+'l3 3 5-6" '+s+'/>';
+      return ''; };
+    const curve=(x1,y1,x2,y2)=>{ const m=(y1+y2)/2; return 'M'+x1+' '+y1+' C'+x1+' '+m+' '+x2+' '+m+' '+x2+' '+y2; };
+    const E=(d,lab,lx,ly)=>'<path d="'+d+'" fill="none" stroke="#9BA7B6" stroke-width="1.6" marker-end="url(#sa)"/>'+
+      (lab?(()=>{ const w=lab.length*6.4+14; return '<rect x="'+(lx-w/2)+'" y="'+(ly-10)+'" width="'+w+'" height="19" rx="4" fill="#FFFFFF" stroke="#C6CDD5"/><text x="'+lx+'" y="'+(ly+4)+'" text-anchor="middle" font-size="11" fill="#5F6B7A">'+lab+'</text>'; })():'');
+    const bot=k=>[N[k][0],N[k][1]+NH/2], top=k=>[N[k][0],N[k][1]-NH/2-2];
     let g='';
-    [['DeployInShadow','Bake'],['Bake','Measure'],['Measure','WaitForQuery'],['WaitForQuery','ReadQuery'],['ReadQuery','QueryDone?'],['QueryDone?','Verdict'],['Verdict','Passes?'],
+    g+=E(curve(345,38,345,N.DeployInShadow[1]-NH/2-2));
+    [['DeployInShadow','Bake'],['Bake','Measure'],['Measure','WaitForQuery'],['WaitForQuery','ReadQuery'],['ReadQuery','QueryDone?'],['Verdict','Passes?'],
      ['PromoteRing0','PromoteRing1'],['PromoteRing1','RememberLastGood'],['RememberLastGood','Promoted'],['Reject','Notify'],['Notify','CandidateRejected']]
-      .forEach(([a,b])=>{ const p=P[a],q=P[b]; g+=pl([[p.x+NW/2,p.y+NH],[q.x+NW/2,q.y-1]],a,b); });
-    const Q5=P['QueryDone?'], P7=P['Passes?'], R=P.Reject, F=P.QueryFailed, PR=P.PromoteRing0;
-    g+=pl([[Q5.x+NW,Q5.y+NH/2],[264,Q5.y+NH/2],[264,F.y+NH/2],[F.x-1,F.y+NH/2]],'QueryDone?','QueryFailed');
-    g+=pl([[P7.x+NW,P7.y+NH/2],[282,P7.y+NH/2],[282,PR.y+NH/2],[PR.x-1,PR.y+NH/2]],'Passes?','PromoteRing0','pasa',250,P7.y+NH/2-8);
-    g+=pl([[P7.x+NW/2,P7.y+NH],[P7.x+NW/2,P7.y+NH+20],[CX[2]+NW+20,P7.y+NH+20],[CX[2]+NW+20,R.y+NH/2],[R.x+NW+1,R.y+NH/2]],'Passes?','Reject','no pasa',CX[2]+NW-44,P7.y+NH+14);
-    g+=pl([[Q5.x,Q5.y+NH/2],[28,Q5.y+NH/2],[28,P.WaitForQuery.y+NH/2],[P.WaitForQuery.x-1,P.WaitForQuery.y+NH/2]]);
-    g+=pl([[P7.x,P7.y+NH/2],[14,P7.y+NH/2],[14,P.Bake.y+NH/2],[P.Bake.x-1,P.Bake.y+NH/2]]);
-    const FILL={idle:['#FFFFFF','#B6BEC9','#8D99A8'],run:['#E6F2FB','#0972D3','#0B5AA8'],ok:['#EAF7EC','#037F0C','#16191F'],fail:['#FDEDED','#D91515','#B3120F']};
-    N.forEach(([k])=>{ const p=P[k], s=stt(k), f=FILL[s];
-      g+='<rect x="'+p.x+'" y="'+p.y+'" width="'+NW+'" height="'+NH+'" rx="8" fill="'+f[0]+'" stroke="'+f[1]+'" stroke-width="'+(s==='idle'?1.5:2.6)+'"'+(s==='idle'?' stroke-dasharray="5 4"':'')+'/>'+
-        '<text x="'+(p.x+NW/2)+'" y="'+(p.y+NH/2+6)+'" text-anchor="middle" font-size="17" font-weight="'+(s==='idle'?500:700)+'" fill="'+f[2]+'">'+k+'</text>'; });
-    const svg='<svg viewBox="0 0 772 492" class="sg"><defs>'+
-      '<marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#B6BEC9"/></marker>'+
-      '<marker id="ahg" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0L10,5L0,10z" fill="#037F0C"/></marker></defs>'+g+'</svg>';
-    /* step details: what the current state is doing */
-    const ord=Object.keys(en).filter(k=>en[k]<=t).sort((a,b)=>en[a]-en[b]), fk=ord[ord.length-1];
-    const TY={DeployInShadow:'Task · greengrassv2:CreateDeployment',Bake:'Wait',Measure:'Task · logs:StartQuery',WaitForQuery:'Wait',ReadQuery:'Task · logs:GetQueryResults',
-      'QueryDone?':'Choice',Verdict:'Pass','Passes?':'Choice',Reject:'Task · greengrassv2:CreateDeployment',Notify:'Task · sns:Publish',CandidateRejected:'Fail',
-      PromoteRing0:'Task · greengrassv2:CreateDeployment',PromoteRing1:'Task · greengrassv2:CreateDeployment',RememberLastGood:'Task · ssm:PutParameter',Promoted:'Succeed'};
-    let d='<div class="h2">'+esc(fk||'—')+'</div><div class="ty">'+(TY[fk]||'')+' · '+(stt(fk)==='run'?pill('In progress','run','run'):stt(fk)==='fail'?pill('Failed','bad','bad'):pill('Succeeded','ok','ok'))+'</div>';
+      .forEach(([a,b])=>{ const p=bot(a), q=top(b); g+=E(curve(p[0],p[1],q[0],q[1])); });
+    g+=E(curve(246,355,345,N.Verdict[1]-NH/2-2),'Status = Complete',296,365);
+    g+=E('M'+(246+NW/2)+' 334 C405 334 405 230 '+(246+NW/2+2)+' 230','Scheduled · Running',405,282);
+    g+=E('M150 355 C60 420 60 600 100 '+(666-NH/2-2),'Default',62,520);
+    g+=E(curve(450,467,345,506-NH/2-2),'clips ≥ mín. y pasa',392,477);
+    g+=E('M'+(450+NW/2)+' 446 C705 446 705 126 '+(345+NW/2+2)+' 126','pocos clips: hornear más',650,290);
+    g+=E('M'+(450+NW/2-24)+' 467 C588 490 588 520 588 '+(558-NH/2-2),'Default',588,507);
+    g+=E('M106 687 C106 712 320 714 '+(345-17)+' 714')+E('M345 687 L345 '+(714-17))+E('M588 687 C588 712 370 714 '+(345+17)+' 714');
+    g+='<circle cx="345" cy="22" r="16" fill="#FCE3C6" stroke="#E9A55A"/><text x="345" y="26" text-anchor="middle" font-size="10" fill="#8A4B08">Start</text>'+
+       '<circle cx="345" cy="714" r="16" fill="#FCE3C6" stroke="#E9A55A"/><text x="345" y="718" text-anchor="middle" font-size="10" fill="#8A4B08">End</text>';
+    Object.entries(N).forEach(([k,[cx,cy,ic,ty]])=>{
+      const s=stt(k), f=FILL[s], x=cx-NW/2, y=cy-NH/2, sel=k===fk;
+      g+='<rect x="'+x+'" y="'+y+'" width="'+NW+'" height="'+NH+'" rx="7" fill="'+f[0]+'" stroke="'+(sel?(s==='fail'?'#D91515':s==='run'?'#0972D3':'#37A33C'):f[1])+'" stroke-width="'+(sel?3:1.3)+'"/>';
+      if(SFNIC[ic]) g+='<image href="'+SFNIC[ic]+'" x="'+(x+7)+'" y="'+(y+7)+'" width="26" height="26"/>';
+      else g+=glyph(ic,x+20,cy,s==='idle'?'#5F6B7A':f[2]);
+      g+='<text x="'+(x+40)+'" y="'+(y+14)+'" font-size="9" fill="#5F6B7A">'+ty+'</text>'+
+         '<text x="'+(x+40)+'" y="'+(y+33)+'" font-size="18" font-weight="700" fill="'+(s==='idle'?'#5F6B7A':'#16191F')+'">'+k+'</text>';
+      if(s!=='idle') g+=s==='ok'?'<circle cx="'+(x+NW-12)+'" cy="'+cy+'" r="6" fill="none" stroke="#29733A" stroke-width="1.4"/><path d="M'+(x+NW-15)+' '+cy+'l2.2 2.2 4-4.4" fill="none" stroke="#29733A" stroke-width="1.4"/>':
+        s==='fail'?'<circle cx="'+(x+NW-12)+'" cy="'+cy+'" r="6" fill="none" stroke="#D91515" stroke-width="1.4"/><path d="M'+(x+NW-14.5)+' '+(cy-2.5)+'l5 5M'+(x+NW-9.5)+' '+(cy-2.5)+'l-5 5" stroke="#D91515" stroke-width="1.4"/>':
+        '<circle cx="'+(x+NW-12)+'" cy="'+cy+'" r="6" fill="none" stroke="#0972D3" stroke-width="1.6" stroke-dasharray="26 12"/>';
+    });
+    const svg='<svg viewBox="-14 0 728 736" class="sg"><defs><marker id="sa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0L10,5L0,10z" fill="#9BA7B6"/></marker></defs>'+g+'</svg>';
+    const zb='<div class="zb">'+['+','−','◎','⊟','⛶'].map(s=>'<i>'+s+'</i>').join('')+'</div>';
+    const LI=(c,s,l)=>'<span><i style="border-color:'+c+';color:'+c+'">'+s+'</i>'+l+'</span>';
+    const leg='<div class="leg">'+LI('#0972D3','◷','In progress')+LI('#D91515','✕','Failed')+LI('#E07B00','!','Caught error')+LI('#5F6B7A','–','Canceled')+LI('#29733A','✓','Succeeded')+'</div>';
+    /* the step's panel, as the console shows it: tabs, then the state's input or output in a code editor */
+    const code=o=>{ const L=jsonHi(o,['missed','missedRate']).split('\n'); return '<div class="ce">'+L.map((l,i)=>'<div><b>'+(i+1)+'</b>'+l+'</div>').join('')+'</div>'; };
+    const TY={DeployInShadow:'Task',Bake:'Wait',Measure:'Task',WaitForQuery:'Wait',ReadQuery:'Task','QueryDone?':'Choice',Verdict:'Pass','Passes?':'Choice',
+      Reject:'Task',Notify:'Task',CandidateRejected:'Fail',PromoteRing0:'Task',PromoteRing1:'Task',RememberLastGood:'Task',Promoted:'Succeed',QueryFailed:'Fail'};
+    const sk=out('Verdict')?'Verdict':fk;
+    let d='<div class="sdh"><div class="h2">'+esc(sk||'—')+'</div><span class="btn">Test state</span></div>'+
+      '<div class="tabs"><b>Input/Output</b><span>Variables</span><span>Details</span><span>Definition</span><span>Events</span></div>'+
+      '<div class="adv"><i></i>Advanced view<em>'+(TY[sk]||'')+' · '+(stt(sk)==='run'?pill('In progress','run','run'):stt(sk)==='fail'?pill('Failed','bad','bad'):pill('Succeeded','ok','ok'))+'</em></div>';
     if(out('Verdict')){
-      d+='<div class="lb">Output de Verdict · Logs Insights sobre los mismos clips</div><pre class="js">'+jsonHi({clips:v.clips,missed:v.missed,extra:v.extra,missedRate:+(+v.missedRate).toFixed(3)},['missed','missedRate'])+'</pre>'+
+      d+='<div class="lb">⌄ State output <a>Learn more</a></div>'+code({clips:v.clips,missed:v.missed,extra:v.extra,missedRate:+(+v.missedRate).toFixed(3)})+
          '<div class="rule">La regla: ≥ '+inp.minClips+' clips · no oídas ≤ '+Math.round(inp.maxMissedRate*100)+' % · extra ≤ '+Math.round(inp.maxExtraRate*100)+' %</div>';
     } else if(at('Bake')){
       const el=Math.min(inp.bakeSeconds,Math.max(0,((out('Bake')?ex.Bake:t)-en.Bake)/1000));
-      d+='<div class="lb">La v'+esc(inp.candidate)+' escucha en sombra en '+esc(inp.canary)+'; decide la v'+esc(inp.active)+'</div><div class="big">'+Math.floor(el)+' s <span>de '+inp.bakeSeconds+' s</span></div><div class="pb"><i style="width:'+(el/inp.bakeSeconds*100).toFixed(1)+'%"></i></div>';
+      d+='<div class="lb">⌄ State input <a>Learn more</a></div>'+code({candidate:inp.candidate,active:inp.active,canary:inp.canary,bakeSeconds:inp.bakeSeconds})+
+         '<div class="rule">La v'+esc(inp.candidate)+' escucha en sombra; decide la v'+esc(inp.active)+' · <b>'+Math.floor(el)+' s</b> de '+inp.bakeSeconds+' s</div><div class="pb"><i style="width:'+(el/inp.bakeSeconds*100).toFixed(1)+'%"></i></div>';
     } else {
-      d+='<div class="lb">Input</div><pre class="js">'+jsonHi({candidate:inp.candidate,carrier:inp.carrier,active:inp.active,canary:inp.canary})+'</pre>';
+      d+='<div class="lb">⌄ State input <a>Learn more</a></div>'+code({candidate:inp.candidate,carrier:inp.carrier,active:inp.active,canary:inp.canary});
     }
-    const leg='<div class="leg"><span class="run"><i></i>In progress</span><span class="fail"><i></i>Failed</span><span class="ok"><i></i>Succeeded</span></div>';
-    return h+'<div class="sfw"><div class="box gv"><div class="wt">Graph view</div>'+svg+leg+'</div><div class="box sd"><div class="wt">Step details</div>'+d+'</div></div>';
+    return h+'<div class="sfw"><div class="box gv"><div class="gvh"><div class="wt">Graph view</div><span class="btn">Actions ▾</span><span class="gear">⚙</span></div>'+zb+svg+leg+'</div><div class="box sd">'+d+'</div></div>';
   },
 
   /* IoT Greengrass › Deployments: every deployment of the run, who created it, which one runs */

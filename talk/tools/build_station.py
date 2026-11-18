@@ -48,6 +48,15 @@ def cert_icon():
     return data_uri(p) if os.path.exists(p) else ""
 
 
+def sfn_icons():
+    """The service icons the Step Functions graph shows on each Task state (the official set, 16 px)."""
+    base = os.path.join(os.environ.get("AWS_ICONS", os.path.expanduser("~/Downloads/aws-icon-set")), "Architecture-Service-Icons_07312026")
+    f = {"gg": "Arch_Internet-of-Things/16/Arch_AWS-IoT-Greengrass_16.svg", "cwl": "Arch_Management-Tools/16/Arch_Amazon-CloudWatch_16.svg",
+         "sns": "Arch_Application-Integration/16/Arch_Amazon-Simple-Notification-Service_16.svg",
+         "ssm": "Arch_Management-Tools/16/Arch_AWS-Systems-Manager_16.svg"}
+    return {k: data_uri(os.path.join(base, v)) for k, v in f.items() if os.path.exists(os.path.join(base, v))}
+
+
 def data_uri(path):
     mime = {".woff2": "font/woff2", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml"}[os.path.splitext(path)[1]]
     return f"data:{mime};base64," + base64.b64encode(open(path, "rb").read()).decode()
@@ -558,6 +567,7 @@ addEventListener('resize',fit); fit();
 
 /* the pumps: each one with its own X.509 certificate (the AWS IoT certificate icon) */
 const CERT={json.dumps(cert_icon())};
+const SFNIC={json.dumps(sfn_icons())};
 const pumps=[];
 const POS=[[180,16],[20,20],[340,20],[20,176],[340,176]];
 DEVS.forEach((d,i)=>{{

@@ -49,17 +49,32 @@
 #cw .ban{display:flex;align-items:center;gap:10px;background:#FFF5F5;border:1.5px solid #D91515;border-radius:10px;padding:10px 18px;font-size:19px;margin-bottom:12px}
 #cw .ban svg{width:20px;height:20px;color:#D91515;flex:none}
 #cw .ban span{color:#414D5C;margin-left:8px}
-#cw .sfw{display:grid;grid-template-columns:860px 1fr;gap:16px}
-#cw .gv .sg{display:block;height:392px;width:auto;margin:0 auto}
-#cw .leg{display:flex;gap:26px;justify-content:center;font-size:16px;color:#414D5C;margin-top:2px}
-#cw .leg i{display:inline-block;width:14px;height:14px;border-radius:4px;border:2.5px solid;margin-right:7px;vertical-align:-2px}
-#cw .leg .run i{border-color:#0972D3;background:#E6F2FB}#cw .leg .fail i{border-color:#D91515;background:#FDEDED}#cw .leg .ok i{border-color:#037F0C;background:#EAF7EC}
-#cw .sd .h2{font-size:26px;font-weight:800;margin-top:6px}
-#cw .sd .ty{font-size:17px;color:#5F6B7A;margin:6px 0 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-#cw .sd .ty .pl{font-size:17px}
-#cw .sd .lb{font-size:17px;color:#414D5C;font-weight:600;margin-bottom:8px}
-#cw .js{font-family:Menlo,"Courier New",monospace;font-size:22px;line-height:1.45;background:#F8F8F8;border:1px solid #E9EBED;border-radius:10px;padding:12px 18px;color:#16191F}
-#cw .js .k{color:#A0336B}#cw .js .nv{color:#0B5AA8;font-weight:700}#cw .js .nv.r{color:#D91515}#cw .js .s{color:#037F0C}
+#cw .sfw{display:grid;grid-template-columns:900px 1fr;gap:16px}
+#cw .gv{position:relative;padding:10px 16px 8px}
+#cw .gvh{display:flex;align-items:center;gap:12px}
+#cw .gvh .wt{margin:0;font-size:20px;font-weight:800}
+#cw .btn{border:1.5px solid #5F6B7A;border-radius:18px;padding:3px 14px;font-size:15px;font-weight:700;color:#16191F;white-space:nowrap}
+#cw .gvh .btn{margin-left:auto}#cw .gear{font-size:18px;color:#5F6B7A}
+#cw .zb{position:absolute;left:16px;top:50px;display:flex;flex-direction:column;gap:8px}
+#cw .zb i{width:30px;height:30px;border:1px solid #C6CDD5;border-radius:6px;display:flex;align-items:center;justify-content:center;font-style:normal;font-size:16px;color:#414D5C;background:#fff}
+#cw .gv .sg{display:block;height:452px;width:auto;margin:2px auto 0}
+#cw .leg{display:flex;gap:22px;justify-content:center;font-size:14px;color:#414D5C;margin-top:2px}
+#cw .leg i{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:4px;border:1.5px solid;margin-right:6px;font-style:normal;font-size:11px;font-weight:800;vertical-align:-3px}
+#cw .sd{padding:12px 18px}
+#cw .sdh{display:flex;align-items:center;justify-content:space-between}
+#cw .sd .h2{font-size:24px;font-weight:800}
+#cw .tabs{display:flex;gap:22px;border-bottom:1px solid #E9EBED;margin:12px 0 10px;font-size:16px;color:#414D5C;font-weight:700}
+#cw .tabs > *{padding-bottom:8px}#cw .tabs b{color:#0972D3;border-bottom:3px solid #0972D3}
+#cw .adv{display:flex;align-items:center;gap:8px;font-size:15px;color:#16191F;margin-bottom:8px}
+#cw .adv i{width:30px;height:16px;border-radius:8px;background:#8D99A8;position:relative}
+#cw .adv i::after{content:"";position:absolute;left:2px;top:2px;width:12px;height:12px;border-radius:50%;background:#fff}
+#cw .adv em{margin-left:auto;font-style:normal;font-size:14px;color:#5F6B7A;display:flex;gap:6px;align-items:center}
+#cw .adv em .pl{font-size:14px}#cw .adv em .pl svg{width:14px;height:14px}
+#cw .sd .lb{font-size:16px;color:#16191F;font-weight:700;margin-bottom:6px}
+#cw .sd .lb a{color:#0972D3;font-weight:400;font-size:14px;margin-left:6px}
+#cw .ce{font-family:Menlo,"Courier New",monospace;font-size:19px;line-height:1.5;border:1px solid #C6CDD5;border-radius:8px;padding:6px 0;background:#fff;white-space:pre}
+#cw .ce b{display:inline-block;width:40px;text-align:right;margin-right:14px;color:#8D99A8;font-weight:400}
+#cw .ce .k{color:#16191F}#cw .ce .s{color:#A82A1F}#cw .ce .nv{color:#0B5AA8;font-weight:700}#cw .ce .nv.r{color:#D91515}
 #cw .rule{font-size:17px;color:#5F6B7A;margin-top:12px}
 #cw .big{font-size:64px;font-weight:800;color:#0972D3;line-height:1.1}
 #cw .big span{font-size:24px;color:#5F6B7A;font-weight:600}
@@ -112,3 +127,7 @@ html.embed #ov .c{display:none}
 #prov .gc b span{font-size:13px;font-weight:700;color:var(--mist);margin-left:1px}
 #prov .gc.go{border:1.5px solid var(--orange);color:var(--navy)}
 #prov .gc.go b{color:var(--orange)}
+#cw .eh .kv{margin:6px 0 8px}
+#cw .eh .h1{font-size:28px}
+#cw .ban{padding:7px 18px;margin-bottom:10px}
+#cw .gvh{margin-bottom:-6px}
