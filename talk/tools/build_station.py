@@ -374,7 +374,8 @@ h1 b{color:var(--orange);font-weight:800}
 .panel .ph{position:absolute;left:20px;top:14px;font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--slate)}
 .panel .ph b{color:var(--orange)}
 #station{left:40px;top:92px;width:700px;height:560px}
-#cloud{left:860px;top:92px;width:700px;height:560px}
+#cloud{left:860px;top:92px;width:700px;height:560px;display:none}
+#dock{left:860px;top:92px;width:700px;height:560px;overflow:hidden;background:#F8F8F8;cursor:zoom-in}
 .ring{position:absolute;left:20px;width:660px;border:1.5px dashed var(--line);border-radius:12px}
 .ring .rl{position:absolute;left:14px;top:-9px;padding:0 8px;background:#fff;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--slate)}
 .ring.r0{top:48px;height:150px}.ring.r0 .rl{color:var(--orange)}
@@ -510,7 +511,6 @@ def page(devs, rows, M, alarm, lam, deploys, judge, day, alarm_hist, prov=None):
   </div>
   <div id="link"><svg viewBox="0 0 120 560"><path id="bus" d="M0,320 C60,320 60,320 120,320" fill="none" stroke="#D5DEEA" stroke-width="2"/><g id="pk"></g></svg></div>
   <div class="panel" id="cloud"><div class="ph">AWS · <b>us-east-1</b> · IoT Core → regla → CloudWatch</div>
-    <div id="aw" title="tecla A"><div class="a1">ASÍ SE VE EN AWS</div><div class="a2" id="aw-svc"></div></div>
     <div class="row" style="top:48px">
       <div class="kpi" style="left:0"><div class="n" id="k-ev">0</div><div class="l">eventos recibidos</div></div>
       <div class="kpi o" style="left:170px"><div class="n" id="k-al">0</div><div class="l">alertas</div></div>
@@ -542,6 +542,7 @@ def page(devs, rows, M, alarm, lam, deploys, judge, day, alarm_hist, prov=None):
       </div>
     </div>
   </div>
+  <div class="panel" id="dock" title="la consola de AWS · clic o A para ampliar"></div>
   <div id="prov"></div>
   <div id="tl"><div class="bar"></div><div class="done" id="tl-done"></div></div>
   <div id="cap"><div class="tag" id="c-tag"></div><div class="tt" id="c-tt"></div><div class="tx" id="c-tx"></div><div class="sw" id="c-sw"></div></div>
@@ -653,8 +654,7 @@ function paint(){{
   let k=0; while(k+1<M.length && M[k+1].t<=t) k++;
   document.querySelectorAll('#tl .mk').forEach((m,j)=>{{ m.className='mk'+(M[j].t<=t?' done':'')+(j===k?' cur':''); }});
   if(k!==cur){{ cur=k; $('#c-tag').textContent=M[k].tag; $('#c-tt').textContent=M[k].title; $('#c-tx').textContent=M[k].text;
-    const cn=M[k].con; $('#aw').style.display=cn?'flex':'none'; if(cn) $('#aw-svc').textContent=CONS[cn].svc;
-    if(conOpen) renderCon(true); }}
+    renderCon(true); }}
   /* the stopwatch since the fault nobody heard */
   const mf0=M.find(m=>m.k==='noye'), sw=$('#c-sw');
   if(mf0 && t>=mf0.t+6000 && M[k].k!=='fin'){{ const back=D.lam?D.lam.t:null; const end=back&&t>back?back:t; sw.style.display='block'; sw.textContent='desde la falla: '+Math.max(0,Math.round((end-(mf0.t+6000))/1000))+' s'+(back&&t>back?' · vuelta':''); }} else sw.style.display='none';
@@ -677,7 +677,7 @@ M.forEach((m,j)=>{{ const d=document.createElement('div'); d.className='mk'; d.s
   const l=document.createElement('div'); l.className='ml'+(j%2?' lo':''); l.style.left=pos(m.t)+'%'; if(j===0) l.style.transform='none'; l.textContent=m.tag.replace(/^ACTO \\d · /,''); $('#tl').appendChild(d); $('#tl').appendChild(l); }});
 function goto(j){{ j=Math.max(0,Math.min(M.length-1,j)); step(M[j].t); setSpeed(M[j].speed); paint(); if(!playing) toggle(true); }}
 function setSpeed(s){{ speed=s; document.querySelectorAll('#ctl [data-sp]').forEach(b=>b.classList.toggle('on',+b.dataset.sp===s)); }}
-$('#aw').onclick=()=>showOv(); $('#ov').onclick=e=>{{ if(!e.target.closest('#cw')) hideOv(); }};
+$('#dock').onclick=()=>showOv(); $('#ov').onclick=e=>{{ if(!e.target.closest('#cw')) hideOv(); }};
 function toggle(on){{ playing=on===undefined?!playing:on; $('#play').textContent=playing?'❚❚':'▶'; last=null; if(playing) requestAnimationFrame(tick); }}
 function tick(now){{ if(!playing) return; if(last!==null){{ step(Math.min(T1,t+(now-last)*speed)); paint(); if(t>=T1) toggle(false); }} last=now; requestAnimationFrame(tick); }}
 $('#play').onclick=()=>toggle();
@@ -707,7 +707,7 @@ if(EMBED){{ document.documentElement.classList.add('embed');
   addEventListener('keydown',e=>{{ if(['ArrowRight','ArrowDown','PageDown','Enter'].includes(e.key)){{ e.preventDefault(); e.stopImmediatePropagation(); parent.postMessage({{cmd:'nav',d:1}},'*'); }}
     else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){{ e.preventDefault(); e.stopImmediatePropagation(); parent.postMessage({{cmd:'nav',d:-1}},'*'); }} }},true);
 }}
-if(ONLY){{ step(T1); paint(); showOv(ONLY); }} else {{ step(T0); paint(); }}
+if(ONLY){{ step(T1); paint(); showOv(ONLY); }} else {{ hideOv(); step(T0); paint(); }}
 </script>
 </body></html>
 """

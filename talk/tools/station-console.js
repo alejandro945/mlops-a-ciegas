@@ -15,11 +15,13 @@ const CONS={
   dashboard:{svc:'CloudWatch', bc:['CloudWatch','Dashboards','<b>station</b>']},
 };
 let conOpen=false, conForce=null, conLast=0;
-const conKind=()=>conForce||(M[cur]&&M[cur].con)||null;
-function showOv(kind){ const k=kind||conKind(); if(!k||!CONS[k]) return; conForce=kind||null; conOpen=true; $('#ov').style.display='block'; renderCon(true); }
-function hideOv(){ conOpen=false; conForce=null; $('#ov').style.display='none'; }
+/* the console lives docked in the right panel of the station (two-thirds scale), and opens full size with A or a click */
+const conKind=()=>conForce||(M[cur]&&M[cur].con)||'cores';
+const DOCKED=()=>!!$('#dock')&&!document.documentElement.classList.contains('cononly');
+function showOv(kind){ const k=kind||conKind(); if(!k||!CONS[k]) return; conForce=kind||null; conOpen=true; $('#ov').prepend($('#cw')); $('#ov').style.display='block'; renderCon(true); }
+function hideOv(){ conOpen=false; conForce=null; $('#ov').style.display='none'; if(DOCKED()){ $('#dock').appendChild($('#cw')); renderCon(true); } }
 function renderCon(force){
-  if(!conOpen) return; const now=performance.now(); if(!force&&now-conLast<150) return; conLast=now;
+  if(!conOpen&&!DOCKED()) return; const now=performance.now(); if(!force&&now-conLast<150) return; conLast=now;
   const k=conKind(); if(!k||!CONS[k]) return; const c=CONS[k];
   $('#cw-bc').innerHTML=c.bc.map((x,i)=>i<c.bc.length-1?'<a>'+x+'</a><span>›</span>':x).join('');
   let h=''; try{ h=PANEL[k](); }catch(e){ console.error(e); h='<pre>'+esc(e.message)+'</pre>'; }

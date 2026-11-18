@@ -26,7 +26,8 @@ h1 b{color:var(--orange);font-weight:800}
 .panel .ph{position:absolute;left:20px;top:14px;font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--slate)}
 .panel .ph b{color:var(--orange)}
 #station{left:40px;top:92px;width:700px;height:560px}
-#cloud{left:860px;top:92px;width:700px;height:560px}
+#cloud{left:860px;top:92px;width:700px;height:560px;display:none}
+#dock{left:860px;top:92px;width:700px;height:560px;overflow:hidden;background:#F8F8F8;cursor:zoom-in}
 .ring{position:absolute;left:20px;width:660px;border:1.5px dashed var(--line);border-radius:12px}
 .ring .rl{position:absolute;left:14px;top:-9px;padding:0 8px;background:#fff;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--slate)}
 .ring.r0{top:48px;height:150px}.ring.r0 .rl{color:var(--orange)}
@@ -262,6 +263,16 @@ html.embed #ov .c{display:none}
 #cw .eh .h1{font-size:28px}
 #cw .ban{padding:7px 18px;margin-bottom:10px}
 #cw .gvh{margin-bottom:-6px}
+/* docked in the station's right panel: the same console at two-thirds, one service per moment */
+#dock #cw{left:0;top:0;width:1050px;height:840px;transform:scale(.6667);transform-origin:0 0;border-radius:0;box-shadow:none;cursor:zoom-in}
+#dock #cw .sfw{grid-template-columns:580px 1fr}
+#dock #cw .gv .sg{height:500px}
+#dock #cw .eh .kv{gap:28px}
+#dock #cw .sd{padding:10px 12px;min-width:0;overflow:hidden}
+#dock #cw .tabs{gap:12px;font-size:14px}
+#dock #cw .sdh .btn{font-size:13px;padding:2px 10px}
+#dock #cw .adv em{display:none}
+#dock #cw .ce{font-size:17px}
 </style></head>
 <body>
 <svg width="0" height="0" style="position:absolute"><symbol id="pump" viewBox="0 0 160 100">
@@ -300,7 +311,6 @@ html.embed #ov .c{display:none}
   </div>
   <div id="link"><svg viewBox="0 0 120 560"><path id="bus" d="M0,320 C60,320 60,320 120,320" fill="none" stroke="#D5DEEA" stroke-width="2"/><g id="pk"></g></svg></div>
   <div class="panel" id="cloud"><div class="ph">AWS · <b>us-east-1</b> · IoT Core → regla → CloudWatch</div>
-    <div id="aw" title="tecla A"><div class="a1">ASÍ SE VE EN AWS</div><div class="a2" id="aw-svc"></div></div>
     <div class="row" style="top:48px">
       <div class="kpi" style="left:0"><div class="n" id="k-ev">0</div><div class="l">eventos recibidos</div></div>
       <div class="kpi o" style="left:170px"><div class="n" id="k-al">0</div><div class="l">alertas</div></div>
@@ -332,6 +342,7 @@ html.embed #ov .c{display:none}
       </div>
     </div>
   </div>
+  <div class="panel" id="dock" title="la consola de AWS · clic o A para ampliar"></div>
   <div id="prov"></div>
   <div id="tl"><div class="bar"></div><div class="done" id="tl-done"></div></div>
   <div id="cap"><div class="tag" id="c-tag"></div><div class="tt" id="c-tt"></div><div class="tx" id="c-tx"></div><div class="sw" id="c-sw"></div></div>
@@ -369,11 +380,13 @@ const CONS={
   dashboard:{svc:'CloudWatch', bc:['CloudWatch','Dashboards','<b>station</b>']},
 };
 let conOpen=false, conForce=null, conLast=0;
-const conKind=()=>conForce||(M[cur]&&M[cur].con)||null;
-function showOv(kind){ const k=kind||conKind(); if(!k||!CONS[k]) return; conForce=kind||null; conOpen=true; $('#ov').style.display='block'; renderCon(true); }
-function hideOv(){ conOpen=false; conForce=null; $('#ov').style.display='none'; }
+/* the console lives docked in the right panel of the station (two-thirds scale), and opens full size with A or a click */
+const conKind=()=>conForce||(M[cur]&&M[cur].con)||'cores';
+const DOCKED=()=>!!$('#dock')&&!document.documentElement.classList.contains('cononly');
+function showOv(kind){ const k=kind||conKind(); if(!k||!CONS[k]) return; conForce=kind||null; conOpen=true; $('#ov').prepend($('#cw')); $('#ov').style.display='block'; renderCon(true); }
+function hideOv(){ conOpen=false; conForce=null; $('#ov').style.display='none'; if(DOCKED()){ $('#dock').appendChild($('#cw')); renderCon(true); } }
 function renderCon(force){
-  if(!conOpen) return; const now=performance.now(); if(!force&&now-conLast<150) return; conLast=now;
+  if(!conOpen&&!DOCKED()) return; const now=performance.now(); if(!force&&now-conLast<150) return; conLast=now;
   const k=conKind(); if(!k||!CONS[k]) return; const c=CONS[k];
   $('#cw-bc').innerHTML=c.bc.map((x,i)=>i<c.bc.length-1?'<a>'+x+'</a><span>›</span>':x).join('');
   let h=''; try{ h=PANEL[k](); }catch(e){ console.error(e); h='<pre>'+esc(e.message)+'</pre>'; }
@@ -757,8 +770,7 @@ function paint(){
   let k=0; while(k+1<M.length && M[k+1].t<=t) k++;
   document.querySelectorAll('#tl .mk').forEach((m,j)=>{ m.className='mk'+(M[j].t<=t?' done':'')+(j===k?' cur':''); });
   if(k!==cur){ cur=k; $('#c-tag').textContent=M[k].tag; $('#c-tt').textContent=M[k].title; $('#c-tx').textContent=M[k].text;
-    const cn=M[k].con; $('#aw').style.display=cn?'flex':'none'; if(cn) $('#aw-svc').textContent=CONS[cn].svc;
-    if(conOpen) renderCon(true); }
+    renderCon(true); }
   /* the stopwatch since the fault nobody heard */
   const mf0=M.find(m=>m.k==='noye'), sw=$('#c-sw');
   if(mf0 && t>=mf0.t+6000 && M[k].k!=='fin'){ const back=D.lam?D.lam.t:null; const end=back&&t>back?back:t; sw.style.display='block'; sw.textContent='desde la falla: '+Math.max(0,Math.round((end-(mf0.t+6000))/1000))+' s'+(back&&t>back?' · vuelta':''); } else sw.style.display='none';
@@ -781,7 +793,7 @@ M.forEach((m,j)=>{ const d=document.createElement('div'); d.className='mk'; d.st
   const l=document.createElement('div'); l.className='ml'+(j%2?' lo':''); l.style.left=pos(m.t)+'%'; if(j===0) l.style.transform='none'; l.textContent=m.tag.replace(/^ACTO \d · /,''); $('#tl').appendChild(d); $('#tl').appendChild(l); });
 function goto(j){ j=Math.max(0,Math.min(M.length-1,j)); step(M[j].t); setSpeed(M[j].speed); paint(); if(!playing) toggle(true); }
 function setSpeed(s){ speed=s; document.querySelectorAll('#ctl [data-sp]').forEach(b=>b.classList.toggle('on',+b.dataset.sp===s)); }
-$('#aw').onclick=()=>showOv(); $('#ov').onclick=e=>{ if(!e.target.closest('#cw')) hideOv(); };
+$('#dock').onclick=()=>showOv(); $('#ov').onclick=e=>{ if(!e.target.closest('#cw')) hideOv(); };
 function toggle(on){ playing=on===undefined?!playing:on; $('#play').textContent=playing?'❚❚':'▶'; last=null; if(playing) requestAnimationFrame(tick); }
 function tick(now){ if(!playing) return; if(last!==null){ step(Math.min(T1,t+(now-last)*speed)); paint(); if(t>=T1) toggle(false); } last=now; requestAnimationFrame(tick); }
 $('#play').onclick=()=>toggle();
@@ -811,6 +823,6 @@ if(EMBED){ document.documentElement.classList.add('embed');
   addEventListener('keydown',e=>{ if(['ArrowRight','ArrowDown','PageDown','Enter'].includes(e.key)){ e.preventDefault(); e.stopImmediatePropagation(); parent.postMessage({cmd:'nav',d:1},'*'); }
     else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){ e.preventDefault(); e.stopImmediatePropagation(); parent.postMessage({cmd:'nav',d:-1},'*'); } },true);
 }
-if(ONLY){ step(T1); paint(); showOv(ONLY); } else { step(T0); paint(); }
+if(ONLY){ step(T1); paint(); showOv(ONLY); } else { hideOv(); step(T0); paint(); }
 </script>
 </body></html>

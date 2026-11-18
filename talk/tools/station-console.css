@@ -131,3 +131,13 @@ html.embed #ov .c{display:none}
 #cw .eh .h1{font-size:28px}
 #cw .ban{padding:7px 18px;margin-bottom:10px}
 #cw .gvh{margin-bottom:-6px}
+/* docked in the station's right panel: the same console at two-thirds, one service per moment */
+#dock #cw{left:0;top:0;width:1050px;height:840px;transform:scale(.6667);transform-origin:0 0;border-radius:0;box-shadow:none;cursor:zoom-in}
+#dock #cw .sfw{grid-template-columns:580px 1fr}
+#dock #cw .gv .sg{height:500px}
+#dock #cw .eh .kv{gap:28px}
+#dock #cw .sd{padding:10px 12px;min-width:0;overflow:hidden}
+#dock #cw .tabs{gap:12px;font-size:14px}
+#dock #cw .sdh .btn{font-size:13px;padding:2px 10px}
+#dock #cw .adv em{display:none}
+#dock #cw .ce{font-size:17px}
