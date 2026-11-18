@@ -82,7 +82,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 "Antes de entrar en el problema, imaginemos una estación de bombeo, lejos de la ciudad. Cinco bombas mueven agua día y noche."
 
-**[CLIC]** "A cada bomba le ponemos un micrófono y un computador pequeño, con un modelo de IA que la escucha. Mientras suena normal, todo bien."
+**[CLIC]** "A cada bomba le ponemos un micrófono y un dispositivo, con un modelo de IA que la escucha. Mientras suena normal, todo bien."
 
 **[CLIC]** "Si una empieza a sonar raro, el modelo avisa ahí mismo, antes de que se dañe. Y tiene que decidir solo: no hay internet estable ni nadie cerca a quien preguntarle." *(pausa)* "De aquí en adelante, este es nuestro caso: cinco bombas, cinco modelos y ninguna red confiable."
 

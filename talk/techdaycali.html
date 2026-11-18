@@ -623,7 +623,7 @@ html,body{background:#0B132A}
 
 'Antes de entrar en el problema, imaginemos una estación de bombeo, lejos de la ciudad. Cinco bombas mueven agua día y noche.'
 
-▶ CLIC 'A cada bomba le ponemos un micrófono y un computador pequeño, con un modelo de IA que la escucha. Mientras suena normal, todo bien.'
+▶ CLIC 'A cada bomba le ponemos un micrófono y un dispositivo, con un modelo de IA que la escucha. Mientras suena normal, todo bien.'
 
 ▶ CLIC 'Si una empieza a sonar raro, el modelo avisa ahí mismo, antes de que se dañe. Y tiene que decidir solo: no hay internet estable ni nadie cerca a quien preguntarle.' *(pausa)* 'De aquí en adelante, este es nuestro caso: cinco bombas, cinco modelos y ninguna red confiable.'">
   <div class="kick">El caso</div>
@@ -2543,14 +2543,27 @@ function faceid(g,cx,cy,s,col){ /* the Face ID glyph: four corners, two eyes, th
 function rich(g,x,y,parts,size){ let xx=x; parts.forEach(pt=>{ T(g,xx,y,pt[0],pt[1],size,pt[2]); xx+=g.measureText(pt[0]).width; }); }
 
 /* the case: one station, five pumps, a microphone and a small model on each, no network and nobody around */
-function pumpIcon(g,x,y,col,shake){ /* x = centre, y = floor */
-  const dx=shake?Math.sin(shake*90)*2.5:0; x+=dx;
-  fillRR(g,x-56,y-14,112,14,4,col);                                   /* base */
-  fillRR(g,x-46,y-72,72,54,14,col);                                    /* motor */
-  for(let k=0;k<4;k++){ g.fillStyle='#FFFFFF'; g.fillRect(x-38+k*16,y-64,5,38); }
-  fillRR(g,x+26,y-58,26,30,6,col);                                     /* pump head */
-  g.fillStyle=col; g.fillRect(x+34,y-96,10,40); g.fillRect(x+34,y-96,40,10);   /* pipe */
+function pumpIcon(g,x,y,col,shake){ /* a centrifugal pump: motor with fins, coupling, the volute and its pipes · x = centre, y = floor */
+  x+=shake?Math.sin(shake*90)*2.5:0;
+  fillRR(g,x-84,y-12,168,12,4,col);                                     /* base plate */
+  g.fillStyle=col; g.fillRect(x-70,y-22,14,10); g.fillRect(x-14,y-22,14,10); g.fillRect(x+36,y-22,14,10);   /* feet */
+  fillRR(g,x-80,y-74,84,52,12,col);                                     /* motor */
+  g.fillStyle='rgba(255,255,255,.55)'; for(let k=0;k<4;k++) g.fillRect(x-70,y-64+k*11,64,3);   /* cooling fins */
+  fillRR(g,x-88,y-64,10,32,3,col);                                      /* fan cover */
+  g.fillStyle=col; g.fillRect(x+4,y-52,14,8);                           /* shaft and coupling */
+  dot(g,x+44,y-48,28,col); dot(g,x+44,y-48,10,'#FFFFFF'); dot(g,x+44,y-48,4,col);   /* volute and impeller eye */
+  g.fillRect(x+48,y-104,16,40); g.fillRect(x+44,y-108,24,6);            /* outlet, up */
+  g.fillRect(x+66,y-55,22,14); g.fillRect(x+86,y-59,6,22);              /* inlet, to the side */
 }
+function deviceIcon(g,x,y,col){ /* an edge device: a chip with pins and "IA" · x,y = centre */
+  g.fillStyle=col; for(let k=0;k<4;k++){ const o=-12+k*8; g.fillRect(x+o-1.5,y-24,3,6); g.fillRect(x+o-1.5,y+18,3,6); g.fillRect(x-24,y+o-1.5,6,3); g.fillRect(x+18,y+o-1.5,6,3); }
+  fillRR(g,x-19,y-19,38,38,6,col); strokeRR(g,x-13,y-13,26,26,3,'rgba(255,255,255,.6)',1.5);
+  T(g,x,y+6,'IA','#FFFFFF',14,700,false,'center'); }
+function micIcon(g,x,y,col){ /* a microphone: capsule, holder and stand · x,y = capsule centre */
+  fillRR(g,x-7,y-14,14,24,7,col);
+  g.save(); g.strokeStyle=col; g.lineWidth=2.5; g.lineCap='round';
+  g.beginPath(); g.arc(x,y-1,12,.15*Math.PI,.85*Math.PI); g.stroke();
+  g.beginPath(); g.moveTo(x,y+11); g.lineTo(x,y+20); g.moveTo(x-7,y+20); g.lineTo(x+7,y+20); g.stroke(); g.restore(); }
 function waves(g,x,y,u,col,n){ for(let k=0;k<(n||3);k++){ const r=10+((u+k/3)%1)*34; g.save(); g.globalAlpha=1-((u+k/3)%1);
   g.strokeStyle=col; g.lineWidth=3; g.beginPath(); g.arc(x,y,r,-.7,.7); g.stroke(); g.restore(); } }
 ANIM.caso={steps:3,dur:1200,draw(g,W,H,st,p,t){
@@ -2563,17 +2576,18 @@ ANIM.caso={steps:3,dur:1200,draw(g,W,H,st,p,t){
     pumpIcon(g,x,fy,bad?ACC:INK,bad&&!RM?t:0);
     T(g,x,fy+34,'bomba '+(k+1),ink(.55),16,700,true,'center');
     if(st>=1){ g.save(); g.globalAlpha=st===1?clamp(a*1.5-k*.12):1;
-      fillRR(g,x-62,fy-120,40,32,7,bad?ACC:INK); T(g,x-42,fy-98,'IA',"#FFFFFF",15,700,false,'center');   /* the small computer */
-      dot(g,x-6,fy-104,6,bad?ACC:INK); waves(g,x-6,fy-104,((t*.7)+k*.21)%1,bad?ACC:ink(.4),2);
-      if(st===1) tick(g,x+66,fy-128,OKG,1.5);
+      const dc=bad?ACC:INK; deviceIcon(g,x-40,fy-128,dc);                /* the device, on the motor */
+      line(g,[[x-40,fy-104],[x-40,fy-74]],dc,2.5);
+      micIcon(g,x+12,fy-136,dc); waves(g,x+24,fy-140,((t*.7)+k*.21)%1,bad?ACC:ink(.4),2);
+      if(st===1) tick(g,x+76,fy-140,OKG,1.5);
       g.restore(); }
-    if(bad){ g.save(); g.globalAlpha=a; const bx=x-80, by=fy-196;
+    if(bad){ g.save(); g.globalAlpha=a; const bx=x-80, by=fy-214;
       fillRR(g,bx,by,160,44,14,ACC); T(g,x,by+29,'¡suena raro!','#FFFFFF',20,700,false,'center'); g.restore(); }
   }
   if(st===2){ g.save(); g.globalAlpha=a; bars(g,W-120,92,0,INK); T(g,W-132,90,'sin red estable · sin nadie cerca',ACC,18,700,false,'right'); g.restore(); }
   /* one big sentence per click */
   const L=['Cinco bombas mueven agua día y noche.',
-           'Cada una tiene un micrófono y un computador pequeño con un modelo de IA que la escucha.',
+           'Cada una tiene un micrófono y un dispositivo con un modelo de IA que la escucha.',
            'Si una suena raro, el modelo avisa ahí mismo: no hay red ni nadie a quien preguntarle.'];
   g.save(); g.globalAlpha=RM?1:clamp(p*1.6); T(g,0,H-60,L[Math.min(st,2)],INK,32,700); g.restore();
   if(st===2){ g.save(); g.globalAlpha=RM?1:clamp(p*1.6-.4); T(g,0,H-14,'De aquí en adelante, este es nuestro caso.',ACC,24,700); g.restore(); }
