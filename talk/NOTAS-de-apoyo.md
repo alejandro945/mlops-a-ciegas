@@ -22,6 +22,7 @@ Lo que no se dice en voz alta pero conviene saber: datos de respaldo por lámina
 
 Deck: `techdaycali.html` · guion: `GUION-techdaycali.md`.
 
+- **2 · Las camas.** Caída de AWS us-east-1 del lunes 20 oct 2025, desde las 3 a. m. hora del este; servicio normal hacia las 6 a. m. Las camas Eight Sleep Pod (unos US$2.000) se quedaron calentando o inclinadas y sin responder; el CEO, Matteo Franceschetti, pidió disculpas y anunció un *outage mode* sin conexión. AI Incident Database #1243. No dar una cifra de camas afectadas: no hay una oficial.
 - **2 · 11 %.** Siemens, *The True Cost of Downtime 2024*: el paro no planeado le cuesta a las 500 empresas más grandes el 11 % de sus ingresos (US$1,4 billones al año). Es de gran industria, no la cifra de un ingenio. "La caña se cosecha casi todo el año en el Valle": verificar con Asocaña antes de decirlo como dato.
 - **6 · 20 W.** Balasubramanian, *Brain power*, PNAS (2021). Que el cerebro reacciona sobre todo a lo inesperado es *predictive coding*; Ali et al., *Patterns* (2022), muestran que emerge al optimizar energía. Es una simplificación: no decir que "solo se activan las neuronas de lo diferente".
 - **7 · ML tradicional.** El modelo es un autoencoder de 464 KB (127 KB en INT8). Un LLM pequeño, cuantizado, pesa del orden de gigabytes.

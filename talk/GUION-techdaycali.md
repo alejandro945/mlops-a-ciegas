@@ -4,7 +4,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el envío por lotes (paso 5).
 
-**22:30** de contenido aproximadamente. Reloj al entrar a cada divisor: 2:10 · 4:50 · 7:15 · 14:55.
+**23:05** de contenido aproximadamente. Reloj al entrar a cada divisor: 2:45 · 5:25 · 7:50 · 15:30.
 
 ---
 
@@ -16,17 +16,29 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 2 · Sobre mí
+## 2 · Se cayó AWS. Y las camas también.
+<!-- id: camas -->
+**0:35** · 2 clics
+
+"Buenos días. Antes de presentarme, una historia. Lunes 20 de octubre de 2025, tres de la mañana. Miles de personas duermen sobre una cama inteligente de Eight Sleep: cuesta unos dos mil dólares y la temperatura y la inclinación las decide la nube."
+
+**[CLIC]** "Esa madrugada se cae AWS en us-east-1. Y las camas, que le preguntaban todo a la nube, se quedan como estaban: unas calentando sin parar, otras inclinadas sin poder bajar, y la app sin responder." *(pausa)*
+
+**[CLIC]** "Si la decisión vive en la nube, el equipo queda a ciegas. Eight Sleep salió a pedir disculpas y a prometer un modo sin conexión. De eso trata esta charla: llevar el modelo al equipo, y aun así poder gobernarlo." *(Fuentes en las notas de apoyo: PCWorld, MacTrast, AI Incident Database #1243. Si preguntan: AWS restableció el servicio hacia las 6 a. m. hora del este.)*
+
+---
+
+## 3 · Sobre mí
 <!-- id: quien -->
 **0:25** · sin clics
 
-"Buenos días. Soy Alejandro Varela, Lead Cloud Engineer en EPAM. Trabajo como arquitecto en la nube, y parte de ese trabajo es diseñar cómo se despliegan y se operan modelos de IA en equipos de campo: lugares sin conectividad estable y sin nadie que los atienda."
+"Soy Alejandro Varela, Lead Cloud Engineer en EPAM. Trabajo como arquitecto en la nube, y parte de ese trabajo es diseñar cómo se despliegan y se operan modelos de IA en equipos de campo: lugares sin conectividad estable y sin nadie que los atienda."
 
 "Hoy les voy a mostrar el patrón que uso para eso, con una implementación completa en AWS."
 
 ---
 
-## 3 · La IA ya corre en el dispositivo
+## 4 · La IA ya corre en el dispositivo
 <!-- id: cien -->
 **0:25** · 2 clics
 
@@ -38,7 +50,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 4 · Por qué el modelo baja al dispositivo
+## 5 · Por qué el modelo baja al dispositivo
 <!-- id: memes -->
 **0:55** · 2 clics
 
@@ -56,7 +68,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 5 · Contenido de la sesión
+## 6 · Contenido de la sesión
 <!-- id: agenda -->
 **0:15** · sin clics
 
@@ -64,7 +76,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 6 · 01 · El problema
+## 7 · 01 · El problema
 <!-- id: div1 -->
 **0:05** · *reloj: 2:10*
 
@@ -72,7 +84,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 7 · MLOps en la nube: un loop cerrado
+## 8 · MLOps en la nube: un loop cerrado
 <!-- id: nube -->
 **0:20** · sin clics
 
@@ -82,7 +94,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 8 · Las restricciones de la estación
+## 9 · Las restricciones de la estación
 <!-- id: edge -->
 **1:00** · 5 clics
 
@@ -102,7 +114,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 9 · Un panel en verde no mide el modelo
+## 10 · Un panel en verde no mide el modelo
 <!-- id: tablero -->
 **1:15** · 4 clics · *la idea central: ve despacio*
 
@@ -118,7 +130,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 10 · 02 · El patrón
+## 11 · 02 · El patrón
 <!-- id: div2 -->
 **0:05** · *reloj: 4:50*
 
@@ -126,7 +138,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 11 · Arquitectura del equipo en la estación
+## 12 · Arquitectura del equipo en la estación
 <!-- id: equipo -->
 **0:45** · 3 clics
 
@@ -140,7 +152,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 12 · Cinco piezas para gobernarlo
+## 13 · Cinco piezas para gobernarlo
 <!-- id: flujo -->
 **1:05** · 6 clics
 
@@ -160,7 +172,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 13 · El mismo patrón en AWS
+## 14 · El mismo patrón en AWS
 <!-- id: aws -->
 **0:30** · 5 clics · *ritmo ágil*
 
@@ -172,7 +184,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 14 · 03 · Los seis pasos
+## 15 · 03 · Los seis pasos
 <!-- id: div3 -->
 **0:10** · *reloj: 7:15*
 
@@ -180,7 +192,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 15 · Paso 1 · Entrenar con sonido normal
+## 16 · Paso 1 · Entrenar con sonido normal
 <!-- id: entrenar -->
 **0:45** · 2 clics
 
@@ -192,7 +204,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 16 · Paso 2 · Optimizar para cada chip
+## 17 · Paso 2 · Optimizar para cada chip
 <!-- id: optimizar -->
 **1:00** · 3 clics
 
@@ -208,7 +220,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 17 · Paso 3 · Empaquetar como componente
+## 18 · Paso 3 · Empaquetar como componente
 <!-- id: componente -->
 **0:55** · 4 clics
 
@@ -226,7 +238,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 18 · Paso 4 · Desplegar por rings
+## 19 · Paso 4 · Desplegar por rings
 <!-- id: anillos -->
 **0:55** · 3 clics
 
@@ -242,7 +254,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 19 · Paso 4 · ¿Cuándo volver atrás?
+## 20 · Paso 4 · ¿Cuándo volver atrás?
 <!-- id: juez -->
 **1:10** · 4 clics
 
@@ -262,7 +274,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 20 · Paso 5 · Operar sin red
+## 21 · Paso 5 · Operar sin red
 <!-- id: sinred -->
 **0:30** · sin clics
 
@@ -272,7 +284,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 21 · Paso 5 · Enviar por lotes
+## 22 · Paso 5 · Enviar por lotes
 <!-- id: lotes -->
 **1:00** · 2 clics
 
@@ -288,7 +300,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 22 · Paso 6 · Monitorear lo que decide el modelo
+## 23 · Paso 6 · Monitorear lo que decide el modelo
 <!-- id: monitoreo -->
 **1:15** · 3 clics
 
@@ -306,7 +318,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 23 · 04 · La evidencia en AWS
+## 24 · 04 · La evidencia en AWS
 <!-- id: div4 -->
 **0:05** · *reloj: 14:55*
 
@@ -314,7 +326,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 24 · Demo
+## 25 · Demo
 <!-- id: poc -->
 **0:25** · sin clics
 
@@ -322,7 +334,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 25 · El modelo, versionado
+## 26 · El modelo, versionado
 <!-- id: artefacto -->
 **0:25** · 1 clic
 
@@ -332,7 +344,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 26 · La flota, en línea
+## 27 · La flota, en línea
 <!-- id: flota -->
 **0:20** · sin clics
 
@@ -340,7 +352,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 27 · Lo que reporta
+## 28 · Lo que reporta
 <!-- id: reporte -->
 **0:20** · sin clics
 
@@ -348,7 +360,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 28 · Acto 1 · Escuchar
+## 29 · Acto 1 · Escuchar
 <!-- id: acto1 -->
 **1:20** · 1 clic · *la estación corre sola en la lámina; deja que la miren*
 
@@ -364,7 +376,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 29 · Acto 2 · Sin red, y una deriva
+## 30 · Acto 2 · Sin red, y una deriva
 <!-- id: acto2 -->
 **1:00** · 2 clics
 
@@ -376,7 +388,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 30 · Acto 3 · El juez
+## 31 · Acto 3 · El juez
 <!-- id: acto3 -->
 **1:30** · 3 clics · *el punto culminante: ve despacio*
 
@@ -392,7 +404,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 31 · Acto 3b · Sin juez: la red de seguridad
+## 32 · Acto 3b · Sin juez: la red de seguridad
 <!-- id: acto3b -->
 **1:00** · 4 clics
 
@@ -408,7 +420,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 32 · Cinco recomendaciones
+## 33 · Cinco recomendaciones
 <!-- id: llevo -->
 **1:05** · 4 clics · *reloj: 20:50 al entrar*
 
@@ -428,7 +440,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 33 · Recursos y contacto
+## 34 · Recursos y contacto
 <!-- id: recursos -->
 **0:15** · sin clics
 
@@ -436,7 +448,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 34 · Gracias
+## 35 · Gracias
 <!-- id: cierre -->
 **0:15** · sin clics
 
