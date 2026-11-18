@@ -181,7 +181,10 @@ def fig_optimize(static=False):
         body.append(R(mx, y + 44, mw, 18, fill=WHITE, stroke=NAVY, sw=1.6, rx=4))
         body.append(R(mx + 3, y + 47, (mw - 6) * fill, 12, fill=col, rx=2))
     o.append(G(2, "".join(body)))
-    # the pump, measured: FP32 versus INT8 (numbers from metrics.json; if missing, «por medir»)
+    # the pump, measured: FP32 versus INT8 (numbers from metrics.json; if missing, «por medir»).
+    # Tech Day Cali leaves it out: the figures go to the speaker notes
+    if _os.environ.get("ISO_THEME") == "tdc":
+        return wrap("".join(o))
     by = 586
     b = [R(96, by, 1408, 116, fill=WHITE, stroke=PURPLE, sw=2)]
     b.append(T(126, by + 44, "LA BOMBA, MEDIDA", 18, PURPLE, 700, family=MONO, extra='letter-spacing="1.5"'))

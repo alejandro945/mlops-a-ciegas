@@ -4,7 +4,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el envío por lotes (paso 5).
 
-**24:05** de contenido aproximadamente. Reloj al entrar a cada divisor: 3:45 · 6:25 · 8:50 · 16:30.
+**23:50** de contenido aproximadamente. Reloj al entrar a cada divisor: 3:45 · 6:25 · 8:50 · 16:15.
 
 ---
 
@@ -220,7 +220,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 18 · Paso 2 · Optimizar para cada chip
 <!-- id: optimizar -->
-**1:00** · 3 clics
+**0:45** · 2 clics
 
 "Paso dos: el modelo se entrena en 32 bits y se exporta a ONNX."
 
@@ -228,9 +228,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 **[CLIC]** "La consecuencia operativa: no hay un artefacto, hay uno por tipo de hardware. Y la restricción que manda es la memoria."
 
-**[CLIC]** "Medido en el equipo del ensayo: de 32 a 8 bits, el modelo pasa de 464 a 127 KB, la latencia por clip de 14,4 a 12,7 milisegundos, y la decisión coincide en el 98 % de los casos."
-
-"En una estación de desarrollo, la mejora era casi del doble. En el equipo real, el cuello de botella es el preprocesamiento del audio, no el modelo. Por eso se mide en el hardware de destino, y en condiciones reales: batería baja y temperatura alta."
+"Y siempre se mide en el hardware de destino, en condiciones reales: batería baja y temperatura alta." *(Si preguntan, medido en el equipo del ensayo: de 32 a 8 bits el modelo pasa de 464 a 127 KB, la latencia por clip de 14,4 a 12,7 ms, y la decisión coincide en el 98 % de los clips. En una estación de desarrollo la mejora era casi del doble; en el equipo real el cuello de botella es el preprocesamiento del audio, no el modelo.)*
 
 ---
 
@@ -334,7 +332,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 25 · 04 · La evidencia en AWS
 <!-- id: div4 -->
-**0:05** · *reloj: 16:30*
+**0:05** · *reloj: 16:15*
 
 "Ahora, la evidencia: la misma arquitectura, ejecutada en AWS."
 
@@ -436,7 +434,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 34 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 22:25 al entrar*
+**1:05** · 4 clics · *reloj: 22:10 al entrar*
 
 "Cinco recomendaciones para aplicar desde el lunes."
 
@@ -450,7 +448,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 **[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad."
 
-*(Si el reloj marca 22:05 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
+*(Si el reloj marca 21:50 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
 
 ---
 
