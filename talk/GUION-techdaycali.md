@@ -4,7 +4,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el envío por lotes (paso 5).
 
-**23:45** de contenido aproximadamente. Reloj al entrar a cada divisor: 3:25 · 6:05 · 8:30 · 16:10.
+**24:05** de contenido aproximadamente. Reloj al entrar a cada divisor: 3:45 · 6:25 · 8:50 · 16:30.
 
 ---
 
@@ -76,21 +76,23 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 7 · Imaginemos una estación de bombeo
+## 7 · Imaginemos una estación de bombeo de agua
 <!-- id: caso -->
-**0:35** · 2 clics · *simple y despacio: es el caso de toda la charla*
+**0:55** · 3 clics · *simple y despacio: es el caso de toda la charla*
 
-"Antes de entrar en el problema, imaginemos una estación de bombeo, lejos de la ciudad. Cinco bombas mueven agua día y noche."
+"Antes de entrar en el problema, imaginemos una estación de bombeo de agua, lejos de la ciudad. Hoy, para saber si una bomba está fallando, alguien tiene que ir a escucharla. La empresa quiere automatizar eso: detectar las fallas sin tener un operario ahí."
 
-**[CLIC]** "A cada bomba le ponemos un micrófono y un dispositivo, con un modelo de IA que la escucha. Mientras suena normal, todo bien."
+**[CLIC]** "Por eso usa edge AI: a cada bomba le pone un micrófono y un dispositivo con un modelo de IA que la escucha. Si una empieza a sonar raro, el modelo avisa ahí mismo, sin depender de la red ni de nadie cerca."
 
-**[CLIC]** "Si una empieza a sonar raro, el modelo avisa ahí mismo, antes de que se dañe. Y tiene que decidir solo: no hay internet estable ni nadie cerca a quien preguntarle." *(pausa)* "De aquí en adelante, este es nuestro caso: cinco bombas, cinco modelos y ninguna red confiable."
+**[CLIC]** "Funciona. Y la estación crece: ya no son cinco, son más de 20 bombas, cada una con su modelo."
+
+**[CLIC]** "Y aparecen preguntas nuevas: ¿cómo actualizo 20 modelos sin ir bomba por bomba? ¿Cómo sé qué versión corre en cada una, y si sigue acertando? ¿Qué pasa con la que se quedó sin red?" *(pausa)* "La empresa necesita automatizar la gobernanza de esos modelos y entender los límites de este tipo de solución. Ese es nuestro caso de aquí en adelante."
 
 ---
 
 ## 8 · 01 · El problema
 <!-- id: div1 -->
-**0:05** · *reloj: 3:25*
+**0:05** · *reloj: 3:45*
 
 "Empecemos por el problema."
 
@@ -144,7 +146,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 12 · 02 · El patrón
 <!-- id: div2 -->
-**0:05** · *reloj: 6:05*
+**0:05** · *reloj: 6:25*
 
 "Veamos cómo se gobierna esto, empezando por el equipo."
 
@@ -198,7 +200,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 16 · 03 · Los seis pasos
 <!-- id: div3 -->
-**0:10** · *reloj: 8:30*
+**0:10** · *reloj: 8:50*
 
 "La implementación, en seis pasos: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear."
 
@@ -332,7 +334,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 25 · 04 · La evidencia en AWS
 <!-- id: div4 -->
-**0:05** · *reloj: 16:10*
+**0:05** · *reloj: 16:30*
 
 "Ahora, la evidencia: la misma arquitectura, ejecutada en AWS."
 
@@ -434,7 +436,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 34 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 22:05 al entrar*
+**1:05** · 4 clics · *reloj: 22:25 al entrar*
 
 "Cinco recomendaciones para aplicar desde el lunes."
 
@@ -448,7 +450,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 **[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad."
 
-*(Si el reloj marca 21:45 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
+*(Si el reloj marca 22:05 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
 
 ---
 

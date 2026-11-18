@@ -498,7 +498,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <!-- ═══════════════ THE CASE: a pumping station, told simply, before the problem ═══════════════ -->
 <section class="s" data-id="caso" data-sec="0" data-notes="">
   <div class="kick">El caso</div>
-  <div class="ttl wide">Imaginemos <b>una estación de bombeo</b></div>
+  <div class="ttl wide">Imaginemos <b>una estación de bombeo de agua</b></div>
   <div class="chart" style="left:84px;right:84px;top:226px;bottom:150px"><canvas class="anim" data-anim="caso"></canvas></div>
   <div class="foot"></div>
 </section>
@@ -1018,31 +1018,59 @@ function micIcon(g,x,y,col){ /* a microphone: capsule, holder and stand · x,y =
   g.beginPath(); g.moveTo(x,y+11); g.lineTo(x,y+20); g.moveTo(x-7,y+20); g.lineTo(x+7,y+20); g.stroke(); g.restore(); }
 function waves(g,x,y,u,col,n){ for(let k=0;k<(n||3);k++){ const r=10+((u+k/3)%1)*34; g.save(); g.globalAlpha=1-((u+k/3)%1);
   g.strokeStyle=col; g.lineWidth=3; g.beginPath(); g.arc(x,y,r,-.7,.7); g.stroke(); g.restore(); } }
-ANIM.caso={steps:3,dur:1200,draw(g,W,H,st,p,t){
-  const a=RM||st>2?1:ease(clamp(p*1.3)), fy=300, n=5, gap=W/n;
-  /* the building */
-  strokeRR(g,10,40,W-20,fy+12,18,ink(.18),2,[8,7]);
-  T(g,34,78,'Estación de bombeo · lejos de la ciudad',ink(.55),18,700,true);
-  for(let k=0;k<n;k++){
-    const x=gap*k+gap/2-10, bad=st===2&&k===2;
-    pumpIcon(g,x,fy,bad?ACC:INK,bad&&!RM?t:0);
-    T(g,x,fy+34,'bomba '+(k+1),ink(.55),16,700,true,'center');
-    if(st>=1){ g.save(); g.globalAlpha=st===1?clamp(a*1.5-k*.12):1;
-      const dc=bad?ACC:INK; deviceIcon(g,x-40,fy-128,dc);                /* the device, on the motor */
-      line(g,[[x-40,fy-104],[x-40,fy-74]],dc,2.5);
-      micIcon(g,x+12,fy-136,dc); waves(g,x+24,fy-140,((t*.7)+k*.21)%1,bad?ACC:ink(.4),2);
-      if(st===1) tick(g,x+76,fy-140,OKG,1.5);
-      g.restore(); }
-    if(bad){ g.save(); g.globalAlpha=a; const bx=x-80, by=fy-214;
-      fillRR(g,bx,by,160,44,14,ACC); T(g,x,by+29,'¡suena raro!','#FFFFFF',20,700,false,'center'); g.restore(); }
+function operator(g,x,y,col){ /* a person with a helmet · x = centre, y = floor */
+  fillRR(g,x-22,y-62,44,62,14,col); dot(g,x,y-80,16,col);
+  g.fillStyle=col; g.beginPath(); g.arc(x,y-88,20,Math.PI,0); g.fill(); g.fillRect(x-24,y-90,48,5); }
+/* one pump with its device and microphone, at scale sc (x = centre, y = floor) */
+function pumpUnit(g,x,y,sc,col,dev,u,lab){
+  g.save(); g.translate(x,y); g.scale(sc,sc);
+  pumpIcon(g,0,0,col,0);
+  if(dev){ deviceIcon(g,-40,-128,col); line(g,[[-40,-104],[-40,-74]],col,2.5); micIcon(g,12,-136,col); waves(g,24,-140,u,col===INK?ink(.4):col,2); }
+  g.restore();
+  if(lab) T(g,x,y+34,lab,ink(.55),16,700,true,'center');
+}
+ANIM.caso={steps:4,dur:1300,draw(g,W,H,st,p,t){
+  /* 0 · a water pumping station that wants to find faults without an operator
+     1 · so it adds edge AI: a microphone and a device with a model on every pump
+     2 · it grows: more than 20 pumps        3 · now the question is governing all those models */
+  const a=RM||st>3?1:ease(clamp(p*1.3)), fy=300, bot=fy+12;
+  strokeRR(g,10,40,W-20,bot,18,ink(.18),2,[8,7]);
+  T(g,34,78,'Estación de bombeo de agua · lejos de la ciudad',ink(.55),18,700,true);
+  if(st<=1){
+    const n=5, gap=(W-220)/n;
+    for(let k=0;k<n;k++){
+      const x=200+gap*k+gap/2, bad=st===1&&k===2, col=bad?ACC:INK;
+      if(st===1){ g.save(); g.globalAlpha=clamp(a*1.6-k*.12); pumpUnit(g,x,fy,1,col,true,((t*.7)+k*.21)%1,'bomba '+(k+1)); g.restore(); }
+      else pumpUnit(g,x,fy,1,INK,false,0,'bomba '+(k+1));
+      if(bad){ g.save(); g.globalAlpha=a; fillRR(g,x-80,fy-214,160,44,14,ACC); T(g,x,fy-185,'¡suena raro!','#FFFFFF',20,700,false,'center'); g.restore(); }
+    }
+    /* the operator who no longer has to be there */
+    const ox=110; operator(g,ox,fy,st?ink(.18):INK);
+    T(g,ox,fy+34,st?'sin operario':'un operario',st?ACC:ink(.55),16,700,true,'center');
+    if(st) { g.save(); g.globalAlpha=a; cross(g,ox,fy-56,30,ACC); g.restore(); }
+    else { const u=(t*.6)%1; T(g,ox+4,fy-118-u*14,'?',ink(.5*(1-u)),28,700,false,'center'); }
+    if(st===1){ g.save(); g.globalAlpha=a; fillRR(g,W-176,56,146,40,12,INK); T(g,W-103,83,'edge AI','#FFFFFF',20,700,false,'center'); g.restore(); }
+  } else {
+    /* the station grows: 24 pumps, two rows of twelve */
+    const N=24, cols=12, cw=(W-60)/cols, grow=st===2?(RM?1:clamp(p*1.15)):1;
+    const shown=st===2?Math.round(lerp(5,N,grow)):N;
+    const TAG={1:'v1',3:'v2',6:'v1',8:'¿?',10:'v2',13:'sin red',15:'v1',17:'v2',20:'¿?',22:'v1'};
+    for(let k=0;k<shown;k++){
+      const r=Math.floor(k/cols), c=k%cols, x=40+cw*c+cw/2, y=r?330:210;
+      pumpUnit(g,x,y,.46,INK,true,((t*.7)+k*.13)%1,null);
+      if(st===3&&TAG[k]){ const tg=TAG[k], q=clamp(a*1.8-(k%7)*.1); if(q>0){ g.save(); g.globalAlpha=q;
+        g.font='700 14px '+SANS; const w=g.measureText(tg).width+16, col=tg==='v2'?ACC:tg==='v1'?INK:ink(.45);
+        fillRR(g,x-w/2,y-96,w,24,8,col); T(g,x,y-79,tg,'#FFFFFF',14,700,false,'center'); g.restore(); } }
+    }
+    T(g,W-150,84,shown+'',INK,44,700,false,'right'); T(g,W-140,82,'bombas',ink(.55),18,700,true);
   }
-  if(st===2){ g.save(); g.globalAlpha=a; bars(g,W-120,92,0,INK); T(g,W-132,90,'sin red estable · sin nadie cerca',ACC,18,700,false,'right'); g.restore(); }
   /* one big sentence per click */
-  const L=['Cinco bombas mueven agua día y noche.',
-           'Cada una tiene un micrófono y un dispositivo con un modelo de IA que la escucha.',
-           'Si una suena raro, el modelo avisa ahí mismo: no hay red ni nadie a quien preguntarle.'];
-  g.save(); g.globalAlpha=RM?1:clamp(p*1.6); T(g,0,H-60,L[Math.min(st,2)],INK,32,700); g.restore();
-  if(st===2){ g.save(); g.globalAlpha=RM?1:clamp(p*1.6-.4); T(g,0,H-14,'De aquí en adelante, este es nuestro caso.',ACC,24,700); g.restore(); }
+  const L=['Quieren detectar fallas en las bombas sin tener un operario ahí.',
+           'Por eso usan edge AI: un modelo en cada bomba que la escucha y avisa ahí mismo.',
+           'Funciona, y la estación crece: ya son más de 20 bombas.',
+           '¿Cómo actualizar, vigilar y corregir 20 modelos sin ir bomba por bomba?'];
+  g.save(); g.globalAlpha=RM?1:clamp(p*1.6); T(g,0,H-60,L[Math.min(st,3)],INK,32,700); g.restore();
+  if(st===3){ g.save(); g.globalAlpha=RM?1:clamp(p*1.6-.4); T(g,0,H-14,'Automatizar su gobernanza y entender sus límites: ese es nuestro caso.',ACC,24,700); g.restore(); }
 }};
 
 /* 02 · smart devices: connected IoT devices in the world, one box per billion (IoT Analytics) */
