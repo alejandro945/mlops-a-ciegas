@@ -3,6 +3,7 @@
    perMin, hms, TZ, $. Every number on a panel comes from the evidence folder of the run (events, judge.json,
    alarm-history.txt, deployments.txt, lambda.txt); only the look is the console's. */
 const CONS={
+  mqtt:    {svc:'AWS IoT Core', bc:['AWS IoT','Test','<b>MQTT test client</b>']},
   cores:   {svc:'IoT Greengrass', bc:['AWS IoT','Greengrass','<b>Core devices</b>']},
   insights:{svc:'Logs Insights', bc:['CloudWatch','Logs','<b>Logs Insights</b>']},
   metric:  {svc:'CloudWatch', bc:['CloudWatch','Dashboards','<b>station</b>']},
@@ -151,6 +152,25 @@ const PANEL={
     const lg=DEVS.map((d,i)=>'<span><i style="background:'+COL[i]+'"></i>'+d+'</span>').join('');
     return H('station',null,'1 · Input: ¿el sensor dice la verdad? Un salto sin un solo error es deriva')+
       '<div class="box"><div class="wt">Input level per pump (std devs from what it learned)</div><svg viewBox="0 0 '+W+' '+Hh+'" class="ch">'+s+'</svg><div class="lgd">'+lg+'</div></div>';
+  },
+
+  /* AWS IoT › MQTT test client, subscribed to station/events: every pump's message arriving at the gateway */
+  mqtt(){
+    const got=EV.filter(e=>e.a<=t), last=got.slice().sort((x,y)=>y.a-x.a).slice(0,3);
+    const per=DEVS.map((d,i)=>got.filter(e=>e.d===i).length);
+    const day=new Date(t+TZ).toISOString().slice(0,10);
+    const card=e=>{ const o={device:DEVS[e.d],model_version:e.v,ts:e.t,score:e.s,threshold:e.h,alert:!!e.al,input_z:e.z};
+      if(e.sv) o.shadow_version=e.sv;
+      const body=Object.entries(o).map(([k,v])=>'  <span class="k">"'+k+'"</span>: '+(typeof v==='string'?'<span class="s">"'+esc(v)+'"</span>':'<span class="nv'+(k==='alert'&&v?' r':'')+'">'+v+'</span>')).join(',\n');
+      return '<div class="mq'+(e===last[0]?' nw':'')+'"><div class="mqh"><b>station/events</b><span>'+day+' '+hms(e.a)+' (UTC-0500)</span></div>'+
+        '<div class="mqp">⌄ Message payload</div><pre class="js sm">{\n'+body+'\n}</pre></div>'; };
+    return '<div class="ah"><div class="h1">MQTT test client</div>'+pill('Connected','ok','ok')+'</div>'+
+      '<div class="tabs"><b>Subscribe to a topic</b><span>Publish to a topic</span></div>'+
+      '<div class="mqs"><div class="tf"><span>Topic filter</span><div class="in">station/events</div></div><span class="sbtn">Subscribe</span></div>'+
+      '<div class="mqw"><div class="box mql"><div class="wt">Subscriptions</div><div class="msub"><i></i>station/events</div>'+
+        DEVS.map((d,i)=>'<div class="dv">'+d+'<b>'+per[i]+'</b></div>').join('')+'</div>'+
+      '<div class="box mqr"><div class="mqt"><b>station/events</b><span>'+got.length+' messages</span><span class="btn">Pause</span><span class="btn">Clear</span></div>'+
+        (last.length?last.map(card).join(''):'<div class="mt">Esperando mensajes…</div>')+'</div></div>';
   },
 
   /* Step Functions › station-judge › the execution, state by state */

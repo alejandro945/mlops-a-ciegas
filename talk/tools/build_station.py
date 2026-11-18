@@ -155,7 +155,7 @@ def judge_steps():
 
 
 # the AWS console, redrawn from the run's data (station-console.js): one panel per act
-CON_BY_ACT = {"inicio": "cores", "acto1": "insights", "acto2": "insights", "vuelve": "insights", "deriva": "metric",
+CON_BY_ACT = {"inicio": "mqtt", "acto1": "insights", "acto2": "insights", "vuelve": "insights", "deriva": "metric",
               "sombra": "sfn", "veredicto": "sfn", "acto3": "deploys", "noye": "alarm", "alarma": "lambda", "fin": "deploys"}
 
 
