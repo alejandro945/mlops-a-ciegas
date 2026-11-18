@@ -4,7 +4,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el envío por lotes (paso 5).
 
-**23:20** de contenido aproximadamente. Reloj al entrar a cada divisor: 3:45 · 6:25 · 8:50 · 16:15.
+**23:30** de contenido aproximadamente. Reloj al entrar a cada divisor: 3:45 · 6:25 · 8:50 · 16:15.
 
 ---
 
@@ -366,11 +366,11 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 29 · Acto 1 · Escuchar
 <!-- id: acto1 -->
-**1:20** · 1 clic · *la estación corre sola en la lámina; deja que la miren*
+**1:30** · 2 clics · *la estación corre sola en la lámina; deja que la miren*
 
 "Antes de probar nada, se aprovisiona. A la derecha, Terraform crea los ochenta recursos: IoT Core, IAM, Parameter Store, CloudWatch, la Lambda, Step Functions y la EC2. Luego la flota: cinco bombas, cada una con Greengrass y su certificado, hasta quedar Healthy. Se publican la v1 y la v2, y la v1 llega a los dos rings. Con eso empieza la validación de punta a punta."
 
-"Esto es la estación: a la izquierda las cinco bombas, cada una con su versión, su score contra el umbral y su decisión; en el centro, cada punto es un evento viajando a la nube; a la derecha, lo que AWS cuenta."
+**[CLIC]** "Esto es la estación: a la izquierda las cinco bombas, cada una con su versión, su score contra el umbral y su decisión; en el centro, cada punto es un evento viajando a la nube. A la derecha, AWS IoT Core: el cliente de prueba MQTT suscrito a station/events, y los mensajes de las cinco bombas llegando. Cada uno pesa unos cientos de bytes."
 
 **[CLIC]** "Inyecto el audio de falla en la bomba 3. En ese mismo clip el score supera el umbral y la tarjeta pasa a ALERT. En la nube sube el contador de alertas."
 
@@ -424,7 +424,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 33 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 21:40 al entrar*
+**1:05** · 4 clics · *reloj: 21:50 al entrar*
 
 "Cinco recomendaciones para aplicar desde el lunes."
 
@@ -438,7 +438,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 **[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad."
 
-*(Si el reloj marca 21:20 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
+*(Si el reloj marca 21:30 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
 
 ---
 

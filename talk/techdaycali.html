@@ -1960,18 +1960,18 @@ html,body{background:#0B132A}
      data-station: one command per click, posted to the iframe (act: seek to a marker and play · overlay: the AWS console capture). -->
 <section class="s st" data-id="acto1" data-sec="7" data-notes="29 · ACTO 1 · ESCUCHAR
 
-1:20 · 1 clic · *la estación corre sola en la lámina; deja que la miren*
+1:30 · 2 clics · *la estación corre sola en la lámina; deja que la miren*
 
 'Antes de probar nada, se aprovisiona. A la derecha, Terraform crea los ochenta recursos: IoT Core, IAM, Parameter Store, CloudWatch, la Lambda, Step Functions y la EC2. Luego la flota: cinco bombas, cada una con Greengrass y su certificado, hasta quedar Healthy. Se publican la v1 y la v2, y la v1 llega a los dos rings. Con eso empieza la validación de punta a punta.'
 
-'Esto es la estación: a la izquierda las cinco bombas, cada una con su versión, su score contra el umbral y su decisión; en el centro, cada punto es un evento viajando a la nube; a la derecha, lo que AWS cuenta.'
+▶ CLIC 'Esto es la estación: a la izquierda las cinco bombas, cada una con su versión, su score contra el umbral y su decisión; en el centro, cada punto es un evento viajando a la nube. A la derecha, AWS IoT Core: el cliente de prueba MQTT suscrito a station/events, y los mensajes de las cinco bombas llegando. Cada uno pesa unos cientos de bytes.'
 
 ▶ CLIC 'Inyecto el audio de falla en la bomba 3. En ese mismo clip el score supera el umbral y la tarjeta pasa a ALERT. En la nube sube el contador de alertas.'
 
 'Esa es la respuesta a la pregunta inicial: la bomba B era la que fallaba.' *(pausa)*
 
-'Y lo único que salió de la estación fue ese punto: una línea de unos cientos de bytes, no el audio.'" data-steps="2"
-  data-station='[{"cmd":"act","k":"prov","speed":3,"until":"acto1"},{"cmd":"act","k":"acto1","speed":1}]'>
+'Y lo único que salió de la estación fue ese punto: una línea de unos cientos de bytes, no el audio.'" data-steps="3"
+  data-station='[{"cmd":"act","k":"prov","speed":3},{"cmd":"act","k":"inicio","speed":1},{"cmd":"act","k":"acto1","speed":1}]'>
   <iframe class="stn" src="estacion.html" title="La estación, en vivo"></iframe>
   <div class="foot"></div>
 </section>
@@ -2032,7 +2032,7 @@ html,body{background:#0B132A}
 <!-- ═══════════════ 31 · WHAT DO I TAKE HOME? ═══════════════ -->
 <section class="s" data-id="llevo" data-sec="0" data-notes="33 · CINCO RECOMENDACIONES
 
-1:05 · 4 clics · *reloj: 21:40 al entrar*
+1:05 · 4 clics · *reloj: 21:50 al entrar*
 
 'Cinco recomendaciones para aplicar desde el lunes.'
 
@@ -2046,7 +2046,7 @@ html,body{background:#0B132A}
 
 ▶ CLIC 'Quinta: monitoreen tres señales: entrada, salida y autenticidad.'
 
-*(Si el reloj marca 21:20 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*">
+*(Si el reloj marca 21:30 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*">
   <div class="kick">Conclusiones</div>
   <div class="ttl wide">Cinco <b>recomendaciones</b></div>
   <div class="rows solo five">
