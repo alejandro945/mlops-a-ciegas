@@ -2004,7 +2004,7 @@ html,body{background:#0B132A}
 'La causa: el audio adicional incluía un periodo en que una bomba ya estaba fallando, y nadie lo validó. El modelo aprendió la falla como comportamiento normal. No es un error de código; es un error de datos.'
 
 ▶ CLIC *(mirando a la sala)* 'La v2 nunca decidió. Nadie tocó el equipo y el ring 1 nunca la vio.'" data-steps="3"
-  data-station='[{"cmd":"act","k":"sombra","speed":2},{"cmd":"act","k":"veredicto","speed":1},{"cmd":"hold"}]'>
+  data-station='[{"cmd":"act","k":"sombra","speed":2},{"cmd":"act","k":"veredicto","speed":1},{"cmd":"act","k":"veredicto","speed":1}]'>
   <iframe class="stn" src="estacion.html" title="La estación, en vivo"></iframe>
   <div class="say" data-on="2"><b>La v2 nunca decidió.</b> El canary volvió solo a la v1 y el ring 1 nunca la vio.</div>
   <div class="stl">Acto 3 · El juez<span>la v2 en sombra en el canary · Step Functions hornea y mide · la rechaza</span></div>
@@ -2022,7 +2022,7 @@ html,body{background:#0B132A}
 ▶ CLIC 'Cruza el umbral: ALARM. La alarma invoca la Lambda; su log: «rolled_back_to 1.0.0». Despliega al ring 0 la última versión buena. Un minuto y cincuenta segundos desde la falla, sin acceso al equipo.'
 
 ▶ CLIC *(la bomba 1 en v1, alertando)* 'Greengrass revierte despliegues fallidos, no modelos equivocados. Esa fue la red de seguridad: la v2 alcanzó a decidir. Con el juez, nunca llega a decidir.'" data-steps="4"
-  data-station='[{"cmd":"act","k":"acto3","speed":2},{"cmd":"act","k":"noye","speed":2},{"cmd":"act","k":"alarma","speed":2,"until":"end"},{"cmd":"hold"}]'>
+  data-station='[{"cmd":"act","k":"acto3","speed":2},{"cmd":"act","k":"noye","speed":2},{"cmd":"act","k":"alarma","speed":2,"until":"end"},{"cmd":"act","k":"alarma","speed":2,"until":"end"}]'>
   <iframe class="stn" src="estacion.html" title="La estación, en vivo"></iframe>
   <div class="say" data-on="3">Esa fue la red de seguridad: la v2 alcanzó a decidir. <b>Con el juez, nunca llega a decidir.</b></div>
   <div class="stl">Acto 3b · Sin juez: la red de seguridad<span>la v2 directa al ring 0 · fallas no oídas · la alarma, la Lambda y la vuelta</span></div>

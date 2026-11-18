@@ -836,7 +836,7 @@ M.forEach((m,j)=>{ const d=document.createElement('div'); d.className='mk'; d.st
   const l=document.createElement('div'); l.className='ml'+(j%2?' lo':''); l.style.left=pos(m.t)+'%'; if(j===0) l.style.transform='none'; l.textContent=m.tag.replace(/^ACTO \d · /,''); $('#tl').appendChild(d); $('#tl').appendChild(l); });
 function goto(j,sp){ j=Math.max(0,Math.min(M.length-1,j)); const to=M[j].t, nx=M[j+1], s=sp||M[j].speed;
   if(t>=to && (!nx||t<nx.t)) { setSpeed(s); }                                   /* already in that moment: never step back */
-  else if(to>t && to-t<900000) { ff={to, sp:s, rate:Math.max(8,(to-t)/GLIDE)}; }  /* ahead: glide there in about a second */
+  else if(to>t && j===cur+1 && to-t<120000) { ff={to, sp:s, rate:Math.max(8,(to-t)/GLIDE)}; }  /* the very next moment: glide there */
   else { ff=null; step(to); setSpeed(s); paint(); }
   if(!playing) toggle(true); }
 function setSpeed(s){ speed=s; document.querySelectorAll('#ctl [data-sp]').forEach(b=>b.classList.toggle('on',+b.dataset.sp===s)); }
@@ -880,7 +880,7 @@ if(EMBED){ document.documentElement.classList.add('embed');
     else if(m.cmd==='overlay'){ m.on?showOv(m.con):hideOv(); if(m.speed) setSpeed(m.speed); if(m.on&&!playing) toggle(true); }
     else if(m.cmd==='speed') setSpeed(m.s);
     else if(m.cmd==='show'){ showOv(m.con); }
-    else if(m.cmd==='reset'&&!ONLY){ toggle(false); hideOv(); step(T0); paint(); } });
+    else if(m.cmd==='reset'&&!ONLY){ toggle(false); ff=null; stop=null; plan=null; hideOv(); step(T0); paint(); } });
   addEventListener('keydown',e=>{ if(['ArrowRight','ArrowDown','PageDown','Enter'].includes(e.key)){ e.preventDefault(); e.stopImmediatePropagation(); parent.postMessage({cmd:'nav',d:1},'*'); }
     else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){ e.preventDefault(); e.stopImmediatePropagation(); parent.postMessage({cmd:'nav',d:-1},'*'); } },true);
 }
