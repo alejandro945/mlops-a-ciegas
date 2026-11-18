@@ -4,7 +4,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el envío por lotes (paso 5).
 
-**23:30** de contenido aproximadamente. Reloj al entrar a cada divisor: 3:45 · 6:25 · 8:50 · 16:15.
+**23:20** de contenido aproximadamente. Reloj al entrar a cada divisor: 3:45 · 6:25 · 8:50 · 16:15.
 
 ---
 
@@ -268,7 +268,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 21 · Paso 4 · ¿Cuándo volver atrás?
 <!-- id: juez -->
-**1:10** · 4 clics
+**1:00** · 3 clics
 
 "La pregunta difícil es cuándo volver atrás. Si espero a que una alarma vea fallas no detectadas, la versión nueva ya estuvo decidiendo mal. Por eso el gate es un juez: una máquina de estados en Step Functions, que actúa antes."
 
@@ -280,7 +280,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 **[CLIC]** "Si no pasa, rechaza: el canary vuelve solo a la versión activa y llega un aviso. La versión nueva nunca decidió nada."
 
-**[CLIC]** "La regla de la demo: al menos 20 clips, no más del 10 % de las fallas que la v1 sí oyó, y no más del 20 % de alertas que da sola." *(pausa)* "Y lo importante: el juez no necesita saber la verdad. Compara dos modelos sobre el mismo audio. Por eso sirve en producción, donde la etiqueta de la falla llega semanas después."
+"Y lo importante: el juez no necesita saber la verdad. Compara dos modelos sobre el mismo audio. Por eso sirve en producción, donde la etiqueta de la falla llega semanas después." *(Si preguntan la regla de la demo: al menos 20 clips, no más del 10 % de las fallas que la v1 sí oyó y no más del 20 % de alertas que da sola.)*
 
 "La alarma y la Lambda siguen ahí, como red de seguridad, para lo que se le escape al juez."
 
@@ -426,7 +426,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 33 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 21:50 al entrar*
+**1:05** · 4 clics · *reloj: 21:40 al entrar*
 
 "Cinco recomendaciones para aplicar desde el lunes."
 
@@ -440,7 +440,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 **[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad."
 
-*(Si el reloj marca 21:30 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
+*(Si el reloj marca 21:20 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
 
 ---
 

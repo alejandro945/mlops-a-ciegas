@@ -987,10 +987,10 @@ def _clock(cx, cy, r, color):
 
 def fig_judge(static=False):
     """The judge (Step Functions): the candidate runs in shadow on the canary, both models hear the same
-    clips, and only then promote or reject. One box per click; the rule at the end."""
+    clips, and only then promote or reject. One box per click; the rule is in the speaker notes."""
     q = _judge_rules()
     o = []
-    Y, H, W = 262, 132, 268
+    Y, H, W = 340, 132, 268
 
     def box(x, title, lines, ic, color=NAVY, fill=WHITE):
         b = [R(x, Y, W, H, fill=fill, stroke=color, sw=2, rx=12)]
@@ -1034,21 +1034,6 @@ def fig_judge(static=False):
     b.append(icon("sns", 1452, Y + 88, 36))
     b.append(T(1166, Y + 160, "y llega un aviso por SNS", 18, SLATE))
     o.append(G(3, "".join(b)))
-    # the rule: no ground truth needed, two models on the same audio
-    y0 = 520
-    b = [R(96, y0, 1408, 150, fill=LIGHT, stroke=LINE, sw=1.5, rx=12)]
-    b.append(T(124, y0 + 40, "LA REGLA DE LA DEMO", 16, MUTED, 700, family=MONO, extra='letter-spacing="2"'))
-    for k, (big, small) in enumerate(((f"≥ {q['clips']}", "clips del canary"),
-                                      (f"≤ {q['missed']}", "fallas que la v1 sí oyó"),
-                                      (f"≤ {q['extra']}", "alertas que da sola"))):
-        x = 124 + k * 300
-        b.append(T(x, y0 + 100, big, 46, PURPLE if k == 1 else NAVY, 700))
-        b.append(T(x, y0 + 128, small, 18, SLATE))
-    b.append(L([(1040, y0 + 30), (1040, y0 + 120)], LINE, 1.5))
-    b.append(T(1070, y0 + 70, "No necesita saber la verdad:", 22, NAVY, 700))
-    b.append(T(1070, y0 + 100, "compara dos modelos", 22, NAVY))
-    b.append(T(1070, y0 + 128, "sobre el mismo audio.", 22, NAVY))
-    o.append(G(4, "".join(b)))
     return wrap("".join(o))
 
 
