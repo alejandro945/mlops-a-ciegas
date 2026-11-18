@@ -4,7 +4,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el envío por lotes (paso 5).
 
-**23:50** de contenido aproximadamente. Reloj al entrar a cada divisor: 3:45 · 6:25 · 8:50 · 16:15.
+**23:30** de contenido aproximadamente. Reloj al entrar a cada divisor: 3:45 · 6:25 · 8:50 · 16:15.
 
 ---
 
@@ -360,19 +360,11 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 <!-- id: flota -->
 **0:20** · sin clics
 
-"La flota: cada bomba es una thing de AWS IoT, con su propio certificado. Cinco equipos en dos rings, todos sanos, con la versión que corre cada uno."
+"La flota: cada bomba es una thing de AWS IoT, con su propio certificado. Cinco equipos en dos rings, todos sanos, con la versión que corre cada uno. Con esto en marcha, tres pruebas."
 
 ---
 
-## 29 · Lo que reporta
-<!-- id: reporte -->
-**0:20** · sin clics
-
-"Y esto es lo que reportan: el dashboard, organizado por las tres señales: entrada, salida y autenticidad. Clips por versión, alertas, fallas que nadie oyó, y la entrada de cada bomba: ese salto morado es la deriva de la bomba 5. Con esto en marcha, tres pruebas."
-
----
-
-## 30 · Acto 1 · Escuchar
+## 29 · Acto 1 · Escuchar
 <!-- id: acto1 -->
 **1:20** · 1 clic · *la estación corre sola en la lámina; deja que la miren*
 
@@ -388,7 +380,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 31 · Acto 2 · Sin red, y una deriva
+## 30 · Acto 2 · Sin red, y una deriva
 <!-- id: acto2 -->
 **1:00** · 2 clics
 
@@ -400,7 +392,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 32 · Acto 3 · El juez
+## 31 · Acto 3 · El juez
 <!-- id: acto3 -->
 **1:30** · 3 clics · *el punto culminante: ve despacio*
 
@@ -416,7 +408,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 33 · Acto 3b · Sin juez: la red de seguridad
+## 32 · Acto 3b · Sin juez: la red de seguridad
 <!-- id: acto3b -->
 **1:00** · 4 clics
 
@@ -432,9 +424,9 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 34 · Cinco recomendaciones
+## 33 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 22:10 al entrar*
+**1:05** · 4 clics · *reloj: 21:50 al entrar*
 
 "Cinco recomendaciones para aplicar desde el lunes."
 
@@ -448,11 +440,11 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 **[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad."
 
-*(Si el reloj marca 21:50 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
+*(Si el reloj marca 21:30 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
 
 ---
 
-## 35 · Recursos y contacto
+## 34 · Recursos y contacto
 <!-- id: recursos -->
 **0:15** · sin clics
 
@@ -460,7 +452,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 36 · Gracias
+## 35 · Gracias
 <!-- id: cierre -->
 **0:15** · sin clics
 
