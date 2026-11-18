@@ -80,9 +80,9 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 <!-- id: caso -->
 **0:55** · 3 clics · *simple, con humor y despacio: es el caso de toda la charla*
 
-"Antes de entrar en el problema, les presento la estación El Chorro: una estación de bombeo de agua, lejos de la ciudad. Y este es Don Jairo. Hoy, si una bomba empieza a fallar, se entera Don Jairo… cuando alcanza a pasar por ahí. La meta es detectar las fallas sin depender de un operario."
+"Antes de entrar en el problema, les presento la estación El Chorro: una estación de bombeo de agua, lejos de la ciudad. Y este es Don Jairo. Hoy, si una bomba empieza a fallar, se entera Don Jairo… cuando alcanza a pasar por ahí. Y como hoy todas las empresas quieren IA en todo lado, El Chorro no iba a ser la excepción."
 
-**[CLIC]** "La solución: edge AI. A cada bomba le ponemos un micrófono y un dispositivo con un modelo que la escucha. Si una empieza a sonar raro, avisa al instante, ahí mismo, sin depender de la red. Y Don Jairo, por fin, descansa."
+**[CLIC]** "Y ¡pum!: edge AI en cada bomba. A cada una le ponemos un micrófono y un dispositivo con un modelo que la escucha. Si una empieza a sonar raro, avisa al instante, ahí mismo, sin depender de la red. Y Don Jairo, por fin, descansa."
 
 **[CLIC]** "Funcionó tan bien que la estación creció: ya no son cinco bombas, son más de 20, cada una con su modelo."
 

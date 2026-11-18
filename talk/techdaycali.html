@@ -621,9 +621,9 @@ html,body{background:#0B132A}
 
 0:55 · 3 clics · *simple, con humor y despacio: es el caso de toda la charla*
 
-'Antes de entrar en el problema, les presento la estación El Chorro: una estación de bombeo de agua, lejos de la ciudad. Y este es Don Jairo. Hoy, si una bomba empieza a fallar, se entera Don Jairo… cuando alcanza a pasar por ahí. La meta es detectar las fallas sin depender de un operario.'
+'Antes de entrar en el problema, les presento la estación El Chorro: una estación de bombeo de agua, lejos de la ciudad. Y este es Don Jairo. Hoy, si una bomba empieza a fallar, se entera Don Jairo… cuando alcanza a pasar por ahí. Y como hoy todas las empresas quieren IA en todo lado, El Chorro no iba a ser la excepción.'
 
-▶ CLIC 'La solución: edge AI. A cada bomba le ponemos un micrófono y un dispositivo con un modelo que la escucha. Si una empieza a sonar raro, avisa al instante, ahí mismo, sin depender de la red. Y Don Jairo, por fin, descansa.'
+▶ CLIC 'Y ¡pum!: edge AI en cada bomba. A cada una le ponemos un micrófono y un dispositivo con un modelo que la escucha. Si una empieza a sonar raro, avisa al instante, ahí mismo, sin depender de la red. Y Don Jairo, por fin, descansa.'
 
 ▶ CLIC 'Funcionó tan bien que la estación creció: ya no son cinco bombas, son más de 20, cada una con su modelo.'
 
@@ -2617,10 +2617,10 @@ ANIM.caso={steps:4,dur:1300,draw(g,W,H,st,p,t){
   }
   /* one big sentence per click */
   const L=['Hoy, si una bomba falla, se entera Don Jairo… cuando alcanza a pasar.',
-           'La solución: edge AI. Cada bomba tiene un micrófono y un modelo que avisa al instante.',
+           'Y ¡pum!: edge AI en cada bomba. Un micrófono y un modelo que avisa al instante.',
            'Funcionó tan bien que la estación creció: ya son más de 20 bombas.',
            '¿Y ahora? ¿Cómo actualizar, vigilar y corregir 24 modelos sin ir uno por uno?'];
-  const L2=['La meta: detectar las fallas sin depender de un operario.','','',
+  const L2=['Y como todas las empresas quieren IA en todo lado, El Chorro no iba a ser la excepción.','','',
             'Gobernarlos en automático y conocer sus límites: ese es el reto.'];
   g.save(); g.globalAlpha=RM?1:clamp(p*1.6); T(g,0,H-60,L[Math.min(st,3)],INK,32,700); g.restore();
   if(L2[Math.min(st,3)]){ g.save(); g.globalAlpha=RM?1:clamp(p*1.6-.4); T(g,0,H-14,L2[Math.min(st,3)],ACC,24,700); g.restore(); }
