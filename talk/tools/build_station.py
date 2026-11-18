@@ -156,7 +156,7 @@ def judge_steps():
 
 # the AWS console, redrawn from the run's data (station-console.js): one panel per act
 CON_BY_ACT = {"inicio": "mqtt", "acto1": "insights", "acto2": "insights", "vuelve": "insights", "deriva": "metric",
-              "sombra": "sfn", "veredicto": "sfn", "acto3": "deploys", "noye": "alarm", "alarma": "lambda", "fin": "deploys"}
+              "sombra": "sfn", "veredicto": "sfn", "acto3": "deploys", "noye": "salida", "alarma": "lambda", "fin": "deploys"}
 
 
 def alarm_history():
@@ -319,12 +319,12 @@ def markers(ev, alarm, lam, judge=()):
                           "reporta: para Greengrass, un despliegue exitoso. El ring 1 sigue con la v1.", "speed": 4})
     mf = [e for e in ev if e.get("truth") == "anomaly" and not e["alert"] and (v2 is None or e["ts"] >= v2["ts"])]
     if mf:
-        M.append({"t": mf[0]["ts"] - 6000, "k": "noye", "tag": "ACTO 3 · FALLAS NO OÍDAS", "title": f"La {mf[0]['device']} falla y la v{mf[0]['model_version']} dice «normal»",
-                  "text": f"fault.sh {mf[0]['device']}: la bomba falla y la versión nueva no lo oye. Cada evento lleva la verdad del clip "
-                          "(solo en la demo), y la nube cuenta por minuto las fallas que nadie oyó.", "speed": 2})
+        M.append({"t": mf[0]["ts"] - 6000, "k": "noye", "tag": "ACTO 3 · LA SALIDA CAMBIA", "title": f"La {mf[0]['device']} falla y la v{mf[0]['model_version']} apenas la oye",
+                  "text": f"fault.sh {mf[0]['device']}: la bomba falla y la versión nueva casi no alerta. Sin saber qué clip es una falla, "
+                          "la nube ve que cambió lo que decide: sus scores se alejan de la referencia y el PSI se dispara.", "speed": 2})
     if alarm:
         M.append({"t": alarm - 8000, "k": "alarma", "tag": "ACTO 3 · LA VUELTA", "title": "La alarma, la Lambda y la última buena",
-                  "text": "La métrica cruza el umbral: la alarma pasa a ALARM e invoca la Lambda, que despliega al ring 0 la "
+                  "text": "La alarma pasa a ALARM e invoca la Lambda, que despliega al ring 0 la "
                           "última versión buena. La bomba vuelve a la v1 y vuelve a alertar. Nadie tocó el equipo.", "speed": 1})
     M.append({"t": t1 - 20000, "k": "fin", "tag": "FIN", "title": "La estación, como la encontramos",
               "text": "Las cinco bombas con la v1.0.0, el despliegue de la vuelta activo y el de la v2 inactivo. "
@@ -591,7 +591,9 @@ let t=T0, playing=false, speed=4, last=null, cur=-1, eff=4;
    between a moment's hold window and the next moment, the dead time runs at QUIET× */
 let ff=null, stop=null, plan=null; const QUIET=12, LEAD=4000;
 /* in the deck every click lasts the same: STEP_A ms of wall time for the moment's key part (its hold), STEP_B for the rest up to the next stop */
-const STEP_A=11000, STEP_B=5000, GLIDE=700;
+const STEP_A=11000, STEP_B=5000, GLIDE=1400;
+const easeIO=x=>x<.5?2*x*x:1-Math.pow(-2*x+2,2)/2;
+function fade(el,dy){{ if(el&&el.animate) el.animate([{{opacity:.15,transform:'translateY('+(dy||0)+'px)'}},{{opacity:1,transform:'none'}}],{{duration:450,easing:'ease-out'}}); }}
 let iDec=0, iArr=0;                                    /* cursors over the events, by decision and by arrival */
 const byArr=EV.map((e,i)=>i).sort((a,b)=>EV[a].a-EV[b].a);
 let dec=DEVS.map(()=>null), q=DEVS.map(()=>0), arrived=0, alerts=0, late=0, missed=0, perMin={{}}, lines=[];
@@ -664,7 +666,7 @@ function paint(){{
   $('#tl-done').style.width=pos(t)+'%';
   let k=0; while(k+1<M.length && M[k+1].t<=t) k++;
   document.querySelectorAll('#tl .mk').forEach((m,j)=>{{ m.className='mk'+(M[j].t<=t?' done':'')+(j===k?' cur':''); }});
-  if(k!==cur){{ cur=k; $('#c-tag').textContent=M[k].tag; $('#c-tt').textContent=M[k].title; $('#c-tx').textContent=M[k].text;
+  if(k!==cur){{ cur=k; fade($('#cap'),8); $('#c-tag').textContent=M[k].tag; $('#c-tt').textContent=M[k].title; $('#c-tx').textContent=M[k].text;
     renderCon(true); }}
   /* the stopwatch since the fault nobody heard */
   const mf0=M.find(m=>m.k==='noye'), sw=$('#c-sw');
@@ -688,15 +690,15 @@ M.forEach((m,j)=>{{ const d=document.createElement('div'); d.className='mk'; d.s
   const l=document.createElement('div'); l.className='ml'+(j%2?' lo':''); l.style.left=pos(m.t)+'%'; if(j===0) l.style.transform='none'; l.textContent=m.tag.replace(/^ACTO \\d · /,''); $('#tl').appendChild(d); $('#tl').appendChild(l); }});
 function goto(j,sp){{ j=Math.max(0,Math.min(M.length-1,j)); const to=M[j].t, nx=M[j+1], s=sp||M[j].speed;
   if(t>=to && (!nx||t<nx.t)) {{ setSpeed(s); }}                                   /* already in that moment: never step back */
-  else if(to>t && j===cur+1 && to-t<120000) {{ ff={{to, sp:s, rate:Math.max(8,(to-t)/GLIDE)}}; }}  /* the very next moment: glide there */
-  else {{ ff=null; step(to); setSpeed(s); paint(); }}
+  else if(to>t && j===cur+1 && to-t<120000) {{ ff={{from:t, to, sp:s, w0:performance.now()}}; }}  /* the very next moment: glide there */
+  else {{ ff=null; step(to); setSpeed(s); paint(); fade($('#stage')); }}
   if(!playing) toggle(true); }}
 function setSpeed(s){{ speed=s; document.querySelectorAll('#ctl [data-sp]').forEach(b=>b.classList.toggle('on',+b.dataset.sp===s)); }}
 $('#dock').onclick=()=>showOv(); $('#ov').onclick=e=>{{ if(!e.target.closest('#cw')) hideOv(); }};
 function toggle(on){{ playing=on===undefined?!playing:on; $('#play').textContent=playing?'❚❚':'▶'; last=null; if(playing) requestAnimationFrame(tick); }}
 function tick(now){{ if(!playing) return;
   if(last!==null){{ const dt=now-last;
-    if(ff){{ eff=ff.rate; step(Math.min(ff.to,t+dt*ff.rate)); if(t>=ff.to){{ setSpeed(ff.sp); ff=null; }} }}
+    if(ff){{ const q=Math.min(1,(now-ff.w0)/GLIDE); eff=99; step(Math.max(t,ff.from+(ff.to-ff.from)*easeIO(q))); if(q>=1){{ setSpeed(ff.sp); ff=null; }} }}
     else {{ const m=M[cur], nx=M[cur+1], quiet=m&&(t-m.t)>(m.hold||15000)&&(!nx||nx.t-t>LEAD);
       eff=plan?(t<plan.h?plan.a:plan.b):quiet?Math.max(speed,QUIET):speed; let to=Math.min(T1,t+dt*eff);
       if(stop!=null&&to>=stop){{ to=stop; }}

@@ -13,9 +13,10 @@ const CONS={
   lambda:  {svc:'Lambda · logs', bc:['CloudWatch','Log groups','<b>/aws/lambda/station-rollback</b>']},
   s3:      {svc:'Amazon S3', bc:['Amazon S3','Buckets','<b>station · artefactos</b>']},
   component:{svc:'IoT Greengrass', bc:['AWS IoT','Greengrass','Components','<b>com.station.Listener</b>']},
+  salida:  {svc:'CloudWatch', bc:['CloudWatch','Dashboards','<b>station · salida</b>']},
   dashboard:{svc:'CloudWatch', bc:['CloudWatch','Dashboards','<b>station</b>']},
 };
-let conOpen=false, conForce=null, conLast=0;
+let conOpen=false, conForce=null, conLast=0, conShown=null;
 /* the console lives docked in the right panel of the station (two-thirds scale), and opens full size with A or a click */
 const conKind=()=>conForce||(M[cur]&&M[cur].con)||'cores';
 const DOCKED=()=>!!$('#dock')&&!document.documentElement.classList.contains('cononly');
@@ -27,6 +28,7 @@ function renderCon(force){
   $('#cw-bc').innerHTML=c.bc.map((x,i)=>i<c.bc.length-1?'<a>'+x+'</a><span>›</span>':x).join('');
   let h=''; try{ h=PANEL[k](); }catch(e){ console.error(e); h='<pre>'+esc(e.message)+'</pre>'; }
   $('#cw-bd').innerHTML=h; $('#ov-t').textContent=hms(t);
+  if(k!==conShown){ conShown=k; const bd=$('#cw-bd'); if(bd.animate) bd.animate([{opacity:0,transform:'translateY(14px)'},{opacity:1,transform:'none'}],{duration:500,easing:'ease-out'}); }
 }
 
 function hmsm(ms){ return new Date(ms+TZ).toISOString().slice(11,23); }
@@ -171,6 +173,46 @@ const PANEL={
         DEVS.map((d,i)=>'<div class="dv">'+d+'<b>'+per[i]+'</b></div>').join('')+'</div>'+
       '<div class="box mqr"><div class="mqt"><b>station/events</b><span>'+got.length+' messages</span><span class="btn">Pause</span><span class="btn">Clear</span></div>'+
         (last.length?last.map(card).join(''):'<div class="mt">Esperando mensajes…</div>')+'</div></div>';
+  },
+
+  /* CloudWatch › Dashboards › station · salida: the output signal of the canary, no labels needed.
+     Its scores per clip (by version, against the threshold), the distribution of the last 2 min against v1's
+     reference, and the PSI between them: what production can watch, since nobody knows which clip is a fault */
+  salida(){
+    const cd=(EV.find(e=>e.v!==EV[0].v&&!e.sv)||{d:0}).d, A3=(M.find(m=>m.k==='acto3')||{t:T0}).t;
+    const ref=EV.filter(e=>e.d===cd&&e.t<A3).map(e=>e.s).sort((a,b)=>a-b);
+    const mine=EV.filter(e=>e.d===cd&&e.a<=t), now=mine.filter(e=>e.t>t-120000);
+    const edges=[1,2,3,4,5,6,7,8,9].map(i=>.15+i*.04);                  /* fixed bins over the scores' range, 0.15-0.55 */
+    const hist=xs=>{ const h=Array(10).fill(0); xs.forEach(x=>h[edges.filter(e=>x>e).length]++); const n=Math.max(1,xs.length); return h.map(v=>Math.max(1e-3,v/n)); };
+    const r=hist(ref), c=hist(now.map(e=>e.s)), psi=now.length>=10?c.reduce((a,v,i)=>a+(v-r[i])*Math.log(v/r[i]),0):0;
+    const al=EV.filter(e=>e.d===cd&&e.a<=t&&e.a>t-60000&&e.al).length, ver=(mine[mine.length-1]||{}).v||'—';
+    const hot=psi>0.25;
+    /* the scores per clip, from a minute before the v2 to the end */
+    const W=700, Hh=330, x0=A3-60000, x1=T1, X=v=>64+(v-x0)/(x1-x0)*(W-96), mx=.6, Y=v=>Hh-40-Math.min(v,mx)/mx*(Hh-60);
+    const thr=(mine[mine.length-1]||EV[0]).h; let g='';
+    [0,.2,.4,.6].forEach(v=>{ g+='<line x1="64" x2="'+(W-32)+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="#E9EBED"/><text x="54" y="'+(Y(v)+6)+'" text-anchor="end" font-size="17" fill="#5F6B7A">'+v.toFixed(1)+'</text>'; });
+    g+='<rect x="64" y="'+Y(ref[Math.floor(ref.length*.75)])+'" width="'+(W-96)+'" height="'+(Y(ref[Math.floor(ref.length*.25)])-Y(ref[Math.floor(ref.length*.75)]))+'" fill="#E9EBED"/>'+
+       '<text x="'+(W-40)+'" y="'+(Y(ref[Math.floor(ref.length*.75)])-6)+'" text-anchor="end" font-size="15" fill="#5F6B7A">referencia v'+EV[0].v+' (p25–p75)</text>';
+    g+='<line x1="64" x2="'+(W-32)+'" y1="'+Y(thr)+'" y2="'+Y(thr)+'" stroke="#D91515" stroke-dasharray="7 5" stroke-width="2"/><text x="74" y="'+(Y(thr)-8)+'" font-size="16" fill="#D91515" font-weight="600">umbral '+thr.toFixed(2)+'</text>';
+    mine.filter(e=>e.t>=x0).forEach(e=>{ g+='<circle cx="'+X(e.t).toFixed(1)+'" cy="'+Y(e.s).toFixed(1)+'" r="'+(e.al?6:4.5)+'" fill="'+(e.v===EV[0].v?'#0972D3':'#E07B00')+'"'+(e.al?' stroke="#16191F" stroke-width="1.5"':'')+'/>'; });
+    for(let m=Math.ceil(x0/60000);m*60000<=x1;m+=2) g+='<text x="'+X(m*60000)+'" y="'+(Hh-12)+'" text-anchor="middle" font-size="16" fill="#5F6B7A">'+hms(m*60000).slice(0,5)+'</text>';
+    /* the distributions: reference against the last 2 minutes */
+    const HW=700, HH=330, bw=(HW-60)/10; let hg='';
+    r.forEach((v,i)=>{ const hr=v*HH*1.1, hc=c[i]*HH*1.1;
+      hg+='<rect x="'+(40+i*bw+4)+'" y="'+(HH-20-Math.min(HH-30,hr))+'" width="'+(bw/2-4)+'" height="'+Math.min(HH-30,hr)+'" fill="#B6BEC9"/>'+
+          (now.length?'<rect x="'+(40+i*bw+bw/2)+'" y="'+(HH-20-Math.min(HH-30,hc))+'" width="'+(bw/2-4)+'" height="'+Math.min(HH-30,hc)+'" fill="#E07B00"/>':''); });
+    hg+='<line x1="36" x2="'+(HW-16)+'" y1="'+(HH-20)+'" y2="'+(HH-20)+'" stroke="#8D99A8"/><text x="40" y="'+(HH-2)+'" font-size="15" fill="#5F6B7A">score bajo</text><text x="'+(HW-20)+'" y="'+(HH-2)+'" text-anchor="end" font-size="15" fill="#5F6B7A">score alto</text>';
+    const num=(lab,v,sub,red)=>'<div class="box wd"><div class="wt">'+lab+'</div><div class="nums"><div><b'+(red?' class="r"':'')+'>'+v+'</b><span>'+sub+'</span></div></div></div>';
+    return H('station · salida',null,'2 · Salida: ¿cambió lo que decide? Sin etiquetas: solo lo que el modelo reporta')+
+      '<div class="wds" style="grid-template-columns:1fr 1fr 1fr">'+
+        num('PSI del score · '+DEVS[cd],now.length>=10?psi.toFixed(2):'—',hot?'cambio significativo (> 0,25)':'estable (< 0,25)',hot)+
+        num('Alertas · último minuto',al,'versión que decide: v'+ver,false)+
+        num('Clips · últimos 2 min',now.length,'contra '+ref.length+' de referencia',false)+'</div>'+
+      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'+
+        '<div class="box"><div class="wt">Score por clip · '+DEVS[cd]+'</div><svg viewBox="0 0 '+W+' '+Hh+'" class="ch">'+g+'</svg>'+
+          '<div class="lgd"><span><i style="background:#0972D3"></i>v'+EV[0].v+'</span><span><i style="background:#E07B00"></i>versión nueva</span></div></div>'+
+        '<div class="box"><div class="wt">Distribución del score · referencia contra últimos 2 min</div><svg viewBox="0 0 '+HW+' '+HH+'" class="ch">'+hg+'</svg>'+
+          '<div class="lgd"><span><i style="background:#B6BEC9"></i>referencia v'+EV[0].v+'</span><span><i style="background:#E07B00"></i>últimos 2 min</span></div></div></div>';
   },
 
   /* Step Functions › station-judge › the execution, state by state */

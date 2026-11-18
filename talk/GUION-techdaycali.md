@@ -414,7 +414,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 "¿Y si no hubiera juez? Lo probé también: despliego la 2.0.0 directo al ring 0. Llega en segundos, sin errores. Para Greengrass, un despliegue exitoso."
 
-**[CLIC]** "Inyecto la falla y la v2 responde «normal»: fallas no oídas. A la derecha, la alarma en CloudWatch: las fallas por minuto suben hacia el umbral de 8." *(Si preguntan: aquí la alarma las cuenta porque sé qué audio suena; en producción reaccionaría a la salida, porque la tasa de alertas cae y cambia la distribución de scores.)*
+**[CLIC]** "Inyecto la falla y la v2 casi no alerta. En producción nadie sabe qué clip es una falla, así que miramos la salida: a la derecha, el dashboard de la bomba 1. Sus scores se alejan de la referencia de la v1, la distribución cambia y el PSI pasa de 0,25: cambió lo que decide." *(Si preguntan: en la PoC la alarma que dispara la Lambda cuenta las fallas no oídas, porque sé qué audio suena; en producción se arma sobre esta señal de salida.)*
 
 **[CLIC]** "Cruza el umbral: ALARM. La alarma invoca la Lambda; su log: «rolled_back_to 1.0.0». Despliega al ring 0 la última versión buena. Un minuto y cincuenta segundos desde la falla, sin acceso al equipo."
 
