@@ -424,11 +424,15 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 </section>
 
 
-<!-- ═══════════════ 2 · THE HOOK: AWS goes down and the smart beds with it ═══════════════ -->
-<section class="s" data-id="camas" data-sec="1" data-notes="">
-  <div class="kick">20 · 10 · 2025</div>
-  <div class="ttl wide">Se cayó AWS. <b>Y las camas también.</b></div>
-  <div class="chart" style="left:84px;right:84px;top:222px;bottom:150px"><canvas class="anim" data-anim="camas"></canvas></div>
+<!-- ═══════════════ 2 · THE HOOK: us-east-1, October 20, 2025 (the meme, then the news, then the punchline) ═══════════════ -->
+<section class="s" data-id="gancho" data-sec="0" data-notes="">
+  <div class="kick">Hace un año</div>
+  <div class="ttl wide">20 de octubre de 2025: <b>se cae us-east-1</b></div>
+  <div class="hook">
+    <figure class="hi" data-on="0">{{SHOT:gancho-internet}}<figcaption>Basado en xkcd 2347 · CC BY-NC 2.5</figcaption></figure>
+    <figure class="hi" data-on="1">{{SHOT:gancho-camas}}<figcaption>Prensa, octubre de 2025 · imagen: Eight Sleep</figcaption></figure>
+  </div>
+  <div class="say" data-on="2" style="top:722px;font-size:30px;z-index:5">La decisión vivía en la nube. <b>Llevarla al dispositivo: eso es edge.</b></div>
   <div class="foot"></div>
 </section>
 
@@ -981,57 +985,6 @@ function faceid(g,cx,cy,s,col){ /* the Face ID glyph: four corners, two eyes, th
   g.moveTo(cx+s*.02,cy-s*.3); g.lineTo(cx+s*.02,cy+s*.08); g.lineTo(cx-s*.1,cy+s*.08); g.stroke();
   g.beginPath(); g.arc(cx,cy+s*.12,s*.36,Math.PI*.22,Math.PI*.78); g.stroke(); g.restore(); }
 function rich(g,x,y,parts,size){ let xx=x; parts.forEach(pt=>{ T(g,xx,y,pt[0],pt[1],size,pt[2]); xx+=g.measureText(pt[0]).width; }); }
-
-/* 01b · the hook: Oct 20 2025, AWS us-east-1 goes down and the Eight Sleep beds stay hot, tilted and deaf */
-function bedScene(g,x,y,w,down,k,t){ /* x,y = floor left; k = 0..1 how far the outage has gone */
-  const base=y-60, tilt=down?lerp(0,.62,k):0, hx=x+w*.36;
-  g.fillStyle=INK; g.fillRect(x+10,base+20,10,40); g.fillRect(x+w-20,base+20,10,40);
-  fillRR(g,x,base,w,26,8,INK);                                         /* frame */
-  fillRR(g,hx,base-30,w-(hx-x)-4,32,12,'#FFFFFF'); strokeRR(g,hx,base-30,w-(hx-x)-4,32,12,INK,3);   /* legs part */
-  g.save(); g.translate(hx,base-14); g.rotate(tilt);                  /* the head section, it lifts and stays */
-  fillRR(g,-(hx-x)+4,-16,hx-x,32,12,'#FFFFFF'); strokeRR(g,-(hx-x)+4,-16,hx-x,32,12,INK,3);
-  fillRR(g,-(hx-x)+22,-44,92,30,12,ink(.12));                          /* pillow */
-  dot(g,-(hx-x)+82,-62,28,INK);                                        /* head */
-  if(down&&k>.5){ eyes(g,-(hx-x)+82,-64,46,1,-.4); } else { g.save(); g.strokeStyle='#FFFFFF'; g.lineWidth=3; g.lineCap='round';
-    [-11,11].forEach(dx=>{ g.beginPath(); g.moveTo(-(hx-x)+82+dx-6,-64); g.lineTo(-(hx-x)+82+dx+6,-64); g.stroke(); }); g.restore(); }
-  g.restore();
-  fillRR(g,hx-60,base-44,w-(hx-x)+56,22,10,down?acc(.18+.5*k):ink(.14)); /* blanket: purple as it heats */
-  if(!down){ [0,1,2].forEach(n=>{ const u=((t*.35)+n/3)%1; g.save(); g.globalAlpha=Math.sin(u*Math.PI); T(g,x+130+u*40+n*8,base-120-u*60,'z',INK,22+n*6,700); g.restore(); }); }
-  else if(k>.2){ for(let n=0;n<4;n++){ const u=((t*.6)+n/4)%1; g.save(); g.globalAlpha=Math.sin(u*Math.PI)*k;   /* heat waves */
-    const wx=hx+50+n*48; line(g,[[wx,base-56-u*40],[wx+8,base-70-u*40],[wx,base-84-u*40],[wx+8,base-98-u*40]],ACC,3); g.restore(); } }
-}
-function thermo(g,x,y,lvl,col){ strokeRR(g,x-11,y-150,22,140,11,INK,3); dot(g,x,y,20,col); g.fillStyle=col;
-  const h=lerp(20,128,lvl); g.fillRect(x-5,y-h,10,h); }
-ANIM.camas={steps:3,dur:1600,draw(g,W,H,st,p,t){
-  const q=(RM||st>2)?1:ease(clamp(p*1.2)), k=st===0?0:st===1?q:1;
-  /* the scene: cloud, the link, the bed */
-  const bx=0, bw=560, fy=H-40, cx=280, cy=70;
-  cloud(g,cx,cy,64,st?'#C3CAD6':INK);
-  if(st){ g.save(); g.globalAlpha=k; cross(g,cx+64,cy-34,16,ACC); g.restore(); }
-  else eyes(g,cx,cy-6,64,0,1);
-  T(g,cx,cy+90,'AWS · us-east-1',st?ACC:ink(.55),18,700,true,'center');
-  if(!st){ line(g,[[cx,cy+104],[cx,fy-170]],ink(.4),2.5,[5,7]);
-    const u=(t*.5)%1; dot(g,cx,lerp(cy+104,fy-170,u),5,INK); T(g,cx+14,cy+150,'«enfría a 20 °C»',ink(.66),18,400); }
-  else { g.save(); g.globalAlpha=1-k*.6; line(g,[[cx,cy+104],[cx,cy+130]],ink(.4),2.5,[5,7]); line(g,[[cx,cy+150],[cx,fy-170]],ink(.4),2.5,[5,7]); g.restore(); }
-  bedScene(g,bx,fy,bw,st>0,k,t);
-  thermo(g,bw+60,fy-30,st?lerp(.3,.95,k):.3,st?ACC:INK);
-  T(g,bw+60,fy+8,st?'calor':'',ACC,16,700,true,'center');
-  /* the words */
-  const tx=760;
-  T(g,tx,40,'3:00 a. m.',INK,54,700);
-  T(g,tx,84,'Una cama inteligente de unos 2.000 dólares:',ink(.66),24,400);
-  T(g,tx,116,'la temperatura y la inclinación las decide la nube.',ink(.66),24,400);
-  if(st>=1){ g.save(); g.globalAlpha=st===1?clamp(p*2):1;
-    T(g,tx,190,'La nube se cae. La cama se queda como estaba:',INK,26,700);
-    ['calentando sin parar','inclinada, sin poder bajar','sin responder a la app'].forEach((s,n)=>{
-      const a=st===1&&!RM?clamp(p*2.4-.5-n*.35):1; g.save(); g.globalAlpha=a;
-      cross(g,tx+10,232+n*42,8,ACC); T(g,tx+34,240+n*42,s,INK,24,400); g.restore(); });
-    g.restore(); }
-  if(st>=2){ g.save(); g.globalAlpha=RM?1:clamp(p*1.6);
-    rich(g,tx,H-92,[['Si la decisión vive en la nube,',INK,700]],32);
-    rich(g,tx,H-50,[['el equipo queda ',INK,700],['a ciegas.',ACC,700]],32);
-    T(g,tx,H-8,'Eight Sleep prometió un «modo sin conexión».',ink(.55),18,400); g.restore(); }
-}};
 
 /* 02 · smart devices: connected IoT devices in the world, one box per billion (IoT Analytics) */
 ANIM.cien={steps:3,dur:1700,draw(g,W,H,st,p,t){

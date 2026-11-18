@@ -4,7 +4,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el envío por lotes (paso 5).
 
-**23:05** de contenido aproximadamente. Reloj al entrar a cada divisor: 2:45 · 5:25 · 7:50 · 15:30.
+**23:10** de contenido aproximadamente. Reloj al entrar a cada divisor: 2:50 · 5:30 · 7:55 · 15:35.
 
 ---
 
@@ -12,19 +12,19 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 <!-- id: portada -->
 **0:10** · sin clics
 
-*(En pantalla mientras te presentan. Cuando te den la palabra, pasa a la 2.)*
+*(En pantalla mientras te presentan. Cuando te den la palabra, pasa a la 2 y arranca con el gancho, sin saludar.)*
 
 ---
 
-## 2 · Se cayó AWS. Y las camas también.
-<!-- id: camas -->
-**0:35** · 2 clics
+## 2 · Hace un año: se cae us-east-1
+<!-- id: gancho -->
+**0:40** · 2 clics · *antes de presentarte; sin saludar todavía*
 
-"Buenos días. Antes de presentarme, una historia. Lunes 20 de octubre de 2025, tres de la mañana. Miles de personas duermen sobre una cama inteligente de Eight Sleep: cuesta unos dos mil dólares y la temperatura y la inclinación las decide la nube."
+"Hace poco más de un año se cayó us-east-1, la región más grande de AWS. Muchos lo notaron: apps y servicios caídos durante horas." *(señala el meme)* "Y nos recordó algo que ya sabíamos: buena parte de internet se apoya en una sola región." *(pausa)*
 
-**[CLIC]** "Esa madrugada se cae AWS en us-east-1. Y las camas, que le preguntaban todo a la nube, se quedan como estaban: unas calentando sin parar, otras inclinadas sin poder bajar, y la app sin responder." *(pausa)*
+**[CLIC]** "Pero hubo una víctima que nadie esperaba: una marca de camas inteligentes, de unos dos mil dólares, que controlaba la temperatura y la inclinación desde la nube. Cuando la región cayó, las camas se quedaron en su último estado: calientes, inclinadas, en plena noche, con sus dueños encima." *(pausa)*
 
-**[CLIC]** "Si la decisión vive en la nube, el equipo queda a ciegas. Eight Sleep salió a pedir disculpas y a prometer un modo sin conexión. De eso trata esta charla: llevar el modelo al equipo, y aun así poder gobernarlo." *(Fuentes en las notas de apoyo: PCWorld, MacTrast, AI Incident Database #1243. Si preguntan: AWS restableció el servicio hacia las 6 a. m. hora del este.)*
+**[CLIC]** "Su solución de emergencia fue un modo sin conexión: control manual por Bluetooth, sin la inteligencia." *(pausa)* "La cama sabía detectar en qué etapa del sueño estabas, pero esa decisión vivía en la nube. Cuando la nube cayó, la cama dejó de pensar. Llevar esa decisión al dispositivo: eso es edge."
 
 ---
 
@@ -32,7 +32,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 <!-- id: quien -->
 **0:25** · sin clics
 
-"Soy Alejandro Varela, Lead Cloud Engineer en EPAM. Trabajo como arquitecto en la nube, y parte de ese trabajo es diseñar cómo se despliegan y se operan modelos de IA en equipos de campo: lugares sin conectividad estable y sin nadie que los atienda."
+"Buenos días. Soy Alejandro Varela, Lead Cloud Engineer en EPAM. Trabajo como arquitecto en la nube, y parte de ese trabajo es diseñar cómo se despliegan y se operan modelos de IA en equipos de campo: lugares sin conectividad estable y sin nadie que los atienda."
 
 "Hoy les voy a mostrar el patrón que uso para eso, con una implementación completa en AWS."
 
