@@ -2896,10 +2896,17 @@ Object.keys(SND).forEach(k=>['play','pause','ended'].forEach(ev=>SND[k].addEvent
 const MAIN=[], ANX=[]; slides.forEach((sl,k)=>(sl.dataset.annex?ANX:MAIN).push(k));
 let ret=0; const inAnx=()=>!!slides[i].dataset.annex;
 function show(n,atEnd){
-  i=Math.max(0,Math.min(slides.length-1,n));
+  const was=i; i=Math.max(0,Math.min(slides.length-1,n));
   stopSnd();                                               /* changing slide stops the audio */
+  /* the stations: the slide just left keeps its picture while it fades out; the next one waits already on its first
+     moment and the previous one on its last (prime), so crossing from one act slide to the next never cuts */
+  const b0=MAIN.indexOf(i), nx=b0>=0?MAIN[b0+1]:-1, pv=b0>=0?MAIN[b0-1]:-1;
   slides.forEach((sl,k)=>{ sl.classList.toggle('on',k===i);
-    if(k!==i&&sl.dataset.station){ const fr=sl.querySelector('iframe.stn'); if(fr&&fr.contentWindow) fr.contentWindow.postMessage({cmd:'reset'},'*'); } });
+    if(k===i||!sl.dataset.station) return; const fr=sl.querySelector('iframe.stn'); if(!fr||!fr.contentWindow) return;
+    const acts=JSON.parse(sl.dataset.station);
+    if(k===nx&&acts[0].cmd==='act') fr.contentWindow.postMessage(Object.assign({},acts[0],{cmd:'prime'}),'*');
+    else if(k===pv&&acts[acts.length-1].cmd==='act') fr.contentWindow.postMessage(Object.assign({},acts[acts.length-1],{cmd:'prime'}),'*');
+    else if(k!==was) fr.contentWindow.postMessage({cmd:'reset'},'*'); });
   setStep(i, atEnd ? S[i].n-1 : 0);
   const b=inAnx()?ANX:MAIN; bar.style.width=((b.indexOf(i)+1)/b.length*100)+'%';
   notes.querySelector('p').textContent=slides[i].dataset.notes||'—';

@@ -734,7 +734,10 @@ if(EMBED){{ document.documentElement.classList.add('embed');
     else if(m.cmd==='overlay'){{ m.on?showOv(m.con):hideOv(); if(m.speed) setSpeed(m.speed); if(m.on&&!playing) toggle(true); }}
     else if(m.cmd==='speed') setSpeed(m.s);
     else if(m.cmd==='show'){{ showOv(m.con); }}
-    else if(m.cmd==='reset'&&!ONLY){{ toggle(false); ff=null; stop=null; plan=null; hideOv(); step(T0); paint(); }} }});
+    else if(m.cmd==='reset'&&!ONLY){{ toggle(false); ff=null; stop=null; plan=null; hideOv(); step(T0); paint(); }}
+    /* prime: wait, paused, on a moment (the deck's next or previous slide), so entering it continues without a cut */
+    else if(m.cmd==='prime'&&!ONLY){{ const j=M.findIndex(x=>x.k===m.k); if(j<0) return; toggle(false); ff=null; stop=null; plan=null; hideOv();
+      if(t<M[j].t||t>=(M[j+1]||{{t:T1+1}}).t) {{ step(M[j].t); }} paint(); }} }});
   addEventListener('keydown',e=>{{ if(['ArrowRight','ArrowDown','PageDown','Enter'].includes(e.key)){{ e.preventDefault(); e.stopImmediatePropagation(); parent.postMessage({{cmd:'nav',d:1}},'*'); }}
     else if(['ArrowLeft','ArrowUp','PageUp','Backspace'].includes(e.key)){{ e.preventDefault(); e.stopImmediatePropagation(); parent.postMessage({{cmd:'nav',d:-1}},'*'); }} }},true);
 }}
