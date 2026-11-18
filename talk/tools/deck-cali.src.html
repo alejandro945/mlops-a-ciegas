@@ -498,7 +498,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <!-- ═══════════════ THE CASE: a pumping station, told simply, before the problem ═══════════════ -->
 <section class="s" data-id="caso" data-sec="0" data-notes="">
   <div class="kick">El caso</div>
-  <div class="ttl wide">Imaginemos <b>una estación de bombeo de agua</b></div>
+  <div class="ttl wide">Bienvenidos a <b>la estación El Chorro</b></div>
   <div class="chart" style="left:84px;right:84px;top:226px;bottom:150px"><canvas class="anim" data-anim="caso"></canvas></div>
   <div class="foot"></div>
 </section>
@@ -1035,7 +1035,7 @@ ANIM.caso={steps:4,dur:1300,draw(g,W,H,st,p,t){
      2 · it grows: more than 20 pumps        3 · now the question is governing all those models */
   const a=RM||st>3?1:ease(clamp(p*1.3)), fy=300, bot=fy+12;
   strokeRR(g,10,40,W-20,bot,18,ink(.18),2,[8,7]);
-  T(g,34,78,'Estación de bombeo de agua · lejos de la ciudad',ink(.55),18,700,true);
+  T(g,34,78,'Bombeo de agua · lejos de la ciudad',ink(.55),18,700,true);
   if(st<=1){
     const n=5, gap=(W-220)/n;
     for(let k=0;k<n;k++){
@@ -1045,9 +1045,10 @@ ANIM.caso={steps:4,dur:1300,draw(g,W,H,st,p,t){
       if(bad){ g.save(); g.globalAlpha=a; fillRR(g,x-80,fy-214,160,44,14,ACC); T(g,x,fy-185,'¡suena raro!','#FFFFFF',20,700,false,'center'); g.restore(); }
     }
     /* the operator who no longer has to be there */
-    const ox=110; operator(g,ox,fy,st?ink(.18):INK);
-    T(g,ox,fy+34,st?'sin operario':'un operario',st?ACC:ink(.55),16,700,true,'center');
-    if(st) { g.save(); g.globalAlpha=a; cross(g,ox,fy-56,30,ACC); g.restore(); }
+    const ox=110; operator(g,ox,fy,st?ink(.22):INK);
+    T(g,ox,fy+34,'Don Jairo',st?ink(.4):INK,16,700,true,'center');
+    if(st){ g.save(); g.globalAlpha=a; T(g,ox,fy-160,'por fin descansa',ACC,16,700,false,'center');
+      [0,1,2].forEach(n=>{ const u=((t*.35)+n/3)%1; g.save(); g.globalAlpha=a*Math.sin(u*Math.PI); T(g,ox+18+u*26+n*6,fy-110-u*40,'z',INK,18+n*5,700); g.restore(); }); g.restore(); }
     else { const u=(t*.6)%1; T(g,ox+4,fy-118-u*14,'?',ink(.5*(1-u)),28,700,false,'center'); }
     if(st===1){ g.save(); g.globalAlpha=a; fillRR(g,W-176,56,146,40,12,INK); T(g,W-103,83,'edge AI','#FFFFFF',20,700,false,'center'); g.restore(); }
   } else {
@@ -1065,12 +1066,14 @@ ANIM.caso={steps:4,dur:1300,draw(g,W,H,st,p,t){
     T(g,W-150,84,shown+'',INK,44,700,false,'right'); T(g,W-140,82,'bombas',ink(.55),18,700,true);
   }
   /* one big sentence per click */
-  const L=['Quieren detectar fallas en las bombas sin tener un operario ahí.',
-           'Por eso usan edge AI: un modelo en cada bomba que la escucha y avisa ahí mismo.',
-           'Funciona, y la estación crece: ya son más de 20 bombas.',
-           '¿Cómo actualizar, vigilar y corregir 20 modelos sin ir bomba por bomba?'];
+  const L=['Hoy, si una bomba falla, se entera Don Jairo… cuando alcanza a pasar.',
+           'La solución: edge AI. Cada bomba tiene un oído y un modelo que avisa al instante.',
+           'Funcionó tan bien que la estación creció: ya son más de 20 bombas.',
+           '¿Y ahora? ¿Cómo actualizar, vigilar y corregir 24 modelos sin ir uno por uno?'];
+  const L2=['La meta: detectar las fallas sin depender de un operario.','','',
+            'Gobernarlos en automático y conocer sus límites: ese es el reto.'];
   g.save(); g.globalAlpha=RM?1:clamp(p*1.6); T(g,0,H-60,L[Math.min(st,3)],INK,32,700); g.restore();
-  if(st===3){ g.save(); g.globalAlpha=RM?1:clamp(p*1.6-.4); T(g,0,H-14,'Automatizar su gobernanza y entender sus límites: ese es nuestro caso.',ACC,24,700); g.restore(); }
+  if(L2[Math.min(st,3)]){ g.save(); g.globalAlpha=RM?1:clamp(p*1.6-.4); T(g,0,H-14,L2[Math.min(st,3)],ACC,24,700); g.restore(); }
 }};
 
 /* 02 · smart devices: connected IoT devices in the world, one box per billion (IoT Analytics) */

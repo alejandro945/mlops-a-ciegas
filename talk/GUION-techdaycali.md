@@ -76,17 +76,17 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 7 · Imaginemos una estación de bombeo de agua
+## 7 · Bienvenidos a la estación El Chorro
 <!-- id: caso -->
-**0:55** · 3 clics · *simple y despacio: es el caso de toda la charla*
+**0:55** · 3 clics · *simple, con humor y despacio: es el caso de toda la charla*
 
-"Antes de entrar en el problema, imaginemos una estación de bombeo de agua, lejos de la ciudad. Hoy, para saber si una bomba está fallando, alguien tiene que ir a escucharla. La empresa quiere automatizar eso: detectar las fallas sin tener un operario ahí."
+"Antes de entrar en el problema, les presento la estación El Chorro: una estación de bombeo de agua, lejos de la ciudad. Y este es Don Jairo. Hoy, si una bomba empieza a fallar, se entera Don Jairo… cuando alcanza a pasar por ahí. La meta es detectar las fallas sin depender de un operario."
 
-**[CLIC]** "Por eso usa edge AI: a cada bomba le pone un micrófono y un dispositivo con un modelo de IA que la escucha. Si una empieza a sonar raro, el modelo avisa ahí mismo, sin depender de la red ni de nadie cerca."
+**[CLIC]** "La solución: edge AI. A cada bomba le ponemos un micrófono y un dispositivo con un modelo que la escucha. Si una empieza a sonar raro, avisa al instante, ahí mismo, sin depender de la red. Y Don Jairo, por fin, descansa."
 
-**[CLIC]** "Funciona. Y la estación crece: ya no son cinco, son más de 20 bombas, cada una con su modelo."
+**[CLIC]** "Funcionó tan bien que la estación creció: ya no son cinco bombas, son más de 20, cada una con su modelo."
 
-**[CLIC]** "Y aparecen preguntas nuevas: ¿cómo actualizo 20 modelos sin ir bomba por bomba? ¿Cómo sé qué versión corre en cada una, y si sigue acertando? ¿Qué pasa con la que se quedó sin red?" *(pausa)* "La empresa necesita automatizar la gobernanza de esos modelos y entender los límites de este tipo de solución. Ese es nuestro caso de aquí en adelante."
+**[CLIC]** "¿Y ahora?" *(pausa)* "¿Cómo actualizo 24 modelos sin ir uno por uno? ¿Cómo sé qué versión corre en cada bomba, y si sigue acertando? ¿Qué pasa con la que se quedó sin red?" *(pausa)* "El reto es gobernar esos modelos en automático y conocer los límites de este tipo de solución. De eso trata el resto de la charla."
 
 ---
 
