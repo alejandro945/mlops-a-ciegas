@@ -24,10 +24,10 @@ function provPaint(){
     PV.groups.map(g=>{ const d=gd(g); return '<div class="gc'+(d>=g.n?' ok':d?' go':'')+'"><b>'+d+'<span>/'+g.n+'</span></b>'+g.name+'</div>'; }).join('')+'</div></div></div>';
   h+='<div class="pv-step'+(done('healthy')?' ok':done('fleet')?' cur':'')+'">'+ck(done('healthy'),done('fleet'))+'<div><div class="pt">La flota · cinco bombas con Greengrass <span>'+(done('fleet')?hms(PV.fleet):'')+'</span></div>'+
     '<div class="pd">Cada bomba es un contenedor con el nucleus y su certificado: '+(done('healthy')?'las cinco Healthy':done('fleet')?'instalando…':'—')+'</div></div></div>';
-  h+='<div class="pv-step'+(done('dep')?' ok':done('pub')?' cur':'')+'">'+ck(done('dep'),done('pub'))+'<div><div class="pt">publish.sh · el modelo versionado <span>'+(done('pub')?PV.publish.map(p=>'v'+p[0]+' '+hms(p[1])).join(' · '):'')+'</span></div>'+
-    '<div class="pd">Cada versión a S3 y como componente de Greengrass, con la huella de cada archivo</div></div></div>';
-  h+='<div class="pv-step'+(done('go')?' ok':done('dep')?' cur':'')+'">'+ck(done('go'),done('dep'))+'<div><div class="pt">deploy.sh 1.0.0 · los dos rings <span>'+(done('dep')?hms(PV.deploy):'')+'</span></div>'+
-    '<div class="pd">El ring 0 y el ring 1 reciben la v1.0.0</div></div></div>';
+  h+='<div class="pv-step'+(done('dep')?' ok':done('pub')?' cur':'')+'">'+ck(done('dep'),done('pub'))+'<div><div class="pt">Greengrass · versiones del modelo <span>'+(done('pub')?PV.publish.map(p=>'v'+p[0]+' '+hms(p[1])).join(' · '):'')+'</span></div>'+
+    '<div class="pd">El modelo sube a S3 y se registra como versión del componente, con la huella de cada archivo</div></div></div>';
+  h+='<div class="pv-step'+(done('go')?' ok':done('dep')?' cur':'')+'">'+ck(done('go'),done('dep'))+'<div><div class="pt">Greengrass · despliegue de la v1.0.0 <span>'+(done('dep')?hms(PV.deploy):'')+'</span></div>'+
+    '<div class="pd">Greengrass la lleva a cada bomba: el ring 0 y el ring 1</div></div></div>';
   h+='<div class="pv-go'+(done('go')?' on':'')+'">▶ Comienza la validación de punta a punta'+(done('go')?' <span>'+hms(PV.start)+'</span>':'')+'</div>';
   el.innerHTML=h;
 }

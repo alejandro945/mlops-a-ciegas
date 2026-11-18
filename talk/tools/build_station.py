@@ -299,7 +299,7 @@ def markers(ev, alarm, lam, judge=()):
         M.append({"t": x["stop"] - 15000, "k": "veredicto", "tag": "ACTO 3 · EL VEREDICTO", "title": title, "text": text, "speed": 2})
     if v2:
         M.append({"t": v2["ts"] - 12000, "k": "acto3", "tag": "ACTO 3 · LA RED DE SEGURIDAD", "title": f"La v{v2['model_version']} llega al canary",
-                  "text": f"deploy.sh {v2['model_version']} ring-0: la versión nueva llega solo a la {v2['device']}. Instala, arranca y "
+                  "text": f"Un despliegue de Greengrass al ring 0: la v{v2['model_version']} llega solo a la {v2['device']}. Instala, arranca y "
                           "reporta: para Greengrass, un despliegue exitoso. El ring 1 sigue con la v1.", "speed": 4})
     mf = [e for e in ev if e.get("truth") == "anomaly" and not e["alert"] and (v2 is None or e["ts"] >= v2["ts"])]
     if mf:
@@ -710,7 +710,7 @@ def main():
     if prov:
         M.insert(0, {"t": prov["t0"], "k": "prov", "tag": "APROVISIONAR", "title": "Terraform, la flota y la v1",
                      "text": f"terraform apply crea {prov['total']} recursos; la flota instala cinco bombas con Greengrass; "
-                             "publish.sh sube la v1 y la v2 a S3; deploy.sh lleva la v1 a los dos rings. Con eso, la prueba.",
+                             "la v1 y la v2 se registran como versiones del componente; Greengrass despliega la v1 a los dos rings. Con eso, la prueba.",
                      "speed": 2, "con": None})
     html = page(devs, rows, M, alarm, lam, deploys, judge, day, alarm_history(), prov)
     open(OUT, "w", encoding="utf-8").write(html)

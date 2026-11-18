@@ -316,7 +316,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 <!-- id: monitoreo -->
 **1:15** · 3 clics
 
-"Paso seis: desde la nube no vemos el audio, vemos los eventos del modelo. Unos cientos de bytes por inferencia, que pasan por IoT Core, una regla, CloudWatch y una alarma conectada al rollback."
+"Paso seis: desde la nube no vemos el audio, vemos los eventos del modelo. Unos cientos de bytes por inferencia, que pasan por IoT Core, una regla, CloudWatch y una alarma que avisa."
 
 "La pregunta es qué medir. Propongo tres señales."
 

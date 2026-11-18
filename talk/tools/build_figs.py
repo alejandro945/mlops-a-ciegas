@@ -817,7 +817,9 @@ def fig_monitoring(static=False):
               "input_z · PSI · sha256" if _os.environ.get("ISO_THEME") == "tdc" else "MissedFaults"),
              ("cw_alarm", "Alarma", "una por señal" if _os.environ.get("ISO_THEME") == "tdc" else f["ALARM"]),
              ("lambda", "Lambda", f["FN"])]
-    X = [172 + k * 248 for k in range(6)]
+    if _os.environ.get("ISO_THEME") == "tdc":           # Cali: monitoring ends at the alarm; the rollback is step 4's
+        nodes = nodes[:5]
+    X = [172 + k * (1240 / (len(nodes) - 1)) for k in range(len(nodes))]
     YI = 262
     o, b = [], []
     for k, (ic, t, sub) in enumerate(nodes):
