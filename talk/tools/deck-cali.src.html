@@ -499,7 +499,7 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 <section class="s" data-id="caso" data-sec="0" data-notes="">
   <div class="kick">El caso</div>
   <div class="ttl wide">Bienvenidos a <b>la estación El Chorro</b></div>
-  <div class="chart" style="left:84px;right:84px;top:226px;bottom:150px"><canvas class="anim" data-anim="caso"></canvas></div>
+  <div class="chart" style="left:84px;right:84px;top:300px;bottom:150px"><canvas class="anim" data-anim="caso"></canvas></div>
   <div class="foot"></div>
 </section>
 
@@ -1065,15 +1065,6 @@ ANIM.caso={steps:4,dur:1300,draw(g,W,H,st,p,t){
     }
     T(g,W-150,84,shown+'',INK,44,700,false,'right'); T(g,W-140,82,'bombas',ink(.55),18,700,true);
   }
-  /* one big sentence per click */
-  const L=['Hoy, si una bomba falla, se entera Don Jairo… cuando alcanza a pasar.',
-           'Y ¡pum!: edge AI en cada bomba. Un micrófono y un modelo que avisa al instante.',
-           'Funcionó tan bien que la estación creció: ya son más de 20 bombas.',
-           '¿Y ahora? ¿Cómo actualizar, vigilar y corregir 24 modelos sin ir uno por uno?'];
-  const L2=['Y como todas las empresas quieren IA en todo lado, El Chorro no iba a ser la excepción.','','',
-            'Gobernarlos en automático y conocer sus límites: ese es el reto.'];
-  g.save(); g.globalAlpha=RM?1:clamp(p*1.6); T(g,0,H-60,L[Math.min(st,3)],INK,32,700); g.restore();
-  if(L2[Math.min(st,3)]){ g.save(); g.globalAlpha=RM?1:clamp(p*1.6-.4); T(g,0,H-14,L2[Math.min(st,3)],ACC,24,700); g.restore(); }
 }};
 
 /* 02 · smart devices: connected IoT devices in the world, one box per billion (IoT Analytics) */
