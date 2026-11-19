@@ -41,8 +41,12 @@ def video(e):
             f.write(f"file '{os.path.join(d, name)}'\nduration {max(dur, 0.001):.4f}\n")
         f.write(f"file '{os.path.join(d, files[-1])}'\n")
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-f", "concat", "-safe", "0", "-i", lst,
-                    "-vf", "scale=1920:1080:flags=lanczos,format=yuv420p", "-fps_mode", "cfr", "-r", "30",
-                    "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-movflags", "+faststart", out], check=True)
+                    # limited-range yuv420p, High@4.1, avc1: what Keynote and PowerPoint (AVFoundation) accept;
+                    # the screencast JPEGs are full range, and a yuvj420p stream makes Keynote reject the file
+                    "-vf", "scale=1920:1080:flags=lanczos:out_range=tv,format=yuv420p", "-fps_mode", "cfr", "-r", "30",
+                    "-c:v", "libx264", "-preset", "medium", "-crf", "20", "-profile:v", "high", "-level", "4.1",
+                    "-pix_fmt", "yuv420p", "-color_range", "tv", "-colorspace", "bt709", "-color_primaries", "bt709",
+                    "-color_trc", "bt709", "-tag:v", "avc1", "-movflags", "+faststart", out], check=True)
     return out
 
 
@@ -88,8 +92,12 @@ def fade(slide):
 
 def main():
     man = json.load(open(os.path.join(CAP, "manifest.json")))
+    if os.environ.get("LIMIT"):                          # a short test deck: only the first N clicks
+        man = man[:int(os.environ["LIMIT"])]
+    AUTO, FADE = os.environ.get("AUTOPLAY", "1") == "1", os.environ.get("FADE", "1") == "1"
     prs = Presentation()
     prs.slide_width, prs.slide_height = W, H
+    prs.part._element.find("p:sldSz", NS).attrib.pop("type", None)   # the default template says 4:3
     blank = prs.slide_layouts[6]
     for n, e in enumerate(man, 1):
         s = prs.slides.add_slide(blank)
@@ -99,8 +107,10 @@ def main():
             mp4 = video(e)
             poster = os.path.join(CAP, e["frames"], sorted(os.listdir(os.path.join(CAP, e["frames"])))[0])
             mv = s.shapes.add_movie(mp4, 0, 0, W, H, poster_frame_image=poster, mime_type="video/mp4")
-            autoplay(s, mv.shape_id, duration_ms(mp4))
-        fade(s)
+            if AUTO:
+                autoplay(s, mv.shape_id, duration_ms(mp4))
+        if FADE:
+            fade(s)
         if e.get("notes"):
             s.notes_slide.notes_text_frame.text = e["notes"]
         print(f"{n:3d} {e['id']}·{e['step']}{'  (video)' if e.get('frames') else ''}", flush=True)
