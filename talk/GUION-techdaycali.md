@@ -4,7 +4,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el envío por lotes (paso 5).
 
-**23:30** de contenido aproximadamente. Reloj al entrar a cada divisor: 3:45 · 6:25 · 8:50 · 16:15.
+**24:10** de contenido aproximadamente. Reloj al entrar a cada divisor: 4:00 · 6:40 · 9:05 · 16:30.
 
 ---
 
@@ -78,7 +78,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 7 · Bienvenidos a la estación El Chorro
 <!-- id: caso -->
-**0:55** · 3 clics · *simple, con humor y despacio: es el caso de toda la charla*
+**1:10** · 4 clics · *simple, con humor y despacio: es el caso de toda la charla*
 
 "Antes de entrar en el problema, les presento la estación El Chorro: una estación de bombeo de agua, lejos de la ciudad. Y este es Don Jairo. Hoy, si una bomba empieza a fallar, se entera Don Jairo… cuando alcanza a pasar por ahí. Y como hoy todas las empresas quieren IA en todo lado, El Chorro no iba a ser la excepción."
 
@@ -86,13 +86,15 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 **[CLIC]** "Funcionó tan bien que la estación creció: ya no son cinco bombas, son más de 20, cada una con su modelo."
 
-**[CLIC]** "¿Y ahora?" *(pausa)* "¿Cómo actualizo 24 modelos sin ir uno por uno? ¿Cómo sé qué versión corre en cada bomba, y si sigue acertando? ¿Qué pasa con la que se quedó sin red?" *(pausa)* "El reto es gobernar esos modelos en automático y conocer los límites de este tipo de solución. De eso trata el resto de la charla."
+**[CLIC]** "¿Y ahora?" *(pausa)* "¿Cómo actualizo 24 modelos sin ir uno por uno? ¿Cómo sé qué versión corre en cada bomba, y si sigue acertando? ¿Qué pasa con la que se quedó sin red?"
+
+**[CLIC]** "Y un día pasó. Con más de 20 bombas y nadie gobernando esos modelos, la bomba 14 falló y nadie se dio cuenta. Una comunidad se quedó sin agua, y la empresa se enteró por las quejas." *(pausa)* "El reto es gobernar esos modelos en automático y conocer los límites de este tipo de solución. De eso trata el resto de la charla."
 
 ---
 
 ## 8 · 01 · El problema
 <!-- id: div1 -->
-**0:05** · *reloj: 3:45*
+**0:05** · *reloj: 4:00*
 
 "Empecemos por el problema."
 
@@ -146,7 +148,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 12 · 02 · El patrón
 <!-- id: div2 -->
-**0:05** · *reloj: 6:25*
+**0:05** · *reloj: 6:40*
 
 "Veamos cómo se gobierna esto, empezando por el equipo."
 
@@ -200,7 +202,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 16 · 03 · Los seis pasos
 <!-- id: div3 -->
-**0:10** · *reloj: 8:50*
+**0:10** · *reloj: 9:05*
 
 "La implementación, en seis pasos: entrenar, optimizar, empaquetar, desplegar, operar sin red y monitorear."
 
@@ -332,7 +334,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 25 · 04 · La evidencia en AWS
 <!-- id: div4 -->
-**0:05** · *reloj: 16:15*
+**0:05** · *reloj: 16:30*
 
 "Ahora, la evidencia: la misma arquitectura, ejecutada en AWS."
 
@@ -424,7 +426,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ## 33 · Cinco recomendaciones
 <!-- id: llevo -->
-**1:05** · 4 clics · *reloj: 21:50 al entrar*
+**1:05** · 4 clics · *reloj: 22:05 al entrar*
 
 "Cinco recomendaciones para aplicar desde el lunes."
 
@@ -438,11 +440,21 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 **[CLIC]** "Quinta: monitoreen tres señales: entrada, salida y autenticidad."
 
-*(Si el reloj marca 21:30 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
+*(Si el reloj marca 21:45 o menos: «Una lección del primer montaje: ninguna bomba arrancaba. El problema era que el instalador de Greengrass determina el formato de configuración por la extensión del archivo, y el mío no tenía extensión. Una línea. Por eso se prueba en el entorno real.»)*
 
 ---
 
-## 34 · Recursos y contacto
+## 34 · ¿Quién se entera primero?
+<!-- id: jairo -->
+**0:25** · 1 clic · *despacio; deja la pregunta en el aire*
+
+"Volvamos a El Chorro. Hoy, muchos de nuestros modelos en el borde viven como vivía Don Jairo: nos enteramos cuando alcanzamos a pasar." *(pausa)* "Entonces les dejo una pregunta. ¿Quién se va a enterar primero: la comunidad que se quedó sin agua…"
+
+**[CLIC]** "…o ustedes?" *(pausa larga; pasa a la siguiente)*
+
+---
+
+## 35 · Recursos y contacto
 <!-- id: recursos -->
 **0:15** · sin clics
 
@@ -450,7 +462,7 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 35 · Gracias
+## 36 · Gracias
 <!-- id: cierre -->
 **0:15** · sin clics
 

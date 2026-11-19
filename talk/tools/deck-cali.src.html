@@ -729,6 +729,14 @@ svg.seq{position:absolute;left:0;top:0;transform:scale(.92);transform-origin:800
 
 
 <!-- ═══════════════ RESOURCES ═══════════════ -->
+<!-- ═══════════════ THE CLOSING QUESTION: back to El Chorro ═══════════════ -->
+<section class="s" data-id="jairo" data-sec="0" data-notes="">
+  <div class="kick">Para cerrar</div>
+  <div class="ttl wide">¿Quién se entera <b>primero</b>?</div>
+  <div class="chart" style="left:84px;right:84px;top:240px;bottom:150px"><canvas class="anim" data-anim="jairo"></canvas></div>
+  <div class="foot"></div>
+</section>
+
 <section class="s" data-id="recursos" data-sec="0" data-notes="">
   <div class="kick">Recursos</div>
   <div class="ttl wide">Recursos <b>y contacto</b></div>
@@ -1021,11 +1029,18 @@ function pumpUnit(g,x,y,sc,col,dev,u,lab){
   g.restore();
   if(lab) T(g,x,y+34,lab,ink(.55),16,700,true,'center');
 }
-ANIM.caso={steps:4,dur:1300,draw(g,W,H,st,p,t){
+function house(g,x,y,col){ /* x = left, y = floor; 54 wide */
+  g.fillStyle=col; g.beginPath(); g.moveTo(x-4,y-34); g.lineTo(x+27,y-58); g.lineTo(x+58,y-34); g.closePath(); g.fill();
+  g.fillRect(x+4,y-36,46,36); fillRR(g,x+20,y-20,14,20,2,'#FFFFFF'); }
+function dryDrop(g,x,y,s,col){ /* a water drop, crossed out */
+  g.fillStyle=col; g.beginPath(); g.moveTo(x,y-s); g.bezierCurveTo(x+s*.9,y-s*.1,x+s*.75,y+s*.75,x,y+s*.75); g.bezierCurveTo(x-s*.75,y+s*.75,x-s*.9,y-s*.1,x,y-s); g.fill();
+  cross(g,x,y+s*.05,s*.75,ACC); }
+ANIM.caso={steps:5,dur:1300,draw(g,W,H,st,p,t){
   /* 0 · a water pumping station that wants to find faults without an operator
      1 · so it adds edge AI: a microphone and a device with a model on every pump
-     2 · it grows: more than 20 pumps        3 · now the question is governing all those models */
-  const a=RM||st>3?1:ease(clamp(p*1.3)), fy=300, bot=fy+12;
+     2 · it grows: more than 20 pumps        3 · now the question is governing all those models
+     4 · without governance one pump fails, nobody notices, and a community is left without water */
+  const a=RM||st>4?1:ease(clamp(p*1.3)), fy=300, bot=fy+12;
   strokeRR(g,10,40,W-20,bot,18,ink(.18),2,[8,7]);
   T(g,34,78,'Bombeo de agua · lejos de la ciudad',ink(.55),18,700,true);
   if(st<=1){
@@ -1050,13 +1065,37 @@ ANIM.caso={steps:4,dur:1300,draw(g,W,H,st,p,t){
     const TAG={1:'v1',3:'v2',6:'v1',8:'¿?',10:'v2',13:'sin red',15:'v1',17:'v2',20:'¿?',22:'v1'};
     for(let k=0;k<shown;k++){
       const r=Math.floor(k/cols), c=k%cols, x=40+cw*c+cw/2, y=r?330:210;
-      pumpUnit(g,x,y,.46,INK,true,((t*.7)+k*.13)%1,null);
-      if(st===3&&TAG[k]){ const tg=TAG[k], q=clamp(a*1.8-(k%7)*.1); if(q>0){ g.save(); g.globalAlpha=q;
+      const dead=st===4&&k===13;
+      pumpUnit(g,x+(dead&&!RM?Math.sin(t*40)*1.5:0),y,.46,dead?ACC:st===4?ink(.35):INK,!dead,((t*.7)+k*.13)%1,null);
+      if(dead){ g.save(); g.globalAlpha=a; fillRR(g,x-44,y-98,88,26,8,ACC); T(g,x,y-79,'falló','#FFFFFF',15,700,false,'center'); g.restore(); continue; }
+      if(st>=3&&TAG[k]){ const tg=TAG[k], q=st===4?.3:clamp(a*1.8-(k%7)*.1); if(q>0){ g.save(); g.globalAlpha=q;
         g.font='700 14px '+SANS; const w=g.measureText(tg).width+16, col=tg==='v2'?ACC:tg==='v1'?INK:ink(.45);
         fillRR(g,x-w/2,y-96,w,24,8,col); T(g,x,y-79,tg,'#FFFFFF',14,700,false,'center'); g.restore(); } }
     }
     T(g,W-150,84,shown+'',INK,44,700,false,'right'); T(g,W-140,82,'bombas',ink(.55),18,700,true);
+    if(st===4){ /* the failed pump, nobody watching, and the community it fed */
+      const fx=40+cw*1.5, k2=RM?1:clamp(p*1.4);
+      g.save(); g.globalAlpha=k2; line(g,[[fx,350],[fx,400],[fx+90,400]],ACC,2.5,[6,6]);
+      [0,1,2,3].forEach(n=>house(g,fx+100+n*66,428,ink(.75)));
+      dryDrop(g,fx+390,402,18,'#4A90D9');
+      T(g,fx+430,396,'Una comunidad se quedó sin agua.',ACC,24,700);
+      T(g,fx+430,424,'Nadie en la empresa se enteró: se supo por las quejas.',INK,19,400); g.restore(); }
   }
+}};
+
+/* the closing question: will you be Don Jairo? who finds out first, the community or you */
+ANIM.jairo={steps:2,dur:1100,draw(g,W,H,st,p,t){
+  const a=RM||st>1?1:ease(clamp(p*1.3));
+  g.save(); g.translate(150,H-70); g.scale(2,2); operator(g,0,0,INK); g.restore();
+  T(g,150,H-24,'Don Jairo',INK,22,700,true,'center');
+  { const u=(t*.6)%1; T(g,170,H-300-u*16,'?',ink(.55*(1-u)),56,700,false,'center'); }
+  [0,1,2].forEach(n=>house(g,W-330+n*72,H-70,ink(.75))); dryDrop(g,W-50,H-104,24,'#4A90D9');
+  T(g,W-225,H-24,'la comunidad',INK,22,700,true,'center');
+  const cx=W/2;
+  T(g,cx,H-330,'¿Van a ser como Don Jairo?',INK,40,700,false,'center');
+  T(g,cx,H-262,'¿Quién se va a enterar primero:',ink(.7),32,400,false,'center');
+  T(g,cx,H-210,'la comunidad que se quedó sin agua…',INK,34,700,false,'center');
+  if(st>=1){ g.save(); g.globalAlpha=a; g.translate(cx,H-120); g.scale(.9+.1*a,.9+.1*a); T(g,0,0,'…o ustedes?',ACC,64,700,false,'center'); g.restore(); }
 }};
 
 /* 02 · smart devices: connected IoT devices in the world, one box per billion (IoT Analytics) */
