@@ -4,7 +4,7 @@ Solo lo que dices. **[CLIC]** avanza la lámina · *(pausa)* es silencio · lo d
 
 Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el envío por lotes (paso 5).
 
-**24:10** de contenido aproximadamente. Reloj al entrar a cada divisor: 4:00 · 6:40 · 9:05 · 16:30.
+**24:05** de contenido aproximadamente. Reloj al entrar a cada divisor: 4:00 · 6:40 · 9:05 · 16:30.
 
 ---
 
@@ -76,19 +76,19 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 7 · Bienvenidos a la estación El Chorro
+## 7 · Imaginemos una estación de bombeo de agua
 <!-- id: caso -->
 **1:10** · 4 clics · *simple, con humor y despacio: es el caso de toda la charla*
 
-"Antes de entrar en el problema, les presento la estación El Chorro: una estación de bombeo de agua, lejos de la ciudad. Y este es Don Jairo. Hoy, si una bomba empieza a fallar, se entera Don Jairo… cuando alcanza a pasar por ahí. Y como hoy todas las empresas quieren IA en todo lado, El Chorro no iba a ser la excepción."
+"Antes de entrar en el problema, imaginemos una estación de bombeo de agua, lejos de la ciudad. Y este es Don Jairo. Hoy, si una bomba empieza a fallar, se entera Don Jairo… cuando alcanza a pasar por ahí. Y como hoy todas las empresas quieren IA en todo lado, esta no iba a ser la excepción."
 
 **[CLIC]** "Y ¡pum!: edge AI en cada bomba. A cada una le ponemos un micrófono y un dispositivo con un modelo que la escucha. Si una empieza a sonar raro, avisa al instante, ahí mismo, sin depender de la red. Y Don Jairo, por fin, descansa."
 
-**[CLIC]** "Funcionó tan bien que la estación creció: ya no son cinco bombas, son más de 20, cada una con su modelo."
+**[CLIC]** "Funcionó tan bien que la empresa creció: ahora son dos sedes y más de 20 bombas, cada una con su modelo. Y Don Jairo, que es uno solo, ya no alcanza a administrar todo: va de una sede a la otra."
 
 **[CLIC]** "¿Y ahora?" *(pausa)* "¿Cómo actualizo 24 modelos sin ir uno por uno? ¿Cómo sé qué versión corre en cada bomba, y si sigue acertando? ¿Qué pasa con la que se quedó sin red?"
 
-**[CLIC]** "Y un día pasó. Con más de 20 bombas y nadie gobernando esos modelos, la bomba 14 falló y nadie se dio cuenta. Una comunidad se quedó sin agua, y la empresa se enteró por las quejas." *(pausa)* "El reto es gobernar esos modelos en automático y conocer los límites de este tipo de solución. De eso trata el resto de la charla."
+**[CLIC]** "Y un día pasó. Con dos sedes, más de 20 bombas y nadie gobernando esos modelos, una bomba de la sede 2 falló y nadie se dio cuenta. Una comunidad se quedó sin agua, y la empresa se enteró por las quejas." *(pausa)* "El reto es gobernar esos modelos en automático y conocer los límites de este tipo de solución. De eso trata el resto de la charla."
 
 ---
 
@@ -444,13 +444,11 @@ Es el guion de DevOpsDays Bogotá con dos láminas nuevas: el juez (paso 4) y el
 
 ---
 
-## 34 · ¿Quién se entera primero?
+## 34 · ¿Quién se va a enterar primero?
 <!-- id: jairo -->
-**0:25** · 1 clic · *despacio; deja la pregunta en el aire*
+**0:20** · sin clics · *despacio; deja la pregunta en el aire*
 
-"Volvamos a El Chorro. Hoy, muchos de nuestros modelos en el borde viven como vivía Don Jairo: nos enteramos cuando alcanzamos a pasar." *(pausa)* "Entonces les dejo una pregunta. ¿Quién se va a enterar primero: la comunidad que se quedó sin agua…"
-
-**[CLIC]** "…o ustedes?" *(pausa larga; pasa a la siguiente)*
+"Volvamos a la estación de bombeo. Hoy, muchos de nuestros modelos en el borde viven como vivía Don Jairo: nos enteramos cuando alcanzamos a pasar." *(pausa)* "Les dejo una pregunta: ¿quién se va a enterar primero? ¿La comunidad que se quedó sin agua, o ustedes?" *(pausa larga; pasa a la siguiente)*
 
 ---
 
